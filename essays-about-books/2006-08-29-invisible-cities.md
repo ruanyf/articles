@@ -10,7 +10,7 @@
 
 下面就是昨天晚上我反复阅读的一段。如果你曾经对时间感到恐惧，曾经为期待而兴奋，曾经为现实而失落，那么你会体会到我的阅读感受。
 
-===
+---
 
 When a man rides a long time through wild regions he feels the desire for a city.
 
