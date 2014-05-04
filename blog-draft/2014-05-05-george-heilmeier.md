@@ -50,3 +50,20 @@ A set of questions credited to Heilmeier that anyone proposing a research projec
 起初，“液晶”这种材料从名字上看似乎是自相矛盾的。“晶体”给人的印象一般是坚硬有形的，与“液体”完全相反。
 
 但“液晶”材料是可以被制造出来的，而某些液晶材料拥有一项特别有价值的属性：处在电场中时，这些材料可以散射光线。凭借这种属性，液晶材料可以被整合进设备中，而这些设备则可以把不可见的电信号转化成可见光。
+
+George Heilmeier began his career at RCA’s Sarnoff Research Center where he discovered that an applied voltage could change the color of dye-doped liquid crystals in the 1960s. Credited as the inventor of the LCD* by the US Patent and Trademark Office’s National Inventors Hall of Fame (Akron, Ohio), Heilmeier had secured his place in electronic history, alongside other hall-of-famers like Thomas Edison and Steve Wozniak, after working at RCA for only six years. 
+
+In the 1970s Heilmeier entered government service as a White House Fellow and special advisor to the Defense Department. Then in 1975 he was appointed Director of the Defense Advanced Research Project Agency. At DARPA he shepherded-in the modern era of high-tech weaponry including stealth aircraft, space-based lasers and smart-bombs using artificial intelligence (AI).
+
+One thing few people know about Heilmeier, however, is the waves he made upon taking over DARPA, where he introduced the concept of accountability to an organization that until then had operated as a good-old-boy network. He met entrenched resistance to his accountability efforts from former good-old-boys who told Heilmeier “your job is to get the money to the good people and don't ask any questions," said Heilmeier in a Charles Babbage Institute interview in 1991. Heilmeier pushed back by informing DARPA contractees that no longer were they “going to get a couple million dollars from DARPA just by saying that, ‘We're going to go off and do good things’...That era was over. You would get your money based on articulating what you were trying to do and how it was done today and the limitations of current practice...Those were the questions that became known as ‘Heilmeier's Catechism’,” said Heilmeier.
+
+Today Heilmeier's Catechism is used by organizations from venture capitalist to urban planners. Before funding any project, Heilmeier recommends answering these questions:
+What are you trying to do? Articulate your objectives using absolutely no jargon.
+How is it done today, and what are the limits of current practice?
+What's new in your approach and why do you think it will be successful?
+Who cares?
+If you're successful, what difference will it make?
+What are the risks and the payoffs?
+How much will it cost?
+How long will it take?
+What are the midterm and final "exams" to check for success?
