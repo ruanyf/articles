@@ -1,10 +1,10 @@
 # Home Depot(家得宝)'s Failure in China
 
-## Introduction of Home Depot
+## I. Introduction of Home Depot
 
 Founded in 1978, Home Depot, Inc. is the world's largest home improvement specialty retailer, and the fourth-largest retailer in the United States. The company's fiscal 2010 retail sales were $68.0 billion, and earnings from continuing operations were $3.3 billion. Currently, the company has more than 2,200 retail stores in the United States, Canada, Mexico, Puerto Rico, the US Virgin Islands, and China. The company was ranked No. 30 on the Fortune 500 list in 2010.
 
-## China Experience
+## II. China Experience
 
 Home Depot entered China in 2006 by acquiring 12 stores from the Chinese home improvement company Home Way, China's first big-box(大卖场) home improvement retailer. 
 
@@ -14,11 +14,9 @@ Home Depot China's store format was big-box operation, with an average of 90,000
 
 In May 2009 Home Depot suddenly closed its storefront in Qingdao. On September 15, 2012, the Wall Street Journal reported that Home Depot Inc. decided to close all seven of its remaining big-box stores in China and to pull out of China after six years of losses. Home Depot joins a growing list of American retailers who have stumbled in China. 
 
-## Do-It-Yourself (DIY) Business Model
+## III. Related Materials
 
-Borrowing from its strategy in the United States, Home Depot operated with a Do-It-Yourself (DIY) business model in a Big-Box retailing format in China. But this business model, borrowed from the US market, did not work in China.
-
-The following is some analysis materials copied from a research report.
+The following are some analysis materials quoted from a research report.
 
 (1) From 2006 to 2012, Home Depot applied its American DIY business model almost without modification to China: its stores were operated on a big-box format located mostly at the outskirts of Chinese cities; its display of store merchandise required customers with substantial knowledge for self-work; and its advertising format was mailing printed flyers to customers. 
 
@@ -40,9 +38,9 @@ The following is some analysis materials copied from a research report.
 
 (10) Labor is cheap in China. In a nation with a sizable pool of unskilled labor and countless small-time construction companies, it is simply more convenient and cheaper to outsource such manual labor jobs as home improvement. As a result, most Chinese consumers do not Do-It-Themselves on home improvement. They choose to hire contractors.
 
-(11) In 1975, China adopted the “One Child Policy” as a national regulation for population control, with urban dwellers allowed only one child per couple. These only children, the “little emperors and empresses” of China, are now in their 20s, 30s, and approaching their 40s. They are the vital components of international retailers' target consumers in China. Most of these only children become homeowners when they get married, usually with financial contributions from their parents. These only children have been somewhat spoiled by their two parents and four grandparents, and have normally not done much manual labor work growing up in urban China. The research data shows that Home Depot's DIY model does not seem to be suitable to this group of key customers.
+(11) In 1975, China adopted the “One Child Policy” as a national regulation for population control, with urban dwellers allowed only one child per couple. These only children, the “little emperors and empresses” of China, are now in their 20s, 30s, and approaching their 40s. They are the vital components of international retailers' target consumers in China. Most of these only children become homeowners when they get married, usually with financial contributions from their parents. These only children have been somewhat spoiled by their two parents and four grandparents, and have normally not done much manual labor work growing up in urban China.
 
-## Questions
+## IV. Questions
 
 home improvement company
 
