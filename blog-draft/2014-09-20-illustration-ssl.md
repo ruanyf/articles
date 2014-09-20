@@ -56,9 +56,9 @@
 
 整个握手阶段都不加密（也没法加密），都是明文的。因此，如果有人窃听通信，他可以知道双方选择的加密方法，以及三个随机数中的两个。整个通话的安全，只取决于第三个随机数（Premaster secret）能不能被破解。
 
-虽然理论上，只要服务器的公钥足够长（比如2048位），那么Premaster secret可以保证不被破解。但是为了保证足够安全，我们可以考虑把握手阶段的算法从默认的[RSA算法](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html)，改为 Diffie-Hellman算法（简称DH算法）。
+虽然理论上，只要服务器的公钥足够长（比如2048位），那么Premaster secret可以保证不被破解。但是为了足够安全，我们可以考虑把握手阶段的算法从默认的[RSA算法](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html)，改为 Diffie-Hellman算法（简称DH算法）。
 
-采用DH算法后，Premaster secret不需要传递，双方只要交换各自的参数，就可以算出Premaster secret。因此，本文第一节的示意图就变成下面的样子。
+采用DH算法后，Premaster secret不需要传递，双方只要交换各自的参数，就可以算出这个随机数。
 
 [![](http://image.beekka.com/blog/2014/bg2014092008.png)](http://image.beekka.com/blog/2014/bg2014092007.png)
 
@@ -70,13 +70,13 @@
 
 这时有两种方法可以恢复原来的session：一种叫做session ID，另一种叫做session ticket。
 
-session ID的思想很简单，就是每一次对话都有一个编号（session ID）。如果对话中断，下次重连的时候，只要客户端给出这个编号，且服务器有这个编号的记录，双方就可以使用重新使用已有的“对话密钥“，而不必重新生成一把。
+session ID的思想很简单，就是每一次对话都有一个编号（session ID）。如果对话中断，下次重连的时候，只要客户端给出这个编号，且服务器有这个编号的记录，双方就可以重新使用已有的“对话密钥“，而不必重新生成一把。
 
 [![](http://image.beekka.com/blog/2014/bg2014092010.png)](http://image.beekka.com/blog/2014/bg2014092009.png)
 
 上图中，客户端给出session ID，服务器确认该编号存在，双方就不再进行握手阶段剩余的步骤，而直接用已有的对话密钥进行加密通信。
 
-session ID是目前所有HTTP服务器都支持的方法，但是它的缺点在于session ID往往只保留在一台服务器上。所以，如果客户端的请求发到另一台服务器，就无法恢复对话。session ticket就是为了解决这个问题而诞生的，目前只有Firefox和Chrome浏览器支持。
+session ID是目前所有浏览器都支持的方法，但是它的缺点在于session ID往往只保留在一台服务器上。所以，如果客户端的请求发到另一台服务器，就无法恢复对话。session ticket就是为了解决这个问题而诞生的，目前只有Firefox和Chrome浏览器支持。
 
 [![](http://image.beekka.com/blog/2014/bg2014092012.png)](http://image.beekka.com/blog/2014/bg2014092011.png)
 
