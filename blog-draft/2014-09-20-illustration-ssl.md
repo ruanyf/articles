@@ -1,13 +1,13 @@
 
 # 图解SSL/TLS协议
 
-半年前，我写了一篇[《SSL/TLS协议运行机制的概述》](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)，解释了这个协议是如何运行的。但是，那篇文章没有例子。
-
-这一周，CDN提供商[CloudFlare](https://www.cloudflare.com/)宣布，开始提供Keyless服务，即你把网站放到它们的CDN上，不用提供自己的私钥，也能使用SSL加密链接。
+本周，[CloudFlare](https://www.cloudflare.com/)宣布，开始提供Keyless服务，即你把网站放到它们的CDN上，不用提供自己的私钥，也能使用SSL加密链接。
 
 ![CloudFlare](http://image.beekka.com/blog/2014/bg2014092001.png)
 
-我看了CloudFlare的说明（[这里](http://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/)和[这里](http://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/)），突然意识到这是绝好的的实例，而且配有图示，很容易看懂。下面，我就用这些图片作为例子，配合前一篇[《概述》](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)，来描述SSL协议的运行机制。
+我看了CloudFlare的说明（[这里](http://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/)和[这里](http://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/)），突然意识到这是绝好的例子，可以用来说明SSL/TLS协议的运行机制。它配有插图，很容易看懂。
+
+下面，我就用这些图片作为例子，配合我半年前写的[《SSL/TLS协议运行机制的概述》](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)，来解释SSL协议。
 
 ## 一、SSL协议的握手过程
 
