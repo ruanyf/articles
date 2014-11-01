@@ -20,6 +20,16 @@ $ sudo cat /etc/shadow
 $ sudo cat /etc/passwd
 ```
 
+（4）创建用户
+
+```bash
+sudo useradd [用户名]
+```
+然后，为该用户设置密码。
+
+```bash
+sudo passwd [用户名] 
+```
 ## 组操作
 
 （1）显示当前用户所在的组
