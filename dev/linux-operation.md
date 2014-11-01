@@ -19,16 +19,16 @@ $ sudo cat /etc/shadow
 ```bash
 $ sudo cat /etc/passwd
 ```
-
+ 
 （4）创建用户
 
 ```bash
-sudo useradd [用户名]
+$ sudo useradd [用户名]
 ```
 然后，为该用户设置密码。
 
 ```bash
-sudo passwd [用户名] 
+$ sudo passwd [用户名] 
 ```
 ## 组操作
 
