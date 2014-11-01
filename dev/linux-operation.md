@@ -14,7 +14,7 @@ $ whoami
 $ sudo cat /etc/shadow
 ```
 
-（3）列出所有用户的秘密
+（3）列出所有用户的密码
 
 ```bash
 $ sudo cat /etc/passwd
@@ -47,6 +47,7 @@ group_name:passwd:GID:user_list
 ```
 
 每条记录分四个字段：
+
 1. 用户组名称；
 2. 用户组密码；
 3. GID
