@@ -1,5 +1,25 @@
 # Linux常用操作
 
+## 用户操作
+
+（1）列出当前用户
+
+```bash
+$ whoami
+```
+
+（2）列出所有用户
+
+```bash
+$ sudo cat /etc/shadow
+```
+
+（3）列出所有用户的秘密
+
+```bash
+$ sudo cat /etc/passwd
+```
+
 ## 组操作
 
 （1）显示当前用户所在的组
@@ -19,6 +39,19 @@ $ groups [userID]
 ```bash
 $ cat /etc/group
 ```
+
+/etc/group文件的记录格式如下。
+
+```
+group_name:passwd:GID:user_list
+```
+
+每条记录分四个字段：
+1. 用户组名称；
+2. 用户组密码；
+3. GID
+4. 用户列表，每个用户之间用,号分割；本字段可以为空；如果字段为空表示用户组为GID的用户名；
+
 ## 挂载USB盘
 
 （1）将USB盘插入电脑
