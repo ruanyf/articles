@@ -1,7 +1,7 @@
 # 支付宝前端开发入口
 
 ## 常用网址
-
+- [体验技术部的工作讨论平台](http://gitlab.alibaba-inc.com/alipay/x)
 - [团队wiki入口](http://gitlab.alibaba-inc.com/alipay/x/wikis/home)
 - [团队gitlab](http://gitlab.alibaba-inc.com/)
 
@@ -13,12 +13,21 @@
 
 ## 基础技术 + 国际支付组
 
+- [2014.10.31周报](http://gitlab.alibaba-inc.com/alipay/x/issues/937)
 - [2014.10.31周会](http://gitlab.alibaba-inc.com/alipay/x/issues/928) 
 
-## 可视化小组
+## 企业应用组
+
+- [2014.10.31周报](http://gitlab.alibaba-inc.com/alipay/x/issues/933)
+
+## 可视化组
 
 - [2014.10.17周会](http://gitlab.alibaba-inc.com/acharts/work/issues/16) 
 - [2014.10.30周会](http://gitlab.alibaba-inc.com/acharts/work/issues/18)
+
+## 安全工程组
+
+- [2014.10.31周报](http://gitlab.alibaba-inc.com/alipay/x/issues/936)
 
 ## 工具
 
