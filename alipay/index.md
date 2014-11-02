@@ -10,6 +10,7 @@
 - [Chair仓库](http://gitlab.alibaba-inc.com/chair/chair/issues)
 - [Chair手册仓库](http://gitlab.alibaba-inc.com/chair/chair-handbook/tree/master)
 - [Chair手册](http://groups.alidemo.cn/chair/chair-handbook/book/index.html)
+- [totorojs](https://github.com/totorojs/totoro)：跨浏览器测试工具
 
 ## 基础技术 + 国际支付组
 
