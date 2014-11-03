@@ -12,6 +12,8 @@
 - [Chair手册](http://groups.alidemo.cn/chair/chair-handbook/book/index.html)
 - [totorojs](https://github.com/totorojs/totoro)：跨浏览器测试工具
 - [ACharts](http://acharts.github.io/)：前端图表库
+- [ACharts开发讨论平台](http://gitlab.alibaba-inc.com/groups/acharts)
+- [spm.js](http://spmjs.io/)
 
 ## 基础技术 + 国际支付组
 
