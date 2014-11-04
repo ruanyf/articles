@@ -4,6 +4,7 @@
 - [工作讨论平台](http://gitlab.alibaba-inc.com/alipay/x)
 - [团队wiki入口](http://gitlab.alibaba-inc.com/alipay/x/wikis/home)
 - [团队gitlab](http://gitlab.alibaba-inc.com/)
+- [Confluence](http://doc.alipay.net/)
 
 ## 项目
 
