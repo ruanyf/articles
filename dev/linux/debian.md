@@ -29,3 +29,18 @@ sudo aptitude update
 sudo aptitude dist-upgrade
 ```
  
+## /etc/network/interfaces
+
+/etc/network/interfaces is Debian's network card configing file. 
+
+```bash
+auto eth0
+iface eth0 inet dhcp
+```
+
+```bash
+iface eth0 inet static
+address 192.168.1.5
+netmask 255.255.255.0
+gateway 192.168.1.254
+```
