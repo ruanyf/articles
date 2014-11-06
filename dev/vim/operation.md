@@ -17,3 +17,7 @@ vim提供12个剪贴板，它们的名字分别为vim有12个粘贴板，分别�
 +号粘贴板是系统粘贴板，用"+y将内容复制到该粘贴板后可以使用Ctrl＋V将其粘贴到其他文档（如firefox、gedit）中，同理，要把在其他地方用Ctrl＋C或右键复制的内容复制到vim中，需要在正常模式下按"+p。
 
 另一种从系统剪贴板复制到vim的方法是使用Shift+Insert。
+
+## 插件
+
+- [Markdown语法高亮](https://github.com/plasticboy/vim-markdown)
