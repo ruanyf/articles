@@ -1,5 +1,26 @@
 # Debian的用法
 
+## 版本
+
+Debian总是同时至少维护三个版本：stable，testing和unstable。
+
+stable是最新的官方发行版，也是推荐安装的版本。目前是version 7，代码名wheezy，2013年5月4日首次发行。2014年10月18日发布7.7版。
+
+testing是正在测试、将要成为stable的版本，会包含更新的软件。目前的testing版是jessie。
+
+unstable是当前正在积极开发的，包含有最新的软件，但可能不稳定、并且有错误。目前的unstable版是sid。
+
+- The next release of Debian is codenamed jessie
+- Debian 7 (wheezy)
+- Debian 6.0 (squeeze)
+- Debian GNU/Linux 5.0 (lenny)
+- Debian GNU/Linux 4.0 (etch)
+- Debian GNU/Linux 3.1 (sarge)
+- Debian GNU/Linux 3.0 (woody)
+- Debian GNU/Linux 2.2 (potato)
+- Debian GNU/Linux 2.1 (slink)
+- Debian GNU/Linux 2.0 (hamm)
+
 ## apt
 
 apt的源列表存放在`/etc/apt/sources.list`文件。
