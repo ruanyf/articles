@@ -146,3 +146,4 @@ $ yeganesh -x
 - [How-to: Set up XMonad & XMobar on Ubuntu](http://www.huntlycameron.co.uk/2010/11/how-to-set-up-xmonad-xmobar-ubuntu/)：入门介绍
 - [How to configure xmonad in Arch Linux](http://www.linuxandlife.com/2011/11/how-to-configure-xmonad-arch-linux.html): 如何编写配制文件
 - [Xmonad/Basic Desktop Environment Integration](https://www.haskell.org/haskellwiki/Xmonad/Basic_Desktop_Environment_Integration): 官方配置说明
+- [Xmonad Tutorial for Beginning Beginners](http://beginners-guide-to-xmonad.readthedocs.org/en/latest/index.html): xMonad教程
