@@ -44,8 +44,21 @@
 - [2014.10.31周报](http://gitlab.alibaba-inc.com/alipay/x/issues/936)
 
 ## 工具
-
+- 共享	[淘云盘](http://yunpan.alibaba-inc.com/login.htm)
+- 交互线框图	[Axure](http://www.axure.com/)
+- 画流程图	[Omnigraffle](http://www.omnigroup.com/omnigraffle)
+- 思维导图	[Mindmanager](http://www.mindjet.com/mindmanager/)
+- 思维导图	[MindNode Pro](http://mindnode.com/)
+- 知识管理	[Evernote](https://www.evernote.com/)
+- 快捷键	[Alfred](http://www.alfredapp.com/)
+- Mac 清理	[ClearMyMac](http://macpaw.com/cleanmymac)
+- 取色工具	[ColorSchemer](http://www.colorschemer.com/)
+- 虚拟机	[Paralles Desktop](http://www.parallels.com/cn/products/desktop/)
+- host修改	[Gas Mask](https://www.macupdate.com/app/mac/29949/gas-mask)
+- Markdown 编辑器	[Mou](http://mouapp.com/)
 - [翻墙pac proxy](http://gitlab.alibaba-inc.com/alipay/x/wikis/pac-proxy)
+
+如何更快地获取软件？请打开 Finder，运行 command + k，输入域账号和密码，登录到「支付宝」里面。前端的路径“支付宝-技术部-前端开发组”，这里将有我们团队的资料和软件。另外，推荐 macx.cn ，也是不错的软件源。
 
 ## 新人入职
 
