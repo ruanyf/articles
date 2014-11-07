@@ -63,6 +63,8 @@
 ## 新人入职
 
 - [玉伯《给写给一名求职者的信》](https://github.com/lifesinger/lifesinger.github.com/issues/194)
+- [研发平台使用说明](http://doc.alipay.net/pages/viewpage.action?pageId=37391826)
+- [新人培训资料（淘云盘）](http://yunpan.alibaba-inc.com/group/523405#/2014.4%E6%96%B0%E4%BA%BA%E5%9F%B9%E8%AE%AD)
 
 ## 名词解释
 
