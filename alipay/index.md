@@ -8,6 +8,11 @@
 - [CMS 3.0](https://ecmng.alipay.com/manage.htm)：快速发布线上文件，站点管理以及静态文件发布；前端快速发布流程涉及系统。需要向「落叶」申请权限。
 - [CQ 平台](http://cmweb217.alipay.net/cqweb/#)：IBM Rational ClearQuest 软件，用于配置管理，一个强大的系统。项目、需求跟进；bug跟进；发布跟进等。
 - [Jira 平台](https://jira.alipay.net:8443/secure/Dashboard.jspa)：需求管理平台，我们所做的业务需求都需要经过这里；前端快速发布需求管理。
+- [Web端公司邮箱](https://webmail.alibaba-inc.com)
+- [⺴网网址导航](http://alipay.im)
+- [研发平台](http://x.alipay.net/)
+- [前端站点](http://site.alipay.im)
+- [VPN 登录](https://vpn.alibaba-inc.com/+CSCOE+/logon.html)
 
 ## 项目
 
