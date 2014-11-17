@@ -10,3 +10,7 @@
 - <tab>解释命令行参数。
 - \*\*表示递归搜索
 - <CTRL>+X <CTRL>+E 可以自动将长命令，从命令行放入编辑器。
+
+## 参考资料
+
+- JoeJag, [My favourite Zsh features](http://code.joejag.com/2014/why-zsh.html)

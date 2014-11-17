@@ -24,4 +24,8 @@ Desktop
 - [IcoMoon](https://icomoon.io/)
 - [Fontastic](http://fontastic.me/)
 
+### 其他
+
+- [ZamZar](http://www.zamzar.com/)：在线文件格式转换，可转keynote文件
+
 参考文章：[Building an SVG Icon Font](https://cdnify.com/blog/building-an-svg-icon-font/)
