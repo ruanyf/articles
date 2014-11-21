@@ -61,3 +61,26 @@ $ sudo apt-get install vim-gui-common
 ## 插件
 
 - [Markdown语法高亮](https://github.com/plasticboy/vim-markdown)
+
+### dmw多窗口管理
+
+网址：http://www.vim.org/scripts/script.php?script_id=4186
+
+窗口按下面方式组织。
+
+```
+================= 
+|      |     S1 | 
+|      |==========
+|  M   |     S2 | 
+|      |========== 
+|      |     S3 | 
+================= 
+```
+
+操作
+- CTRL-N 在[M]区域创建一个新窗口，将以前的窗口都堆在[S]区域
+- CTRL-C 关闭当前窗口
+- CTRL-J 跳到下一个窗口（顺时针方向）
+- CTRL-K 跳到前一个窗口（逆时针方向）
+- CTRL-F 将当前窗口放入[M]区域，并将其他窗口放在[S]区域
