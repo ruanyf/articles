@@ -149,3 +149,4 @@ pros and cons
 ## 参考链接
 
 - corbet, [The guts of git](https://lwn.net/Articles/131657/): 最早的一篇介绍Git的文章，可以了解Git的总体设计思路
+- 张文钿, [git从微观到宏观](http://ihower.tw/blog/archives/7938)
