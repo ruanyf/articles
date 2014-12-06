@@ -90,3 +90,9 @@ $ sudo chmod -R g+w /media/externaldrive
 ```bash
 sudo mount [/dev/sdXN] /media/externaldrive -o=rw
 ```
+
+（6）刻录镜像盘
+
+```bash
+$ sudo dd if=debian-*-netinst.iso of=/dev/sdX
+```

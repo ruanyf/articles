@@ -88,6 +88,10 @@ $ git ref-parse HEAD
 
 ```
 
+## git stash
+
+运行该命令后，所有没有commit的代码，都会暂时从工作区移除，回到上次commit时的状态。
+
 ## git tag
 
 为commit打标签。Tag 分兩種:annotated tag 才會產生 object。
