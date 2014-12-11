@@ -99,9 +99,11 @@ apt-cache search命令用来搜索软件。
 $ apt-cache search [搜索词] 
 ```
 
-## /etc/network/interfaces
+## 网络配置
 
-/etc/network/interfaces is Debian's network card configing file. 
+### 网卡配置文件
+
+/etc/network/interfaces是Debian的网卡配置文件。 
 
 ```bash
 auto eth0
@@ -113,4 +115,38 @@ iface eth0 inet static
 address 192.168.1.5
 netmask 255.255.255.0
 gateway 192.168.1.254
+```
+
+### ifconfig
+
+ifconfig命令用于提供网络各个端口的信息。
+
+```bash
+$ ifconfig
+```
+
+上面命令会提供ifconfig能够找到的所有网络端口的信息，一般会包括一个以太网网卡的物理网口，以及一个本机虚拟的回路（loopback）网口（供本机程序互相通信）。
+
+返回信息一般包括以下几个部分。
+
+- Link encap：网络封装类型，一般是Ethernet或者Local Loopback。
+- Hwaddr：网络接口的MAC地址。
+- inet addr：网络接口的IP地址。
+- Bcast：所在网络的广播地址。
+- Mask：子网掩码
+- MTU：最大传输单元（Maximum transmission unit），单个数据包（packet）的最大体积。
+- RX：收到的包的统计。
+- TC：发出的包的统计。
+- collisions：发生包碰撞的次数。
+- txqueuelen：传输队列的长度。
+- RX bytes，TX bytes：该网络接口通过数据的统计。
+
+ifup命令和ifdown命令用于开启/关闭网络接口。
+
+```bash
+
+$ sudo ifdown eth0
+
+$ sudo ifup eth0
+
 ```
