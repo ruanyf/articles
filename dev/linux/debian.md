@@ -23,6 +23,8 @@ unstable是当前正在积极开发的，包含有最新的软件，但可能不
 
 ## apt
 
+apt是软件包管理工具，来自“A Package Tool”的缩写。
+
 ### 软件源
 
 apt的源列表存放在`/etc/apt/sources.list`文件。
@@ -98,6 +100,48 @@ apt-cache search命令用来搜索软件。
 ```bash
 $ apt-cache search [搜索词] 
 ```
+
+## dpkg：软件包管理命令
+
+（1）安装软件包
+
+使用`dpkg -i`（表示install）命令，安装deb软件包。
+
+```bash
+$ dpkg -i <package-file-name>
+```
+
+（2）查看软件包安装信息
+
+使用`dpkg -l`（表示list）命令，查看软件包的安装状态。
+
+```bash
+$ dpkg -l | grep 'tcl'
+```
+
+如果返回信息的最前面有`ii`两个字母，就表示已安装(installed ok installed）。
+
+所有已安装包的状态可在`/var/lib/dpkg/status`文件中查看。
+
+（3）删除软件包
+
+使用`dpkg -r`（表示remove）命令，删除软件包。
+
+```bash
+$ dpkg -r tcl8.4 
+```
+
+这时再使用`dpkg -l`命令查看软件包信息，会发现软件包最前面的两个字母是`rc`，表示软件已经卸载，但还没有清除配置文件（removed ok config-files）。
+
+（4）删除软件包及其配置文件
+
+使用`dpkg -P`（表示purge）命令，彻底删除软件包。
+
+```bash
+$ dpkg -P tcl8.4 
+```
+
+这时，再使用`dpkg -l`命令，查看已安装软件包，就会发现已经找不到该软件包了。
 
 ## 网络配置
 

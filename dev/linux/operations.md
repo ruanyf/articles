@@ -88,7 +88,7 @@ $ sudo chmod -R g+w /media/externaldrive
 （5）挂载USB盘。
 
 ```bash
-sudo mount [/dev/sdXN] /media/externaldrive -o=rw
+sudo mount [/dev/sdXN] /media/externaldrive
 ```
 
 （6）刻录镜像盘
