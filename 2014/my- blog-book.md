@@ -2,7 +2,7 @@
 
 本周，我的文集**《如何变得有思想》**由[图灵教育](http://www.ituring.com.cn/book/1533)出版了，已经上架，欢迎大家选购。
 
-> - [亚马逊](http://www.amazon.cn/mn/detailApp/?asin=B00Q7UVFKQ)
+> - [亚马逊](http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00Q7UVFKQ/ref=lh_ni_t?ie=UTF8&psc=1&smid=A1AJ19PSB66TGU)
 > - [京东](http://item.jd.com/11585328.html)
 > - [当当](http://product.dangdang.com/23606565.html)
 
