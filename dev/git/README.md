@@ -2,6 +2,18 @@
 
 git是一种源码管理系统（source code management，缩写为SCM）。它对当前文件提供版本管理功能，核心思想是对当前文件建立一个对象数据库（object database），将历史版本信息存放在这个数据库中。
 
+## git操作流程
+
+1. git init：新建一个git库
+2. git status：查看目前状态
+3. git add <文件名>：添加文件从工作区到暂存区
+4. git commit -m "提示信息"：从暂存区提交到代码仓库
+5. git log：查看提交commit的信息
+6. git remote add origin https://github.com/try-git/try_git.git : 添加远程指针
+7. git push -u origin master：将本地的master分支推送到远程origin主机，-u参数表示记住对应关系，下次可以直接git push推送。
+8. git pull origin master：将远程主机origin的代码取回本地，与本地的master分支合并
+9. git diff HEAD：查看与上一次commit的区别
+
 ## git对象
 
 对象数据库包含四类对象。
