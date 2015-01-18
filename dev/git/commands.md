@@ -16,6 +16,8 @@ $ git branch develop
 
 新建一个分支，指向当前commit。本质是在refs/heads/目录中生成一个文件，文件名为分支名，内容为当前commit的哈希值。
 
+创建后，需要用git checkout切换到新建分支。
+
 （2）删除分支
 
 -d参数用来删除一个分支。
@@ -23,6 +25,37 @@ $ git branch develop
 ```bash
 
 $ git branch -d <分支名>
+
+```
+
+（3）分支改名
+
+```bash
+$ git checkout -b twitter-experiment feature132
+$ git branch -d feature132
+```
+
+另一种写法
+
+```bash
+
+# 为当前分支改名
+$ git branch -m twitter-experiment
+
+# 为指定分支改名
+$ git branch -m feature132 twitter-experiment
+
+```
+
+（4）查看merge情况
+
+```bash
+
+# Shows branches that are all merged in to your current branch
+$ git branch --merged
+
+# Shows branches that are not merged in to your current branch
+$ git branch --no-merged
 
 ```
 
@@ -41,6 +74,14 @@ p参数表示以易于阅读的格式显示。
 ## git checkout
 
 （1）用来切换分支。
+
+```bash
+
+$ git checkout
+
+```
+
+回到先前所在的分支。
 
 ```bash
 
@@ -85,6 +126,14 @@ $ git diff --staged
 
 ```
 
+比较两个分支
+
+```bash
+
+$ git diff master..john/master
+
+```
+
 ## git hash-object
 
 `git hash-object`命令计算一个文件的git对象ID，即SHA1的哈希值。
@@ -100,6 +149,34 @@ $ echo "hola" | git hash-object -w --stdin
 
 - w 将对象写入对象数据库 
 - stdin 表示从标准输入读取，而不是从本地文件读取。
+
+## git log
+
+查看远程分支的变动情况。
+
+```bash
+
+$ git log remote/branch
+
+```
+
+查找log。
+
+```bash
+
+$ git log --author=Andy
+$ git log --grep="Something in the message"
+
+```
+
+查看某个范围内的commit
+
+```bash
+
+$ git log origin/master..new
+# [old]..[new] - everything you haven't pushed yet
+
+```
 
 ## git merge
 
@@ -117,6 +194,16 @@ $ git merge develop
 
 Git合并所采用的方法是Three-way merge，及合并的时候除了要合併的兩個檔案，還加上它们共同的父节点。这样可以大大減少人為處理 conflict 的情況。如果采用two-way merge，則只用兩個檔案進行合併（svn默认就是这种合并方法。）
 
+## git rebase
+
+互动的rebase。
+
+```bash
+
+$ git rebase -i master~3
+
+```
+
 ## git ref-parse
 
 显示某个指示符的SHA1哈希值。
@@ -127,6 +214,23 @@ $ git ref-parse HEAD
 
 ```
 
+## git remote
+
+为远程仓库添加别名。
+
+```bash
+
+$ git remote add john git@github.com:johnsomeone/someproject.git
+
+
+# 显示所有的远程主机
+$ git remote -v 
+
+# 列出某个主机的详细信息
+$ git remote show name 
+
+```
+
 ## git reset
 
 将文件从暂存区移除。
@@ -134,6 +238,7 @@ $ git ref-parse HEAD
 ```bash
 
 $ git reset <文件名>
+$ git reset HEAD lib/foo.rb
 
 ```
 
@@ -141,9 +246,80 @@ $ git reset <文件名>
 
 删除文件。
 
+## git show
+
+查看commit的内容
+
+```bash
+
+$ git show 12a86bc38 # By revision
+$ git show v1.0.1 # By tag
+$ git show feature132 # By branch name
+$ git show 12a86bc38^ # Parent of a commit
+$ git show 12a86bc38~2 # Grandparent of a commit
+$ git show feature132@{yesterday} # Time relative
+$ git show feature132@{2.hours.ago} # Time relative
+
+```
+
 ## git stash
 
 运行该命令后，所有没有commit的代码，都会暂时从工作区移除，回到上次commit时的状态。
+
+它处于`git reset --hard`（完全放弃还修改了一半的代码）与`git commit`（提交代码）命令之间，很类似于“暂停”按钮。
+
+```bash
+
+$ git stash
+
+```
+
+上面命令会将所有已提交到暂存区，以及没有提交的修改，都进行内部保存，没有将工作区恢复到上一次commit的状态。
+
+使用下面的命令，取回内部保存的变化，它会与当前工作区的代码合并。
+
+```bash
+
+$ git stash pop
+
+```
+
+这时，如果与当前工作区的代码有冲突，需要手动调整。
+
+`git stash`命令可以运行多次，保存多个未提交的修改。这些修改以“先进后出”的stack结构保存。
+
+`git stash list`命令查看内部保存的多次修改。
+
+```bash
+
+$ git stash list
+stash@{0}: WIP on new-feature: 5cedccc Try something crazy
+stash@{1}: WIP on new-feature: 9f44b34 Take a different direction
+stash@{2}: WIP on new-feature: 5acd291 Begin new feature
+
+```
+
+上面命令假设曾经运行过`git stash`命令三次。
+
+`git stash pop`命令总是取出最近一次的修改，但是可以用`git stash apply`指定取出某一次的修改。
+
+```bash
+
+$ git stash apply stash@{1}
+
+```
+
+上面命令不会自动删除取出的修改，需要手动删除。
+
+```bash
+
+$ git stash drop stash@{1}
+
+```
+
+参考链接
+
+- Ryan Hodson, [Quick Tip: Leveraging the Power of Git Stash](http://code.tutsplus.com/tutorials/quick-tip-leveraging-the-power-of-git-stash--cms-22988)
 
 ## git tag
 
@@ -189,4 +365,4 @@ $ git update-ref refs/heads/master 107aff
 
 $ git write-tree
 
-````
+```
