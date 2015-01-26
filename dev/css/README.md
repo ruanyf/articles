@@ -150,6 +150,37 @@ keyframes rotation {
 
 ## 属性
 
+### flex
+
+首先，指定flex容器。
+
+```html
+
+<div class="flexbox-container">
+	<div>Blah blah</div>
+	<div>Blah blah blah blah blah blah</div>
+</div>
+
+```
+
+设置垂直置中。
+
+```css
+
+.flexbox-container {
+	display: -ms-flex;
+	display: -webkit-flex;
+	display: flex;
+
+	-ms-flex-align: center;
+	-webkit-align-items: center;
+	-webkit-box-align: center;
+
+	align-items: center;
+}
+
+```
+
 ### text-overflow
 
 该属性定义了文本超出容器宽度后，如何处理。如果将多余文字显示成三点的省略号，可以像下面这样设置。
