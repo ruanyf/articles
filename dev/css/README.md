@@ -150,6 +150,52 @@ keyframes rotation {
 
 ## 属性
 
+### filter
+
+图片滤镜，支持grayscale, blur, sepia, saturate, opacity, brightness, contrast, hue-rotate, invert效果。
+
+灰度效果。
+
+```css
+
+img.bw {
+	filter: grayscale(1);
+}
+
+```
+
+动画效果。
+
+```css
+
+img.bw {
+	filter: grayscale(0);
+}
+
+img.bw.grey {
+	filter: grayscale(1);
+	transition-property: filter;
+	transition-duration: 1s;	
+}
+
+```
+
+其他例子。
+
+```css
+
+/* 模糊 */
+.myElement {
+	-webkit-filter: blur(2px);
+}
+
+/* 组合效果 */
+.myElement {
+	-webkit-filter: blur(2px) grayscale(.5) opacity(0.8);
+}
+
+```
+
 ### flex
 
 首先，指定flex容器。
@@ -180,6 +226,35 @@ keyframes rotation {
 }
 
 ```
+
+### object-fit
+
+定义内容如何适应容器的高和宽。
+
+```css
+
+object-fit: fill
+object-fit: contain
+object-fit: cover
+object-fit: none
+object-fit: scale-down
+
+```
+
+cover表示自动将图像的中心点，放置到容器的中心点，同时根据容器的大小，截取自身的大小。
+
+```css
+
+img {
+    object-fit: cover;
+}
+
+```
+
+参考链接
+
+- MDN, [object-fit](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
+- Chris Nager, [Center and crop images with a single line of CSS](https://medium.com/@chrisnager/center-and-crop-images-with-a-single-line-of-css-ad140d5b4a87)
 
 ### text-overflow
 
