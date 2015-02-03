@@ -1,10 +1,18 @@
 # 图灵访谈
 
+上周，我接受了[图灵教育](http://www.ituring.com.cn)的访谈，谈了自己的人生经历。
+
+我的目的是卖书，如果你还没买[《如何变得有思想》](http://www.ruanyifeng.com/blog/2014/12/my-blog-book.html)，请考虑一下吧。只有出版社赚到钱，我才有机会出下一本。
+
+下面是书面访谈的原文。
+
+================================================
+
 Q - 图灵，A - 阮一峰
 
 **Q:  请介绍一下自己。**
 
-A： 我上个世纪70年代生于上海，大学专业是经济学。工作了几年，又去读了世界经济的研究生，毕业后，在上海一所本地高校当了老师，教财经类的课程。最近，去了[支付宝](https://www.alipay.com/)的前端团队，在[@玉伯](https://github.com/lifesinger)负责的“体验技术部”工作，目前主要从事JavaScript和Node.js的开发。
+A： 我是70后，在上海出生和长大，大学糊里糊涂读了经济学。工作了几年，又去读了世界经济的研究生，毕业后，在上海一所本地高校当了老师，教财经类的课程。最近，去了[支付宝](https://www.alipay.com/)的前端团队，在[玉伯](https://github.com/lifesinger)负责的“体验技术部”工作，目前主要从事JavaScript和Node.js的开发。
 
 我翻译了[《软件随想录》](http://www.ruanyifeng.com/docs/mjos/)和[《黑客与画家》](http://www.ruanyifeng.com/docs/pg/)，出版了技术专著[《ECMAScript 6入门》](http://es6.ruanyifeng.com/)和博客文集[《如何变得有思想》](http://www.ruanyifeng.com/blog/2014/12/my-blog-book.html)。
 
@@ -48,8 +56,12 @@ A: 我一直是外行，从来不敢说自己是专家。对我来说，博客�
 
 **Q: 你近期在忙什么？**
 
-A: 最近一两年，我的关注重点都将是Node（io.js）。我觉得，Node很适合作为前后端之间的中间层。我希望用JavaScript、PostgreSQL、MongoDB、Nignx实现一个网站，会是一个开源项目。
+A: 最近一两年，我的关注重点都将是Node（io.js）。我觉得，Node很适合作为前后端之间的中间层。我希望用Node、PostgreSQL、MongoDB、Nignx实现一个网站，会是一个开源项目。
 
 如果有时间，我很希望能学一下Go语言，用它来写后端实现。我也很想学函数式编程，它带来了全新的思考方式，而且非常优雅。
+
+![](http://image.beekka.com/blog/2015/bg2015020301.jpg)
+
+[说明] 摄于艾西拉，摩洛哥，2014年8月
 
 （完）
