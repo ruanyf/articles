@@ -335,6 +335,23 @@ img {
 - MDN, [object-fit](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
 - Chris Nager, [Center and crop images with a single line of CSS](https://medium.com/@chrisnager/center-and-crop-images-with-a-single-line-of-css-ad140d5b4a87)
 
+### pointer-events
+
+该属性定义当前图形对象会不会成为鼠标动作的目标。
+
+```css
+
+/* 图片将对鼠标行为无反应 */
+img {
+  pointer-events: none;
+}
+
+a[href="http://example.com"] {
+  pointer-events: none;
+}
+
+```
+
 ### text-overflow
 
 该属性定义了文本超出容器宽度后，如何处理。如果将多余文字显示成三点的省略号，可以像下面这样设置。
