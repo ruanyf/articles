@@ -1,5 +1,34 @@
 # bash命令一览
 
+### file
+
+file命令用来查看文件类型。
+
+```bash
+$ file Default.png
+Default.png: PNG image data, 640 x 1136, 8-bit/color RGB, non-interlaced
+
+```
+
+### history
+
+history命令显示了过去输入的500条命令。
+
+```bash
+
+$ history
+
+# 执行特定编号的命令
+$ !100
+
+# 搜索某些命令
+$ history | grep “BLOW”
+
+# 分屏查看
+$ history | less
+
+```
+
 ### read
 
 read命令将用户输入读入变量。
@@ -34,4 +63,11 @@ $ rename -v 's/img_(\d{4})\.jpeg$/dan_$1\.jpg/' *.jpeg
 
 ```
 
+### tcpdump
+
+tcpdump命令在链接层过滤每个网络数据包，能够网络上的所有通信。它是Berkeley Packet Filters的命令行界面。
+
+### top
+
+top输出系统当前状态。
 

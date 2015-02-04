@@ -1,5 +1,84 @@
 # CSS的用法
 
+## 选择器
+
+### target
+
+target选择器用来匹配当前hash。
+
+产生动画效果。
+
+```css
+
+#further-resources:target {
+  animation: highlight .8s ease-out;
+}
+
+@keyframes highlight {
+  0% { background-color: #FFFF66; }
+  100% { background-color: #FFFFFF; }
+}
+
+```
+
+弹出效果。
+
+```css
+
+#search-overlay {
+  position: fixed;
+  top: 1em;
+  bottom: 1em;
+  right: 1em;
+  left: 1em;
+  /* … */
+  opacity: 0;
+  transition: opacity .3s ease-in-out;
+  pointer-events: none;
+}
+
+#search-overlay:target {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity .3s ease-in-out;
+}
+
+```
+
+导航栏效果
+
+```css
+
+.main-nav {
+  position: fixed;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background: #3B3B3B;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+}
+
+#main-nav:target {
+  width: 20%;
+}
+
+#main-nav:target + .page-wrap {
+  width: 80%;
+  .open-menu {
+     display: none; 
+  }
+  .close-menu {
+     display: block;
+  }
+  .main-header {
+    width: 80%;
+    left: 20%;
+  }
+}
+
+```
+
 ## 操作
 
 ### 垂直置中
