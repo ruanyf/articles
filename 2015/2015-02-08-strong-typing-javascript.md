@@ -15,6 +15,10 @@ x = x + 'A'; // '5A'
 
 一直有人尝试，让 JavaScript 变成强类型语言。在[官方](http://wiki.ecmascript.org/doku.php?id=strawman:types)最终支持强类型之前，本文介绍三种现在就可用的解决方案。
 
+![](http://image.beekka.com/blog/2015/bg2015020801.jpg?i=407300661)
+
+（题图：摄于花莲，台湾，2012年6月）
+
 ## 一、TypeScript
 
 [TypeScript](http://www.typescriptlang.org/) 是微软2012年推出的一种编程语言，属于 JavaScript 的超集，可以编译为 JavaScript 执行。 它的最大特点就是支持强类型和 [ES6 Class](http://es6.ruanyifeng.com/#docs/class)。
