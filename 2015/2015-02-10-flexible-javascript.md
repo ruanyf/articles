@@ -1,8 +1,8 @@
 # JavaScript 有多灵活？
 
-JavaScript 是一种灵活的语言，表达力极强，我来举一个例子。
+JavaScript 是一种灵活的语言，表达力极强，我来举一个例子，保证让很多人大吃一惊。
 
-这个例子受到了文章[《Iterating ES6 Numbers》](http://blog.getify.com/iterating-es6-numbers/)的启发。我保证，下面的写法会让很多人大吃一惊。
+下面的例子受到了 Kyle Simpson 的文章[《Iterating ES6 Numbers》](http://blog.getify.com/iterating-es6-numbers/)的启发。
 
 ![](http://image.beekka.com/blog/2015/bg2015021001.jpg)
 
