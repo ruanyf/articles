@@ -4,6 +4,12 @@ JavaScript 是一种灵活的语言，表达力极强，我来举一个例子。
 
 这个例子受到了文章[《Iterating ES6 Numbers》](http://blog.getify.com/iterating-es6-numbers/)的启发。我保证，下面的写法会让很多人大吃一惊。
 
+![](http://image.beekka.com/blog/2015/bg2015021001.jpg)
+
+（题图：摄于华侨城，深圳，2014年6月）
+
+---
+
 首先，在 Number.prototype 对象上，部署一个 add 方法。
 
 ```javascript
@@ -12,9 +18,9 @@ Number.prototype.add = function (x) {
 };
 ```
 
-上面代码为Number对象实例定义了一个add方法。如果你对这种写法不熟悉，建议先阅读我写的[《JavaScript 面向对象编程》](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_encapsulation.html)。
+上面代码为 Number 对象实例定义了一个 add 方法。如果你对这种写法不熟悉，建议先阅读我写的[《JavaScript 面向对象编程》](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_encapsulation.html)。
 
-由于Number对象的实例就是数值，在数值上调用某个方法，数值会自动转为Number的实例对象，所以就得到了下面的结果。
+由于 Number 对象的实例就是数值，在数值上调用某个方法，数值会自动转为 Number 的实例对象，所以就得到了下面的结果。
 
 ```javascript
 8['add'](2)
@@ -99,9 +105,9 @@ Number.prototype =  Object.defineProperty(
 );
 ```
 
-上面代码在 Number.prototype 上定义了两个属性 double 和 square ，以及它们的取值方法 get。
+上面代码在 Number.prototype 上定义了两个属性 double 和 square ，以及它们的取值方法 get 。
 
-因此，对任一数值读取这两个属性，就可以写成下面的样子。
+因此，在任一数值上，读取这两个属性，就可以写成下面的样子。
 
 ```javascript
 (8).double.square
