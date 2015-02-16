@@ -79,6 +79,52 @@ target选择器用来匹配当前hash。
 
 ```
 
+### 伪元素（Pseudo-element）
+
+伪元素（::before或者::after）是每个元素额外多出来的DOM节点。
+
+
+```css
+.pebble::before {
+  ...
+}
+.pebble::after {
+  ...
+}
+
+```
+
+伪元素使用两个双引号标识，如果希望IE8支持，也可以使用单引号。
+
+```css
+
+button::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  bottom: -50%;
+  left: -50%;
+  background: linear-gradient(to bottom, rgba(229, 172, 142, 0.1), rgba(255,255,255,0.5) 50%, rgba(229, 172, 142, 0.1));
+  transform: rotateZ(60deg) translate(-5em, 7.5em);
+}
+
+button:hover::after {
+  animation: sheen 1s forwards;
+}
+
+@keyframes sheen {
+  100% {
+    transform: rotateZ(60deg) translate(1em, -9em);
+  }
+}
+
+```
+
+参考链接
+
+- Donovan Hutchinson, [Animating pseudo-elements](http://cssanimation.rocks/post/pseudo-elements/)
+
 ## 操作
 
 ### 垂直置中
@@ -308,7 +354,19 @@ img.bw.grey {
 
 ### object-fit
 
-定义内容如何适应容器的高和宽。
+定义内容如何适应容器的高和宽，比如不同大小的图片，如何放在同一个位置。
+
+```css
+
+img {
+  height: 100px;
+  width: 100px;
+  object-fit: contain;
+}
+
+```
+
+object-fit可能的值共有五个。
 
 ```css
 
@@ -320,12 +378,18 @@ object-fit: scale-down
 
 ```
 
+- contain：图片自动升缩，以固有的长宽比，完整显示在容器中。
+- fill：图片自动填满容器，即使破坏原有的长宽比。
+- cover：保留图像的长宽比，但会自动升缩以填满容器，长度或宽度中较小的一个会完全在容器中展示，较大的一个会溢出。
+- none：完全忽视容器的大小，使用图片固有的长宽比。
+- scale-down: none或者contain中导致图片尺寸较小的那个值。
+
 cover表示自动将图像的中心点，放置到容器的中心点，同时根据容器的大小，截取自身的大小。
 
 ```css
 
 img {
-    object-fit: cover;
+  object-fit: cover;
 }
 
 ```
@@ -334,6 +398,22 @@ img {
 
 - MDN, [object-fit](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
 - Chris Nager, [Center and crop images with a single line of CSS](https://medium.com/@chrisnager/center-and-crop-images-with-a-single-line-of-css-ad140d5b4a87)
+- Chris Mills, [Exploring object-fit](https://hacks.mozilla.org/2015/02/exploring-object-fit/)
+
+### object-position
+
+object-position设置容器中的对象（通常是图片）的垂直和水平位置，与background-position设置背景图片的写法相同。
+
+```css
+
+img {
+  height: 100px;
+  width: 100px;
+  object-fit: contain;
+  object-position: top 70px;
+}
+
+```
 
 ### pointer-events
 
