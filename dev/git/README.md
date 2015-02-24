@@ -178,6 +178,10 @@ pros and cons
   - 不會將 next 合併進 master
 -  nightly 每天 1:00 UTC 自動從 next branch 分支支出來跑自動測試
 
+## Git远程操作 
+
+Git的repo一般是用来指本地库，远程库（remote）主要用来存档、合作、分享和触发持续集成。 
+
 ## 参考链接
 
 - corbet, [The guts of git](https://lwn.net/Articles/131657/): 最早的一篇介绍Git的文章，可以了解Git的总体设计思路

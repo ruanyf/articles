@@ -430,7 +430,9 @@ a[href="http://example.com"] {
   pointer-events: none;
 }
 
-```
+``
+
+一旦pointer-events设为none，就不会触发JavaScript事件。在该元素上点击，任何addEventListener添加的回调函数，都不会触发。
 
 ### text-overflow
 
@@ -445,6 +447,27 @@ a[href="http://example.com"] {
 ```
 
 上面代码第一行是隐藏溢出，第二行是防止断行，第三行是在行尾加上省略号。
+
+### transition
+
+```css
+
+/* Format */
+transition: property || duration || timing-function || delay
+
+/* Various Examples */
+transition: all 300ms ease 0;
+transition: all 0.5s ease-in-out 0;
+transition: background 300ms cubic-bezier(.61,-0.67,0,1.45) 0;
+transition: opacity 100ms ease 0, background 200ms ease-in-out 0, transform 200ms ease-out 0;
+
+/* Cross Browser Prefixes */
+-webkit-transition: all 300ms ease 0;
+-moz-transition: all 300ms ease 0;
+-o-transition: all 300ms ease 0;
+transition: all 300ms ease 0;
+
+```
 
 ## 单位
 
