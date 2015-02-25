@@ -79,6 +79,10 @@ joe	joe
 joe
 ```
 
+### exit
+
+exit命令用来退出当前脚本。
+
 ### file
 
 file命令用来查看文件类型。

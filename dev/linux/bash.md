@@ -52,7 +52,7 @@ $ `which git` --version
 
 ```
 
-## 语法结构
+## Bash脚本
 
 ### Shebang
 
@@ -68,6 +68,43 @@ Shebang指文件第一行，用来指定命令解释器。
 #! /usr/bin/env node
 ```
 
+### 变量
+
+等号用来给变量赋值。等号前后都不能有空格。
+
+```bash
+$ a=3
+```
+
+对变量取值的时候，变量名前要加上美元符号。
+
+```bash
+$ echo $a
+3
+```
+
+Bash变量是弱类型的，可以随时改为其他类型的值。如果变量的值是字符串，而且包含空格，那么需要用双引号包起来。另外，双引号中的变量会被扩展成对应的值，单引号没有变量扩展的功能。
+
+### 特殊变量
+
+- $? 特殊变量，表示上一个命令的输出结果，如果是0，表示运行成功。
+- $* 全部参数
+- $0 脚本名
+- $1 脚本的第一个参数
+- $2 脚本的第二个参数，以此类推
+- $# 参数数组的大小
+
+```bash
+# hellokitty.sh
+#!/usr/bin/env bash
+
+echo hello $1
+
+# 运行
+$ ./hellokitty.sh kitty
+hello kitty
+```
+ 
 ### if结构
 
 ```bash
@@ -113,25 +150,6 @@ $ if ! cd $outputdir; then echo "couldnt cd into output dir"; exit; fi
 $ # no error -  now we're in the directory testdir
 ```
 
-## 变量
-
-等号用来给变量赋值。等号前后都不能有空格。
-
-```bash
-$ a=3
-```
-
-对变量取值的时候，变量名前要加上美元符号。
-
-```bash
-$ echo $a
-3
-```
-
-Bash变量是弱类型的，可以随时改为其他类型的值。如果变量的值是字符串，而且包含空格，那么需要用双引号包起来。另外，双引号中的变量会被扩展成对应的值，单引号没有变量扩展的功能。
-
-- $? 特殊变量，表示上一个命令的输出结果，如果是0，表示运行成功。
-
 test是判断命令，“[” 符号可用于代替test命令。
 
 ```bash
@@ -164,6 +182,82 @@ if [ -s $file ]
 - <= Is Less Than Or Equal To
 - > Is Greater Than if
 - >= Is Greater Than Or Equal To
+
+### 循环
+
+for循环
+
+```bash
+# 格式
+$ for variable in list; do ... ; done
+
+# 实例
+$ for i in 1 2 3; do echo $i; done
+1
+2
+3
+
+$ for i in 1 2 hello; do echo $i; done
+1
+2
+hello
+
+$ for i in {1..10}; do echo -n "$i "; done; echo
+1 2 3 4 5 6 7 8 9 10 
+
+$ for i in $( seq 1 2 10 ); do echo -n "$i "; done; echo
+1 3 5 7 9 
+```
+
+while循环
+
+```bash
+# 格式
+$ while condition; do ... ; done
+
+# 实例
+$ x=1; while [ $x -lt 4 ]; do echo $x; x=$(($x+1)); done
+1
+2
+3
+
+$ cat junk.txt 
+1
+2
+3
+$ while read x; do echo $x; done < junk.txt
+1
+2
+3
+```
+
+### 多行字符串
+
+使用Here字符串，输出多行文本。
+
+```bash
+cat <<_EOF_
+
+Usage:
+
+$0 --inp [inputfile] --outputdir [dir]  --inst [number] --prefix [string] 
+
+Required Arguments:
+
+  --inp         the input file 
+
+Options:
+
+  --outputdir	the output directory (default: cwd)
+  --inst	the number of instances requested (default: 1)
+  --prefix	the prefix of output files (default: tmp)
+
+Example:
+
+$0 --inp tmp.txt --outputdir tmpdir --inst 10
+
+_EOF_
+```
 
 ## 实例
 
