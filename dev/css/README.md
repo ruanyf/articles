@@ -275,9 +275,18 @@ keyframes rotation {
 
 ## 属性
 
+### display
+
+display属性表示如何展示元素。
+
+```css
+display: block;
+display: flex;
+```
+
 ### filter
 
-图片滤镜，支持grayscale, blur, sepia, saturate, opacity, brightness, contrast, hue-rotate, invert效果。
+filter属性表示图片滤镜，支持grayscale, blur, sepia, saturate, opacity, brightness, contrast, hue-rotate, invert效果。
 
 灰度效果。
 
@@ -448,6 +457,17 @@ a[href="http://example.com"] {
 
 上面代码第一行是隐藏溢出，第二行是防止断行，第三行是在行尾加上省略号。
 
+### position
+
+position属性用来确定元素的定位。
+
+```css
+position: relative;
+position: sticky;
+position: absolute;
+position: fixed;
+```
+
 ### transition
 
 ```css
@@ -473,7 +493,9 @@ transition: all 300ms ease 0;
 
 ### calc()
 
-calc方法用于计算值。比如，每行放置4张图片，可以采用如下的代码。
+calc方法用于计算值，常用于两种不同的单位之间的计算（比如百分比和绝对长度）。
+
+实例1。每行放置4张图片，可以采用如下的代码。
 
 ```css
 
@@ -485,7 +507,7 @@ img {
 
 ```
 
-动态排列图片，可以配合media query。
+实例2。动态排列图片，可以配合media query。
 
 ```css
 

@@ -1,5 +1,42 @@
 # bash命令一览
 
+### alias
+
+alias用来为命令建立别名。
+
+```bash
+alias cp="cp -R"
+alias mkdir="mkdir -p"
+```
+
+### bind
+
+显示可绑定的操作，以及已经绑定的快捷键。
+
+```bash
+$ bind -P
+```
+
+显示可绑定的操作。
+
+```bash
+$ bind -l
+```
+
+自定义绑定的键。
+
+```bash
+ .bash_profile (or, more accurately, in my global bash settings file) I use:
+# make cursor jump over words
+bind '"\e[5C": forward-word'    # control+arrow_right
+bind '"\e[5D": backward-word'   # control+arrow_left
+
+# make history searchable by entering the beginning of command 
+# and using up and down keys
+bind '"\e[A": history-search-backward'  # arrow_up
+bind '"\e[B": history-search-forward'   # arrow_down
+```
+
 ### cat
 
 cat命令用来将一个或多个文件的内容，显示在标准输出。
@@ -83,6 +120,10 @@ joe
 
 exit命令用来退出当前脚本。
 
+### export
+
+export命令用于将脚本中的变量，输出到当前Shell。
+
 ### file
 
 file命令用来查看文件类型。
@@ -119,6 +160,12 @@ $ history | grep “BLOW”
 $ history | less
 
 ```
+
+### mkdir
+
+mkdir命令用来新建目录。
+
+参数-p用来遇到已存在的目录时不报错。
 
 ### read
 
@@ -161,6 +208,42 @@ rm命令用来删除文件或目录。
 参数-r表示递归删除。
 
 参数-f表示强制删除，即忽视警告。
+
+### source
+
+Bash运行脚本文件，会新建一个Shell。它与原有Shell之间没有通信。
+
+```bash
+$ cat ./test_src.sh 
+#!/usr/bin/env bash
+
+myvariable=54
+echo $myvariable
+```
+
+在当前Shell运行上面的脚本，脚本中的变量便不存在了。
+
+```bash
+$ ./test_src.sh 
+54
+$ echo $myvariable
+```
+
+source命令就用来让脚本文件运行在当前Shell。 
+
+```bash
+$ source ./test_src.sh 
+54
+$ echo $myvariable
+54
+```
+
+source命令可以用一个点代替。
+
+```bash
+$ . ./test_src.sh
+54
+```
 
 ### tcpdump
 

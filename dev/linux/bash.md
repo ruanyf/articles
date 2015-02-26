@@ -35,12 +35,23 @@ $ ./somescript.sh 2> &1
 
 命令行窗口可以使用以下的编辑命令。
 
-- Control-A 移到行首
-- Control-E 移到行尾
-- Control-U 从光标位置删除到行首
-- Control-K 从光标位置删除到行尾
+- Ctrl-A 移到行首
+- Ctrl-E 移到行尾
+- Ctrl-U 从光标位置删除到行首
+- Ctrl-K 从光标位置删除到行尾
+- Ctrl-f  前进一个字符
+- Ctrl-b  后退一个字符
+- Ctrl-forward-arrow 前进一个词
+- Ctrl-backward-arrow 后退一个词
+- up-arrow 前进到history的上一个命令
+- down-arrow 后退history的下一个命令
 - Ctrl-X Ctrl-E 打开编辑器，编辑行命令
 - Ctrl-R 搜索输入命令的历史
+- Ctrl-w 删除上一个输入的词
+- Ctrl-y 粘贴上一个被删除的词
+- Ctrl-c 终止前台进程，不执行当前命令行
+- Ctrl-z 挂起前台进程
+- Ctrl-l 清屏
 - !! 重复上一个命令
 - !$ 上一个命令中最后一个参数
 
@@ -81,6 +92,12 @@ $ a=3
 ```bash
 $ echo $a
 3
+```
+
+变量名如果后面还紧跟着其他字符，可以将其放在大括号中。
+
+```bash
+INIT_DIR="${HOME}/.dotfiles/bash"
 ```
 
 Bash变量是弱类型的，可以随时改为其他类型的值。如果变量的值是字符串，而且包含空格，那么需要用双引号包起来。另外，双引号中的变量会被扩展成对应的值，单引号没有变量扩展的功能。
