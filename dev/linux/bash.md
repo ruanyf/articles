@@ -248,6 +248,38 @@ $ while read x; do echo $x; done < junk.txt
 3
 ```
 
+### 执行脚本命令
+
+在脚本中可以执行shell命令，有两种格式。
+
+```bash
+$ d=$( pwd )
+$ d=`pwd`
+```
+
+实例。
+
+```bash
+$ len=$( cat file.txt | wc -l )
+d=$( dirname $( readlink -m $0 ) )
+```
+
+### Process Substitution
+
+Process Substitution（进程替换）也是用来在脚本中执行Shell命令，但是该Shell命令的输入和输出都是以文件形式出现。它的形式是`<( )`。
+
+```bash
+$ cat <( head -1 file.txt ) <( tail file.txt )
+```
+
+上面命令中cat的参数必须是文件，所以使用“进程替换”。
+
+大括号也可以用来执行shell命令。
+
+```bash
+$ for i in 1 2 3; do { echo "***"$i; sleep 60 & } done
+```
+
 ### 多行字符串
 
 使用Here字符串，输出多行文本。

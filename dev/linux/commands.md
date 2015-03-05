@@ -116,6 +116,14 @@ joe	joe
 joe
 ```
 
+### egrep
+
+egrep命令与grep命令类似，但可以使用正则表达式。
+
+```bash
+$ egrep "apple|orange" myfile.txt
+```
+
 ### exit
 
 exit命令用来退出当前脚本。
@@ -123,6 +131,10 @@ exit命令用来退出当前脚本。
 ### export
 
 export命令用于将脚本中的变量，输出到当前Shell。
+
+### fg
+
+fg命令将后台进程放到前台。
 
 ### file
 
@@ -140,6 +152,56 @@ Default.png: PNG image data, 640 x 1136, 8-bit/color RGB, non-interlaced
 
 ```bash
 $ find . -name "*.txt"
+```
+
+### grep
+
+grep命令用来在文件中搜索指定文本。
+
+```bash
+$ grep apple myfile.txt   
+```
+
+参数-n表示搜索结果包含行号。
+
+参数--color表示搜索结果高亮显示。
+
+参数-A表示搜索结果再显示后面（After）的行，参数-B表示搜索结果再显示前面（Before）的行，参数-C表示再显示前后（Context）几行。 
+
+```bash
+$ grep -A1 apple myfile.txt  # return lines with the match, as well as 1 after
+$ grep -B2 apple myfile.txt  # return lines with the match, as well as 2 before
+$ grep -C3 apple myfile.txt  # return lines with the match, 
+			     # as well as 3 before and after.
+```
+
+### head
+
+head命令用来查看文件头部的内容。
+
+```bash
+$ head myfile.txt      # print the first 10 lines of the file
+$ head -1 myfile.txt   # print the first line of the file
+$ head -50 myfile.txt  # print the first 50 lines of the file
+```
+
+head命令可以查看多个文件。
+
+```bash
+$ head -2 hello.txt kitty.txt 
+==> hello.txt <==
+hello
+hello
+
+==> kitty.txt <==
+kitty
+kitty
+```
+
+查看所有文件的头部。
+
+```bash
+$ head *
 ```
 
 ### history
@@ -166,6 +228,19 @@ $ history | less
 mkdir命令用来新建目录。
 
 参数-p用来遇到已存在的目录时不报错。
+
+### ps
+
+ps命令显示进程信息。
+
+```bash
+$ ps -A   # show all process info
+$ ps -fA  # show all process info (verbose)
+```
+
+### pstree
+
+pstree以树状形式显示进程树。
 
 ### read
 
@@ -208,6 +283,10 @@ rm命令用来删除文件或目录。
 参数-r表示递归删除。
 
 参数-f表示强制删除，即忽视警告。
+
+### sed
+
+sed命令主要用于文本替换和删除行。 
 
 ### source
 

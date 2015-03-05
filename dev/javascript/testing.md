@@ -4,13 +4,17 @@
 
 Web应用程序越来越复杂，这意味着有更多的可能出错。测试是帮助我们提高代码质量、降低错误的最好方法和工具之一。
 
+### 单元测试
+
 单元测试（unit testing）指的是以模块为单位，对软件进行测试。通常来说，单元（unit）指的就是一个纯粹的函数，只要输入不变，必定返回同样的输出。
 
 单元测试通常采取断言（assertion）的形式，也就是测试某个功能的返回结果，是否与预期结果一致。如果与预期不一致，就表示测试失败。
 
-单元测试是函数正常工作、不出错的最基本、最有效的方法之一。 Typically, each unit test sends a specific input to a method and verifies that the method returns the expected value, or takes the expected action. Unit tests prove that the code you are testing does in fact do what you expect it to do.
+单元测试是函数正常工作、不出错的最基本、最有效的方法之一。 每一个单元测试发出一个特定的输入到所要测试的函数，看看函数是否返回预期的输出，或者采取了预期的行动。单元测试证明了所测试的代码行为符合预期。
 
 单元测试有助于代码的模块化，因此有助于长期的重用。因为有了测试，你就知道代码是可靠的，可以按照预期运行。从这个角度说，测试可以节省开发时间。单元测试的另一个好处是，有了测试，就等于就有了代码功能的文档，有助于其他开发者了解代码的意图。
+
+单元测试应该避免依赖性问题，比如不存取数据库、不访问网络等等，而是使用工具虚拟出运行环境。这种虚拟使得测试成本最小化，不用花大力气搭建各种测试环境。
 
 单元测试的步骤
 
@@ -61,6 +65,62 @@ assert函数指定测试要求，即断言测试要达到的结果。通常，�
 - assert.isTrue()
 - assert.isFalse()
 - assert(!s.children[0].classList.contains('core-selected'))
+
+### 集成测试（Integration test）
+
+集成测试指的是多个部分在一起测试，比如在一个测试数据库上，测试数据库连接模块。
+
+### 功能测试（Functional test）
+
+功能测试指的是，自动测试整个应用程序的某个功能，比如使用Selenium工具自动打开浏览器运行程序。
+
+### TDD
+
+TDD是测试驱动型开发（Test-Driven Development）的缩写，指的是先写好测试，然后再根据测试完成开发。使用这种开发方式，会有很高的测试覆盖率。
+
+TDD的开发步骤如下。
+
+- 先写一个测试。
+- 写出最小数量的代码，使其能够通过测试。
+- 优化代码。
+- 重复前面三步。
+
+TDD开发的测试覆盖率通常在90%以上，这意味着维护代码和新增特性会非常容易。因为测试保证了你可以信任这些代码，修改它们不会破坏其他代码的运行。
+
+### BDD
+
+BDD是行为驱动开发（Behavior-Driven Development）的缩写，指的是写出优秀测试的最佳实践的总称。它应该与TDD和单元测试一起配合使用。
+
+BDD认为，不应该针对代码的实现细节写测试，而是要针对行为写测试。请看下面测试计数器是否加1的例子。
+
+```javascript
+
+suite('Counter', function() {
+  test('tick increases count to 1', function() {
+    var counter = new Counter();
+    counter.tick();
+    assert.equal(counter.count, 1);
+  });
+});
+
+```
+
+上面代码测试的是Counter的内部实现，即Counter实例的默认值为0，调用tick方法后增加为1。
+
+BDD测试的是行为，即应该怎样运行。
+
+```javascript
+describe('Counter', function() {
+  it('should increase count by 1 after calling tick', function() {
+    var counter = new Counter();
+    var expectedCount = counter.count + 1;
+      counter.tick();
+    assert.equal(counter.count, expectedCount);
+  });
+});
+```
+
+总结一下，就是TDD告诉你何时写测试，何时写代码，BDD告诉你如何写测试，两者应该结合起来。
 
 ### Mocha
 
@@ -187,3 +247,4 @@ beverages.should.have.property('tea').with.length(3);
 ## 参考链接
 
 - Jon Bretman, [Unit Testing JavaScript](http://developers.lyst.com/javascript/testing/2014/03/03/javascript-unit-testing/)
+- Jani Hartikainen, [What’s the difference between Unit Testing, TDD and BDD?](http://codeutopia.net/blog/2015/03/01/unit-testing-tdd-and-bdd/)
