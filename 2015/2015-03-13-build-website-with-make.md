@@ -5,7 +5,7 @@
 
 所谓“构建自动化”，就是指使用构建工具，自动实现“从源码到网页”的开发流程。这有利于提高开发效率、改善代码质量。
 
-本文介绍如何使用[make命令](www.ruanyifeng.com/blog/2015/02/make.html)，作为网站的构建工具。以下内容既是make语法的详细实例，也是网站构建的实战教程，给出常见任务的写法。你完全可以根据需要，直接将代码拷贝到自己的项目。
+本文介绍如何使用[make命令](www.ruanyifeng.com/blog/2015/02/make.html)，作为网站的构建工具。以下内容既是make语法的详细实例，也是网站构建的实战教程。你完全可以将代码略作修改，拷贝到自己的项目。
 
 ![](http://image.beekka.com/blog/2015/bg2015031301.jpg)
 
@@ -13,17 +13,17 @@
 
 ## 一、Make的优点
 
-进入正文之前，先解释一下，为什么要用Make。
+首先解释一下，为什么要用Make。
 
 目前，网站项目（尤其是Node.js项目）有三种构建方案。
 
-> - 方案一：基于Node.js的专用构建工具（[Grunt](http://gruntjs.com/)、[Gulp](http://gulpjs.com/)、[Brunch](http://brunch.io/)、[Broccoli](https://github.com/broccolijs/broccoli)、[Mimosa](http://mimosa.io/)等等）
+> - 方案一：基于Node.js的专用构建工具（[Grunt](http://gruntjs.com/)、[Gulp](http://gulpjs.com/)、[Brunch](http://brunch.io/)、[Broccoli](https://github.com/broccolijs/broccoli)、[Mimosa](http://mimosa.io/)）
 > 
-> - 方案二：npm的scrips命令（[教程1](http://substack.net/task_automation_with_npm_run)、[2](http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/)、[3](http://gon.to/2015/02/26/gulp-is-awesome-but-do-we-really-need-it/)）
+> - 方案二：npm run命令（[教程1](http://substack.net/task_automation_with_npm_run)、[2](http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/)、[3](http://gon.to/2015/02/26/gulp-is-awesome-but-do-we-really-need-it/)）
 > 
-> - 方案三：make
+> - 方案三：make命令
 
-我觉得，make是大型项目的首选方案。npm的scrips命令可以认为是make的简化形式，只适用于简单项目，而Grunt、Gulp那样的工具，有很多问题。
+我觉得，make是大型项目的首选方案。npm run可以认为是make的简化形式，只适用于简单项目，而Grunt、Gulp那样的工具，有很多问题。
 
 **（1）插件问题**
 
@@ -39,7 +39,7 @@ Grunt和Gulp都有自己的语法，并不容易学，尤其是Grunt，语法很
 
 **（4）功能问题**
 
-make已经使用了几十年，全世界无数的大项目都是用它构建的，早就证明是可靠的解决方案，各种情况都有办法解决，前人累积的经验和资料也非常丰富。相比之下，Grunt和Gulp的历史都不长，使用范围有限，目前还没有出现它们能做、而make做不到的任务。
+make已经使用了几十年，全世界无数的大项目都用它构建，早就证明非常可靠，各种情况都有办法解决，前人累积的经验和资料也非常丰富。相比之下，Grunt和Gulp的历史都不长，使用范围有限，目前还没有出现它们能做、而make做不到的任务。
 
 基于以上理由，我看好make。
 
@@ -55,7 +55,7 @@ make已经使用了几十年，全世界无数的大项目都是用它构建的�
 - 测试
 - 删除
 
-这些任务用到 [JSHint](http://jshint.com/)、[handlebars](http://handlebarsjs.com/)、[CoffeeScript](http://coffeescript.org/)、[uglifyjs](http://lisperator.net/uglifyjs/)、[mocha](http://mochajs.org/)。对应的package.json文件如下。
+这些任务用到 [JSHint](http://jshint.com/)、[handlebars](http://handlebarsjs.com/)、[CoffeeScript](http://coffeescript.org/)、[uglifyjs](http://lisperator.net/uglifyjs/)、[mocha](http://mochajs.org/) 等工具。对应的package.json文件如下。
 
 ```javascript
 "devDependencies": {
@@ -67,9 +67,11 @@ make已经使用了几十年，全世界无数的大项目都是用它构建的�
 }
 ```
 
+我们来看看，Make 命令怎么完成这些构建任务。
+
 ## 三、Makefile的通用配置
 
-Makefile文件是make命令的配置文件。所有任务的构建规则，都写在这个文件（参见[《Make 命令教程》](http://www.ruanyifeng.com/blog/2015/02/make.html)）。
+开始构建之前，要编写Makefile文件。它是make命令的配置文件。所有任务的构建规则，都写在这个文件（参见[《Make 命令教程》](http://www.ruanyifeng.com/blog/2015/02/make.html)）。
 
 首先，写入两行通用配置。
 
