@@ -139,7 +139,7 @@ build/%.js: lib/%.coffee
 coffee:	$(build_files)
 ```
 
-上面代码中，首先获取所有的Coffee脚本文件，存放在变量source_files，函数wildcard用来扩展通配符。然后，将变量source_files中的coffee文件名，替换成js文件名，即 lib/x.coffee 被替换成 build/x.js 。
+上面代码中，首先获取所有的Coffee脚本文件，存放在变量source_files，函数wildcard用来扩展通配符。然后，将变量source_files中的coffee文件名，替换成js文件名，即 lib/x.coffee 替换成 build/x.js 。
 
 使用时调用下面的命令。
 
@@ -266,9 +266,9 @@ $ make
 $ make -j build
 ```
 
-## 十二、声明伪目标
+## 十二、声明伪文件
 
-最后，为了防止目标名与现有文件冲突，显式声明哪些是伪目标。
+最后，为了防止目标名与现有文件冲突，显式声明哪些目标是伪文件。
 
 ```bash
 .PHONY: lint template coffee concat min test clean build
