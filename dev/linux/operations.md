@@ -96,3 +96,17 @@ sudo mount [/dev/sdXN] /media/externaldrive
 ```bash
 $ sudo dd if=debian-*-netinst.iso of=/dev/sdX
 ```
+
+## 信号（signal）
+
+信号是进程间的一种通信机制，用于内核向某个进程发送消息。
+
+- SIGTERM信号表示内核要求进程终止，进程可以自行退出，也可以不理会这个信号。
+- SIGKILL信号用于立即终止进程，进程不能忽略该信号。
+
+```bash
+
+# 发出SIGTERM
+$ kill [processID]
+
+```

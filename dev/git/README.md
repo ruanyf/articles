@@ -24,6 +24,15 @@ $ git config --global user.email "someone@gmail.com"
 8. git pull origin master：将远程主机origin的代码取回本地，与本地的master分支合并
 9. git diff HEAD：查看与上一次commit的区别
 
+### 发布一个版本
+
+为当前分支打上版本号。
+
+```
+$ git tag -a [VERSION] -m "released [VERSION]"
+$ git push origin [VERSION]
+```
+
 ## git对象
 
 对象数据库包含四类对象。
@@ -44,7 +53,7 @@ git命令基本上是图数据库操作命令，用来删除/操作节点、移�
 
 $ git init
 $ echo hello > hello.txt
-$ git add . 
+$ git add .
 $ tree .git
 # 存在 .git/objects/ce/013625030ba8dba906f756967f9e9ca394464a
 # 這是 hello 內容的 SHA1
@@ -60,6 +69,14 @@ $ git cat-file -p ce0136
 - shasum命令返回字符串的SHA哈希函数结果。
 - `git hash-object`命令计算一个文件的git对象ID，stdin参数表示从标准输入读取，而不是从本地文件读取。
 - `git cat-file`命令显示git对象文件的内容和大小信息，p参数表示以易于阅读的格式显示。
+
+### 配置
+
+指定全局的.gitignore文件。
+
+```bash
+$ git config --global core.excludesfile=/Users/flores/.gitignore
+```
 
 ## 目录结构
 
@@ -178,7 +195,7 @@ pros and cons
   - 不會將 next 合併進 master
 -  nightly 每天 1:00 UTC 自動從 next branch 分支支出來跑自動測試
 
-## Git远程操作 
+## Git远程操作
 
 Git的repo一般是用来指本地库，远程库（remote）主要用来存档、合作、分享和触发持续集成。 
 

@@ -188,7 +188,7 @@ $ head -50 myfile.txt  # print the first 50 lines of the file
 head命令可以查看多个文件。
 
 ```bash
-$ head -2 hello.txt kitty.txt 
+$ head -2 hello.txt kitty.txt
 ==> hello.txt <==
 hello
 hello
@@ -228,6 +228,16 @@ $ history | less
 mkdir命令用来新建目录。
 
 参数-p用来遇到已存在的目录时不报错。
+
+### nmap
+
+nmap命令用于扫描网络端口。
+
+```bash
+$ nmap 192.168.1.0/24
+```
+
+上面命令扫描本地网络254个IP地址，返回哪些IP地址是可以ping的，以及它们打开的端口是什么。
 
 ### ps
 
@@ -286,7 +296,7 @@ rm命令用来删除文件或目录。
 
 ### sed
 
-sed命令主要用于文本替换和删除行。 
+sed命令主要用于文本替换和删除行。
 
 ### source
 
@@ -311,7 +321,7 @@ $ echo $myvariable
 source命令就用来让脚本文件运行在当前Shell。 
 
 ```bash
-$ source ./test_src.sh 
+$ source ./test_src.sh
 54
 $ echo $myvariable
 54
@@ -323,6 +333,16 @@ source命令可以用一个点代替。
 $ . ./test_src.sh
 54
 ```
+
+### tar
+
+tar命令用于将多个文件打包成一个文件。
+
+```bash
+tar -c -f destination.tar file1.txt file2.txt file3.txt
+```
+
+上面代码中，c选项表示新建，f选项表示文件，目的文件destination实际上是f选项的参数。几乎所有的tar命令用法，都需要带有c和f两个参数。
 
 ### tcpdump
 

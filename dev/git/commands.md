@@ -1,5 +1,20 @@
 # Git命令列表
 
+## git add
+
+git add 用于向暂存区提交文件。
+
+```bash
+$ git add .
+$ git add fileName
+```
+
+选择一个文件的某些部分提交到暂存区。
+
+```bash
+$ git add -p
+```
+
 ## git branch
 
 分支操作命令。
@@ -76,27 +91,43 @@ p参数表示以易于阅读的格式显示。
 （1）用来切换分支。
 
 ```bash
-
 $ git checkout
-
 ```
 
-回到先前所在的分支。
+上面命令表示回到先前所在的分支。
 
 ```bash
-
 $ git checkout develop
-
 ```
 
 上面命令表示切换到develop分支。
 
-（2）将工作区指定的文件回复到上次commit的状态。
+（2）将工作区指定的文件恢复到上次commit的状态。
 
 ```bash
-
 $ git checkout --<文件名>
+```
 
+p参数表示只恢复部分变化。
+
+```bash
+$ git checkout -p
+```
+
+## git commit
+
+git commit 用于写入仓库区。
+
+m参数用于提交commit信息，a参数用于将所有工作区的变动文件，提交到暂存区。用了a参数，就不用执行`git add .`命令了。
+
+```bash
+$ git commit -am
+```
+
+修改上一次commit的提交信息。
+
+```bash
+$ git commit --amend
 ```
 
 ## git commit-tree
@@ -115,23 +146,37 @@ $ git commit-tree 16e19f -m “First commit”
 
 ```bash
 
-# 查看工作区文件与上一次commit的差异
+# 查看工作区与暂存区的差异
 $ git diff
+
+# 查看暂存区与仓库区的差异
+$ git diff --cached
+
+# 查看工作区与上一次commit之间的差异
+# 即如果执行 git commit -a，将提交的文件
+$ git diff HEAD
 
 # 查看工作区文件与指定commit的差异
 $ git diff <commit的名称>
 
-# 查看工作区文件与暂存区的差异
-$ git diff --staged
+# 查看工作区与当前分支上一次提交的差异，但是局限于test文件
+$ git diff HEAD -- ./test
 
+# 查看当前分支上一次提交与上上一次提交之间的差异
+$ git diff HEAD -- ./test
 ```
 
 比较两个分支
 
 ```bash
+# 查看topic分支与master分支最新提交之间的差异
+$ git diff topic master
 
-$ git diff master..john/master
+# 与上一条命令相同
+$ git diff topic..master
 
+# 查看自从topic分支建立以后，master分支发生的变化
+$ git diff topic...master
 ```
 
 ## git hash-object
@@ -147,7 +192,7 @@ $ echo "hola" | git hash-object -w --stdin
 
 参数
 
-- w 将对象写入对象数据库 
+- w 将对象写入对象数据库
 - stdin 表示从标准输入读取，而不是从本地文件读取。
 
 ## git log
@@ -163,20 +208,27 @@ $ git log remote/branch
 查找log。
 
 ```bash
-
 $ git log --author=Andy
 $ git log --grep="Something in the message"
-
 ```
 
 查看某个范围内的commit
 
 ```bash
-
 $ git log origin/master..new
 # [old]..[new] - everything you haven't pushed yet
-
 ```
+
+美化输出。
+
+```bash
+git log --graph --decorate --pretty=oneline --abbrev-commit
+```
+
+- --graph commit之间将展示连线
+- --decorate 显示commit里面的分支
+- --pretty=oneline 只显示commit信息的标题
+- --abbrev-commit 只显示commit SHA1的前7位
 
 ## git merge
 
@@ -195,6 +247,12 @@ $ git merge develop
 Git合并所采用的方法是Three-way merge，及合并的时候除了要合併的兩個檔案，還加上它们共同的父节点。这样可以大大減少人為處理 conflict 的情況。如果采用two-way merge，則只用兩個檔案進行合併（svn默认就是这种合并方法。）
 
 ## git rebase
+
+git rebase 将当前分支移植到指定分支或指定commit之上。
+
+```bash
+$ git rebase -i <commit>
+```
 
 互动的rebase。
 
@@ -224,10 +282,10 @@ $ git remote add john git@github.com:johnsomeone/someproject.git
 
 
 # 显示所有的远程主机
-$ git remote -v 
+$ git remote -v
 
 # 列出某个主机的详细信息
-$ git remote show name 
+$ git remote show name
 
 ```
 
@@ -269,9 +327,7 @@ $ git show feature132@{2.hours.ago} # Time relative
 它处于`git reset --hard`（完全放弃还修改了一半的代码）与`git commit`（提交代码）命令之间，很类似于“暂停”按钮。
 
 ```bash
-
 $ git stash
-
 ```
 
 上面命令会将所有已提交到暂存区，以及没有提交的修改，都进行内部保存，没有将工作区恢复到上一次commit的状态。
@@ -279,9 +335,7 @@ $ git stash
 使用下面的命令，取回内部保存的变化，它会与当前工作区的代码合并。
 
 ```bash
-
 $ git stash pop
-
 ```
 
 这时，如果与当前工作区的代码有冲突，需要手动调整。
@@ -317,20 +371,33 @@ $ git stash drop stash@{1}
 
 ```
 
+git stash 子命令一览。
+
+```bash
+# 展示目前存在的stash
+$ git stash show -p
+
+# 切换回stash
+$ git stash pop
+
+# 清除stash
+$ git stash clear
+```
+
 参考链接
 
 - Ryan Hodson, [Quick Tip: Leveraging the Power of Git Stash](http://code.tutsplus.com/tutorials/quick-tip-leveraging-the-power-of-git-stash--cms-22988)
 
 ## git tag
 
-为commit打标签。Tag 分兩種:annotated tag 才會產生 object。
+为commit打标签。Tag 分两种：annotated tag 才會產生 object。
 
 ```bash
 
 $ git tag tmp # 生成.git/refs/tags/tmp
 $ git tag -a release
-
-``` 
+$ git tag -a [VERSION] -m "released [VERSION]"
+```
 
 上面代码表示为当前commit打上一个带注解的标签，标签名为release。
 

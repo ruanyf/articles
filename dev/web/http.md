@@ -37,6 +37,36 @@ HTTP/2需要兼容HTTP 1.1，两者使用同样的协议符`http://`，所以需
 - 传统的HTTP连接，在发出Content-Length以后，不能终止传输，否则只能新建另一个TCP连接。HTTP/2允许重置（reset）某个流，传输一个新的流。
 - 服务器推送
 
+## HTTP信息头
+
+### Cache-Control
+
+提供Cache控制。
+
+- max-age=[seconds] 当前cache最长保存时间
+- s-maxage=[seconds] 类似max-age，但只用于共享cache（即proxy服务器）
+- public 表示已认证的HTTP回应也可以共享cache（proxy服务器）
+- private 表示cache只能用于浏览器，不能用于proxy
+- no-cache 严格声明每次都要向服务器验证
+- no-store 不能保存cache
+- must-revalidate 一旦缓存过期，就要重新验证
+- proxy-revalidate 类似must-revalidate，但是只用proxy服务器
+
+```http
+Cache-Control: max-age=3600, must-revalidate
+```
+
+Cache-Control的优先性高于Expires。
+
+### Expires
+
+网页何时过期。
+
+```http
+Expires: Fri, 30 Oct 1998 14:19:41 GMT
+```
+
+
 ## 参考网址
 
 - Iliyan Peychev, [HTTP 2.0 is coming, be ready](HTTP 2.0 is coming, be ready)

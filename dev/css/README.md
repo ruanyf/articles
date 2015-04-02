@@ -251,14 +251,14 @@ button:hover::after {
 
 ```css
 
-keyframes rotation {  
-    from {  
-        transform: rotate(90deg);  
-    }  
-    to {  
-        transform: rotate(450deg);  
-    }  
-}  
+keyframes rotation {
+  from {
+    transform: rotate(90deg);
+  }
+  to {
+    transform: rotate(450deg);
+  }
+}
 
 ```
 
@@ -266,14 +266,33 @@ keyframes rotation {
 
 ```css
 
-.second {  
-    animation: rotation 60s steps(60) infinite;  
-    transform-origin: 100% 50%;  
-}  
+.second {
+  animation: rotation 60s steps(60) infinite;
+  transform-origin: 100% 50%;
+}
 
 ```
 
 ## 属性
+
+### content
+
+指定伪元素的内容。
+
+```css
+.myDiv:after {
+  content: "I am hardcoded text from the *content* property";
+}
+
+div[data-line]:after {
+  content: attr(data-line); /* 属性名没有引号 */
+}
+
+div[data-line]:after {
+  content: "[line " attr(data-line) "]";
+}
+
+```
 
 ### display
 
@@ -330,7 +349,22 @@ img.bw.grey {
 
 ```
 
+模糊与鼠标悬停效果相结合。
+
+```css
+.spoiler {
+	-webkit-filter: blur(20px);
+	-webkit-transition-property: -webkit-filter;
+	-webkit-transition-duration: .4s;
+}
+.spoiler:hover, .spoiler:focus {
+	-webkit-filter: blur(0px);
+}
+```
+
 ### flex
+
+（1）垂直居中
 
 首先，指定flex容器。
 
@@ -359,6 +393,36 @@ img.bw.grey {
 	align-items: center;
 }
 
+```
+
+（2）两栏式布局
+
+HTML代码。
+
+```css
+<div class="flexbox-container">
+	<div><h3>Column 1</h3></div>
+	<div><h3>Column 2</h3></div>
+</div>
+```
+
+CSS代码。padding和margin都不属于这种情况。
+
+```css
+.flexbox-container {
+	display: -ms-flex;
+	display: -webkit-flex;
+	display: flex;
+}
+
+.flexbox-container > div {
+	width: 50%;
+	padding: 10px;
+}
+
+.flexbox-container > div:first-child {
+	margin-right: 20px;
+}
 ```
 
 ### object-fit
@@ -535,4 +599,14 @@ img {
   }
 }
 
+```
+
+### attr()
+
+attr()用于读取网页元素的属性值。
+
+```css
+div[data-line]:after { 
+	content: "[line " attr(data-line) "]"; 
+}
 ```
