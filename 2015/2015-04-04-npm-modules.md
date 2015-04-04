@@ -38,6 +38,11 @@
 <td>断言</td>
 </tr>
 <tr>
+<td><a title="chalk" href="https://www.npmjs.com/package/chalk" target="_blank">chalk</a></td>
+<td>sindresorhus</td>
+<td>命令行彩色输出</td>
+</tr>
+<tr>
 <td><a title="co" href="https://www.npmjs.com/package/co" target="_blank">co</a></td>
 <td>tjholowaychuk</td>
 <td>异步流程管理</td>
@@ -45,7 +50,7 @@
 <tr>
 <td><a title="colors" href="https://www.npmjs.com/package/colors" target="_blank">colors</a></td>
 <td>marak</td>
-<td>console彩色输出</td>
+<td>命令行彩色输出</td>
 </tr>
 <tr>
 <td><a title="commander" href="https://www.npmjs.com/package/commander" target="_blank">commander</a></td>
@@ -150,7 +155,7 @@
 <tr>
 <td><a title="moment" href="https://www.npmjs.com/package/moment" target="_blank">moment</a></td>
 <td>timrwood</td>
-<td>日期输出管理</td>
+<td>日期时间输出</td>
 </tr>
 <tr>
 <td><a title="mongodb" href="https://www.npmjs.com/package/mongodb" target="_blank">mongodb</a></td>
