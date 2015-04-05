@@ -2,6 +2,33 @@
 
 ## 选择器
 
+### BEM命名法
+
+BEM是Block（区块）、Element（元素）、Modifier（修饰符）三者的简称。区块是顶级组件的抽象，元素是组件的组成部分，修饰符是组件或元素的状态。区块与元素之间用两个下划线连接，元素与修饰符之间用两个连词线连接。
+
+```css
+/* Block component */
+.btn {}
+
+/* Element that depends upon the block */
+.btn__price {}
+
+/* Modifier that changes the style of the block */
+.btn--orange {}
+.btn--big {}
+```
+
+对应的HTML代码结构如下。
+
+```html
+<a class="btn btn--big btn--orange" href="http://css-tricks.com">
+  <span class="btn__price">$9.99</span>
+  <span class="btn__text">Subscribe</span>
+</a>
+```
+
+BEM的重要特点就是CSS是扁平式的，不存在元素嵌套。
+
 ### target
 
 target选择器用来匹配当前hash。
@@ -66,7 +93,7 @@ target选择器用来匹配当前hash。
 #main-nav:target + .page-wrap {
   width: 80%;
   .open-menu {
-     display: none; 
+     display: none;
   }
   .close-menu {
      display: block;

@@ -70,6 +70,24 @@ $ git cat-file -p ce0136
 - `git hash-object`命令计算一个文件的git对象ID，stdin参数表示从标准输入读取，而不是从本地文件读取。
 - `git cat-file`命令显示git对象文件的内容和大小信息，p参数表示以易于阅读的格式显示。
 
+树对象保存当前目录的快照。
+
+```
+040000 tree 0eed1217a2947f4930583229987d90fe5e8e0b74 data
+100664 blob 5e40c0877058c504203932e5136051cf3cd3519b letter.txt
+100664 blob 274c0052dd5408f8ae2bc8440029ff67d79bc5c3 number.txt
+```
+
+commit（快照）对象也保存在`.git/objects`目录。
+
+```
+tree ffe298c3ce8bb07326f888907996eaa48d266db4
+author Mary Rose Cook <mary@maryrosecook.com> 1424798436 -0500
+committer Mary Rose Cook <mary@maryrosecook.com> 1424798436 -0500
+
+a1
+```
+
 ### 配置
 
 指定全局的.gitignore文件。
@@ -80,17 +98,35 @@ $ git config --global core.excludesfile=/Users/flores/.gitignore
 
 ## 目录结构
 
-- .git/refs/heads：保存分支指针
-- .git/HEAD 保存HEAD指针
+- .git/refs/heads：保存各个分支的指针
+- .git/HEAD 文件，保存HEAD指针
+
+```
+ref: refs/heads/master
+```
+
+上面代码说明HEAD指向`.git/refs/heads/master`文件，该文件是一个Hash值。
+
+```
+a87cc0f39d12e51be8d68eab5cef1d31e8807a1c
+```
+
 - .git/refs/tags：保存tag指针
 
-## 缓冲区域（index）
+### 缓冲区域（index）
 
-Index区域（.dircache/index）是一个二进制文件，用来保存当前目录在某个时点的状态。
+Index区域（.git/index）是一个二进制文件，用来保存当前目录在某个时点的状态。
 
 `git init`命令用来创建index区域，以及对象数据库（.dircache/objects）。
 
 100644 為檔案模式,表示這是一個普通檔案；100755 表示可執行檔,120000 表示 symbolic link。
+
+`.git/index`文件，保存暂存区的文件名和对应的Hash值，每行对应一个文件。下面是一个例子。
+
+```
+data/letter.txt 5e40c0877058c504203932e5136051cf3cd3519b
+data/number.txt 274c0052dd5408f8ae2bc8440029ff67d79bc5c3
+```
 
 ## Git commit的全过程
 

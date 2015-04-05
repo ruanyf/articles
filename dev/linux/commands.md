@@ -31,7 +31,7 @@ $ bind -l
 bind '"\e[5C": forward-word'    # control+arrow_right
 bind '"\e[5D": backward-word'   # control+arrow_left
 
-# make history searchable by entering the beginning of command 
+# make history searchable by entering the beginning of command
 # and using up and down keys
 bind '"\e[A": history-search-backward'  # arrow_up
 bind '"\e[B": history-search-forward'   # arrow_down
@@ -159,20 +159,19 @@ $ find . -name "*.txt"
 grep命令用来在文件中搜索指定文本。
 
 ```bash
-$ grep apple myfile.txt   
+$ grep apple myfile.txt
 ```
 
 参数-n表示搜索结果包含行号。
 
 参数--color表示搜索结果高亮显示。
 
-参数-A表示搜索结果再显示后面（After）的行，参数-B表示搜索结果再显示前面（Before）的行，参数-C表示再显示前后（Context）几行。 
+参数-A表示搜索结果再显示后面（After）的行，参数-B表示搜索结果再显示前面（Before）的行，参数-C表示再显示前后（Context）几行。
 
 ```bash
 $ grep -A1 apple myfile.txt  # return lines with the match, as well as 1 after
 $ grep -B2 apple myfile.txt  # return lines with the match, as well as 2 before
-$ grep -C3 apple myfile.txt  # return lines with the match, 
-			     # as well as 3 before and after.
+$ grep -C3 apple myfile.txt  # return lines with the match, as well as 3 before and after.
 ```
 
 ### head
@@ -239,6 +238,10 @@ $ nmap 192.168.1.0/24
 
 上面命令扫描本地网络254个IP地址，返回哪些IP地址是可以ping的，以及它们打开的端口是什么。
 
+### passwd
+
+passwd命令用来改变密码。
+
 ### ps
 
 ps命令显示进程信息。
@@ -303,7 +306,7 @@ sed命令主要用于文本替换和删除行。
 Bash运行脚本文件，会新建一个Shell。它与原有Shell之间没有通信。
 
 ```bash
-$ cat ./test_src.sh 
+$ cat ./test_src.sh
 #!/usr/bin/env bash
 
 myvariable=54
@@ -313,12 +316,12 @@ echo $myvariable
 在当前Shell运行上面的脚本，脚本中的变量便不存在了。
 
 ```bash
-$ ./test_src.sh 
+$ ./test_src.sh
 54
 $ echo $myvariable
 ```
 
-source命令就用来让脚本文件运行在当前Shell。 
+source命令就用来让脚本文件运行在当前Shell。
 
 ```bash
 $ source ./test_src.sh
@@ -352,3 +355,15 @@ tcpdump命令在链接层过滤每个网络数据包，能够网络上的所有�
 
 top输出系统当前状态。
 
+### which
+
+which命令输出当前shell命令对应的命令行程序。
+
+```bash
+$ which bash
+/bin/bash
+```
+
+### who
+
+who命令显示当前登录的用户。

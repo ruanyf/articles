@@ -2,7 +2,13 @@
 
 ## git add
 
-git add 用于向暂存区提交文件。
+git add 用于向暂存区提交文件。新建或修改过的文件，会加入`.git/objects/`目录，文件名是文件内容的SHA1格式的Hash值。git add同时将新建或修改过的文件名和对应的Hash值，写入`.git/index`文件，每一行对应一个文件。
+
+```
+data/letter.txt 5e40c0877058c504203932e5136051cf3cd3519b
+```
+
+下面是git add命令的例子。
 
 ```bash
 $ git add .
@@ -31,7 +37,7 @@ $ git branch develop
 
 新建一个分支，指向当前commit。本质是在refs/heads/目录中生成一个文件，文件名为分支名，内容为当前commit的哈希值。
 
-创建后，需要用git checkout切换到新建分支。
+注意，创建后，还是停留在原来分支，需要用git checkout切换到新建分支。
 
 （2）删除分支
 
@@ -60,6 +66,8 @@ $ git branch -m twitter-experiment
 # 为指定分支改名
 $ git branch -m feature132 twitter-experiment
 
+# 如果有重名分支，强制改名
+$ git branch -m feature132 twitter-experiment
 ```
 
 （4）查看merge情况
@@ -102,7 +110,13 @@ $ git checkout develop
 
 上面命令表示切换到develop分支。
 
-（2）将工作区指定的文件恢复到上次commit的状态。
+（2）切换到指定快照（commit）
+
+```bash
+$ git checkout <commitID>
+```
+
+（3）将工作区指定的文件恢复到上次commit的状态。
 
 ```bash
 $ git checkout --<文件名>
@@ -113,6 +127,16 @@ p参数表示只恢复部分变化。
 ```bash
 $ git checkout -p
 ```
+
+## git clone
+
+`git clone`命令用于克隆远程分支。
+
+```bash
+$ git clone alpha delta --bare
+```
+
+上面命令表示将alpha目录（必须是git代码仓库），克隆到delta目录。bare参数表示delta目录只有仓库区，没有工作区和暂存区，即delta目录中就是.git目录的内容。
 
 ## git commit
 
@@ -194,6 +218,12 @@ $ echo "hola" | git hash-object -w --stdin
 
 - w 将对象写入对象数据库
 - stdin 表示从标准输入读取，而不是从本地文件读取。
+
+## git init
+
+`git init`命令将当前目录转为git仓库。
+
+它会在当前目录下生成一个.git子目录，在其中写入git的配置和项目的快照。
 
 ## git log
 
@@ -287,6 +317,17 @@ $ git remote -v
 # 列出某个主机的详细信息
 $ git remote show name
 
+```
+
+`git remote`命令的实质是在`.git/config`文件添加下面的内容。
+
+```
+$ git remote add bravo ../bravo
+```
+
+```
+[remote "bravo"]
+    url = ../bravo/
 ```
 
 ## git reset

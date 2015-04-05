@@ -102,6 +102,11 @@ INIT_DIR="${HOME}/.dotfiles/bash"
 
 Bash变量是弱类型的，可以随时改为其他类型的值。如果变量的值是字符串，而且包含空格，那么需要用双引号包起来。另外，双引号中的变量会被扩展成对应的值，单引号没有变量扩展的功能。
 
+### 环境变量
+
+- PS1 提示符
+- SHELL 当前使用的Shell
+
 ### 特殊变量
 
 - $? 特殊变量，表示上一个命令的输出结果，如果是0，表示运行成功。
@@ -121,11 +126,11 @@ echo hello $1
 $ ./hellokitty.sh kitty
 hello kitty
 ```
- 
+
 ### if结构
 
 ```bash
-if condition 
+if condition
 then
 do something
 else
