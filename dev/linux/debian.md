@@ -1,14 +1,19 @@
 # Debian的用法
 
-## 版本
+## 分支
 
 Debian总是同时至少维护三个版本：stable，testing和unstable。
 
-stable是最新的官方发行版，也是推荐安装的版本。目前是version 7，代码名wheezy，2013年5月4日首次发行。2014年10月18日发布7.7版。
+- stable是最新的官方发行版，也是推荐安装的版本。目前是version 8，代码名jessie。该分支有backports服务，提供某些软件当前版本。
+- testing是正在测试、将要成为stable的版本，会包含更新的软件。目前的testing版是sid。
+- unstable是当前正在积极开发的，包含有最新的软件，但可能不稳定、并且有错误。
 
-testing是正在测试、将要成为stable的版本，会包含更新的软件。目前的testing版是jessie。
+其他分支还有：
 
-unstable是当前正在积极开发的，包含有最新的软件，但可能不稳定、并且有错误。目前的unstable版是sid。
+- Oldstable是比Stable更老的版本，stable发布一年之内都会支持这个更老的版本。
+- Experimental是暂保存实验性软件的分支。
+
+## 版本名称
 
 - The next release of Debian is codenamed jessie
 - Debian 7 (wheezy)
