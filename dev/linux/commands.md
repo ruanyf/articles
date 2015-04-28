@@ -47,9 +47,13 @@ $ cat file1 file2
 
 参数-n表示输出带行号。
 
+### chgrp
+
+chgrp命令改变文件的群组。
+
 ### chmod
 
-chmod命令用来改变命令的权限。
+chmod命令用来改变文件的权限。
 
 用户类型
 
@@ -71,6 +75,10 @@ $ chmod ga-wx myfile
 $ chmod 777 myfile
 $ chmod 755 myfile
 ```
+
+### chown
+
+chown命令改变文件的所有者。
 
 ### cp
 
@@ -143,36 +151,91 @@ file命令用来查看文件类型。
 ```bash
 $ file Default.png
 Default.png: PNG image data, 640 x 1136, 8-bit/color RGB, non-interlaced
-
 ```
 
 ### find
 
-从当前目录中，按照文件名查找文件。
+find命令用来按照指定条件搜索文件或目录。从当前目录中，按照文件名查找文件。
 
 ```bash
 $ find . -name "*.txt"
+
+# 大小写不敏感
+$ find . -iname "*.txt"
+
+# 只搜索文件
+$ find . -iname \*book\*.txt" -type f
+
+# 搜索当前目录下的空目录
+$ find -type d -empty
 ```
+
+find命令默认搜索子目录。
+
+参数-exec grep表示对于每个发现的文件，都用grep处理。
+
+参数-type f表示只处理文件，不包括目录。
 
 ### grep
 
 grep命令用来在文件中搜索指定文本。
 
 ```bash
+# 输出myfile.txt中包含apple的行
 $ grep apple myfile.txt
+
+# 输出tempfile不包含the的行
+grep -v the tempfile
+
+# 输出文件名中包含zip的文件
+ls /usr/bin /bin|grep zip
 ```
 
-参数-n表示搜索结果包含行号。
-
-参数--color表示搜索结果高亮显示。
-
-参数-A表示搜索结果再显示后面（After）的行，参数-B表示搜索结果再显示前面（Before）的行，参数-C表示再显示前后（Context）几行。
+参数-A表示显示搜索结果+后面（After）的行，参数-B表示显示搜索结果+前面（Before）的行，参数-C表示显示搜索结果+前后（Context）的行。
 
 ```bash
 $ grep -A1 apple myfile.txt  # return lines with the match, as well as 1 after
 $ grep -B2 apple myfile.txt  # return lines with the match, as well as 2 before
 $ grep -C3 apple myfile.txt  # return lines with the match, as well as 3 before and after.
 ```
+
+参数-c：输出匹配的行数。
+
+参数--color表示搜索结果高亮显示。
+
+参数-e表示正则搜索。
+
+参数--exclude-dir=dir指定搜索时排除在外的目录。
+
+参数-F表示对于使用字面量处理搜索字符，不将其当作正则。
+
+参数-h：在多文件搜索中，不输出文件名。
+
+参数-H表示同时输出文件名。
+
+参数-i表示搜索时忽略大小写。
+
+参数-I表示忽略二进制文件。
+
+参数-l（--files-with-matches）表示只输出文件名，不输出匹配的行。这能加快搜索速度，因为grep一旦在一个文件中找到第一个匹配的行，就不再向下搜索了。
+
+参数-L：输出不匹配的文件名。
+
+参数-n表示搜索结果包含行号。
+
+参数-r表示递归搜索。
+
+```bash
+$ grep -r 'string' dir/
+# 如果不支持-r参数，可以用下面的命令
+$ find dir/ -type f -exec grep -H 'string' {} +
+```
+
+参数-v：显示所有不匹配该模式的行。
+
+### groups
+
+groups命令查看当前用户所属的群组。
 
 ### head
 
@@ -221,6 +284,21 @@ $ history | grep “BLOW”
 $ history | less
 
 ```
+
+### locate
+
+locate 用来在整个文件系统（从根目录开始）搜索某个文件。
+
+```bash
+$ locate -i mybook
+```
+
+locate命令区分大小写，i参数表示大小写不敏感。
+
+locate命令通过预先生成的数据库搜索，所以速度很快，缺点是搜索不到刚刚生成的文件。
+
+- n 指定结果数，比如 n 10 表示只返回10条结果。
+- r 进行正则搜索，将文件名解释为正则表达式。
 
 ### mkdir
 

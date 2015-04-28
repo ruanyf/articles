@@ -36,7 +36,13 @@
 
 （1） 简单复制和粘贴
 
-vim提供12个剪贴板，它们的名字分别为vim有12个粘贴板，分别是0、1、2、...、9、a、“、＋；用:reg命令可以查看各个粘贴板里的内容。在vim中简单用y只是复制到“（双引号)粘贴板里，同样用p粘贴的也是这个粘贴板里的内容。
+vim提供12个剪贴板，它们的名字分别为vim有11个粘贴板，分别是0、1、2、...、9、a、“。如果开启了系统剪贴板，则会另外多出两个：+和*。使用:reg命令，可以查看各个粘贴板里的内容。
+
+```bash
+:reg
+```
+
+在vim中简单用y只是复制到“（双引号)粘贴板里，同样用p粘贴的也是这个粘贴板里的内容。
 
 （2）复制和粘贴到指定剪贴板
 
@@ -46,17 +52,63 @@ vim提供12个剪贴板，它们的名字分别为vim有12个粘贴板，分别�
 
 （3）系统剪贴板
 
-+号粘贴板是系统粘贴板，用"+y将内容复制到该粘贴板后可以使用Ctrl＋V将其粘贴到其他文档（如firefox、gedit）中，同理，要把在其他地方用Ctrl＋C或右键复制的内容复制到vim中，需要在正常模式下按"+p。
-
-另一种从系统剪贴板复制到vim的方法是使用Shift+Insert。
-
-如果发现本机的vim没有+剪贴板，可以运行下面的命令。
+Vim支持系统剪贴板，需要打开clipboard功能。使用下面的命令，检查当前版本的Vim，是否支持clipboard。
 
 ```bash
-
-$ sudo apt-get install vim-gui-common 
-
+$ vim --version
 ```
+
+如果不支持的话，需要安装图形化界面的vim（即gvim），或者重新编译vim。
+
+```bash
+$ sudo apt-get install gvim
+正在读取软件包列表... 完成
+正在分析软件包的依赖关系树
+正在读取状态信息... 完成
+Package gvim is a virtual package provided by:
+  vim-gtk 2:7.4.488-7
+  vim-gnome 2:7.4.488-7
+  vim-athena 2:7.4.488-7
+You should explicitly select one to install.
+
+E: Package 'gvim' has no installation candidate
+
+$ sudo apt-get install vim-gnome
+```
+
+另一种方法，是安装vim-gui-common。
+
+```bash
+$ sudo apt-get install vim-gui-common
+```
+
+安装以后，可以用命令行界面，启动gvim，这时可用系统剪贴板。
+
+```bash
+$ gvim -v
+```
+
+星号（*）和加号（+）粘贴板是系统粘贴板。在windows系统下， * 和 + 剪贴板是相同的。对于 X11 系统， * 剪贴板存放选中或者高亮的内容， + 剪贴板存放复制或剪贴的内容。打开clipboard选项，可以访问 + 剪贴板；打开xterm_clipboard，可以访问 * 剪贴板。 * 剪贴板的一个作用是，在vim的一个窗口选中的内容，可以在vim的另一个窗口取出。
+
+复制到系统剪贴板
+- "*y
+- "+y
+- "+2yy – 复制两行
+- {Visual}"+y - copy the selected text into the system clipboard
+- "+y{motion} - copy the text specified by {motion} into the system clipboard
+- :[range]yank + - copy the text specified by [range] into the system clipboard
+
+剪切到系统剪贴板
+- "+dd – 剪切一行
+
+从系统剪贴板粘贴到vim
+- "*p
+- "+p
+- Shift+Insert
+- :put + - Ex command puts contents of system clipboard on a new line
+- <C-r>+ - From insert mode (or commandline mode)
+
+"+p 比 Ctrl-v 命令更好，它可以更快更可靠地处理大块文本的粘贴，也能够避免粘贴大量文本时，发生每行行首的自动缩进累积，因为 Ctrl-v 是通过系统缓存的stream处理，一行一行地处理粘贴的文本。
 
 ## 插件
 
