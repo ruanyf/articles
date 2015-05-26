@@ -2,7 +2,7 @@
 
 一种编程语言是否易用，很大程度上，取决于开发命令行程序的能力。
 
-Node.js 作为目前最热门的开发工具之一，怎么使用它开发命令行程序，是 Web 开发者应该掌握的技能。
+Node.js 作为目前最热门的开发工具之一，怎样使用它开发命令行程序，是 Web 开发者应该掌握的技能。
 
 最近，Npm的网志有一组[系列文章](http://blog.npmjs.org/post/118810260230/building-a-simple-command-line-tool-with-npm)，我觉得写得非常好。下面就是我在它的基础上扩展的教程，应该是目前最好的解决方案了。
 
@@ -30,7 +30,7 @@ $ ./hello
 hello world
 ```
 
-如果想把执行时 hello 前面的路径去除，可以将 hello 的路径加入环境变量 PATH。但是，另一种更好的做法，是在当前目录下新建 package.json ，写入下面的内容。
+如果想把 hello 前面的路径去除，可以将 hello 的路径加入环境变量 PATH。但是，另一种更好的做法，是在当前目录下新建 package.json ，写入下面的内容。
 
 ```bash
 {
@@ -94,9 +94,7 @@ hello tom
 
 ## 四、shelljs 模块
 
-[shelljs](https://www.npmjs.com/package/shelljs) 模块重新包装了 child_process，调用系统命令更加方便。
-
-它需要安装后使用。
+[shelljs](https://www.npmjs.com/package/shelljs) 模块重新包装了 child_process，调用系统命令更加方便。它需要安装后使用。
 
 ```bash
 npm install --save shelljs
@@ -112,7 +110,7 @@ var shell = require("shelljs");
 shell.exec("echo hello " + name);
 ```
 
-shelljs 还提供 global 模式，允许直接在脚本中写 shell 命令。
+上面代码是 shelljs 的本地模式，即通过 exec 方法执行 shell 命令。此外还有全局模式，允许直接在脚本中写 shell 命令。
 
 ```javascript
 require('shelljs/global');
@@ -141,13 +139,13 @@ if (exec('git commit -am "Auto-commit"').code !== 0) {
 
 ## 五、yargs 模块
 
-yargs 模块可以更方便地处理命令行参数。它也需要安装。
+shelljs 只解决了如何调用 shell 命令，而 yargs 模块能够解决如何处理命令行参数。它也需要安装。
 
 ```bash
 $ npm install --save yargs
 ```
 
-yargs 模块提供 argv 对象，读取命令参数。请看改写后的 hello 。
+yargs 模块提供 argv 对象，用来读取命令行参数。请看改写后的 hello 。
 
 ```javascript
 #!/usr/bin/env node
@@ -193,7 +191,7 @@ $ hello --name tom
 hello tom
 ```
 
-argv 对象有一个下划线（_）属性，可以获取非连词线属性。
+argv 对象有一个下划线（_）属性，可以获取非连词线开头的参数。
 
 ```javascript
 #!/usr/bin/env node
@@ -230,12 +228,14 @@ var argv = require('yargs')
 console.log('hello ', argv.n);
 ```
 
-options 方法允许将所有配置写进一个对象。
+上面代码指定 n 参数不可省略，默认值为 tom，并给出一行提示。
+
+options 方法允许将所有这些配置写进一个对象。
 
 ```javascript
 #!/usr/bin/env node
 var argv = require('yargs')
-  .option('f', {
+  .option('n', {
     alias : 'name',
     demand: true,
     default: 'tom',
@@ -269,6 +269,19 @@ $ hello -n tom
 hello  true
 ```
 
+boolean 方法也可以作为属性，写入 option 对象。
+
+```javascript
+#!/usr/bin/env node
+var argv = require('yargs')
+  .option('n', {
+    boolean: true
+  })
+  .argv;
+
+console.log('hello ', argv.n);
+```
+
 ## 七、帮助信息
 
 yargs 模块提供以下方法，生成帮助信息。
@@ -298,7 +311,7 @@ var argv = require('yargs')
 console.log('hello ', argv.n);
 ```
 
-用法如下。
+执行结果如下。
 
 ```bash
 $ hello -h
@@ -358,7 +371,7 @@ var argv = require('yargs')
 console.log('hello ', argv.n);
 ```
 
-每个子命令往往有自己的参数，这时就需要在回调函数中单独指定，并要先用 reset 方法重置 yargs 对象。
+每个子命令往往有自己的参数，这时就需要在回调函数中单独指定。回调函数中，要先用 reset 方法重置 yargs 对象。
 
 ```javascript
 #!/usr/bin/env node
