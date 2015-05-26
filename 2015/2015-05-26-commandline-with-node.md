@@ -4,6 +4,8 @@
 
 Node.js 作为目前最热门的开发工具之一，怎样使用它开发命令行程序，是 Web 开发者应该掌握的技能。
 
+![](http://image.beekka.com/blog/2015/bg2015052601.png)
+
 最近，Npm的网志有一组[系列文章](http://blog.npmjs.org/post/118810260230/building-a-simple-command-line-tool-with-npm)，我觉得写得非常好。下面就是我在它的基础上扩展的教程，应该是目前最好的解决方案了。
 
 ## 一、可执行脚本
