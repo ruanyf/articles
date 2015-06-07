@@ -205,6 +205,10 @@ $ grep -C3 apple myfile.txt  # return lines with the match, as well as 3 before 
 
 参数-e表示正则搜索。
 
+```bash
+$ grep -e apples? -r dir/
+```
+
 参数--exclude-dir=dir指定搜索时排除在外的目录。
 
 参数-F表示对于使用字面量处理搜索字符，不将其当作正则。

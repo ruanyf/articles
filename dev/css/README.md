@@ -152,6 +152,17 @@ button:hover::after {
 
 - Donovan Hutchinson, [Animating pseudo-elements](http://cssanimation.rocks/post/pseudo-elements/)
 
+### 伪类
+
+- :empty：没有任何子元素
+- :in-range：针对有range属性的input
+- :out-of-range：针对有range属性的input
+- :optional：没有required属性的input元素
+- :required
+- :disabled
+- :fullscreen
+- :not()
+
 ## 操作
 
 ### 垂直置中
@@ -302,6 +313,18 @@ keyframes rotation {
 
 ## 属性
 
+### background-blend-mode
+
+background-blend-mode属性指定背景的颜色混合模式，共有16个值可取：normal（默认值，即不混合）, multiply, screen, overlay, darken, lighten, color-dodge, color-burn, hard-light, soft-light, difference, exclusion, hue, saturation, color and luminosity（显示单色效果）。
+
+可以显示多张背景图片的混合，或者背景图片与背景色的混合。
+
+```javascript
+  background-image: url(...g);
+  background-color: #51B7D3;
+  background-blend-mode: luminosity;
+```
+
 ### content
 
 指定伪元素的内容。
@@ -391,66 +414,39 @@ img.bw.grey {
 
 ### flex
 
-（1）垂直居中
-
-首先，指定flex容器。
-
-```html
-
-<div class="flexbox-container">
-	<div>Blah blah</div>
-	<div>Blah blah blah blah blah blah</div>
-</div>
-
-```
-
-设置垂直置中。
+flex功能可以指定容器采用弹性布局。
 
 ```css
-
-.flexbox-container {
-	display: -ms-flex;
-	display: -webkit-flex;
-	display: flex;
-
-	-ms-flex-align: center;
-	-webkit-align-items: center;
-	-webkit-box-align: center;
-
-	align-items: center;
+div{
+  display: flex;
 }
-
 ```
 
-（2）两栏式布局
+### filter
 
-HTML代码。
+filter属性在指定元素上应用滤镜。
+
+- blur()：模糊，参数为模糊半径
+- brightness()：亮度，0%为全黑，100%为原始亮度
+- contrast()：对比度，0%为全黑，100%为原始对比度
+- grayscale()：灰度，0%为原始色彩，100%为完全灰度。
+- hue-rotate()：色调，0为原始色调，360为色彩轮旋转一周后回到原色调。
+- invert()：负片效果，0%为原始效果，100%为完全负片效果。
+- opacity()：透明度，0%为完全透明，100%为完全不透明。
+- saturate()：饱和度，0%为完全不饱和，100%为完全饱和。
+- sepia()：作旧效果，0%为原始效果，100%为完全作旧
+- drop-shadow()：阴影效果，设置同box-shadow接近
+- url()：引用定义在SVG文件中的滤镜
+
+多个滤镜可以联合使用。
 
 ```css
-<div class="flexbox-container">
-	<div><h3>Column 1</h3></div>
-	<div><h3>Column 2</h3></div>
-</div>
+filter: sepia(1) brightness(150%) contrast(0.5);
 ```
 
-CSS代码。padding和margin都不属于这种情况。
+### mix-blend-mode
 
-```css
-.flexbox-container {
-	display: -ms-flex;
-	display: -webkit-flex;
-	display: flex;
-}
-
-.flexbox-container > div {
-	width: 50%;
-	padding: 10px;
-}
-
-.flexbox-container > div:first-child {
-	margin-right: 20px;
-}
-```
+mix-blend-mode属性指定前景与背景的颜色混合模式，即前景色与背景色的混合。它的取值同background-blend-mode属性一样，也是16个值。
 
 ### object-fit
 
@@ -578,6 +574,23 @@ transition: opacity 100ms ease 0, background 200ms ease-in-out 0, transform 200m
 -o-transition: all 300ms ease 0;
 transition: all 300ms ease 0;
 
+```
+
+## 命令
+
+### media
+
+media命令规定CSS规则生效的媒介。
+
+media命令的一种用法是，为不同的设备指定不同的背景图片。
+
+```css
+/* default is desktop image */
+.someElement { background-image: url(sunset.jpg); }
+
+@media only screen and (max-width : 1024px) {
+  .someElement { background-image: url(sunset-small.jpg); }
+}
 ```
 
 ## 单位
