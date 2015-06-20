@@ -21,6 +21,12 @@ $ git add fileName
 $ git add -p
 ```
 
+强制追踪某个文件，不管.gitignore是否添加了这个文件。
+
+```bash
+$ git add -f <fileName>
+```
+
 ## git branch
 
 分支操作命令。
@@ -344,6 +350,12 @@ $ git reset HEAD lib/foo.rb
 ## git rm
 
 删除文件。
+
+解除追踪某个文件，即该文件已被`git add`添加，然后抵消这个操作。
+
+```bash
+$ git rm --cached <fileName>
+```
 
 ## git show
 
