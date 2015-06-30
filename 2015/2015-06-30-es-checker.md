@@ -4,15 +4,15 @@
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015063002.jpg)
 
-ECMAScript 6（以下简称 ES6）总共新增了20多项重大的语言特性。各种浏览器和 Node.js 都在积极支持，但是还有不少功能没有实现。
+ECMAScript 6（以下简称 ES6）总共新增了20多项重大的语言特性。各种浏览器和 Node.js 都积极支持，但还有不少功能没实现。
 
-上个周末，我读到了 Kyle Simpson 的文章[《ES6: Features By Testing》](http://davidwalsh.name/es6-features-testing)，发现他提出了一组测试，可以侦测运行环境支持哪些 ES6 的功能。
+上个周末，我读到了 Kyle Simpson 的文章[《ES6: Features By Testing》](http://davidwalsh.name/es6-features-testing)，发现他开发了[一组测试](https://github.com/getify/es-feature-tests/blob/master/lib/featuretests.js#L18)，可以侦测运行环境支持哪些 ES6 的功能。
 
-我就在他的基础上 ，写了 [ES-Checker](https://github.com/ruanyf/es-checker) ，用于查看 ES6 的支持情况。
+我就在他的基础上 ，写了功能侦测库 [ES-Checker](https://github.com/ruanyf/es-checker) ，用于查看 ES6 的支持情况。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015063004.png)
 
-今天，我把这个库提交到 [Hacker News](https://news.ycombinator.com/item?id=9802639)，结果居然进入了首页！虽然，名次不高，上榜时间也不长，但也算达成了一项人生成就。
+今天，我把这个库提交到 [Hacker News](https://news.ycombinator.com/item?id=9802639)，结果居然进入了首页！虽然，名次不高，上榜时间也不长，但也算实现了一个人生愿望。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015063001.png)](https://news.ycombinator.com/item?id=9802639)
 
@@ -33,13 +33,13 @@ $ es-checker
 
 **（2）Node环境**
 
-首先，将 ES-Checker 安装在项目的根目录。
+将 ES-Checker 安装在项目的根目录。
 
 ```bash
 $ npm install es-checker
 ```
 
-然后，就可以在脚本中引用 ES-Checker 了。
+就可以在脚本中引用 ES-Checker 了。
 
 ```javascript
 var Supports = require("es-checker");
@@ -55,7 +55,7 @@ Supports 对象的属性清单，请见后文。
 
 **（3）浏览器环境**
 
-首先，将 es-checker.js 插入页面。
+将 es-checker.js 插入页面。
 
 ```html
 <script src="http://ruanyf.github.io/es-checker/es-checker.js"></script>
