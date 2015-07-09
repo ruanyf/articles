@@ -134,6 +134,16 @@ p参数表示只恢复部分变化。
 $ git checkout -p
 ```
 
+（4）切换到某个tag
+
+```bash
+$ git checkout tags/1.1.4
+# 或者
+$ git checkout 1.1.4
+```
+
+上面第二种用法的前提是，本地不能有叫做1.1.4的分支。
+
 ## git clone
 
 `git clone`命令用于克隆远程分支。

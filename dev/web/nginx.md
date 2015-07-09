@@ -6,7 +6,22 @@ Nginx（发音engine x）是一个轻量级的开源HTTP服务器软件，可以
 
 它与Apache的区别在于：它的设计基于事件和异步操作，而Apache完全依赖线程。当访问量很大的时候，大量新增的线程 很快会耗尽内存，而基于事件的非阻塞设计能够轻松处理。
 
-nginx有一个主进程和几个worker进程，每一个worker进程能够处理几千个连接。
+nginx有一个主进程和几个worker进程，有多少个CPU，就有多少个worker进程。每一个worker进程能够处理几千个连接。
+
+```bash
+$ ps -ef --forest | grep nginx
+```
+
+上面的命令可以查看所有nginx进程，一般是1个主进程，与CPU内核数对应的worker进程，1个cache manager 进程，1个cache loader进程。
+
+nginx进程分工如下。
+
+- 主进程：读取配置，绑定端口，创造子进程。
+- worker进程：执行实际任务的进程，包括处理网络请求，读取或写入硬盘，与上游服务器通信。
+- cache loader进程：将硬盘上的缓存读入内存，然后退出。
+- cache manager进程：周期性执行，从缓存清除过时的条目。
+
+worker进程在创建时，根据配置文件初始化，并且留有多个socket用于与主进程通信。每当有新的网络请求，worker进程就会监听到事件，从而启动。
 
 ### 内置模块
 
@@ -81,6 +96,7 @@ Nginx的配置文件是`nginx.conf`，通常位于`/usr/local/etc/nginx`或者`/
 
 worker_processes  1;
 #Referes to single threaded process. Generally set to be equal to the number of CPUs or cores.
+# worker_processes auto;
 
 #error_log  logs/error.log; #error_log  logs/error.log  notice;
 #Specifies the file where server logs.
@@ -214,6 +230,12 @@ http {
 }
 ```
 
+修改配置后，可以使用下面的命令重新加载配置。
+
+```bash
+$ nginx –s reload
+```
+
 除了`nginx.conf`，还有`sites-available`和`sites-enabled`两个目录，前者包括所有可用的网站配置，后者只包括前者的符号链接，指向那些已经激活的网站。
 
 `sites-enabled`下的文件自动加载。激活新网站的做法是，符号链接`sites-enabled`目录的配置文件，然后重启 nginx。
@@ -313,17 +335,15 @@ location /download/ {
 修改配置文件，打开HTTPs端口。
 
 ```
-
 server {
-    listen 443;
-    server_name "domain.tld";
-    root /var/www/your_website_root;
-
-    ssl on;
-    ssl_certificate     /etc/nginx/certificates/cert-domain.tld.crt;
-    ssl_certificate_key /etc/nginx/certificates/domain.tld.key;
+    listen              443 ssl;
+    server_name         www.example.com;
+    ssl_certificate     www.example.com.crt;
+    ssl_certificate_key www.example.com.key;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ...
 }
-
 ```
 
 重启nginx服务。
@@ -331,13 +351,91 @@ server {
 修改配置文件，将HTTP流量导向HTTPs。
 
 ```
-
 server {
     listen 80;
-    server_name "domain.tld";
+    server_name www.example.com;
     rewrite ^(.*) https://$host$1 permanent;
 }
+```
 
+增加ssl session的缓存时间。
+
+```javascript
+worker_processes auto;
+
+http {
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    server {
+        listen              443 ssl;
+        server_name         www.example.com;
+        keepalive_timeout   70;
+
+        ssl_certificate     www.example.com.crt;
+        ssl_certificate_key www.example.com.key;
+        ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers         HIGH:!aNULL:!MD5;
+        ...
+```
+
+同一台服务器同时处理HTTP和HTTPs请求。
+
+```
+server {
+    listen              80;
+    listen              443 ssl;
+    server_name         www.example.com;
+    ssl_certificate     www.example.com.crt;
+    ssl_certificate_key www.example.com.key;
+    ...
+}
+```
+
+同一张证书支持多个域名（比如，同时支持www.example.com和www.example.org）。
+
+```
+ssl_certificate     common.crt;
+ssl_certificate_key common.key;
+
+server {
+    listen          443 ssl;
+    server_name     www.example.com;
+    ...
+}
+
+server {
+    listen          443 ssl;
+    server_name     www.example.org;
+    ...
+}
+```
+
+如果浏览器支持 TLS Server Name Indication 扩展，就可以一台服务器支持多个证书。
+
+```
+server {
+    listen          443 ssl;
+    server_name     www.example.com;
+    ssl_certificate www.example.com.crt;
+    ...
+}
+
+server {
+    listen          443 ssl;
+    server_name     www.example.org;
+    ssl_certificate www.example.org.crt;
+    ...
+}
+```
+
+检查nginx是否支持SNI扩展。
+
+```bash
+$ NGINX -V
+...
+TLS SNI support enabled
+...
 ```
 
 ## 参考链接

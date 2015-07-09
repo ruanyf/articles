@@ -53,6 +53,12 @@ $ git reset --hard origin/master
 $ git checkout feature
 ```
 
+### 将一个文件撤销回上一次commit
+
+```javascript
+$ git checkout --<bad filename>
+```
+
 ### 抵消已提交的commit
 
 如果提交后发现有错误，可以提交一个新的commit，抵消上一次的commit。
@@ -63,7 +69,7 @@ $ git revert HEAD
 $ git revert <SHA>
 ```
 
-git revert 命令会生成一个新的commit，完全抵消上一个commit所做的变更。
+git revert 命令会生成一个新的commit，完全抵消上一个commit所做的变更。`git revert`并不会改变历史，它只是发一个新的commit，抵消上一个commit，使得仓库回到原来的样子。
 
 ```bash
 $ git revert HEAD^

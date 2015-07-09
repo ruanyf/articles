@@ -110,6 +110,47 @@ $ gvim -v
 
 "+p 比 Ctrl-v 命令更好，它可以更快更可靠地处理大块文本的粘贴，也能够避免粘贴大量文本时，发生每行行首的自动缩进累积，因为 Ctrl-v 是通过系统缓存的stream处理，一行一行地处理粘贴的文本。
 
+## 多窗口
+
+垂直切分窗口，Ctrl-w + s 或者使用下面的命令。
+
+```bash
+:split <文件名>
+```
+
+水平切分窗口，Ctrl-w + v 或者使用下面的命令。
+
+```bash
+:vsplit <文件名>
+```
+
+如果省略文件名，则打开的是当前文件。
+
+切换窗口的命令。
+
+- Ctrl-w +  Ctrl-w
+- Ctrl-w + direction key
+
+## vimrc文件配置
+
+禁止使用箭头键。
+
+```bash
+nnoremap <Left> :echoe "Use h"<CR>
+nnoremap <Right> :echoe "Use l"<CR>
+nnoremap <Up> :echoe "Use k"<CR>
+nnoremap <Down> :echoe "Use j"<CR>
+```
+
+在窗口间移动。
+
+```bash
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-h> <c-w>h
+nnoremap <c-l> <c-w>l
+```
+
 ## 插件
 
 - [Markdown语法高亮](https://github.com/plasticboy/vim-markdown)
