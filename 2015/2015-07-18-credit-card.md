@@ -6,9 +6,9 @@
 
 网下只要把信用卡往POS机划一下即可，根本不需要其他步骤，完全零输入。网上使用信用卡，却必须填入一连串号码，一个都不能填错，然后再点击提交按钮。
 
-![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071802.jpg)
-
 苹果公司正在努力，通过Apple Pay，让手机替代信用卡。以后支付的时候，你只要划一下手机就可以了。但是，在这一天变成现实之前，我们仍然必须在网页上，使用信用卡支付表单。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071802.jpg)
 
 设计师[Gabriel Tomescu](https://medium.com/user-experience-design-1/the-anatomy-of-a-credit-card-payment-form-32ec0e5708bb)发表了一篇文章，介绍如何设计一个易用的支付表单，我觉得很有启发。
 
@@ -22,7 +22,7 @@
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071804.png)
 
-顶部显示接受哪些信用卡。
+接受哪些信用卡，有三个设计方案，最后选择了顶部显示。
 
 3.
 
