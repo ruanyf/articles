@@ -294,164 +294,569 @@ align-self属性允许单个项目有与其他项目不一样的对齐方式，�
 
 （完）
 
-接着，指定容器中的元素，在主轴上水平居中（justify-content属性）。
+# Flex布局实例教程
+
+[上一篇文章](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)，介绍了Flex布局的语法。
+
+今天介绍，常见布局的Flex写法。你会看到，不管是什么布局，Flex往往都可以几行命令搞定。
+
+下面的内容，我只列出代码，详细的语法解释请查阅[《Flex布局语法教程》](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)。
+
+我主要参考了[Landon Schropp](http://davidwalsh.name/flexbox-dice)的文章和[Solved by Flexbox](http://philipwalton.github.io/solved-by-flexbox/)。
+
+## 一、骰子的布局
+
+如果不加说明，本节的HTML模板一律如下。
+
+```html
+<div class="box">
+  <span class="item"></span>
+</div>
+```
+
+上面代码中，div元素是Flex容器，span元素是Flex项目。如果有多个项目，就要添加多个span元素，以此类推。
+
+### 1.1 单项目：首行左对齐
+
+Flex布局默认就是首行左对齐，所以一行代码就够了。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071301.png)
 
 ```css
-.first-face {
+.box {
+  display: flex;
+}
+```
+
+### 1.2 单项目：首行居中对齐
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071302.png)
+
+```css
+.box {
   display: flex;
   justify-content: center;
 }
 ```
 
-![](http://davidwalsh.name/demo/dicey-flexbox-images/face-1-2.png)
+### 1.3 单项目：首行右对齐
 
-然后，指定在副轴上也居中（align-items属性）。
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071303.png)
 
 ```css
-.first-face {
+.box {
+  display: flex;
+  justify-content: flex-end;
+}
+```
+
+### 1.4 单项目：中行左对齐
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071304.png)
+
+```css
+.box {
+  display: flex;
+  align-items: center;
+}
+```
+
+### 1.5 单项目：垂直居中对齐
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071305.png)
+
+```css
+.box {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 ```
 
-![](http://davidwalsh.name/demo/dicey-flexbox-images/face-1-3.png)
+### 1.6 单项目：尾行居中对齐
 
-接下来，再看多个元素的情况。
-
-```html
-<div class="second-face">
-  <span class="pip"></span>
-  <span class="pip"></span>
-</div>
-```
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071306.png)
 
 ```css
-.second-face {
+.box {
   display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 ```
 
-![](http://davidwalsh.name/demo/dicey-flexbox-images/face-2-1.png)
+### 1.7 单项目：尾行右对齐
 
-然后，使用space-between属性，指定两端对齐。
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071307.png)
 
 ```css
-.second-face {
+.box {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
 ```
 
-![](http://davidwalsh.name/demo/dicey-flexbox-images/face-2-2.png)
+### 1.8 双项目：首行两端对齐
 
-align-self属性可以指定某个成员在纵轴的下端。
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071308.png)
 
 ```css
-.second-face {
+.box {
   display: flex;
   justify-content: space-between;
 }
-
-.second-face .pip:nth-of-type(2) {
-  align-self: flex-end;
-}
 ```
 
-![](http://davidwalsh.name/demo/dicey-flexbox-images/face-2-3.png)
+### 1.9 双项目：首列两端对齐
 
-下面实现四角对齐。
-
-```html
-<div class="fourth-face">
-  <div class="column">
-    <span class="pip"></span>
-    <span class="pip"></span>
-  </div>
-  <div class="column">
-    <span class="pip"></span>
-    <span class="pip"></span>
-  </div>
-</div>
-```
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071309.png)
 
 ```css
-.fourth-face {
-  display: flex;
-  justify-content: space-between;
-}
-
-.fourth-face .column {
+.box {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 ```
 
-![](http://davidwalsh.name/demo/dicey-flexbox-images/face-4-3.png)
+### 1.10 双项目：中列两端对齐
 
-## 浏览器前缀
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071310.png)
 
-（1）垂直居中
+```css
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+```
 
-首先，指定flex容器。
+### 1.11 双项目：尾列两端对齐
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071311.png)
+
+```css
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+```
+
+### 1.12 双项目：首行左对齐，中行居中对齐
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071312.png)
+
+```css
+.box {
+  display: flex;
+}
+
+.item:nth-child(2) {
+  align-self: center;
+}
+```
+
+### 1.13 双项目：首行左对齐，尾行右对齐
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071313.png)
+
+```css
+.box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item:nth-child(2) {
+  align-self: flex-end;
+}
+```
+
+### 1.14 三项目：对角线布局
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071314.png)
+
+```css
+.box {
+  display: flex;
+}
+
+.item:nth-child(2) {
+  align-self: center;
+}
+
+.item:nth-child(3) {
+  align-self: flex-end;
+}
+```
+
+### 1.15 四项目：首行排满，尾行右对齐
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071315.png)
+
+```css
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: space-between;
+}
+```
+
+### 1.16 四项目：四角对齐
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071316.png)
+
+HTML代码如下。
 
 ```html
-
-<div class="flexbox-container">
-	<div>Blah blah</div>
-	<div>Blah blah blah blah blah blah</div>
-</div>
-
-```
-
-设置垂直置中。
-
-```css
-
-.flexbox-container {
-	display: -ms-flex;
-	display: -webkit-flex;
-	display: flex;
-
-	-ms-flex-align: center;
-	-webkit-align-items: center;
-	-webkit-box-align: center;
-
-	align-items: center;
-}
-
-```
-
-（2）两栏式布局
-
-HTML代码。
-
-```css
-<div class="flexbox-container">
-	<div><h3>Column 1</h3></div>
-	<div><h3>Column 2</h3></div>
+<div class="box">
+  <div class="column">
+    <span class="item"></span>
+    <span class="item"></span>
+  </div>
+  <div class="column">
+    <span class="item"></span>
+    <span class="item"></span>
+  </div>
 </div>
 ```
 
-CSS代码。padding和margin都不属于这种情况。
+CSS代码如下。
 
 ```css
-.flexbox-container {
-	display: -ms-flex;
-	display: -webkit-flex;
-	display: flex;
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
 }
 
-.flexbox-container > div {
-	width: 50%;
-	padding: 10px;
-}
-
-.flexbox-container > div:first-child {
-	margin-right: 20px;
+.column {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 ```
+
+### 1.17 六项目：首行排满，尾行排满
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071317.png)
+
+```css
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+}
+```
+
+### 1.18 六项目：首列排满，尾列排满
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071318.png)
+
+```css
+.box {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: space-between;
+}
+```
+
+### 1.19 六项目：首行两端对齐，中行居中，尾行排满
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071319.png)
+
+HTML代码如下。
+
+```html
+<div class="box">
+  <div class="row">
+    <span class="item"></span>
+    <span class="item"></span>
+    <span class="item"></span>
+  </div>
+  <div class="row">
+    <span class="item"></span>
+  </div>
+  <div class="row">
+     <span class="item"></span>
+     <span class="item"></span>
+  </div>
+</div>
+```
+
+CSS代码如下。
+
+```css
+.box {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.row{
+  flex-basis: 100%;
+  display:flex;
+}
+
+.row:nth-child(2){
+  justify-content: center;
+}
+
+.row:nth-child(3){
+  justify-content: space-between;
+}
+```
+
+### 1.20 九项目
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071320.png)
+
+```css
+.box {
+  display: flex;
+  flex-wrap: wrap;
+}
+```
+
+## 二、网格布局
+
+### 2.1 基本网格布局
+
+容器平均分配空间。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071321.png)
+
+HTML代码如下。
+
+```html
+<div class="Grid">
+  <div class="Grid-cell">…</div>
+  <div class="Grid-cell">…</div>
+  <div class="Grid-cell">…</div>
+</div>
+```
+
+CSS代码如下。
+
+```css
+.Grid {
+  display: flex;
+}
+
+.Grid-cell {
+  flex: 1;
+}
+```
+
+### 2.2 百分比布局
+
+某项目占据固定的百分比，其余项目平均分配空间。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071322.png)
+
+HTML代码如下。
+
+```html
+<div class="Grid">
+  <div class="Grid-cell u-1of4">…</div>
+  <div class="Grid-cell">…</div>
+  <div class="Grid-cell u-1of3">…</div>
+</div>
+```
+
+```css
+.Grid {
+  display: flex;
+}
+
+.Grid-cell {
+  flex: 1;
+}
+
+.Grid-cell.u-full {
+  flex: 0 0 100%;
+}
+
+.Grid-cell.u-1of2 {
+  flex: 0 0 50%;
+}
+
+.Grid-cell.u-1of3 {
+  flex: 0 0 33.3333%;
+}
+
+.Grid-cell.u-1of4 {
+  flex: 0 0 25%;
+}
+```
+
+## 三、圣杯布局
+
+[圣杯布局](https://en.wikipedia.org/wiki/Holy_Grail_(web_design))（Holy Grail Layout）指的是一种最常见的网站布局。页面从上到下，分成三个部分：头部（header），躯干（body），尾部（footer）。其中躯干又水平分成三栏，从左到右为：导航、主栏、副栏。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071323.png)
+
+HTML代码如下。
+
+```html
+<body class="HolyGrail">
+  <header>…</header>
+  <div class="HolyGrail-body">
+    <main class="HolyGrail-content">…</main>
+    <nav class="HolyGrail-nav">…</nav>
+    <aside class="HolyGrail-ads">…</aside>
+  </div>
+  <footer>…</footer>
+</body>
+```
+
+CSS代码如下。
+
+```css
+.HolyGrail {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+header,
+footer {
+  flex: 1;
+}
+
+.HolyGrail-body {
+  display: flex;
+  flex: 1;
+}
+
+.HolyGrail-content {
+  flex: 1;
+}
+
+.HolyGrail-nav, .HolyGrail-ads {
+  /* 两个边栏的宽度设为12em */
+  flex: 0 0 12em;
+}
+
+.HolyGrail-nav {
+  /* 导航放到最左边 */
+  order: -1;
+}
+```
+
+如果是小屏幕，躯干的三栏改为垂直分布。
+
+```css
+@media (max-width: 768px) {
+  .HolyGrail-body {
+    flex-direction: column;
+    flex: 1;
+  }
+  .HolyGrail-nav,
+  .HolyGrail-ads,
+  .HolyGrail-content {
+    flex: auto;
+  }
+}
+```
+
+## 四、输入框的布局
+
+常常需要在输入框的前方添加提示，后方添加按钮。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071324.png)
+
+HTML代码如下。
+
+```html
+<div class="InputAddOn">
+  <span class="InputAddOn-item">…</span>
+  <input class="InputAddOn-field">
+  <button class="InputAddOn-item">…</button>
+</div>
+```
+
+CSS代码如下。
+
+```css
+.InputAddOn {
+  display: flex;
+}
+
+.InputAddOn-field {
+  flex: 1;
+}
+```
+
+## 五、悬挂式布局
+
+有时，主栏的左侧或右侧，需要添加一个图片栏。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071325.png)
+
+HTML代码如下。
+
+```html
+<div class="Media">
+  <img class="Media-figure" src="" alt="">
+  <p class="Media-body">…</p>
+</div>
+```
+
+CSS代码如下。
+
+```css
+.Media {
+  display: flex;
+  align-items: flex-start;
+}
+
+.Media-figure {
+  margin-right: 1em;
+}
+
+.Media-body {
+  flex: 1;
+}
+```
+
+### 六、固定的底栏
+
+有时，页面内容太少，无法占满一屏的高度，底栏就会抬高到页面的中间。
+
+这时可以采用Flex布局，让底栏总是出现在页面的底部。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015071326.png)
+
+HTML代码如下。
+
+```html
+<body class="Site">
+  <header>…</header>
+  <main class="Site-content">…</main>
+  <footer>…</footer>
+</body>
+```
+
+CSS代码如下。
+
+```css
+.Site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.Site-content {
+  flex: 1;
+}
+```
+
+（完）
 
 ## 参考链接
 

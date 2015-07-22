@@ -18,53 +18,16 @@ Web应用程序越来越复杂，这意味着有更多的可能出错。测试�
 
 单元测试的步骤
 
-- Set up all conditions for testing.
-- Call the method (or Trigger) being tested.
-- Verify that the results are correct.
-- Clean up modified records.
+1. 搭建测试环境
+1. 触发测试
+1. 验证结果是否正确
+1. 还原被修改的环境
 
-常用的测试框架
+单元测试需要用到测试框架，常用的有[Mocha](http://mochajs.org/)和[QUnit](http://qunitjs.com/)。其他需要用到的工具还有下面一些。
 
-- [Mocha](http://mochajs.org/)
-- [QUnit](http://qunitjs.com/)
-
-组件
-
-- test runner: Mocha
-- 断言库：Expect.js
-- mock库：Sinon.js
-- 覆盖率测试：istanbul
-
-```javascript
-
-test('defines the "author" property', function() {
-  assert.equal(myEl.author, 'Dimitri Glazkov');
-});
-
-test('says hello', function() {
-  assert.equal(myEl.sayHello(), 'seed-element says, Hello World!');
-  var greetings = myEl.sayHello('greetings Earthlings');
-  assert.equal(greetings, 'seed-element says, greetings Earthlings');
-});
-
-test('fires lasers', function(done) {
-  myEl.addEventListener('seed-element-lasers-success', function(event) {
-    assert.equal(event.detail.sound, 'Pew pew pew!');
-    done();
-  });
-  myEl.fireLasers();
-});
-
-```
-
-test函数指定测试名、测试函数。
-
-assert函数指定测试要求，即断言测试要达到的结果。通常，在一个大的test里面，会有很多assert。为了说明assert的目的，每个assert应该包含一个message。
-
-- assert.equal()
-- assert.isTrue()
-- assert.isFalse()
-- assert(!s.children[0].classList.contains('core-selected'))
+- 断言库：Expect.js等
+- mock库：Sinon.js等
+- 覆盖率测试工具：istanbul
 
 ### 集成测试（Integration test）
 
