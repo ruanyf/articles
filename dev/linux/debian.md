@@ -15,7 +15,7 @@ Debian总是同时至少维护三个版本：stable，testing和unstable。
 
 ## 版本名称
 
-- The next release of Debian is codenamed jessie
+- Debian 8 (jessie)
 - Debian 7 (wheezy)
 - Debian 6.0 (squeeze)
 - Debian GNU/Linux 5.0 (lenny)
@@ -35,14 +35,17 @@ apt是软件包管理工具，来自“A Package Tool”的缩写。
 apt的源列表存放在`/etc/apt/sources.list`文件。
 
 ```bash
-deb http://mirrors.ustc.edu.cn/debian wheezy-backports main non-free contrib
-deb http://mirrors.ustc.edu.cn/debian wheezy-proposed-updates main contrib non-free
-deb http://mirrors.ustc.edu.cn/debian-security wheezy/updates main contrib non-free
-deb-src http://mirrors.ustc.edu.cn/debian wheezy-backports main non-free contrib
-deb-src http://mirrors.ustc.edu.cn/debian wheezy-proposed-updates main contrib non-free
-deb-src http://mirrors.ustc.edu.cn/debian-security wheezy/updates main contrib non-free
-deb http://http.us.debian.org/debian wheezy-backports main contrib non-free
-deb http://security.debian.org wheezy/updates main contrib non-free
+deb http://mirrors.163.com/debian/ unstable main contrib non-free
+deb-src http://mirrors.163.com/debian/ unstable main contrib non-free
+
+deb http://security.debian.org/ testing/updates main contrib non-free
+deb-src http://security.debian.org/ testing/updates main contrib non-free
+
+deb http://mirrors.163.com/debian/ testing-updates main
+deb-src http://mirrors.163.com/debian/ testing-updates main
+
+deb http://mirrors.163.com/debian/ testing-proposed-updates main contrib non-free
+deb http://mirrors.ustc.edu.cn/debian-security testing/updates main contrib non-free
 ```
 
 sources.list文件的每一行就是一个软件源。它的格式分成四个部分。
