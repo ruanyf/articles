@@ -171,3 +171,4 @@ $ yeganesh -x
 ## 参考链接
 
 - [How-to: Set up XMonad & XMobar on Ubuntu](http://www.huntlycameron.co.uk/2010/11/how-to-set-up-xmonad-xmobar-ubuntu/)：入门介绍
+- [Xmonad Tutorial for Beginning Beginners](http://beginners-guide-to-xmonad.readthedocs.org/en/latest/configure_xmobar.html)
