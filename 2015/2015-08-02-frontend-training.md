@@ -1,41 +1,5 @@
 # 从零开始学前端
 
-
-- [蚂蚁体验技术学院](http://atit.alipay.net/index.php?r=themeDetail/newIndex&id=198)
-
-第一课
-
-- [Web概述](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=824)
-- [HTML基础](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=824)
-- [学习HTML](http://xue.alibaba-inc.com/trs/mediaDetail.htm?spm=0.0.0.0.zQTjKE&mediaUid=3d390552-b301-4af2-a0df-5c56eb2f6133)
-- [前端工具：PS及图片处理](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=815)
-- [前端工具：调试工具](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=812)
-
-第二课
-
-- [CSS基础概述](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=780)
-- [CSS选择器](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=780)
-- [CSS属性：布局](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=782)
-- [CSS属性：内容](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=783)
-- [CSS布局实战](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=818)
-- [学习CSS](http://xue.alibaba-inc.com/trs/mediaDetail.htm?spm=0.0.0.0.jWocwm&mediaUid=a2e19a1e-1a40-42e0-9383-d9eca8854f17)
-
-第三课
-
-- [JavaScript基础](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=809)
-- [JavaScript进阶](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=811)
-- [jQuery与DOM编程](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=817)
-
-第四课
-
-- [JavaScript实战](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=810)
-- [CSS进阶](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=808)
-
-第五周
-
-- [前端工具：构建](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=814)
-- [uisvr使用指南](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=823)
-
 ## 什么是前端？
 
 这个课程是前端开发培训，首先要知道，什么是前端？
@@ -109,6 +73,40 @@
 
 学习材料
 
-- [《浏览器如何工作？》](http://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/)
+- [览器如何工作？](http://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/)
+- [蚂蚁体验技术学院的视频](http://atit.alipay.net/index.php?r=themeDetail/newIndex&id=198)
+
+第一课
+
+- [Web概述](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=824)
+- [HTML基础](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=824)
+- [学习HTML](http://xue.alibaba-inc.com/trs/mediaDetail.htm?spm=0.0.0.0.zQTjKE&mediaUid=3d390552-b301-4af2-a0df-5c56eb2f6133)
+- [前端工具：PS及图片处理](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=815)
+- [前端工具：调试工具](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=812)
+
+第二课
+
+- [CSS基础概述](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=780)
+- [CSS选择器](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=780)
+- [CSS属性：布局](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=782)
+- [CSS属性：内容](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=783)
+- [CSS布局实战](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=818)
+- [学习CSS](http://xue.alibaba-inc.com/trs/mediaDetail.htm?spm=0.0.0.0.jWocwm&mediaUid=a2e19a1e-1a40-42e0-9383-d9eca8854f17)
+
+第三课
+
+- [JavaScript基础](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=809)
+- [JavaScript进阶](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=811)
+- [jQuery与DOM编程](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=817)
+
+第四课
+
+- [JavaScript实战](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=810)
+- [CSS进阶](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=808)
+
+第五周
+
+- [前端工具：构建](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=814)
+- [uisvr使用指南](http://atit.alipay.net/index.php?r=courseDetail/index&courseid=823)
 
 （完）
