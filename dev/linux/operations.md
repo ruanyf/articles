@@ -19,17 +19,19 @@ $ sudo cat /etc/shadow
 ```bash
 $ sudo cat /etc/passwd
 ```
- 
+
 （4）创建用户
 
 ```bash
 $ sudo useradd [用户名]
 ```
+
 然后，为该用户设置密码。
 
 ```bash
-$ sudo passwd [用户名] 
+$ sudo passwd [用户名]
 ```
+
 ## 组操作
 
 （1）显示当前用户所在的组
@@ -68,12 +70,15 @@ group_name:passwd:GID:user_list
 （1）将USB盘插入电脑
 
 （2）列出所有储存设备。
+
 ```bash
 $ sudo fdisk -l
 ```
+
 你会看到储存盘都是`/dev/sdXN`的形式，其中X是盘号，N是分区号。
 
 （3）在文件系统中创建一个挂载点。
+
 ```bash
 $ sudo mkdir /media/externaldrive
 ```
@@ -105,8 +110,26 @@ $ sudo dd if=debian-*-netinst.iso of=/dev/sdX
 - SIGKILL信号用于立即终止进程，进程不能忽略该信号。
 
 ```bash
-
 # 发出SIGTERM
 $ kill [processID]
-
 ```
+
+## nmcli 网络操作
+
+```bash
+# 查看所有网络连接
+$ nmcli connection show
+
+# 显示所有网络接口
+$ nmcli device status
+
+# 显示所有wifi连接
+$ nmcli dev wifi list
+
+# 连接某个已经成功的连接
+$ nmcli con up id
+
+# 连接某个wifi
+$ nmcli dev wifi connect <name> password <password>
+```
+

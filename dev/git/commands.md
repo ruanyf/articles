@@ -8,12 +8,14 @@ git add 用于向暂存区提交文件。新建或修改过的文件，会加入
 data/letter.txt 5e40c0877058c504203932e5136051cf3cd3519b
 ```
 
-下面是git add命令的例子。
+下面是git add命令的例子，后面的参数是所要添加的路径。
 
 ```bash
 $ git add .
 $ git add fileName
 ```
+
+在Git 2.0以前，git add默认不追踪删除操作。
 
 选择一个文件的某些部分提交到暂存区。
 
@@ -26,6 +28,20 @@ $ git add -p
 ```bash
 $ git add -f <fileName>
 ```
+
+参数-u表示只追踪暂存区已有的文件（包括删除操作），但不添加新增的文件。
+
+```bash
+$ git add -u
+```
+
+参数-A或者--all表示，追踪所有操作，包括新增、修改和删除。
+
+```bash
+$ git add -A
+```
+
+git 2.0开始，-A参数成为默认，即`git add .`等同于`git add -A`。
 
 ## git branch
 

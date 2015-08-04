@@ -88,3 +88,18 @@ $ git commit --amend -m "Fixes bug #42"
 ```
 
 `git commit --amend`会提交一个新的commit，替换上一个commit，包含暂存区所有的变化。
+
+## 分支
+
+删除远程分支。
+
+```bash
+$ git push origin --delete <branch-name>
+```
+
+删除本地分支。
+
+```bash
+$ git branch --delete <branch-name>
+```
+
