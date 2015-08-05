@@ -31,7 +31,7 @@ $ git status
 $ git commit --verbose
 ```
 
-git add命令的all参数，表示保存所有变化（包括新建、修改和删除）。从Git 2.0开始，all是 git add 的默认参数，所以也可以用 git add . 代替。
+git add 命令的all参数，表示保存所有变化（包括新建、修改和删除）。从Git 2.0开始，all是 git add 的默认参数，所以也可以用 git add . 代替。
 
 git status 命令，用来查看发生变动的文件。
 
@@ -50,7 +50,7 @@ Present-tense summary under 50 characters
 http://project.management-system.com/ticket/123
 ```
 
-第一行是不超过50个字的提要，然后罗列出修改目标、主要变动、以及需要注意的问题。最后，提供对应的网址（比如Bug ticket）。
+第一行是不超过50个字的提要，然后空一行，罗列出改动原因、主要变动、以及需要注意的问题。最后，提供对应的网址（比如Bug ticket）。
 
 ## 第四步：与主干同步
 
@@ -168,17 +168,17 @@ $ git rebase -i --autosquash
 
 ## 第六步：推送到远程仓库
 
-合并commit后，就可以将当前分支推送到远程仓库了。
+合并commit后，就可以推送当前分支到远程仓库了。
 
 ```bash
 $ git push --force origin myfeature
 ```
 
-git push命令要加上force参数，是因为rebase以后，分支历史改变了，跟远程分支可能不兼容，可能要强行推送（参见[这里](http://willi.am/blog/2014/08/12/the-dark-side-of-the-force-push/)）。
+git push命令要加上force参数，因为rebase以后，分支历史改变了，跟远程分支不一定兼容，有可能要强行推送（参见[这里](http://willi.am/blog/2014/08/12/the-dark-side-of-the-force-push/)）。
 
 ## 第七步：发出Pull Request
 
-提交到远程仓库以后，就可以发出Pull Request到master分支，然后请求别人进行代码review，确认可以合并到master。
+提交到远程仓库以后，就可以发出 Pull Request 到master分支，然后请求别人进行代码review，确认可以合并到master。
 
 （完）
 
