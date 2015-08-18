@@ -6,6 +6,21 @@ Nginx（发音engine x）是一个轻量级的开源HTTP服务器软件，可以
 
 它与Apache的区别在于：它的设计基于事件和异步操作，而Apache完全依赖线程。当访问量很大的时候，大量新增的线程 很快会耗尽内存，而基于事件的非阻塞设计能够轻松处理。
 
+Nginx的安装。
+
+```bash
+$ sudo apt-get install nginx
+```
+
+重启 nginx 。
+
+```bash
+$ sudo service nginx restart
+
+# 或者
+
+$ nginx -s reload
+```
 nginx有一个主进程和几个worker进程，有多少个CPU，就有多少个worker进程。每一个worker进程能够处理几千个连接。
 
 ```bash
@@ -330,6 +345,12 @@ location /download/ {
 
 ## SSL支持
 
+下面的命令用来生成自签名证书，生成的证书为`/etc/nginx/ssl/ssl.crt`。
+
+```javascript
+$ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/ssl.key -out /etc/nginx/ssl/ssl.crt
+```
+
 将数字证书放在/etc/nginx/certificates/目录。
 
 修改配置文件，打开HTTPs端口。
@@ -436,6 +457,20 @@ $ NGINX -V
 ...
 TLS SNI support enabled
 ...
+```
+
+## 反向代理
+
+范例（/etc/nginx/sites-available/my-site）
+
+```javascript
+server {
+  listen 80;
+  server_name my.domain.com;
+  location / {
+    proxy_pass http://localhost:3000;
+  }
+}
 ```
 
 ## 参考链接

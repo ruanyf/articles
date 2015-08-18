@@ -183,7 +183,13 @@ $ git commit -am
 修改上一次commit的提交信息。
 
 ```bash
-$ git commit --amend
+$ git commit --amend - m "new commit message"
+```
+
+没有提交信息的commit。
+
+```bash
+$ git commit --allow-empty
 ```
 
 ## git commit-tree
@@ -191,9 +197,7 @@ $ git commit --amend
 根据一个树对象，生成新的commit对象。
 
 ```bash
-
 $ git commit-tree 16e19f -m “First commit”
-
 ```
 
 ## git diff
