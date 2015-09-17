@@ -164,13 +164,19 @@ Chrome浏览器开发者工具的Timeline面板，是查看“刷新率”的最
 
 首先，按下 F12 打开“开发者工具”，切换到Timeline面板。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015091512.png)
+
 左上角有一个灰色的圆点，这是录制按钮，按下它会变成红色。然后，在网页上进行一些操作，再按一次按钮完成录制。
 
-Timeline面板提供两种查看方式：横条的是“事件模式”（Event Mode），显示重新渲染时在各种事件上所耗费的时间；竖条的是“帧模式”（Frame Mode），显示每一帧的时间耗费在哪里。
+Timeline面板提供两种查看方式：横条的是“事件模式”（Event Mode），显示重新渲染的各种事件所耗费的时间；竖条的是“帧模式”（Frame Mode），显示每一帧的时间耗费在哪里。
 
-先看“事件模式”，你可以从中判断性能耗费在哪个环节，是JavaScript的执行，还是渲染？
+先看“事件模式”，你可以从中判断，性能问题发生在哪个环节，是JavaScript的执行，还是渲染？
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015091514.png)
 
 不同的颜色表示不同的事件。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015091503.png)
 
 > - 蓝色：网络通信和HTML解析
 > - 黄色：JavaScript执行
@@ -179,15 +185,33 @@ Timeline面板提供两种查看方式：横条的是“事件模式”（Event 
 
 哪种色块比较多，就说明性能耗费在那里。色块越长，问题越大。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015091515.png)
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015091516.png)
+
 帧模式（Frames mode）用来查看单个帧的耗时情况。每帧的色柱高度越低越好，表示耗时少。
 
-你可以看到，帧模式有两条水平的参考线，下面的一条是60FPS，低于这条线，可以达到每秒60帧；上面的一条是30FPS，低于这条线，可以达到每秒30次渲染。如果色柱都超过30FPS，这个网页就有性能问题了。
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015091505.png)
 
-点击每一帧，就可以查看本次重新渲染的时间构成了。
+你可以看到，帧模式有两条水平的参考线。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015091517.png)
+
+下面的一条是60FPS，低于这条线，可以达到每秒60帧；上面的一条是30FPS，低于这条线，可以达到每秒30次渲染。如果色柱都超过30FPS，这个网页就有性能问题了。
+
+此外，还可以查看某个区间的耗时情况。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015091518.png)
+
+或者点击每一帧，查看该帧的时间构成。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015091519.png)
 
 ## 七、window.requestAnimationFrame()
 
-有一些JavaScript方法可以调节重新渲染，其中最重要的就是 window.requestAnimationFrame() 方法，它可以将某些代码放到下一次重新渲染时执行。
+有一些JavaScript方法可以调节重新渲染，大幅提高网页性能。
+
+其中最重要的，就是 window.requestAnimationFrame() 方法。它可以将某些代码放到下一次重新渲染时执行。
 
 ```javascript
 function doubleHeight(element) {
@@ -197,9 +221,9 @@ function doubleHeight(element) {
 elements.forEach(doubleHeight);
 ```
 
-上面的代码将每个元素的高度都增加一倍，可以每次执行都是，读操作后面跟着一个写操作，这会在短时间内触发大量重新渲染，显然对于网页性能很不利。
+上面的代码使用循环操作，将每个元素的高度都增加一倍。可是，每次循环都是，读操作后面跟着一个写操作。这会在短时间内触发大量的重新渲染，显然对于网页性能很不利。
 
-我们可以使用`window.requestAnimationFrame()`，让读操作和写操作分离，把所有的写操作都放到下一次重新渲染。
+我们可以使用`window.requestAnimationFrame()`，让读操作和写操作分离，把所有的写操作放到下一次重新渲染。
 
 ```javascript
 function doubleHeight(element) {
@@ -211,7 +235,7 @@ function doubleHeight(element) {
 elements.forEach(doubleHeight);
 ```
 
-页面滚动事件的监听函数，就很适合用 window.requestAnimationFrame() ，推迟到下一次重新渲染。
+页面滚动事件（scroll）的监听函数，就很适合用 window.requestAnimationFrame() ，推迟到下一次重新渲染。
 
 ```javascript
 $(window).on('scroll', function() {
@@ -219,7 +243,7 @@ $(window).on('scroll', function() {
 });
 ```
 
-下面是一个动画的例子，元素每一帧旋转1度。
+当然，最适用的场合还是网页动画。下面是一个旋转动画的例子，元素每一帧旋转1度。
 
 ```javascript
 var rAF = window.requestAnimationFrame;
@@ -236,9 +260,9 @@ rAF(update);
 
 ## 八、window.requestIdleCallback()
 
-还有一个函数[window.requestIdleCallback()](https://w3c.github.io/requestidlecallback/)，也可以用来调节重新渲染。但是这个函数很新，目前只有Chrome支持。
+还有一个函数[window.requestIdleCallback()](https://w3c.github.io/requestidlecallback/)，也可以用来调节重新渲染。
 
-它指定只有当一帧的末尾有空闲时间，某些代码才会运行。
+它指定只有当一帧的末尾有空闲时间，才会执行回调函数。
 
 ```javascript
 requestIdleCallback(fn);
@@ -246,7 +270,7 @@ requestIdleCallback(fn);
 
 上面代码中，只有当前帧的运行时间小于16.66ms时，函数fn才会执行。否则，就推迟到下一帧，如果下一帧也没有空闲时间，就推迟到下下一帧，以此类推。
 
-requestIdleCallback方法还可以接受第二个参数，表示指定的毫秒数。如果在指定
+它还可以接受第二个参数，表示指定的毫秒数。如果在指定
 的这段时间之内，每一帧都没有空闲时间，那么函数fn将会强制执行。
 
 ```javascript
@@ -259,33 +283,35 @@ requestIdleCallback(fn, 5000);
 
 ```javascript
 requestIdleCallback(function someHeavyComputation(deadline) {
-    while(deadline.timeRemaining() > 0) {
-       doWorkIfNeeded();
-    }
+  while(deadline.timeRemaining() > 0) {
+    doWorkIfNeeded();
+  }
     
-    if(thereIsMoreWorkToDo) {
-      requestIdleCallback(someHeavyComputation);
-    }
+  if(thereIsMoreWorkToDo) {
+    requestIdleCallback(someHeavyComputation);
+  }
 });
 ```
 
+上面代码中，回调函数 someHeavyComputation 的参数是一个 deadline 对象。
+
 deadline对象有一个方法和一个属性：timeRemaining() 和 didTimeout。
 
-- timeRemaining()：返回当前帧还剩余的毫秒。这个方法只能读，不能写，而且会动态更新。因此可以不断检查这个属性，如果还有剩余时间的话，就应该把任务分配到下一轮`requestIdleCallback`。因此，上面代码之中，只要当前帧还有空闲时间，就不断调用doWorkIfNeeded方法。
+timeRemaining() 方法返回当前帧还剩余的毫秒。这个方法只能读，不能写，而且会动态更新。因此可以不断检查这个属性，如果还有剩余时间的话，就不断执行某些任务。一旦这个属性等于0，就把任务分配到下一轮`requestIdleCallback`。
 
-- `didTimeout` 属性返回一个布尔值，表示指定的时间是否过期。
+前面的示例代码之中，只要当前帧还有空闲时间，就不断调用doWorkIfNeeded方法。一旦没有空闲时间，但是任务还没有全执行，就分配到下一轮`requestIdleCallback`。
 
-如果回调函数由于指定时间过期而触发，那么你会得到两个结果。
+deadline对象的 `didTimeout` 属性会返回一个布尔值，表示指定的时间是否过期。这意味着，如果回调函数由于指定时间过期而触发，那么你会得到两个结果。
 
-- timeRemaining方法返回0
-- didTimeout 属性等于 true
+> - timeRemaining方法返回0
+> 
+> - didTimeout 属性等于 true
 
 因此，如果回调函数执行了，无非是两种原因：当前帧有空闲时间，或者指定时间到了。
 
 ```javascript
 function myNonEssentialWork (deadline) {
-  while ((deadline.timeRemaining() > 0 || deadline.didTimeout) &&
-         tasks.length > 0)
+  while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && tasks.length > 0)
     doWorkIfNeeded();
 
   if (tasks.length > 0)
@@ -295,7 +321,9 @@ function myNonEssentialWork (deadline) {
 requestIdleCallback(myNonEssentialWork, 5000);
 ```
 
-上面代码确保了，doWorkIfNeeded函数一定会在将来某个比较空闲的时间（或者在指定时间过期后）得到多次执行。
+上面代码确保了，doWorkIfNeeded 函数一定会在将来某个比较空闲的时间（或者在指定时间过期后）得到反复执行。
+
+requestIdleCallback 是一个很新的函数，刚刚引入标准，目前只有Chrome支持。
 
 ## 九、参考链接
 
