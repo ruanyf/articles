@@ -28,14 +28,45 @@ HTTP 1.1定义了pipelining，允许一个请求尚未得到回应的情况下�
 
 HTTP/2需要兼容HTTP 1.1，两者使用同样的协议符`http://`，所以需要一种自动协议升级机制。HTTP 1.1定义了HTTP信息头`Upgrade: header`，代价是多一次通信往返。但是，HTTP/2没有采用这种方法，而是采用了一种TLS协议扩展Next Protocol Negotiation（错写NPN），服务器告诉浏览器自己支持哪些协议，然后浏览器选择所要采用的协议。但是，HTTP/2没有采用这种方法，而是采用另一种机制ALPN（Application Level Protocol Negotiation），具体做法是浏览器告诉服务器它支持的协议顺序，服务器挑选它所要采用的一种。
 
-## HTTP/2协议的特点
+## HTTP/2协议
+
+2015年2月，IETF发布新版HTTP标准HTTP/2。
+
+只有使用加密协议的站点，才能使用HTTP/2。
+
+### HTTP/2协议的特点
 
 - 二进制传输
-- 多工的流传输（多个流可以混合在一个连接中传递，流可以理解成组成responce的单位）
-- 不同的数据流，可以指定优先性和所依赖的流
-- 信息头压缩
+- 多工的流传输Multiplexing（多个流可以混合在一个连接中传递，流可以理解成组成response的单位）
+- 不同的数据流，可以指定优先性和所依赖的流Dependencies and prioritization
+![](https://blogs.akamai.com/assets_c/2015/02/Ludkin%20Blog%20Image%203-thumb-400x508-3507.png)
+- 信息头压缩Header compression
 - 传统的HTTP连接，在发出Content-Length以后，不能终止传输，否则只能新建另一个TCP连接。HTTP/2允许重置（reset）某个流，传输一个新的流。
-- 服务器推送
+- 服务器推送Server push
+
+### 与HTTP 1.1的比较
+
+（1）请求的对象数目
+
+HTTP 1.1 ：对于同一个TCP连接，一次只能请求一个对象。只有收到服务器回应后，才能请求下一个对象。
+
+![](https://blogs.akamai.com/assets_c/2015/02/Ludkin%20Blog%20Image%201-thumb-400x523-3495.png)
+
+HTTP/2：启用了多工（multiplexing），对于同一个TCP连接，浏览器能够送出任意数目的请求，收到的HTTP请求是没有次序的。
+
+![](https://blogs.akamai.com/assets_c/2015/02/Ludkin%20Blog%20Image%202-thumb-400x579-3501.png)
+
+（2）HTTP头信息的压缩
+
+HTTP 1.1：每次请求，浏览器需要提供许多session信息，这部分要占据大量的HTTP头信息，造成每次请求的体积很大。
+
+HTTP/2：浏览器和服务器都会对HTTP头信息进行压缩。此外，完整的头信息只需要送出一次。
+
+（3）
+
+HTTP 1.1：通信只能由客户端发起，这意味着服务器只能收到请求后，推送资源到客户端。
+
+HTTP/2：服务器能够发起通信，推送到客户端。这就能够减少GET请求的数目。
 
 ## HTTP信息头
 
@@ -66,8 +97,23 @@ Cache-Control的优先性高于Expires。
 Expires: Fri, 30 Oct 1998 14:19:41 GMT
 ```
 
+### 安全相关的HTTP头信息
+
+- Content-Security-Policy
+  - Content-Security-Policy-Report-Only
+  - X-Webkit-Content-Security-Policy
+  - X-Content-Security-Policy
+- Public-Key-Pins
+  - Public-Key-Pins-Report-Only
+- Strict-Transport-Security
+- X-Content-Type-Options
+- X-Frame-Options
+- X-XSS-Protection
+- X-Download-Options
+- X-Permitted-Cross-Domain-Policies
 
 ## 参考网址
 
 - Iliyan Peychev, [HTTP 2.0 is coming, be ready](HTTP 2.0 is coming, be ready)
 - Daniel Stenberg, [http2 explained](http://daniel.haxx.se/http2/)
+- Stephen Ludin, [With HTTP/2, Akamai Introduces Next Gen Web](https://blogs.akamai.com/2015/02/with-http2-akamai-introduces-next-gen-web.html)

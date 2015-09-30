@@ -172,9 +172,16 @@ $ find -type d -empty
 
 find命令默认搜索子目录。
 
-参数-exec grep表示对于每个发现的文件，都用grep处理。
+参数`-exec grep`表示对于每个发现的文件，都用grep处理。
 
-参数-type f表示只处理文件，不包括目录。
+参数`-type f`表示只处理文件，不包括目录。
+
+删除指定文件的例子。
+
+```bash
+$ find . -name '.DS_Store' -type f -delete
+$ find . -name '*.zip' -type f -delete
+```
 
 ### grep
 

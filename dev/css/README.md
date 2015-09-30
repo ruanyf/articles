@@ -362,7 +362,7 @@ filter属性表示图片滤镜，支持grayscale, blur, sepia, saturate, opacity
 ```css
 
 img.bw {
-	filter: grayscale(1);
+  filter: grayscale(1);
 }
 
 ```

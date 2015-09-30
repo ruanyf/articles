@@ -313,6 +313,43 @@ $0 --inp tmp.txt --outputdir tmpdir --inst 10
 _EOF_
 ```
 
+### 文件处理
+
+读取文件的命令格式。
+
+```bash
+while IFS= read -r line;
+do
+  COMMAND_on $line;
+done < input.file
+```
+
+上面的`-r`参数表示防止反斜杠转义。
+
+实例。
+
+```bash
+#!/bin/ksh
+file="/home/vivek/data.txt"
+while IFS= read -r line
+do
+  # display $line or do somthing with $line
+  echo "$line"
+done <"$file"
+```
+
+还可以读取每一行的栏位。
+
+```bash
+#!/bin/bash
+file="/etc/passwd"
+while IFS=: read -r f1 f2 f3 f4 f5 f6 f7
+do
+  # display fields using f1, f2,..,f7
+  printf 'Username: %s, Shell: %s, Home Dir: %s\n' "$f1" "$f7" "$f6"
+done <"$file"
+```
+
 ## 实例
 
 ### 查看指定目录大小
