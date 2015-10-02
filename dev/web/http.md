@@ -70,12 +70,20 @@ HTTP/2：服务器能够发起通信，推送到客户端。这就能够减少GE
 
 ## HTTP信息头
 
+### Access-Control-Allow-Origin
+
+HTTP回应。Cors相关，表示允许Ajax跨域请求。
+
+```
+Access-Control-Allow-Origin: *
+```
+
 ### Cache-Control
 
 提供Cache控制。
 
-- max-age=[seconds] 当前cache最长保存时间
-- s-maxage=[seconds] 类似max-age，但只用于共享cache（即proxy服务器）
+- `max-age=[seconds]` 当前cache最长保存时间
+- `s-maxage=[seconds]` 类似max-age，但只用于共享cache（即proxy服务器）
 - public 表示已认证的HTTP回应也可以共享cache（proxy服务器）
 - private 表示cache只能用于浏览器，不能用于proxy
 - no-cache 严格声明每次都要向服务器验证
@@ -95,6 +103,14 @@ Cache-Control的优先性高于Expires。
 
 ```http
 Expires: Fri, 30 Oct 1998 14:19:41 GMT
+```
+
+### Type
+
+HTTP回应的类型。
+
+```
+Type: application/x-web-app-manifest+json
 ```
 
 ### 安全相关的HTTP头信息
