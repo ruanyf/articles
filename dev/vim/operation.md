@@ -15,11 +15,15 @@ Operator是动词。
 - y – Yank
 - p – Insert last deleted text after cursor (put command)
 - r – Replace
+- v - 可视化选择
 
 Motion表示操作的上下文。
 
 - w – 直到下一个单词的起始位置前面。
-- b - 前一个词。
+- s - sentence
+- p - paragraph
+- t - tag
+- b - block
 - e – 直到当前单词的最后一个位置。
 - $ – 直到当前行的最后一个位置。
 - ) – 下一个句子的开始。
@@ -33,6 +37,10 @@ Motion表示操作的上下文。
 
 Count是可选的，表示command和motion的重复次数。
 
+- i - inside
+- a - around
+- NUM: number (e.g.: 1, 2, 10)
+
 实例
 
 - dw 删除一个词
@@ -40,6 +48,8 @@ Count是可选的，表示command和motion的重复次数。
 - d$ 删除当前行
 - dd 删除当前行（d$的快捷方式）
 - d2$ 删除两行
+- cis - Change inside sentence，删除当前句子，并进入insert模式
+- yip - yank inside paragrah 复制当前段落
 
 ## 撤销命令
 
@@ -264,3 +274,11 @@ nnoremap <c-l> <c-w>l
 - CTRL-J 跳到下一个窗口（顺时针方向）
 - CTRL-K 跳到前一个窗口（逆时针方向）
 - CTRL-F 将当前窗口放入[M]区域，并将其他窗口放在[S]区域
+
+## 提示行操作
+
+- :w: write your changes to the file
+- :q!: get out of vim (quit), but without saving your changes (!)
+- :wq: write your changes and exit vim
+- :saveas ~/some/path/: save your file to that locationvim
+- ZZ: a faster way to do :wq

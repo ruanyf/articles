@@ -26,3 +26,10 @@ $ service ssh restart
 $ ssh-copy-id username@host
 ```
 
+## 命令行参数
+
+`-i`指定登陆服务器所需要的私钥，意为“identity_file”，默认为`~/.ssh/id_dsa`。
+
+```bash
+$ ssh johndoe@host.example.com -i ~/.ssh/host.key
+```

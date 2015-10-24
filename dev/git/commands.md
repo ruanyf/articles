@@ -447,17 +447,13 @@ stash@{2}: WIP on new-feature: 5acd291 Begin new feature
 `git stash pop`命令总是取出最近一次的修改，但是可以用`git stash apply`指定取出某一次的修改。
 
 ```bash
-
 $ git stash apply stash@{1}
-
 ```
 
 上面命令不会自动删除取出的修改，需要手动删除。
 
 ```bash
-
 $ git stash drop stash@{1}
-
 ```
 
 git stash 子命令一览。
@@ -482,13 +478,19 @@ $ git stash clear
 为commit打标签。Tag 分两种：annotated tag 才會產生 object。
 
 ```bash
-
 $ git tag tmp # 生成.git/refs/tags/tmp
 $ git tag -a release
 $ git tag -a [VERSION] -m "released [VERSION]"
 ```
 
 上面代码表示为当前commit打上一个带注解的标签，标签名为release。
+
+普通标签的写法。
+
+```bash
+$ git tag 1.0.0
+$ git push --tags
+```
 
 ## git update-index
 

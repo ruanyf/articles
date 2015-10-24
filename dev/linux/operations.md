@@ -133,3 +133,52 @@ $ nmcli con up id
 $ nmcli dev wifi connect <name> password <password>
 ```
 
+## 截图
+
+xfce截图。
+
+```bash
+$ xfce4-screenshooter -f
+```
+
+Gnome截图。
+
+```bash
+$ gnome-panel-screenshot
+$ gnome-panel-screenshot --delay 10
+```
+
+ImageMagick截图。
+
+```bash
+$ import MyScreenshot.png
+```
+
+然后，用鼠标选中所要截图的范围。
+
+其他参数
+
+```bash
+# 10秒后抓取整个屏幕
+$ sleep 10; import -window root MyScreenshot2.png
+
+# 抓取图片后，并打开编辑软件
+$ sleep 15; import -window root MyScreenshot3.png; gimp MyScreenshot3.png
+
+# 抓取图片后，将宽度缩为500像素
+$ import -window root -resize 500 AnotherScreenshot.png
+```
+
+scrot截图
+
+```bash
+# 安装
+$ sudo aptitude install scrot
+
+$ scrot MyScreenshot.png
+
+# 设置质量和延迟，并进行编辑
+$ scrot -q 85 -d 5 screenshot.png && gimp screenshot.png &
+```
+
+GIMP也可以用来截图，命令为`File —> Acquire —> Screen Shot`。
