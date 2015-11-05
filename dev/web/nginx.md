@@ -319,7 +319,6 @@ server {
 认证和IP地址之中，只要满足一个条件即可。
 
 ```
-
 location / {
     satisfy any;
 
@@ -329,7 +328,6 @@ location / {
     auth_basic           "closed site";
     auth_basic_user_file conf/htpasswd;
 }
-
 ```
 
 限制单个IP地址的带宽，以及能够建立的连接数。。
@@ -469,6 +467,26 @@ server {
   server_name my.domain.com;
   location / {
     proxy_pass http://localhost:3000;
+  }
+}
+```
+
+## 均衡负载
+
+```
+http {
+  upstream cluster {
+      server 127.0.0.1:3000;
+      server 127.0.0.1:3001;
+      server 127.0.0.1:3002;
+      server 127.0.0.1:3003;
+  }
+  server {
+       listen 80;
+       server_name www.domain.com;
+       location / {
+            proxy_pass http://cluster;
+       }
   }
 }
 ```

@@ -18,19 +18,25 @@ $ sudo apt-get install xmonad xmobar
  
 ### 操作
  
-- alt + shift + enter打开一个终端窗口。
-- alt + shift + c 关闭当前窗口
-- alt + j 顺时针选择焦点窗口
-- alt + k 逆时针选择焦点窗口
-- alt + shift + j 顺时针移动焦点窗口
-- alt + shift + k 逆时针移动焦点窗口
-- alt + , 增加主方框中的窗口数量
-- alt + . 减少主方框中的窗口数量
-- alt + enter 使得焦点窗口与主区域窗口互换位置
-- alt + l 和 alt + h 调整焦点窗口大小
-- alt + space 切换显示模式，依次为主区域在左边、主区域在桌面上方，主区域占据整个桌面。
-- 移动弹出窗口，可以按住alt键，拖动它。
-- alt + shift + q  退出xMonad。
+alt + shift + enter打开一个终端窗口。
+
+alt + j 顺时针选择焦点窗口
+
+alt + k 逆时针选择焦点窗口
+
+alt + shift + j 顺时针移动焦点窗口
+
+alt + shift + k 逆时针移动焦点窗口
+
+ alt + enter 使得焦点窗口与主区域窗口互换位置
+
+alt + l 和 alt + h 调整焦点窗口大小
+
+alt + space 切换显示模式，依次为主区域在左边、主区域在桌面上方，主区域占据整个桌面。
+
+移动跳出窗口，可以按住alt键，拖动它。
+
+alt + shift + q  退出xMonad。
 
 ### 工作区
 
@@ -38,26 +44,47 @@ xMonad提供9个工作区，使用alt+1 ~9切换。 XMonad启动后，默认处�
 
 如果要将一个程序移到不同的工作区，先用alt + j/k，将其变成焦点窗口，然后使用 alt + shift + [1-9]，将其移到所要的工作区。
 
-### 窗口悬浮
-
-- alt + 鼠标左键拖拽, 可以使一个窗口悬浮
-- alt + 鼠标中键, 使得悬浮窗口前端显示
-- alt + 鼠标右键拖拽, 修改悬浮窗口大小
-- 鼠标所在的位置将成为窗口的右下角
-- alt + t 可以使窗口取消悬浮
-
 ### 双显示器
 
-默认情况，工作区1显示在主显示器，工作区2显示在第二个显示器。 如果要将工作区在显示器之间移动，按alt + 2 或者 alt + 1。使用alt + shift + 1，将焦点窗口移到主显示器；alt + shift + 2，将焦点窗口移到第二个显示器。
+alt + w 焦点移到左显示器
 
-- alt + w 焦点移到左显示器
-- alt + e 焦点移到右显示器
+alt + e 焦点移到右显示器
+
+默认，工作区1显示在主显示器，工作区2显示在第二个显示器。 如果要将工作区在显示器之间移动，按alt + 2 或者 alt + 1。
 
 ### 配置
 
 在主目录下新建一个.xmonad目录，然后在这个目录下新建一个xmonad.hs文件。
 
 alt + q 重新运行配置文件
+
+## xmonad.hs
+
+```
+import XMonad
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageDocks
+import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.EZConfig(additionalKeys)
+import System.IO
+
+main = do
+    xmproc <- spawnPipe "xmobar"
+
+    xmonad $ defaultConfig
+        { manageHook = manageDocks <+> manageHook defaultConfig
+        , layoutHook = avoidStruts  $  layoutHook defaultConfig
+        , logHook = dynamicLogWithPP xmobarPP
+                        { ppOutput = hPutStrLn xmproc
+                        , ppTitle = xmobarColor "green" "" . shorten 50
+                        }
+        , modMask = mod4Mask     -- Rebind Mod to the Windows key
+        } `additionalKeys`
+        [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock; xset dpms force off")
+        , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
+        , ((0, xK_Print), spawn "scrot")
+        ]
+```
 
 ## XMobar
 
@@ -144,6 +171,4 @@ $ yeganesh -x
 ## 参考链接
 
 - [How-to: Set up XMonad & XMobar on Ubuntu](http://www.huntlycameron.co.uk/2010/11/how-to-set-up-xmonad-xmobar-ubuntu/)：入门介绍
-- [How to configure xmonad in Arch Linux](http://www.linuxandlife.com/2011/11/how-to-configure-xmonad-arch-linux.html): 如何编写配制文件
-- [Xmonad/Basic Desktop Environment Integration](https://www.haskell.org/haskellwiki/Xmonad/Basic_Desktop_Environment_Integration): 官方配置说明
-- [Xmonad Tutorial for Beginning Beginners](http://beginners-guide-to-xmonad.readthedocs.org/en/latest/index.html): xMonad教程
+- [Xmonad Tutorial for Beginning Beginners](http://beginners-guide-to-xmonad.readthedocs.org/en/latest/configure_xmobar.html)
