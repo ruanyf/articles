@@ -339,9 +339,7 @@ $ git rebase -i master~3
 显示某个指示符的SHA1哈希值。
 
 ```bash
-
 $ git ref-parse HEAD
-
 ```
 
 ## git remote
@@ -349,16 +347,13 @@ $ git ref-parse HEAD
 为远程仓库添加别名。
 
 ```bash
-
 $ git remote add john git@github.com:johnsomeone/someproject.git
-
 
 # 显示所有的远程主机
 $ git remote -v
 
 # 列出某个主机的详细信息
 $ git remote show name
-
 ```
 
 `git remote`命令的实质是在`.git/config`文件添加下面的内容。
@@ -377,10 +372,19 @@ $ git remote add bravo ../bravo
 将文件从暂存区移除。
 
 ```bash
+# 用法
+$ git reset <commitID> <文件名>
 
-$ git reset <文件名>
+# 例子
 $ git reset HEAD lib/foo.rb
+```
 
+## git revert
+
+`git revert`命令用于撤销commit。
+
+```bash
+$ git revert <commitID>
 ```
 
 ## git rm
@@ -411,12 +415,23 @@ $ git show feature132@{2.hours.ago} # Time relative
 
 ## git stash
 
-运行该命令后，所有没有commit的代码，都会暂时从工作区移除，回到上次commit时的状态。
+`git stash`命令用于暂时保存没有提交的工作。运行该命令后，所有没有commit的代码，都会暂时从工作区移除，回到上次commit时的状态。
 
 它处于`git reset --hard`（完全放弃还修改了一半的代码）与`git commit`（提交代码）命令之间，很类似于“暂停”按钮。
 
 ```bash
+# 暂时保存没有提交的工作
 $ git stash
+Saved working directory and index state WIP on workbranch: 56cd5d4 Revert "update old files"
+HEAD is now at 56cd5d4 Revert "update old files"
+
+# 列出所有暂时保存的工作
+$ git stash list
+stash@{0}: WIP on workbranch: 56cd5d4 Revert "update old files"
+stash@{1}: WIP on project1: 1dd87ea commit "fix typos and grammar"
+
+# 恢复某个暂时保存的工作
+$ git stash apply stash@{1}
 ```
 
 上面命令会将所有已提交到暂存区，以及没有提交的修改，都进行内部保存，没有将工作区恢复到上一次commit的状态。
@@ -434,12 +449,10 @@ $ git stash pop
 `git stash list`命令查看内部保存的多次修改。
 
 ```bash
-
 $ git stash list
 stash@{0}: WIP on new-feature: 5cedccc Try something crazy
 stash@{1}: WIP on new-feature: 9f44b34 Take a different direction
 stash@{2}: WIP on new-feature: 5acd291 Begin new feature
-
 ```
 
 上面命令假设曾经运行过`git stash`命令三次。
@@ -475,7 +488,7 @@ $ git stash clear
 
 ## git tag
 
-为commit打标签。Tag 分两种：annotated tag 才會產生 object。
+为commit打标签。Tag 分两种：普通tag和注解tag。只有annotated tag 才會產生 object。
 
 ```bash
 $ git tag tmp # 生成.git/refs/tags/tmp
@@ -490,6 +503,9 @@ $ git tag -a [VERSION] -m "released [VERSION]"
 ```bash
 $ git tag 1.0.0
 $ git push --tags
+
+$ git tag v0.0.1
+$ git push origin master --tags
 ```
 
 ## git update-index
@@ -497,10 +513,8 @@ $ git push --tags
 将工作区的文件加入缓存区域。
 
 ```bash
-
 $ git update-index --add --cacheinfo \
 100644 5c1b14949828006ed75a3e8858957f86a2f7e2eb hola.txt
-
 ```
 
 直接将缓存信息插入缓存文件。
@@ -510,17 +524,13 @@ $ git update-index --add --cacheinfo \
 更新一个指针文件中的Git对象ID。
 
 ```bash
-
 $ git update-ref refs/heads/master 107aff
-
 ```
 
-## git write-tree 
+## git write-tree
 
 根据当前缓存区域，生成一个树对象。
 
 ```bash
-
 $ git write-tree
-
 ```

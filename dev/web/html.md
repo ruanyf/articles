@@ -1,4 +1,4 @@
-# HTML用法
+ HTML用法
 
 ## HTML标签
 
@@ -168,3 +168,18 @@ Content-Type: multipart/form-data; boundary=AaB03x
    ... contents of file1.txt ...
    --AaB03x--
 ```
+
+### input元素
+
+input元素有`formaction`属性，用来强制当前表单跳转到指定的URL，而不是表单的`action`属性指定的URL。
+
+```html
+<form action="http://e1.com">
+  <input type=submit value=Submit ↵
+     formaction="http://e2.com">
+</form>
+```
+
+上面代码中，如果点击提交按钮，表单会跳转到`e2.com`，而不是`e1.com`。它的主要用途是一个表单可以提交到多个目的地。
+
+该属性对具有提交作用的元素都有效，比如`<input type=submit>`、`<input type=image>`和`<button>`。
