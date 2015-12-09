@@ -277,7 +277,38 @@ $
 
 ## 限制访问
 
-限制IP段。
+全局拦截。
+
+```bash
+$ vi /etc/nginx/sites-enabled/blockips.conf
+```
+
+写入所要拦截的IP。
+
+```
+deny 123.123.123.123;
+```
+
+然后，重启nginx。
+
+```bash
+sudo /etc/init.d/nginx restart
+```
+
+`blockips.conf`里面，如果想要拦掉某个网段，可以写成下面这样。
+
+```
+deny 123.123.123.0/24;
+```
+
+如果只允许某个网段，可以写成下面这样。
+
+```
+allow 1.2.3.4/24;
+deny all;
+```
+
+nginx配置文件里面限制IP段。
 
 ```
 location / {
@@ -291,19 +322,16 @@ location / {
 启用访问认证。
 
 ```
-
 server {
     ...
     auth_basic "closed website";
     auth_basic_user_file conf/htpasswd;
 }
-
 ```
 
 全站启用访问认证，某些路径允许自由访问。
 
 ```
-
 server {
     ...
     auth_basic "closed website";
@@ -313,7 +341,6 @@ server {
         auth_basic off;
     }
 }
-
 ```
 
 认证和IP地址之中，只要满足一个条件即可。
@@ -330,7 +357,7 @@ location / {
 }
 ```
 
-限制单个IP地址的带宽，以及能够建立的连接数。。
+限制单个IP地址的带宽，以及能够建立的连接数。
 
 ```
 

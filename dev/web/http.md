@@ -1,10 +1,30 @@
 # HTTP笔记
 
-如今，一张网页通常要发出80到100个HTTP请求（request）。浏览器会同时跟服务器保留6个连接（connection）。
+## HTTP/2协议
 
-[HTTP/2](http://http2.github.io/http2-spec/)是一个二进制协议，浏览器与服务器之间交换[“数据框”](http://http2.github.io/http2-spec/#FramingLayer)（frame）。每个数据框属于一个[数据流](http://http2.github.io/http2-spec/#StreamsLayer)（stream），每个数据流有一个编号（identifier）。这些数据流都是多工的（multiplexed），即浏览器可以向服务器发送，服务器也可以向浏览器发送。
+如今，一张网页通常要发出80到100个HTTP请求（request）。浏览器会同时跟服务器保留6个TCP连接（connection）。每个TCP连接同时只能处理一个请求，必须当前请求结束，才能发起另一个请求。
 
-与HTTP 1.1不同，HTTP/2的信息头也是压缩的，使用HPACK算法。另外，HTTP/2协议规定，服务器也可以向浏览器推送信息。
+2015年2月，IETF发布新版HTTP标准HTTP/2。HTTP/2可以一个TCP连接同时处理多个HTTP请求。
+
+![](https://blog.cloudflare.com/content/images/2015/12/image_1.png)
+
+HTTP/2需要兼容HTTP 1.1，两者使用同样的协议符`http://`，所以需要一种自动协议升级机制Next Protocol Negotiation（缩写NPN）。HTTP 1.1定义了HTTP信息头`Upgrade: header`，代价是多一次通信往返。服务器告诉浏览器自己支持哪些协议，然后浏览器选择所要采用的协议。但是，HTTP/2没有采用这种方法，而是采用另一种机制ALPN（Application Level Protocol Negotiation），具体做法是浏览器告诉服务器它支持的协议顺序，服务器挑选它所要采用的一种。
+
+### HTTP/2协议的特点
+
+（1）二进制传输
+
+[HTTP/2](http://http2.github.io/http2-spec/)是一个二进制协议，浏览器与服务器之间交换[“数据框”](http://http2.github.io/http2-spec/#FramingLayer)（frame）。每个数据框属于一个[数据流](http://http2.github.io/http2-spec/#StreamsLayer)（stream），每个数据流有一个编号（identifier）。多个流可以混合在一个连接中传递，流可以理解成组成response的单位。
+
+（2）并发（concurrency）
+
+同一个TCP连接之中可以同时处理多个请求，服务器可以不按照收到的顺序，发出回应。减少了服务器与浏览器之间建立多个连接的需要。使用HTTP/2时，HTTP请求的数量不再是一个问题，优化主要集中在减小文件体积，利用好缓存。
+
+传统的HTTP连接，在发出Content-Length以后，不能终止传输，否则只能新建另一个TCP连接。HTTP/2允许重置（reset）某个流，传输一个新的流。
+
+（3）多工的流传输（Multiplexing）
+
+这些数据流都是多工的（multiplexed），即浏览器可以向服务器发送，服务器也可以向浏览器发送。也就是说，即使浏览器并没有请求某个资源，服务器也可以向浏览器推送（Server push）。
 
 ![](/image/http-connection-2014-12-06.png)
 
@@ -12,37 +32,17 @@
 2. 服务器发现网页包含script.js，就自己向浏览器发送stream 2，发送该脚本。
 3. 服务器发起Stream 3，向浏览器推送style.css。
 
-使用HTTP/2时，HTTP请求的数量不再是一个问题，优化主要集中在减小文件体积，利用好缓存。
+（4）信息头压缩（Header compression）
 
-以下的网页优化今后将不再需要。
+HTTP请求的头信息也是压缩后再发送的，使用HPACK算法。
 
-- 文件合并
-- 域名分设（Domain sharding）：这一步应该首先去除，因为它增加DNS查找的时间。Sharding的原因有两个，一个不占用TCP请求通道；二是为图片等静态资源，新增没有cookie的域名。
-- 行内资源（Resource inlining）：data URL
-- Image sprites
-- 使用不含cookie的域名
+（5）流依赖管理（Stream dependencies）
 
-HTTP 1.1定义了pipelining，允许一个请求尚未得到回应的情况下，就发出另一个请求。但是，大多数浏览器默认没有打开这项功能。
+客户端可以告诉服务器，哪个资源更重要。不同的数据流，可以指定优先性和所依赖的流（dependencies and prioritization）。
 
-发出HTTP请求就像在超市排队付款，一共只有6条队伍，前面的人排满了，后面的人就只有等着。
-
-HTTP/2需要兼容HTTP 1.1，两者使用同样的协议符`http://`，所以需要一种自动协议升级机制。HTTP 1.1定义了HTTP信息头`Upgrade: header`，代价是多一次通信往返。但是，HTTP/2没有采用这种方法，而是采用了一种TLS协议扩展Next Protocol Negotiation（错写NPN），服务器告诉浏览器自己支持哪些协议，然后浏览器选择所要采用的协议。但是，HTTP/2没有采用这种方法，而是采用另一种机制ALPN（Application Level Protocol Negotiation），具体做法是浏览器告诉服务器它支持的协议顺序，服务器挑选它所要采用的一种。
-
-## HTTP/2协议
-
-2015年2月，IETF发布新版HTTP标准HTTP/2。
-
-只有使用加密协议的站点，才能使用HTTP/2。
-
-### HTTP/2协议的特点
-
-- 二进制传输
-- 多工的流传输Multiplexing（多个流可以混合在一个连接中传递，流可以理解成组成response的单位）
-- 不同的数据流，可以指定优先性和所依赖的流Dependencies and prioritization
 ![](https://blogs.akamai.com/assets_c/2015/02/Ludkin%20Blog%20Image%203-thumb-400x508-3507.png)
-- 信息头压缩Header compression
-- 传统的HTTP连接，在发出Content-Length以后，不能终止传输，否则只能新建另一个TCP连接。HTTP/2允许重置（reset）某个流，传输一个新的流。
-- 服务器推送Server push
+
+另外，虽然HTTP/2并没有规定，一定要使用加密链接（TLS/SSL），但是所有的浏览器目前都要求，只有加密连接，才能使用HTTP/2协议。
 
 ### 与HTTP 1.1的比较
 
@@ -67,6 +67,18 @@ HTTP/2：浏览器和服务器都会对HTTP头信息进行压缩。此外，完�
 HTTP 1.1：通信只能由客户端发起，这意味着服务器只能收到请求后，推送资源到客户端。
 
 HTTP/2：服务器能够发起通信，推送到客户端。这就能够减少GET请求的数目。
+
+以下的网页优化今后将不再需要。
+
+- 文件合并
+- 域名分设（Domain sharding）：这一步应该首先去除，因为它增加DNS查找的时间。Sharding的原因有两个，一个不占用TCP请求通道；二是为图片等静态资源，新增没有cookie的域名。
+- 行内资源（Resource inlining）：data URL
+- Image sprites
+- 使用不含cookie的域名
+
+HTTP 1.1定义了pipelining，允许一个请求尚未得到回应的情况下，就发出另一个请求。但是，大多数浏览器默认没有打开这项功能。
+
+发出HTTP请求就像在超市排队付款，一共只有6条队伍，前面的人排满了，后面的人就只有等着。
 
 ## HTTP信息头
 
@@ -127,6 +139,11 @@ Type: application/x-web-app-manifest+json
 - X-XSS-Protection
 - X-Download-Options
 - X-Permitted-Cross-Domain-Policies
+- Strict-Transport-Security enforces secure (HTTP over SSL/TLS) connections to the server
+- X-Frame-Options provides clickjacking protection
+- X-XSS-Protection enables the Cross-site scripting (XSS) filter built into most recent web browsers
+- X-Content-Type-Options prevents browsers from MIME-sniffing a response away from the declared content-type
+- Content-Security-Policy prevents a wide range of attacks, including Cross-site scripting and other cross-site injections
 
 ## 参考网址
 

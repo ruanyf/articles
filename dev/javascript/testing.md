@@ -85,24 +85,6 @@ describe('Counter', function() {
 
 总结一下，就是TDD告诉你何时写测试，何时写代码，BDD告诉你如何写测试，两者应该结合起来。
 
-### Mocha
-
-Mocha是一款2012年创建的测试框架，主要用于Node环境下的测试，但也可以用于浏览器之中。如果业务逻辑可以与用户互动分开，或者不需要用到DOM或document对象，则单单用Mocha测试就可以了，甚至都不用安装无头浏览器。
-
-Mocha并没有自带断言库，所以需要自己安装一个，比较常见的断言库比如[chai](http://chaijs.com/)。
-
-```javascript
-
-describe("My Unit To Test", function () {
-  describe("#myMethod()", function () {
-    it("should return the thing I expect", function () {
-      assert.equal(1, "1", "Passed!");
-    });
-  });
-});
-
-```
-
 ### QUnit
 
 QUnit的作者就是jQuery的作者，从2008年创立，最早只能在浏览器中运行。

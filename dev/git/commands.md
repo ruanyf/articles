@@ -35,13 +35,13 @@ $ git add -f <fileName>
 $ git add -u
 ```
 
-参数-A或者--all表示，追踪所有操作，包括新增、修改和删除。
+参数`-A`或者`--all`表示，追踪所有操作，包括新增、修改和删除。
 
 ```bash
 $ git add -A
 ```
 
-git 2.0开始，-A参数成为默认，即`git add .`等同于`git add -A`。
+git 2.0开始，`-A`参数成为默认，即`git add .`等同于`git add -A`。
 
 ## git branch
 
@@ -211,9 +211,14 @@ $ git commit-tree 16e19f -m “First commit”
 查看文件之间的差异
 
 ```bash
-
 # 查看工作区与暂存区的差异
 $ git diff
+
+# 查看某个文件的工作区与暂存区的差异
+$ git diff file.txt
+
+# 查看两个commit的差异
+$ git diff commitBefore commitAfter
 
 # 查看暂存区与仓库区的差异
 $ git diff --cached
@@ -225,11 +230,17 @@ $ git diff HEAD
 # 查看工作区文件与指定commit的差异
 $ git diff <commit的名称>
 
+# 显示两次提交之间的差异
+$ git diff [first-branch]...[second-branch]
+
 # 查看工作区与当前分支上一次提交的差异，但是局限于test文件
 $ git diff HEAD -- ./test
 
 # 查看当前分支上一次提交与上上一次提交之间的差异
 $ git diff HEAD -- ./test
+
+# 生成patch
+$ git format-patch master --stdout > mypatch.patch
 ```
 
 比较两个分支
@@ -269,6 +280,14 @@ $ echo "hola" | git hash-object -w --stdin
 
 ## git log
 
+```bash
+# 列出当前分支的版本历史
+$ git log
+
+# 列出某个文件的版本历史，包括文件改名
+$ git log --follow [file]
+```
+
 查看远程分支的变动情况。
 
 ```bash
@@ -301,6 +320,13 @@ git log --graph --decorate --pretty=oneline --abbrev-commit
 - --decorate 显示commit里面的分支
 - --pretty=oneline 只显示commit信息的标题
 - --abbrev-commit 只显示commit SHA1的前7位
+
+## git ls-files
+
+```bash
+# 列出没有被.gitignore忽视的文件
+$ git ls-files --other --ignored --exclude-standard
+```
 
 ## git merge
 
@@ -402,6 +428,8 @@ $ git rm --cached <fileName>
 查看commit的内容
 
 ```bash
+# 输出某次提交的元数据和内容变化
+$ git show [commit]
 
 $ git show 12a86bc38 # By revision
 $ git show v1.0.1 # By tag
@@ -410,7 +438,6 @@ $ git show 12a86bc38^ # Parent of a commit
 $ git show 12a86bc38~2 # Grandparent of a commit
 $ git show feature132@{yesterday} # Time relative
 $ git show feature132@{2.hours.ago} # Time relative
-
 ```
 
 ## git stash
@@ -432,6 +459,15 @@ stash@{1}: WIP on project1: 1dd87ea commit "fix typos and grammar"
 
 # 恢复某个暂时保存的工作
 $ git stash apply stash@{1}
+
+# 恢复最近一次stash的文件
+$ git stash pop
+
+# 丢弃最近一次stash的文件
+$ git stash drop
+
+# 删除所有的stash
+$ git stash clear
 ```
 
 上面命令会将所有已提交到暂存区，以及没有提交的修改，都进行内部保存，没有将工作区恢复到上一次commit的状态。
