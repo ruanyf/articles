@@ -444,6 +444,15 @@ tcpdump命令在链接层过滤每个网络数据包，能够网络上的所有�
 
 top输出系统当前状态。
 
+### uname
+
+`uname`命令输出当前操作系统的信息。
+
+```bash
+$ uname
+Linux
+```
+
 ### which
 
 which命令输出当前shell命令对应的命令行程序。

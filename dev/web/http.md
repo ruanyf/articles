@@ -109,6 +109,16 @@ Cache-Control: max-age=3600, must-revalidate
 
 Cache-Control的优先性高于Expires。
 
+### Content-Security-Policy
+
+`Content-Security-Policy`指定当前网页允许加载外部资源的范围。
+
+```http
+Content-Security-Policy: default-src 'self' trustedscripts.foo.com
+```
+
+上面代码表示，`default-src`表示当前设置默认适用于各种场合，`self`表示当前网址，`trustedscripts.foo.com`表示指定的安全网址。
+
 ### Expires
 
 网页何时过期。
