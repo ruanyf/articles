@@ -1,14 +1,24 @@
 # bash的用法
 
-## bash环境
+Bash环境之中，用户配置文件位于主目录的`~/.bashrc`和`~/.profile`文件。这些配置文件会在用户登录时加载。
 
-bash命令的x参数，进入调试环境。
+修改后，下面的命令可以让修改立刻生效。
 
 ```bash
-$ bash -x <脚本文件名>
+$ source ~/bash_profile
 ```
 
-每次打开一个新的Bash窗口，就会执行.profile文件，作为窗口的初始化文件。
+`chsh`命令可以切换shell。
+
+```bash
+$ chsh zsh
+```
+
+每次打开一个新的Bash窗口，就会执行`.profile`文件，作为窗口的初始化文件。
+
+对于登录Shell，Bash启动前，会先运行`/etc/profile exists`，然后是`/etc/profile.d`目录里面所有后缀为`.sh`的脚本。然后，依次是`~/.bash_profile`、`~/.bash_login`、`~/.profile`。
+
+对于非登录Shell，会加载`~/.bashrc`，以及从`/etc/bash.bashrc`或`/etc/bashrc`输入全局变量。等你退出登录，会运行`~/.bash_logout`。
 
 ## 重定向
 
@@ -81,7 +91,7 @@ Shebang指文件第一行，用来指定命令解释器。
 
 ### 变量
 
-等号用来给变量赋值。等号前后都不能有空格。
+Bash脚本之中，可以自定义变量。变量使用等号赋值，等号前后都不能有空格。
 
 ```bash
 $ a=3
@@ -94,7 +104,7 @@ $ echo $a
 3
 ```
 
-变量名如果后面还紧跟着其他字符，可以将其放在大括号中。
+Bash变量名是大小写敏感的。变量名如果后面还紧跟着其他字符，可以将其放在大括号中。
 
 ```bash
 INIT_DIR="${HOME}/.dotfiles/bash"
@@ -102,10 +112,46 @@ INIT_DIR="${HOME}/.dotfiles/bash"
 
 Bash变量是弱类型的，可以随时改为其他类型的值。如果变量的值是字符串，而且包含空格，那么需要用双引号包起来。另外，双引号中的变量会被扩展成对应的值，单引号没有变量扩展的功能。
 
+变量只对创建它的进程可见，除非使用`export`命令，将变量输出到子进程。
+
+如果在Bash变量之前放上变量赋值语句，则该变量会输入子进程。
+
+```bash
+$ echo "$VAR5 / $VAR6"
+ /
+$ VAR5=5 VAR6="some value" bash
+$ echo "$VAR5 / $VAR6"
+5 / some value
+$ exit
+$ echo "$VAR5 / $VAR6"
+ /
+```
+
+`readonly`命令可以设置只读变量。
+
+```bash
+$ readonly rov2="another constant value"
+$ rov2=3
+bash: rov2: readonly variable
+```
+
 ### 环境变量
 
-- PS1 提示符
-- SHELL 当前使用的Shell
+- $PS1 提示符
+- $SHELL 当前使用的Shell
+- $$ 当前进程的ID
+- $PPID 父进程的ID
+
+```bash
+$ echo $$
+20708
+# 新建一个子Shell
+$ bash
+$ echo $PPID
+20708
+# 退出子进程
+$ exit
+```
 
 ### 特殊变量
 
@@ -115,6 +161,7 @@ Bash变量是弱类型的，可以随时改为其他类型的值。如果变量�
 - $1 脚本的第一个参数
 - $2 脚本的第二个参数，以此类推
 - $# 参数数组的大小
+- $$ 当前进程的ID
 
 ```bash
 # hellokitty.sh
@@ -144,7 +191,6 @@ fi
 $ a=joe
 $ if [ $a == "joe" ]; then echo hello; fi
 hello
-
 ```
 
 脚本实例
@@ -154,12 +200,12 @@ hello
 
 a=joe
 
-if [ $a == "joe" ]; then 
-	echo hello; 
-elif [ $a == "doe" ]; then 
-	echo goodbye; 
-else 
-	echo "ni hao"; 
+if [ $a == "joe" ]; then
+  echo hello;
+elif [ $a == "doe" ]; then
+  echo goodbye;
+else
+  echo "ni hao";
 fi
 ```
 
@@ -172,10 +218,10 @@ $ if ! cd $outputdir; then echo "couldnt cd into output dir"; exit; fi
 $ # no error -  now we're in the directory testdir
 ```
 
-test是判断命令，“[” 符号可用于代替test命令。
+test是判断命令，也可以不把判断条件放在`[...]`之中。
 
 ```bash
-if test $? -eq 0 
+if test $? -eq 0
 then
 fi
 
@@ -184,8 +230,14 @@ if [ -e $file ]
 
 # 判断文件大小是否为0
 if [ -s $file ]
-
 ```
+
+多个表达式的联合
+
+- `[ ! EXPR ]` True if EXPR is false.
+- `[ ( EXPR ) ]` Returns the value of EXPR. This may be used to override the normal precedence of operators.
+- `[ EXPR1 -a EXPR2 ]` True if both EXPR1 and EXPR2 are true.
+- `[ EXPR1 -o EXPR2 ]` True if either EXPR1 or EXPR2 is true.
 
 运算符
 
@@ -204,6 +256,41 @@ if [ -s $file ]
 - <= Is Less Than Or Equal To
 - > Is Greater Than if
 - >= Is Greater Than Or Equal To
+
+常见的判断表达式。
+
+- `[ -a FILE ]`	True if FILE exists.
+- `[ -b FILE ]`	True if FILE exists and is a block-special file.
+- `[ -c FILE ]`	True if FILE exists and is a character-special file.
+- `[ -d FILE ]`	True if FILE exists and is a directory.
+- `[ -e FILE ]`	True if FILE exists.
+- `[ -f FILE ]`	True if FILE exists and is a regular file.
+- `[ -g FILE ]`	True if FILE exists and its SGID bit is set.
+- `[ -h FILE ]`	True if FILE exists and is a symbolic link.
+- `[ -k FILE ]`	True if FILE exists and its sticky bit is set.
+- `[ -p FILE ]`	True if FILE exists and is a named pipe (FIFO).
+- `[ -r FILE ]`	True if FILE exists and is readable.
+- `[ -s FILE ]`	True if FILE exists and has a size greater than zero.
+- `[ -t FD ]`	True if file descriptor FD is open and refers to a terminal.
+- `[ -u FILE ]`	True if FILE exists and its SUID (set user ID) bit is set.
+- `[ -w FILE ]`	True if FILE exists and is writable.
+- `[ -x FILE ]`	True if FILE exists and is executable.
+- `[ -O FILE ]`	True if FILE exists and is owned by the effective user ID.
+- `[ -G FILE ]`	True if FILE exists and is owned by the effective group ID.
+- `[ -L FILE ]`	True if FILE exists and is a symbolic link.
+- `[ -N FILE ]`	True if FILE exists and has been modified since it was last read.
+- `[ -S FILE ]`	True if FILE exists and is a socket.
+- `[ FILE1 -nt FILE2 ]`	True if FILE1 has been changed more recently than FILE2, or if FILE1 exists and FILE2 does not.
+- `[ FILE1 -ot FILE2 ]`	True if FILE1 is older than FILE2, or is FILE2 exists and FILE1 does not.
+- `[ FILE1 -ef FILE2 ]`	True if FILE1 and FILE2 refer to the same device and inode numbers.
+- `[ -o OPTIONNAME ]`	True if shell option "OPTIONNAME" is enabled.
+- `[ -z STRING ]`	True of the length if "STRING" is zero.
+- `[ -n STRING ]` or `[ STRING ]`	True if the length of "STRING" is non-zero.
+- `[ STRING1 == STRING2 ]`	True if the strings are equal. "=" may be used instead of "==" for strict POSIX compliance.
+- `[ STRING1 != STRING2 ]`	True if the strings are not equal.
+- `[ STRING1 < STRING2 ]`	True if "STRING1" sorts before "STRING2" lexicographically in the current locale.
+- `[ STRING1 > STRING2 ]`	True if "STRING1" sorts after "STRING2" lexicographically in the current locale.
+- `[ ARG1 OP ARG2 ]`	"OP" is one of -eq, -ne, -lt, -le, -gt or -ge. These arithmetic binary operators return true if "ARG1" is equal to, not equal to, less than, less than or equal to, greater than, or greater than or equal to "ARG2", respectively. "ARG1" and "ARG2" are integers.
 
 ### 循环
 
@@ -348,6 +435,28 @@ do
   # display fields using f1, f2,..,f7
   printf 'Username: %s, Shell: %s, Home Dir: %s\n' "$f1" "$f7" "$f6"
 done <"$file"
+```
+
+### 函数
+
+Bash提供一些特殊变量，用于读取函数变量。
+
+- $# 参数个数
+- $@ 所有参数，等同于`$0 $1 ...`
+- $0 脚本名
+- $1、$2、$3 函数各个参数
+
+```bash
+$ testfunc () { echo "$# parameters"; echo "$@"; }
+$ testfunc
+0 parameters
+
+$ testfunc a b c
+3 parameters
+a b c
+$ testfunc a "b c"
+2 parameters
+a b c
 ```
 
 ## 实例

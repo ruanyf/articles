@@ -155,9 +155,16 @@ Default.png: PNG image data, 640 x 1136, 8-bit/color RGB, non-interlaced
 
 ### find
 
-find命令用来按照指定条件搜索文件或目录。从当前目录中，按照文件名查找文件。
+find命令用来按照指定条件搜索文件或目录，命令格式如下。
 
 ```bash
+$ find where-to-look [what-to-do]
+```
+
+下面是一些实例。
+
+```bash
+# 从当前目录中，按照文件名查找文件。
 $ find . -name "*.txt"
 
 # 大小写不敏感
@@ -167,7 +174,16 @@ $ find . -iname "*.txt"
 $ find . -iname \*book\*.txt" -type f
 
 # 搜索当前目录下的空目录
-$ find -type d -empty
+$ find . -type d -empty
+
+# 当前目录下，大小在100K以上的文件
+$ find . -name "*.txt" -size + 100K
+
+# 当前目录下，大小在50K到100K以上的文件
+$ find . -size +50K -size -100K
+
+# 24小时内，修改过的文件
+$ find . -size +50K -size -100K -mtime 0
 ```
 
 find命令默认搜索子目录。

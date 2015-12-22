@@ -38,6 +38,21 @@ background-position: 100px 5px;
 - left
 - center
 
+## background-blend-mode
+
+`background-blend-mode`用于指定两种颜色混合的方式。
+
+```css
+div {
+  background: url(img/pattern.png), url(img/jellyfish.jpg), #f07e32;
+  background-blend-mode: screen;
+}
+```
+
+Demo：http://codepen.io/tutsplus/live/wMvoyj
+
+教程：http://webdesign.tutsplus.com/tutorials/blending-modes-in-css-color-theory-and-practical-application--cms-25201
+
 ## content
 
 指定伪元素的内容。
