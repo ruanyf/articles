@@ -18,7 +18,7 @@ Git 作为一个源码管理系统，不可避免涉及到多人协作。
 
 本文的三种协作流程，有一个共同点：都采用[“功能驱动式开发”](https://en.wikipedia.org/wiki/Feature-driven_development)（Feature-driven development，简称FDD）。
 
-一个明确的需求，是开发的起点。根据这个需求，新建一个功能分支（feature branch）或者补丁分支（hotfix branch）。完成开发后，该分支就合并到主分支，然后删除。
+它指的是，需求是开发的起点，先有需求再新建功能分支（feature branch）或者补丁分支（hotfix branch）。完成开发后，该分支就合并到主分支，然后删除。
 
 ## 二、Git flow
 
