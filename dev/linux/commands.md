@@ -94,6 +94,17 @@ $ cp source target
 $ cp -R dir1 dir2
 ```
 
+### cut
+
+将字符串按照指定符号切分。
+
+```bash
+INPUT='someletters_12345_moreleters.ext'
+SUBSTRING=$(echo $INPUT| cut -d'_' -f 2)
+# 输出12345
+echo $SUBSTRING
+```
+
 ### echo
 
 echo命令用于将参数显示在标准输出上。
@@ -247,6 +258,12 @@ $ grep -e apples? -r dir/
 参数-l（--files-with-matches）表示只输出文件名，不输出匹配的行。这能加快搜索速度，因为grep一旦在一个文件中找到第一个匹配的行，就不再向下搜索了。
 
 参数-L：输出不匹配的文件名。
+
+参数-P：表示可以使用正则表达式。
+
+```bash
+$ cat login.txt | grep -P '(?<=abc)\s(?=def)'
+```
 
 参数-n表示搜索结果包含行号。
 

@@ -16,9 +16,7 @@ $ sudo apt-get install nginx
 
 ```bash
 $ sudo service nginx restart
-
 # 或者
-
 $ nginx -s reload
 ```
 nginx有一个主进程和几个worker进程，有多少个CPU，就有多少个worker进程。每一个worker进程能够处理几千个连接。
@@ -75,6 +73,8 @@ location / {
 
 ```bash
 $ ./configure --add-module=/path/to/module/source
+# 或者不安装某些模块
+$ ./configure  --without-http_dav_module --withouthttp_spdy_module
 ```
 
 下面是一些有用的外部模块。
@@ -101,149 +101,11 @@ $ nginx -t
 
 ## 配置
 
-Nginx的配置文件是`nginx.conf`，通常位于`/usr/local/etc/nginx`或者`/etc/nginx`。
+Nginx的配置文件是`nginx.conf`，通常位于`/usr/local/etc/nginx`或者`/etc/nginx`。一般的做法是，在`sites-available`目录里面，根据每个站点的名字，新建配置文件，比如`/etc/nginx/sites-available/example.com.conf`。
 
-下面是一个带注释的配置文件（复制自[nginx.conf.default](https://gist.github.com/nishantmodak/d08aae033775cb1a0f8a)）。
+配置文件通常带有一个或多个server区块。
 
-```
-#user  nobody;
-#Defines which Linux system user will own and run the Nginx server
-
-worker_processes  1;
-#Referes to single threaded process. Generally set to be equal to the number of CPUs or cores.
-# worker_processes auto;
-
-#error_log  logs/error.log; #error_log  logs/error.log  notice;
-#Specifies the file where server logs.
-
-#pid        logs/nginx.pid;
-#nginx will write its master process ID(PID).
-
-events {
-    worker_connections  1024;
-    # worker_processes and worker_connections allows you to calculate maxclients value:
-    # max_clients = worker_processes * worker_connections
-}
-
-
-http {
-    include       mime.types;
-    # anything written in /opt/nginx/conf/mime.types is interpreted as if written inside the http { } block
-
-    default_type  application/octet-stream;
-    #
-
-    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-    #                  '$status $body_bytes_sent "$http_referer" '
-    #                  '"$http_user_agent" "$http_x_forwarded_for"';
-
-    #access_log  logs/access.log  main;
-
-    sendfile        on;
-    # If serving locally stored static files, sendfile is essential to speed up the server,
-    # But if using as reverse proxy one can deactivate it
-
-    #tcp_nopush     on;
-    # works opposite to tcp_nodelay. Instead of optimizing delays, it optimizes the amount of data sent at once.
-
-    #keepalive_timeout  0;
-    keepalive_timeout  65;
-    # timeout during which a keep-alive client connection will stay open.
-
-    #gzip  on;
-    # tells the server to use on-the-fly gzip compression.
-
-    server {
-        # You would want to make a separate file with its own server block for each virtual domain
-        # on your server and then include them.
-        listen       80;
-        #tells Nginx the hostname and the TCP port where it should listen for HTTP connections.
-        # listen 80; is equivalent to listen *:80;
-
-        server_name  localhost;
-        # lets you doname-based virtual hosting
-
-        #charset koi8-r;
-
-        #access_log  logs/host.access.log  main;
-
-        location / {
-            #The location setting lets you configure how nginx responds to requests for resources within the server.
-            root   html;
-            index  index.html index.htm;
-        }
-
-        #error_page  404              /404.html;
-
-        # redirect server error pages to the static page /50x.html
-        #
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   html;
-        }
-
-        # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-        #
-        #location ~ \.php$ {
-        #    proxy_pass   http://127.0.0.1;
-        #}
-
-        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-        #
-        #location ~ \.php$ {
-        #    root           html;
-        #    fastcgi_pass   127.0.0.1:9000;
-        #    fastcgi_index  index.php;
-        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-        #    include        fastcgi_params;
-        #}
-
-        # deny access to .htaccess files, if Apache's document root
-        # concurs with nginx's one
-        #
-        #location ~ /\.ht {
-        #    deny  all;
-        #}
-    }
-
-
-    # another virtual host using mix of IP-, name-, and port-based configuration
-    #
-    #server {
-    #    listen       8000;
-    #    listen       somename:8080;
-    #    server_name  somename  alias  another.alias;
-
-    #    location / {
-    #        root   html;
-    #        index  index.html index.htm;
-    #    }
-    #}
-
-
-    # HTTPS server
-    #
-    #server {
-    #    listen       443 ssl;
-    #    server_name  localhost;
-
-    #    ssl_certificate      cert.pem;
-    #    ssl_certificate_key  cert.key;
-
-    #    ssl_session_cache    shared:SSL:1m;
-    #    ssl_session_timeout  5m;
-
-    #    ssl_ciphers  HIGH:!aNULL:!MD5;
-    #    ssl_prefer_server_ciphers  on;
-
-    #    location / {
-    #        root   html;
-    #        index  index.html index.htm;
-    #    }
-    #}
-
-}
-```
+官方网站提供范例配置[nginx.conf.default](https://gist.github.com/nishantmodak/d08aae033775cb1a0f8a)）可以查看。
 
 修改配置后，可以使用下面的命令重新加载配置。
 
@@ -252,6 +114,50 @@ $ nginx –s reload
 ```
 
 除了`nginx.conf`，还有`sites-available`和`sites-enabled`两个目录，前者包括所有可用的网站配置，后者只包括前者的符号链接，指向那些已经激活的网站。
+
+`sites-available`目录里面的配置文件，加上660权限。
+
+```bash
+# chmod 660  /etc/nginx/sites-available/example.com.conf
+```
+
+修改它们所属的用户组。
+
+```bash
+# Debian and Derivatives
+$ chgrp www-data  /etc/nginx/sites-available/tecmintlovesnginx.com.conf
+
+# CentOS and RHEL
+$ chgrp nginx  /etc/nginx/sites-available/tecmintlovesnginx.com.conf
+```
+
+另外，需要修改日志目录的用户组，与nginx属于同一个用户组。
+
+```bash
+# mkdir /var/www/logs
+# chmod -R 660 /var/www/logs
+# chgrp <nginx user> /var/www/logs
+```
+
+然后，建立`sites-enabled`目录到`site-available`的符号链接。
+
+```bash
+# ln -s /etc/nginx/sites-available/example.com.conf /etc/nginx/sites-enabled/example.com.conf
+```
+
+接着，在`/var/www/<domain name>/public_html`目录里面，放置一个`index.html`。
+
+最后，测试配置，并重启nginx。
+
+```bash
+# nginx -t && systemctl start nginx
+```
+
+修改`/etc/hosts`，增加域名解析。
+
+```bash
+192.168.0.25 example.com
+```
 
 `sites-enabled`下的文件自动加载。激活新网站的做法是，符号链接`sites-enabled`目录的配置文件，然后重启 nginx。
 
@@ -273,6 +179,129 @@ $ rm newproject.com
 $ /etc/init.d/nginx reload
 [....] Reloading nginx configuration: nginx.
 $
+```
+
+### server区块
+
+基本配置。
+
+```bash
+server {  
+    listen       80;  
+    server_name  tecmintlovesnginx.com www.tecmintlovesnginx.com;
+    access_log  /var/www/logs/tecmintlovesnginx.access.log;  
+    error_log  /var/www/logs/tecmintlovesnginx.error.log error; 
+        root   /var/www/tecmintlovesnginx.com/public_html;  
+        index  index.html index.htm;  
+}
+```
+
+（1）server_tokens
+
+server_tokens指定发生错误时，是否显示nginx错误信息。
+
+```bash
+server {
+    listen       192.168.0.25:80;
+    Server_tokens        off;
+    server_name  tecmintlovesnginx.com www.tecmintlovesnginx.com;
+    access_log  /var/www/logs/tecmintlovesnginx.access.log;
+    error_log  /var/www/logs/tecmintlovesnginx.error.log error;
+        root   /var/www/tecmintlovesnginx.com/public_html;
+        index  index.html index.htm;
+}
+```
+
+（2）屏蔽指定的HTTP动词
+
+在server区块内部，指定可以接受的HTTP动词。
+
+```bash
+if ($request_method !~ ^(GET|HEAD|POST)$) {
+   return 444;
+}
+```
+
+然后，下面的命令就会返回444错误。
+
+```bash
+$ curl -X DELETE http://192.168.0.25/index.html
+```
+
+（3）指定SSL版本
+
+```bash
+server {
+  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+}
+```
+
+（4）指定SSL证书
+
+```bash
+server {
+    listen 192.168.0.25:443 ssl;
+    server_tokens off;
+    server_name  tecmintlovesnginx.com www.tecmintlovesnginx.com;
+    root   /var/www/tecmintlovesnginx.com/public_html;
+    ssl_certificate /etc/nginx/sites-enabled/certs/tecmintlovesnginx.crt;
+    ssl_certificate_key /etc/nginx/sites-enabled/certs/tecmintlovesnginx.key;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+}
+```
+
+生成证书的命令。
+
+```bash
+# openssl genrsa -aes256 -out tecmintlovesnginx.key 1024
+# openssl req -new -key tecmintlovesnginx.key -out tecmintlovesnginx.csr
+# cp tecmintlovesnginx.key tecmintlovesnginx.key.org
+# openssl rsa -in tecmintlovesnginx.key.org -out tecmintlovesnginx.key
+# openssl x509 -req -days 365 -in tecmintlovesnginx.csr -signkey tecmintlovesnginx.key -out tecmintlovesnginx.crt
+```
+
+（5）HTTP导向HTTPS
+
+```bash
+server {
+  return 301 https://$server_name$request_uri;
+}
+
+### User Agent限制
+
+新建一个文件`/etc/nginx/blockuseragents.rules`，定义屏蔽User Agent的规则。
+
+```bash
+map $http_user_agent $blockedagent {
+        default         0;
+        ~*malicious     1;
+        ~*bot           1;
+        ~*backdoor      1;
+        ~*crawler       1;
+        ~*bandit        1;
+}
+```
+
+然后，在server区块之前包含这个文件。
+
+```bash
+include /etc/nginx/blockuseragents.rules;
+```
+
+接着，在server区块里面启用屏蔽功能。
+
+```bash
+server {
+  if($blockedagent) {
+    return 403;
+  }
+}
+```
+
+重新启动以后，使用被屏蔽的user agent访问，就会返回403错误。
+
+```bash
+$ wget --user-agent "I am a bandit haha" http://192.168.0.25/index.html
 ```
 
 ## 限制访问
