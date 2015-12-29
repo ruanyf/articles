@@ -101,11 +101,25 @@ $ nginx -t
 
 ## 配置
 
-Nginx的配置文件是`nginx.conf`，通常位于`/usr/local/etc/nginx`或者`/etc/nginx`。一般的做法是，在`sites-available`目录里面，根据每个站点的名字，新建配置文件，比如`/etc/nginx/sites-available/example.com.conf`。
+Nginx的主配置文件是`nginx.conf`，通常位于`/usr/local/etc/nginx`或者`/etc/nginx`。官方网站提供范例配置[nginx.conf.default](https://gist.github.com/nishantmodak/d08aae033775cb1a0f8a)）可以查看。
 
-配置文件通常带有一个或多个server区块。
+虚拟主机的默认配置文件是`/etc/nginx/sites-available/default`。一般的做法是，在`sites-available`目录里面，根据每个站点的名字，新建配置文件，比如`/etc/nginx/sites-available/example.com.conf`。
 
-官方网站提供范例配置[nginx.conf.default](https://gist.github.com/nishantmodak/d08aae033775cb1a0f8a)）可以查看。
+虚拟主机的配置文件通常带有一个或多个`server`区块。
+
+```bash
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server ipv6only=on;
+
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+}
+```
 
 修改配置后，可以使用下面的命令重新加载配置。
 
@@ -118,7 +132,7 @@ $ nginx –s reload
 `sites-available`目录里面的配置文件，加上660权限。
 
 ```bash
-# chmod 660  /etc/nginx/sites-available/example.com.conf
+# chmod 660 /etc/nginx/sites-available/example.com.conf
 ```
 
 修改它们所属的用户组。
@@ -238,6 +252,44 @@ server {
 
 （4）指定SSL证书
 
+首先，删除或注释掉下面指定监听80端口的两行。
+
+```bash
+listen 80 default_server;
+listen [::]:80 default_server ipv6only=on;
+```
+
+改成下面的样子。
+
+```bash
+listen 443 ssl;
+
+server_name example.com;
+
+ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+```
+
+还可以加上三行附加设置。
+
+```bash
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ssl_prefer_server_ciphers on;
+ssl_ciphers AES256+EECDH:AES256+EDH:!aNULL;
+```
+
+然后，在原来的`server`区块外面，再加一个`server`区块。
+
+```bash
+server {
+    listen 80;
+    server_name example.com;
+    rewrite ^/(.*) https://example.com/$1 permanent;
+}
+```
+
+下面是另一个例子。
+
 ```bash
 server {
     listen 192.168.0.25:443 ssl;
@@ -248,6 +300,12 @@ server {
     ssl_certificate_key /etc/nginx/sites-enabled/certs/tecmintlovesnginx.key;
     ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
 }
+```
+
+最后，重启`nginx`。
+
+```bash
+$ sudo service nginx restart
 ```
 
 生成证书的命令。
@@ -266,6 +324,7 @@ server {
 server {
   return 301 https://$server_name$request_uri;
 }
+```
 
 ### User Agent限制
 

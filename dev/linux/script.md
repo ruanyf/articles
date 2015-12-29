@@ -366,8 +366,8 @@ if [ -s $file ]
 
 - `[ ! EXPR ]` True if EXPR is false.
 - `[ ( EXPR ) ]` Returns the value of EXPR. This may be used to override the normal precedence of operators.
-- `[ EXPR1 -a EXPR2 ]` True if both EXPR1 and EXPR2 are true.
-- `[ EXPR1 -o EXPR2 ]` True if either EXPR1 or EXPR2 is true.
+- `[ EXPR1 -a EXPR2 ]` 表达式1和表达式2同时为`true`，则返回`true`
+- `[ EXPR1 -o EXPR2 ]` 表达式1和表达式2之中只要有一个为`true`，则返回`true`
 - `?(<PATTERN-LIST>)`	Matches zero or one occurrence of the given patterns
 - `*(<PATTERN-LIST>)`	Matches zero or more occurrences of the given patterns
 - `+(<PATTERN-LIST>)`	Matches one or more occurrences of the given patterns
@@ -398,12 +398,12 @@ $ rm -f !(survivior.txt)
 
 常见的判断表达式。
 
-- `[ -a FILE ]`	True if FILE exists.
+- `[ -a FILE ]`	如果路径存在，返回`true`
 - `[ -b FILE ]`	True if FILE exists and is a block-special file.
 - `[ -c FILE ]`	True if FILE exists and is a character-special file.
-- `[ -d FILE ]`	True if FILE exists and is a directory.
-- `[ -e FILE ]`	True if FILE exists.
-- `[ -f FILE ]`	True if FILE exists and is a regular file.
+- `[ -d FILE ]`	如果路径存在，而且是一个目录，返回`true`
+- `[ -e FILE ]`	如果路径存在，返回`true`，否则返回`false`
+- `[ -f FILE ]`	如果路径存在，而且是一个常规文件，返回`true`，否则返回`false`
 - `[ -g FILE ]`	True if FILE exists and its SGID bit is set.
 - `[ -h FILE ]`	True if FILE exists and is a symbolic link.
 - `[ -k FILE ]`	True if FILE exists and its sticky bit is set.
@@ -423,7 +423,7 @@ $ rm -f !(survivior.txt)
 - `[ FILE1 -ot FILE2 ]`	True if FILE1 is older than FILE2, or is FILE2 exists and FILE1 does not.
 - `[ FILE1 -ef FILE2 ]`	True if FILE1 and FILE2 refer to the same device and inode numbers.
 - `[ -o OPTIONNAME ]`	True if shell option "OPTIONNAME" is enabled.
-- `[ -z STRING ]`	True of the length if "STRING" is zero.
+- `[ -z STRING ]`	如果参数字符串的长度为0，则返回`true`，否则返回`false`
 - `[ -n STRING ]` or `[ STRING ]`	True if the length of "STRING" is non-zero.
 - `[ STRING1 == STRING2 ]`	True if the strings are equal. "=" may be used instead of "==" for strict POSIX compliance.
 - `[ STRING1 != STRING2 ]`	True if the strings are not equal.

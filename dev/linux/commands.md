@@ -484,6 +484,10 @@ top输出系统当前状态。
 ```bash
 $ uname
 Linux
+
+# -a 参数输出详细信息
+$ uname -a
+Linux myHost 3.16.0-4-amd64 #1 SMP Debian 3.16.7-ckt11-1+deb8u6 (2015-11-09) x86_64 GNU/Linux
 ```
 
 ### which
