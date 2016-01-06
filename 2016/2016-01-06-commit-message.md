@@ -196,11 +196,11 @@ $ commitizen init cz-conventional-changelog --save --save-exact
 
 ## 四、validate-commit-msg
 
-[validate-commit-msg](https://github.com/kentcdodds/validate-commit-msg)用于检查 Node 项目的 Commit message 是否符合格式。
+[validate-commit-msg](https://github.com/kentcdodds/validate-commit-msg) 用于检查 Node 项目的 Commit message 是否符合格式。
 
 它的安装是手动的。首先，拷贝下面这个[JS文件](https://github.com/kentcdodds/validate-commit-msg/blob/master/index.js)，放入你的代码库。文件名可以取为`validate-commit-msg.js`。
 
-接着，把这个脚本加入 Git 的 hook。下面是在`package.json`里面使用 [ghooks] (http://npm.im/ghooks)，把这个脚本加为`commit-msg`时运行。
+接着，把这个脚本加入 Git 的 hook。下面是在`package.json`里面使用 [ghooks](http://npm.im/ghooks)，把这个脚本加为`commit-msg`时运行。
 
 ```javascript
   "config": {
@@ -228,9 +228,7 @@ INVALID COMMIT MSG: does not match "<type>(<scope>): <subject>" ! was: edit mark
 > - Bug fixes
 > - Breaking changes.
 
-每个部分都会罗列相关的 commit ，并且有指向这些 commit 的链接。
-
-当然，生成的文档允许手动修改，所以发布前，你还可以添加其他内容。
+每个部分都会罗列相关的 commit ，并且有指向这些 commit 的链接。当然，生成的文档允许手动修改，所以发布前，你还可以添加其他内容。
 
 [conventional-changelog](https://github.com/ajoslin/conventional-changelog) 就是生成 Change log 的工具，运行下面的命令即可。
 
