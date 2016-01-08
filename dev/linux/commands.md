@@ -80,6 +80,21 @@ $ chmod 755 myfile
 
 chown命令改变文件的所有者。
 
+### command
+
+有时候，脚本中有与系统命令同名的函数，`command`命令指定使用系统命令。
+
+```bash
+#!/bin/bash
+# Create a wrapper around the command ls
+ls () {
+  command ls -lh
+}
+ls
+```
+
+上面代码中，如果函数`ls`里面，如果没有`command`命令，就会形成函数`ls`调用自身的无限循环。
+
 ### cp
 
 cp命令用来复制文件。
@@ -166,63 +181,72 @@ Default.png: PNG image data, 640 x 1136, 8-bit/color RGB, non-interlaced
 
 ### find
 
-find命令用来按照指定条件搜索文件或目录，命令格式如下。
+find命令用来按照指定条件搜索文件或目录。
 
 ```bash
+# 格式
 $ find where-to-look [what-to-do]
-```
 
-下面是一些实例。
-
-```bash
-# 从当前目录中，按照文件名查找文件。
+# -name 从当前目录中，按照文件名查找文件。
 $ find . -name "*.txt"
 
-# 大小写不敏感
+# -iname 文件名的大小写不敏感
 $ find . -iname "*.txt"
 
-# 只搜索文件
+# -type 只查找文件，不查找目录。
+# f表示文件，d表示目录
 $ find . -iname \*book\*.txt" -type f
 
-# 搜索当前目录下的空目录
+# -maxdepth 查找当前目录及下面一层目录
+$ find . -maxdepth 2 -type d
+
+# -empty 搜索当前目录下的空目录
 $ find . -type d -empty
 
-# 当前目录下，大小在100K以上的文件
-$ find . -name "*.txt" -size + 100K
+# -size 当前目录下，大小在100K以上的文件
+$ find . -name "*.txt" -size +100K
 
-# 当前目录下，大小在50K到100K以上的文件
+# -size 当前目录下，大小在50K到100K以上的文件
 $ find . -size +50K -size -100K
 
-# 24小时内，修改过的文件
+# -mtime 24小时内，修改过的文件
 $ find . -size +50K -size -100K -mtime 0
+
+# -delete 删除指定文件
+$ find . -name '.DS_Store' -type f -delete
+$ find . -name '*.zip' -type f -delete
+
+# -exec 执行其他命令
+$ find ./docs -name '*.md' -exec grep 'static' {} \;
 ```
 
 find命令默认搜索子目录。
-
-参数`-exec grep`表示对于每个发现的文件，都用grep处理。
-
-参数`-type f`表示只处理文件，不包括目录。
-
-删除指定文件的例子。
-
-```bash
-$ find . -name '.DS_Store' -type f -delete
-$ find . -name '*.zip' -type f -delete
-```
 
 ### grep
 
 grep命令用来在文件中搜索指定文本。
 
 ```bash
-# 输出myfile.txt中包含apple的行
+# 输出指定文件中，包括关键字的行
 $ grep apple myfile.txt
 
-# 输出tempfile不包含the的行
-grep -v the tempfile
+# -v 输出不包含搜索词的行
+$ grep -v the tempfile
 
-# 输出文件名中包含zip的文件
-ls /usr/bin /bin|grep zip
+# -n 输出内容包括行号
+$ grep -n apple myfile.txt
+
+# -R 递归搜索指定目录及其子目录
+$ grep apple -R .
+
+# --exclude-dir  排除指定目录
+$ grep apple --exclude-dir="spec"
+
+# -E 使用正则搜索
+$ grep -E "apple|orange" -R .
+
+# -C 显示上下文（指定上下的行数）
+$ grep apple -R . -C 1
 ```
 
 参数-A表示显示搜索结果+后面（After）的行，参数-B表示显示搜索结果+前面（Before）的行，参数-C表示显示搜索结果+前后（Context）的行。

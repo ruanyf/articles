@@ -31,9 +31,9 @@ Motion表示操作的上下文。
 - } – 下一段的开始。
 - { – 当前段的开始。
 - ] – 下一段部分（section）的开始
-- [ – 当前部分（section）的开始
-- H – 当前屏幕的顶部行
-- L – 当前屏幕的最后一行
+- `[` – 当前部分（section）的开始
+- `H` – 当前屏幕的顶部行
+- `L` – 当前屏幕的最后一行
 
 Count是可选的，表示command和motion的重复次数。
 
@@ -65,7 +65,7 @@ Count是可选的，表示command和motion的重复次数。
 - 123 + G 跳到指定行
 - gg 移动到文件第一行
 - ctrl + g 查看当前文件总行数
-- % 移动到当前代码区块的开始/结尾（匹配()，[]，{}）
+- % 移动到当前代码区块的开始/结尾（匹配`()`，`[]`，`{}`）
 
 ## 插入文字
 
@@ -121,19 +121,19 @@ Count是可选的，表示command和motion的重复次数。
 
 ### 剪切
 
-- v+选中的内容+d 剪切
+- v + 选中的内容 + d 剪切
 
 ### 剪贴板
 
 （1） 简单复制和粘贴
 
-vim提供12个剪贴板，它们的名字分别为vim有11个粘贴板，分别是0、1、2、...、9、a、“。如果开启了系统剪贴板，则会另外多出两个：+和*。使用:reg命令，可以查看各个粘贴板里的内容。
+vim提供12个剪贴板，它们的名字分别为vim有11个粘贴板，分别是`0`、`1`、`2`、`...`、`9`、`a`、`“`。如果开启了系统剪贴板，则会另外多出两个：`+`和`*`。使用`:reg`命令，可以查看各个粘贴板里的内容。
 
 ```bash
 :reg
 ```
 
-在vim中简单用y只是复制到“（双引号)粘贴板里，同样用p粘贴的也是这个粘贴板里的内容。
+在vim中简单用y只是复制到`“`（双引号)粘贴板里，同样用p粘贴的也是这个粘贴板里的内容。
 
 （2）复制和粘贴到指定剪贴板
 
@@ -179,27 +179,27 @@ $ sudo apt-get install vim-gui-common
 $ gvim -v
 ```
 
-星号（*）和加号（+）粘贴板是系统粘贴板。在windows系统下， * 和 + 剪贴板是相同的。对于 X11 系统， * 剪贴板存放选中或者高亮的内容， + 剪贴板存放复制或剪贴的内容。打开clipboard选项，可以访问 + 剪贴板；打开xterm_clipboard，可以访问 * 剪贴板。 * 剪贴板的一个作用是，在vim的一个窗口选中的内容，可以在vim的另一个窗口取出。
+星号（`*`）和加号（`+`）粘贴板是系统粘贴板。在windows系统下， * 和 + 剪贴板是相同的。对于 X11 系统， * 剪贴板存放选中或者高亮的内容， + 剪贴板存放复制或剪贴的内容。打开clipboard选项，可以访问 + 剪贴板；打开xterm_clipboard，可以访问 * 剪贴板。 * 剪贴板的一个作用是，在vim的一个窗口选中的内容，可以在vim的另一个窗口取出。
 
 复制到系统剪贴板
-- "*y
-- "+y
-- "+2yy – 复制两行
-- {Visual}"+y - copy the selected text into the system clipboard
-- "+y{motion} - copy the text specified by {motion} into the system clipboard
-- :[range]yank + - copy the text specified by [range] into the system clipboard
+- `"*y`
+- `"+y`
+- `"+2yy` – 复制两行
+- `{Visual}"+y` - copy the selected text into the system clipboard
+- `"+y{motion}` - copy the text specified by {motion} into the system clipboard
+- `:[range]yank +` - copy the text specified by `[range]` into the system clipboard
 
 剪切到系统剪贴板
-- "+dd – 剪切一行
+- `"+dd` – 剪切一行
 
 从系统剪贴板粘贴到vim
-- "*p
-- "+p
-- Shift+Insert
-- :put + - Ex command puts contents of system clipboard on a new line
-- <C-r>+ - From insert mode (or commandline mode)
+- `"*p`
+- `"+p`
+- `Shift+Insert`
+- `:put +` - Ex command puts contents of system clipboard on a new line
+- `<C-r>`+ - From insert mode (or commandline mode)
 
-"+p 比 Ctrl-v 命令更好，它可以更快更可靠地处理大块文本的粘贴，也能够避免粘贴大量文本时，发生每行行首的自动缩进累积，因为 Ctrl-v 是通过系统缓存的stream处理，一行一行地处理粘贴的文本。
+`"+p`比 Ctrl-v 命令更好，它可以更快更可靠地处理大块文本的粘贴，也能够避免粘贴大量文本时，发生每行行首的自动缩进累积，因为`Ctrl-v`是通过系统缓存的stream处理，一行一行地处理粘贴的文本。
 
 ## 多窗口
 
@@ -246,6 +246,24 @@ nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
+```
+
+## 命令行模式
+
+```bash
+# 列出所有buffer
+:ls
+
+# 列出所有buffer（包括不可见buffer）
+:ls!
+
+# 在当前窗口打开一个新的文件，
+# 新建一个buffer，原有文件成为不可见buffer
+:e file1
+
+# 新建一个未命名的buffer，然后将其存为 /tmp/foo
+:enew
+:w /tmp/foo
 ```
 
 ## 插件

@@ -1,4 +1,4 @@
- HTML用法
+# HTML用法
 
 ## HTML标签
 
@@ -17,6 +17,42 @@ Footer标签表示整张网页或一个section的尾部。
 ### Header
 
 Header标签表示某个部分的头部。通常，整张网页或一个section，会有一个Header。
+
+### Label
+
+`Label`用于为指定的表单元素，提供解释性文本。
+
+它有两种用法。
+
+```html
+<!-- 用法一 -->
+<label>
+  <input type="checkbox" name="quokka">
+  Yes, I want to buy a quokka!
+</label>
+
+<!-- 用法二 -->
+<input type="checkbox" id="yayforwallaby"
+       name="wallaby">
+<label for="yayforwallaby">
+  Yes, I want to buy a wallaby!
+</label>
+```
+
+注意，在用法二之中，表单元素必须有`id`属性，`label`元素的`for`属性匹配的是`id`属性，而不是`name`属性。`name`属性用于将这个表单元素的值发送到服务器。
+
+另一点需要注意的是，在JavaScript之中，`for`属性无法以`element.for`的形式获取，因为`for`是一个JavaScript保留字，必须改用`htmlfor`表示。
+
+```javascript
+var labels = document.querySelectorAll('label');
+for (var i=0; i<labels.length; i++) {
+  if (labels[i].htmlFor) {
+    if (!document.getElementById(labels[i].htmlFor)) {
+      labels[i].style.background = 'firebrick';
+    }
+  }
+}
+```
 
 ### Main
 

@@ -209,9 +209,25 @@ pprint
 
 变量名前面加上`$`符号，就会输出变量的值。这就叫做“变量扩展”（parameter expansion）。
 
+使用`$(command)`或者`command`，会执行命令，并将该命令的输出，存入变量。
+
+`$(( expression ))`会计算算术表达式。
+
+```bash
+$ echo $((3+4))
+7
+```
+
 变量扩展有多种形式，可以修改并输出变量的值。
 
 ```bash
+# 如果varname没有设置或等于null，就将其设为value
+${varname:=value}
+
+# 只有当变量varname没有设置时，才将其设为value
+# 如果变量varname等于空字符串，则不进行操作
+${varname=value}
+
 # 返回变量长度
 ${#string}
 
@@ -323,6 +339,97 @@ $ if [ $a == "joe" ]; then echo hello; fi
 hello
 ```
 
+`if`后面的判断条件，可以单层大括号（`[`），或`test`命令。双层大括号内部可以使用`&&`和`||`代替`-a`和`-o`，以及使用正则运算符`=~`。
+
+花括号用来处理变量的值。
+
+```bash
+$ VARIABLE=abcdef
+$ echo Variable: $VARIABLE
+Variable: abcdef
+$ echo Variable: $VARIABLE123456
+Variable:
+$ echo Variable: ${VARIABLE}123456
+Variable: abcdef123456
+
+# 截取变量
+$ var="abcde"; echo ${var%d*}
+abc
+
+# 替换字符串
+$ var="abcde"; echo ${var/de/12}
+abc12
+
+# 替换第一个foo
+${var/foo/bar};
+# 替换所有的foo
+${var//foo/bar};
+
+# 使用默认值
+$ default="hello"; unset var; echo ${var:-$default}
+hello
+
+$ echo f{oo,ee,a}d
+food feed fad
+
+$ mv error.log{,.OLD}
+(error.log is renamed to error.log.OLD because the brace expression
+expands to "mv error.log error.log.OLD")
+
+$ for num in {000..2}; do echo "$num"; done
+000
+001
+002
+
+$ echo {00..8..2}
+00 02 04 06 08
+
+$ echo {D..T..4}
+D H L P T
+```
+
+双层圆括号用于算术运算。
+
+```bash
+(( var = 78 ))
+var=$(( 20 + 5 ))
+(( var++ ))
+(( var-- ))
+(( var0 = var1<98?9:21 ))
+((a++))
+
+((meaning = 42))
+
+for ((i=0; i<10; i++))
+
+echo $((a + b + (14 * c)))
+```
+
+在双层圆括号之中，可以不用变量名之前加上美元符号，也可以使用空格。
+
+单个方括号用于数组索引。
+
+```bash
+array[4]="hello"
+
+element=${array[index]}
+```
+
+圆括号用于新建一个子shell或者创造数组。
+
+```bash
+$ pwd
+/home/user
+$ (cd /tmp; pwd)
+/tmp
+$ pwd
+/home/user
+
+array=(1 2 3)
+echo ${array[1]}
+2
+```
+
 脚本实例
 
 ```bash
@@ -367,7 +474,7 @@ if [ -s $file ]
 - `[ ! EXPR ]` True if EXPR is false.
 - `[ ( EXPR ) ]` Returns the value of EXPR. This may be used to override the normal precedence of operators.
 - `[ EXPR1 -a EXPR2 ]` 表达式1和表达式2同时为`true`，则返回`true`
-- `[ EXPR1 -o EXPR2 ]` 表达式1和表达式2之中只要有一个为`true`，则返回`true`
+- `[ EXPR1 -o EXPR2 ]` True if either EXPR1 or EXPR2 is true.
 - `?(<PATTERN-LIST>)`	Matches zero or one occurrence of the given patterns
 - `*(<PATTERN-LIST>)`	Matches zero or more occurrences of the given patterns
 - `+(<PATTERN-LIST>)`	Matches one or more occurrences of the given patterns
@@ -380,8 +487,8 @@ $ rm -f !(survivior.txt)
 
 运算符
 
-- -eq Is Equal To
-- -ne Is Not Equal To
+- -eq 等于
+- -ne 不等于
 - -gt Is Greater Than
 - -ge Is Greater Than or Equal To
 - -lt Is Less Than

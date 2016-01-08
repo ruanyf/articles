@@ -2,33 +2,20 @@
 
 ## 用户操作
 
-（1）列出当前用户
-
 ```bash
+# 列出当前用户
 $ whoami
-```
 
-（2）列出所有用户
-
-```bash
+# 列出所有用户
 $ sudo cat /etc/shadow
-```
 
-（3）列出所有用户的密码
-
-```bash
+# 列出所有用户的密码
 $ sudo cat /etc/passwd
-```
 
-（4）创建用户
-
-```bash
+# 创建用户
 $ sudo useradd [用户名]
-```
 
-然后，为该用户设置密码。
-
-```bash
+# 为用户设置密码。
 $ sudo passwd [用户名]
 ```
 
@@ -182,3 +169,46 @@ $ scrot -q 85 -d 5 screenshot.png && gimp screenshot.png &
 ```
 
 GIMP也可以用来截图，命令为`File —> Acquire —> Screen Shot`。
+
+## Crontab 定时任务
+
+crontab是UNIX下用来执行定时任务的一个守护进程。它可以定时执行某些脚本。
+
+crontab的格式如下。
+
+```bash
+MIN HOUR DOM MON DOW CMD
+```
+
+- MIN：分钟，0-59
+- HOUR：小时，0-23
+- DOM：每个月的第几天，1-31
+- MON：月份，1-12
+- DOW：每周的第几天，0-6
+- CMD：需要执行的命令或脚本
+
+下面的命令可以进入contab的编辑模式。
+
+```bash
+$ crontab -e
+
+# 列出所有定时任务
+$ crontab -l
+```
+
+下面是一些例子。
+
+```bash
+# 8月20日下午4点30分
+30 16 20 8 * /path/to/script
+
+# 9点到18点，每小时执行一次
+00 09-18 * * * /path/to/script
+
+# 每天11点半或16点半检查邮件
+30 11,16 * * * /path/to/script
+
+# 每过10分钟执行一次，但是周末除外
+*/10 * * * 0-4 /path/to/script
+```
+
