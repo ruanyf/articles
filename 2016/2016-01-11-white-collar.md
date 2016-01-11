@@ -8,7 +8,7 @@
 
 结果令人震惊。35%的人回答Yes。他们觉得在未来，机器可以自动完成他们现在手里的工作，因此他们的职位可能保不住。最焦虑的就是科技行业的白领，回答Yes的人高达50%，其次是银行业，比例是49%。
 
-一位评论家一针见血地[指出](http://www.forbes.com/sites/chasewithorn/2015/12/07/billionaire-jeff-greene-says-technology-will-kill-white-collar-jobs-hosts-conference-on-inequality/)，技术革命已经进入了一个新的阶段。依靠体力的职位正在消失，现在就连一部分依靠智力的职位也在消失。
+一位评论家一针见血地[指出](http://www.forbes.com/sites/chasewithorn/2015/12/07/billionaire-jeff-greene-says-technology-will-kill-white-collar-jobs-hosts-conference-on-inequality/)，技术革命已经进入了一个新的阶段。以前，消失的是依靠体力的职位，现在就连一部分依靠智力的职位也在消失。
 
 > “以前，技术革命只是对蓝领工人不利，贸易全球化和自动化技术使得低技能工人，失去工作或者一直拿着低工资。而现在，技术革命开始威胁那些有技能的人了，人工智能、大数据、办公自动化正在快速地消灭办公室职位。”
 
