@@ -53,6 +53,10 @@ Demo：http://codepen.io/tutsplus/live/wMvoyj
 
 教程：http://webdesign.tutsplus.com/tutorials/blending-modes-in-css-color-theory-and-practical-application--cms-25201
 
+## border-image
+
+在边框上显示图像。
+
 ## content
 
 指定伪元素的内容。
@@ -70,6 +74,67 @@ div[data-line]:after {
   content: "[line " attr(data-line) "]";
 }
 
+```
+
+## counter
+
+counter用来实现计数器。
+
+```html
+<ol class="list">
+    <li>a</li>
+    <li>b</li>
+    <li>c</li>
+</ol>
+```
+
+`li`元素前面添加计数器的代码如下。
+
+```css
+.list {
+    counter-reset: i; //reset conunter
+}
+.list > li {
+    counter-increment: i; //counter ID
+}
+.list li:after {
+    content: "[" counter(i) "]"; //print the result
+}
+```
+
+下面是一个高级用法的例子。
+
+```html
+<div class="numbers">  
+  <input id="one" type="checkbox"><label for="one">1</label>
+  <input id="two" type="checkbox"><label for="two">2</label>
+  <input id="three" type="checkbox"><label for="three">3</label>
+  <input id="four" type="checkbox"><label for="four">4</label>
+  <input id="five" type="checkbox"><label for="five">5</label>
+  <input id="one-hundred" type="checkbox"><label for="one-hundred">100</label>
+</div>  
+<p class="sum">  
+  Sum 
+</p>  
+```
+
+然后，利用计数器做出一个累加计算器。
+
+```css
+.numbers {
+  counter-reset: sum;
+}
+
+#one:checked { counter-increment: sum 1; }
+#two:checked { counter-increment: sum 2; }
+#three:checked { counter-increment: sum 3; }
+#four:checked { counter-increment: sum 4; }
+#five:checked { counter-increment: sum 5; }
+#one-hundred:checked { counter-increment: sum 100; }
+
+.sum::after {
+  content: '= ' counter(sum);
+}
 ```
 
 ## display
@@ -181,25 +246,21 @@ mix-blend-mode属性指定前景与背景的颜色混合模式，即前景色与
 定义内容如何适应容器的高和宽，比如不同大小的图片，如何放在同一个位置。
 
 ```css
-
 img {
   height: 100px;
   width: 100px;
   object-fit: contain;
 }
-
 ```
 
 object-fit可能的值共有五个。
 
 ```css
-
 object-fit: fill
 object-fit: contain
 object-fit: cover
 object-fit: none
 object-fit: scale-down
-
 ```
 
 - contain：图片自动升缩，以固有的长宽比，完整显示在容器中。

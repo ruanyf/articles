@@ -80,6 +80,77 @@ HTTP 1.1定义了pipelining，允许一个请求尚未得到回应的情况下�
 
 发出HTTP请求就像在超市排队付款，一共只有6条队伍，前面的人排满了，后面的人就只有等着。
 
+## HTTP 动词
+
+`POST`方法有三种数据编码方式，在body部分传送数据。
+
+表单的`enctype`属性用来指定表单数据的`content-type`。数据会按照指定方式编码，上传到服务器。
+
+**（1）x-www-form-urlencoded**
+
+这是表单数据的默认编码方式。
+
+键名和键值必须转义，空格变为`+`。非英文字母和数字会被`%HH`替换，其中的`HH`是两个十六进制值，表示该字符的ASCII码。换行符会被替换成“CR LF”（即`%0D%0A`）。
+
+键名与键值之间使用`=`分隔，键值对之间使用`&`连接。
+
+```javascript
+MyVariableOne=ValueOne&MyVariableTwo=ValueTwo
+```
+
+`content-type`的值是`application/x-www-form-urlencoded`。
+
+**（2）form-data**
+
+这种格式用于发送大量的二进制数据，或者包含非ASCII字符的文本。
+
+下面是一个例子。
+
+```javascript
+   Content-Type: multipart/form-data; boundary=AaB03x
+
+   --AaB03x
+   Content-Disposition: form-data; name="submit-name"
+
+   Larry
+   --AaB03x
+   Content-Disposition: form-data; name="files"; filename="file1.txt"
+   Content-Type: text/plain
+
+   ... contents of file1.txt ...
+   --AaB03x--
+```
+
+发送二进制文件的例子。
+
+```javascript
+   Content-Type: multipart/form-data; boundary=AaB03x
+
+   --AaB03x
+   Content-Disposition: form-data; name="submit-name"
+
+   Larry
+   --AaB03x
+   Content-Disposition: form-data; name="files"
+   Content-Type: multipart/mixed; boundary=BbC04y
+
+   --BbC04y
+   Content-Disposition: file; filename="file1.txt"
+   Content-Type: text/plain
+
+   ... contents of file1.txt ...
+   --BbC04y
+   Content-Disposition: file; filename="file2.gif"
+   Content-Type: image/gif
+   Content-Transfer-Encoding: binary
+
+   ...contents of file2.gif...
+   --BbC04y--
+   --AaB03x--
+```
+
+`content-type`的值位`multipart/form-data`。
+
 ## HTTP信息头
 
 ### Access-Control-Allow-Origin
