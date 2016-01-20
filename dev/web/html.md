@@ -132,6 +132,38 @@ Time标签用来表示时间。
 <time datetime="2011-07-14T14:00">2pm on July 14th</time>
 ```
 
+### Video
+
+`video`元素用于插入视频元素。
+
+```html
+<video
+  src="#defer-loading"
+  poster="nice-default.jpg
+  autoplay
+/>
+```
+
+下面是将视频全屏插入网页，作为背景 。
+
+```css
+video.fullscreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  transform: translate(-50%, -50%);
+}
+```
+
+参考链接
+
+- [Should I use a video as a background?](https://css-tricks.com/should-i-use-a-video-as-a-background/)
+
 ## HTML5网页布局（Layout）
 
 尽量使用语义标签。

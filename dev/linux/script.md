@@ -16,7 +16,32 @@ Shebang指文件第一行，用来指定命令解释器。
 
 脚本的退出值，0表示正常，1表示发生错误，2表示用法不对，126表示不是可执行脚本，127表示命令没有发现。如果脚本被信号N终止，则退出值为128 + N。
 
-### set命令
+## exit命令
+
+exit命令用来终止当前脚本的执行，并向Shell返回一个退出码。
+
+exit命令后面跟的就是退出码。如果没有退出码，单单执行exit。则当前程序终止，返回的退出状态为上一条命令的退出状态。
+
+上一条命令的退出状态，可以用系统变量`#?`查询。使用这个命令，可以知道上一条命令是否执行成功。
+
+注意，return命令是退出函数，并返回一个值给调用者。如果在函数之中，调用exit，则退出函数，并终止脚本执行。
+
+## 命令的连续执行
+
+```bash
+# 第一个命令执行完，执行第二个命令
+command1; command2
+
+# 只有第一个命令成功执行完（退出码0），才会执行第二个命令
+command1 && command2
+
+# 只有第一个命令执行失败（退出码非0），才会执行第二个命令
+command1 || command2
+```
+
+上面三种执行方法的退出码，都是最后一条执行的命令的退出码。
+
+## set命令
 
 `set`允许改变Shell的参数值，或设置新的参数。
 
@@ -83,6 +108,9 @@ a b c
 ```bash
 $ echo {a..c}{1..3}
 a1 a2 a3 b1 b2 b3 c1 c2 c3
+
+$ echo {0..5} # 0 1 2 3 4 5
+$ echo {00..8..2} # 00 02 04 06 08
 ```
 
 这个写法可以直接用于for循环。
@@ -133,7 +161,12 @@ Variable value is: Hello
 
 Bash变量是弱类型的，可以随时改为其他类型的值。如果变量的值是字符串，而且包含空格，那么需要用双引号包起来。另外，双引号中的变量会被扩展成对应的值，单引号没有变量扩展的功能。
 
-变量只对创建它的进程可见，除非使用`export`命令，将变量输出到子进程。执行脚本会新建一个子进程，因此脚本之中的变量不会泄漏到它的执行环境。
+```bash
+echo "Your home: $HOME" # Your home: /Users/<username>
+echo 'Your home: $HOME' # Your home: $HOME
+```
+
+变量只对创建它的进程可见，因此使用上面这种方式声明的变量，都是本地变量。除非使用`export`命令，将变量输出到子进程。执行脚本会新建一个子进程，因此脚本之中的变量不会泄漏到它的执行环境。
 
 如果在Bash变量之前放上变量赋值语句，则该变量会输入子进程。
 
@@ -146,6 +179,22 @@ $ echo "$VAR5 / $VAR6"
 $ exit
 $ echo "$VAR5 / $VAR6"
  /
+```
+
+`unset`命令用于删除一个变量。
+
+在函数之中，使用`local`关键字声明只在函数内部有效的变量。
+
+```bash
+local local_var="I'm a local value"
+```
+
+使用冒号可以设置变量的默认值。
+
+```bash
+# 如果变量为空，则赋予默认值
+: ${VAR:='default'}
+: ${$1:='first'}
 ```
 
 `declare`命令可以声明特定的命令。
@@ -211,11 +260,22 @@ pprint
 
 使用`$(command)`或者`command`，会执行命令，并将该命令的输出，存入变量。
 
+```bash
+now=`data +%T`
+# or
+now=$(data +%T)
+
+echo now # 19:08:26
+```
+
 `$(( expression ))`会计算算术表达式。
 
 ```bash
 $ echo $((3+4))
 7
+
+$ result=$(( ((10 + 5*3) - 7) / 2 ))
+echo $result # 9
 ```
 
 变量扩展有多种形式，可以修改并输出变量的值。
@@ -270,8 +330,15 @@ echo ${filename%.*}
 
 ### 环境变量
 
+环境变量是脚本运行时外部使用`export`命令带入的变量。
+
 - $PS1 提示符
+- $HOME 用户的主目录
+- $PATH 分号分隔的一组目录，shell会在这组目录里面寻找命令
 - $SHELL 当前使用的Shell
+- $PWD 当前目录
+- $UID 当前用户的数字ID
+- $RANDOM 0到32767之间的一个数
 - $$ 当前进程的ID
 - $PPID 父进程的ID
 
@@ -289,11 +356,12 @@ $ exit
 ### 特殊变量
 
 - $? 特殊变量，表示上一个命令的输出结果，如果是0，表示运行成功。
-- $* 全部参数
+- `$*`或`$@` 全部参数，不含$0
 - $0 脚本名
 - $1 脚本的第一个参数
-- $2 脚本的第二个参数，以此类推
-- $# 参数数组的大小
+- $2 脚本的第二个参数，以此类推，直到$9
+- ${10}...${N} 从10到N的参数
+- $# 参数数组的大小，不含$0
 - $$ 当前进程的ID
 - $! 最近执行的背景线程的ID
 - $- 使用`set`命令的参数
@@ -471,10 +539,10 @@ if [ -s $file ]
 
 多个表达式的联合
 
-- `[ ! EXPR ]` True if EXPR is false.
-- `[ ( EXPR ) ]` Returns the value of EXPR. This may be used to override the normal precedence of operators.
+- `[ ! EXPR ]` 如果EXPR为false，则返回true
+- `[ (EXPR) ]` 返回EXPR的值.
 - `[ EXPR1 -a EXPR2 ]` 表达式1和表达式2同时为`true`，则返回`true`
-- `[ EXPR1 -o EXPR2 ]` True if either EXPR1 or EXPR2 is true.
+- `[ EXPR1 -o EXPR2 ]` 只要EXPR1或EXPR2有一个为true，则返回true。
 - `?(<PATTERN-LIST>)`	Matches zero or one occurrence of the given patterns
 - `*(<PATTERN-LIST>)`	Matches zero or more occurrences of the given patterns
 - `+(<PATTERN-LIST>)`	Matches one or more occurrences of the given patterns
@@ -489,10 +557,67 @@ $ rm -f !(survivior.txt)
 
 - -eq 等于
 - -ne 不等于
-- -gt Is Greater Than
-- -ge Is Greater Than or Equal To
-- -lt Is Less Than
-- -le Is Less Than or Equal To
+- -gt 大于
+- -ge 大于或等于
+- -lt 小于
+- -le 小于或等于
+
+```bash
+# 单行判断
+if [[ 1 -eq 1 ]]; then echo "true"; fi;
+
+# 多行判断
+if [[ 1 -eq 1 ]]; then
+  echo "true";
+fi;
+```
+
+`if...else`结构。
+
+```bash
+# 单行
+if [[ 2 -ne 1 ]]; then echo "true"; else echo "false"; fi;
+
+# 多行
+if [[ 2 -ne 1 ]]; then
+  echo "true";
+else
+  echo "false";
+fi;
+```
+
+`if..elif..else`结构。
+
+```bash
+if [[ `uname` == "Adam" ]]; then
+  echo "Do not eat an apple!";
+elif [[ `uname` == "Eva" ]]; then
+  echo "Do not take an apple!";
+else
+  echo "Apples are delicious!";
+fi;
+```
+
+`case`结构
+
+```javascript
+case "$extension" in
+  "jpg"|"jpeg")
+    echo "It's image with jpeg extension."
+  ;;
+  "png")
+    echo "It's image with png extension."
+  ;;
+  "gif")
+    echo "Oh, it's a giphy!"
+  ;;
+  *)
+    echo "Woops! It's not image!"
+  ;;
+esac;
+```
+
+上面代码中，`|`符号用来分隔多个模式，`)`符号用来终结一个模式队列，`*`表示除了上面模式以外的所有其他模式。每个`case`代码块应该以`;;`符号表示结束。
 
 字符串比较运算符
 
@@ -509,29 +634,30 @@ $ rm -f !(survivior.txt)
 - `[ -b FILE ]`	True if FILE exists and is a block-special file.
 - `[ -c FILE ]`	True if FILE exists and is a character-special file.
 - `[ -d FILE ]`	如果路径存在，而且是一个目录，返回`true`
-- `[ -e FILE ]`	如果路径存在，返回`true`，否则返回`false`
+- `[ -e FILE ]`	如果路径存在，而且是一个目录或常规文件，返回`true`，否则返回`false`
 - `[ -f FILE ]`	如果路径存在，而且是一个常规文件，返回`true`，否则返回`false`
 - `[ -g FILE ]`	True if FILE exists and its SGID bit is set.
 - `[ -h FILE ]`	True if FILE exists and is a symbolic link.
 - `[ -k FILE ]`	True if FILE exists and its sticky bit is set.
+- `[ -L FILE ]` 如果文件存在且是符号链接，则返回true
 - `[ -p FILE ]`	True if FILE exists and is a named pipe (FIFO).
-- `[ -r FILE ]`	True if FILE exists and is readable.
-- `[ -s FILE ]`	True if FILE exists and has a size greater than zero.
+- `[ -r FILE ]` 如果文件存在且可读，则返回true
+- `[ -s FILE ]` 如果文件存在，而且非空（size大于0），则返回true
 - `[ -t FD ]`	True if file descriptor FD is open and refers to a terminal.
 - `[ -u FILE ]`	True if FILE exists and its SUID (set user ID) bit is set.
-- `[ -w FILE ]`	True if FILE exists and is writable.
-- `[ -x FILE ]`	True if FILE exists and is executable.
+- `[ -w FILE ]` 如果文件存在且可写，则返回true
+- `[ -x FILE ]` 如果文件存在且可执行，则返回true
 - `[ -O FILE ]`	True if FILE exists and is owned by the effective user ID.
 - `[ -G FILE ]`	True if FILE exists and is owned by the effective group ID.
 - `[ -L FILE ]`	True if FILE exists and is a symbolic link.
 - `[ -N FILE ]`	True if FILE exists and has been modified since it was last read.
 - `[ -S FILE ]`	True if FILE exists and is a socket.
-- `[ FILE1 -nt FILE2 ]`	True if FILE1 has been changed more recently than FILE2, or if FILE1 exists and FILE2 does not.
-- `[ FILE1 -ot FILE2 ]`	True if FILE1 is older than FILE2, or is FILE2 exists and FILE1 does not.
+- `[ FILE1 -nt FILE2 ]` 如果FILE1比FILE2更新（最近改动过），或者FILE1存在而FILE2不存在，则返回true
+- `[ FILE1 -ot FILE2 ]` 如果FILE1比FILE2更老，或FILE2存在而FILE1不存在，则返回true。
 - `[ FILE1 -ef FILE2 ]`	True if FILE1 and FILE2 refer to the same device and inode numbers.
 - `[ -o OPTIONNAME ]`	True if shell option "OPTIONNAME" is enabled.
 - `[ -z STRING ]`	如果参数字符串的长度为0，则返回`true`，否则返回`false`
-- `[ -n STRING ]` or `[ STRING ]`	True if the length of "STRING" is non-zero.
+- `[ -n STRING ]` or `[ STRING ]` 如果"STRING"的长度是非零，则返回true
 - `[ STRING1 == STRING2 ]`	True if the strings are equal. "=" may be used instead of "==" for strict POSIX compliance.
 - `[ STRING1 != STRING2 ]`	True if the strings are not equal.
 - `[ STRING1 < STRING2 ]`	True if "STRING1" sorts before "STRING2" lexicographically in the current locale.
@@ -543,9 +669,14 @@ $ rm -f !(survivior.txt)
 for循环
 
 ```bash
-# 格式
-$ for variable in list; do ... ; done
+# 单行
+for variable in list; do ... ; done
 
+# 多行
+for arg in elem1 elem2 ... elemN
+do
+  # statements
+done
 # 实例
 $ for i in 1 2 3; do echo $i; done
 1
@@ -562,13 +693,29 @@ $ for i in {1..10}; do echo -n "$i "; done; echo
 
 $ for i in $( seq 1 2 10 ); do echo -n "$i "; done; echo
 1 3 5 7 9
+
+for FILE in $HOME/*.bash; do
+  mv $FILE ${HOME}/scripts
+  chmod +x ${HOME}/scripts/${FILE}
+done
+
+# C语法的循环
+for (( i = 0; i < 10; i++ )); do
+  echo $i
+done
 ```
 
-while循环
+while循环则是只要满足某个条件，就一直循环下去。
 
 ```bash
-# 格式
-$ while condition; do ... ; done
+# 单行
+while condition; do ... ; done
+
+# 多行
+while [[ condition ]]
+do
+  # statements
+done
 
 # 实例
 $ x=1; while [ $x -lt 4 ]; do echo $x; x=$(($x+1)); done
@@ -584,6 +731,72 @@ $ while read x; do echo $x; done < junk.txt
 1
 2
 3
+
+x=0
+while [[ $x -lt 10 ]]; do # value of x is less than 10
+  echo $(($x*$x))
+  x=`expr $x + 1` # increase x
+done
+```
+
+`until`循环则是只要条件为`false`，就不断执行。
+
+```bash
+until [[ conditions ]]; do
+  #statements
+done
+```
+
+循环过程中，可以使用`break`命令跳出循环，也可以使用`continue`命令直接跳到下一轮循环。
+
+```bash
+for (( i = 0; i < 10; i++ )); do
+  if [[ $(($i % 2)) == 0 ]]; then continue; fi;
+  echo $i
+done
+```
+
+## select命令
+
+select命令用于在屏幕上显示一组选项，供用户选择。它跟`for`循环的语法很相似。
+
+```bash
+select answer in elem1 elem2 ... elemN
+do
+  # statements
+done
+```
+
+`select`会将所有选项，显示在屏幕上，并且在每一项前面加上序号，提示用户选择一个。用户的选择会储存在变量`answer`里面。
+
+```bash
+#!/bin/bash
+
+PS3="Choose the package manager: "
+select ITEM in bower npm gem pip
+do
+  echo -n "Enter the package name: " && read PACKAGE
+  case $ITEM in
+    bower) bower install $PACKAGE ;;
+    npm)   npm   install $PACKAGE ;;
+    gem)   gem   install $PACKAGE ;;
+    pip)   pip   install $PACKAGE ;;
+  esac;
+  break # avoid infinite loop
+done
+```
+
+运行上面代码，结果如下。
+
+```bash
+$ ./my_script
+1) bower
+2) npm
+3) gem
+4) pip
+Choose the package manager: 2
+Enter the package name: bash-handbook
+<installing of bash-handbook>
 ```
 
 ## 正则运算符
@@ -738,14 +951,17 @@ done <"$file"
 
 ## 函数
 
-函数定义方式如下。
+函数表示一组命令，可以反复调用。它的定义方式如下。
 
 ```bash
-function functionname()
-{
-commands
-.
-.
+# 方式一
+my_func () {
+  # statements
+}
+
+# 方式二
+function my_func () {
+  # statements
 }
 ```
 
@@ -755,7 +971,7 @@ commands
 $ functionname arg1 arg2
 ```
 
-Bash函数的退出状态，就是函数体内最后一个命令的退出状态。
+函数使用`return`命令退出，`return`命令的参数就是函数的退出码。如果`return`命令没有参数，那么函数的退出状态就是函数体内最后一个命令的退出状态。
 
 Bash提供一些特殊变量，用于读取函数变量。
 
@@ -764,14 +980,35 @@ Bash提供一些特殊变量，用于读取函数变量。
 - $0 脚本名
 - $1、$2、$3 函数各个参数
 
+下面是一个例子。
+
+```bash
+# function with params
+greeting () {
+  if [[ -n $1 ]]; then
+    echo "Hello, $1!"
+  else
+    echo "Hello, unknown!"
+  fi
+  return 0
+}
+
+greeting Denys  # Hello, Denys!
+greeting        # Hello, unknown!
+```
+
+下面是另一个例子。
+
 ```bash
 $ testfunc () { echo "$# parameters"; echo "$@"; }
+
 $ testfunc
 0 parameters
 
 $ testfunc a b c
 3 parameters
 a b c
+
 $ testfunc a "b c"
 2 parameters
 a b c
@@ -781,6 +1018,100 @@ a b c
 
 ```bash
 $ alias name='unix command with options'
+```
+
+函数内部可以使用变量`$FUNCNAME`，返回当前执行的函数名。
+
+## 数组
+
+Bash可以使用数组表示一组值，每个值之间用空格分隔。数组从0开始计算位置。
+
+```bash
+fruits[0]=Apple
+fruits[1]=Pear
+fruits[2]=Plum
+echo ${fruits[*]}
+# Apple Pear Plum
+```
+
+数组也可以用下面的方法声明。
+
+```bash
+fruits=(Apple Pear Plum)
+```
+
+其他操作。
+
+```bash
+# 取出数组的一部分
+echo ${fruits[*]:0:2} # Apple Pear
+
+# 添加新成员
+fruits=(Orange ${fruits[*]} Banana Cherry)
+echo ${fruits[*]} # Orange Apple Pear Plum Banana Charry
+
+# 清空数组
+unset fruits[0]
+echo ${fruits[*]} #
+```
+
+## 除错
+
+脚本可以打开除错选项，用来除错。
+
+```bash
+#!/bin/bash options
+```
+
+可用的选项如下。
+
+- -f noglob，禁止文件名扩展（globbing）
+- -i interactive，脚本以互动模式运行
+- -n noexec，读取命令但不执行，用来语法检查
+- -t 执行第一条命令后退出
+- -v verbose，每条命令执行前，输出到终端
+- -x xtrace，每条命令执行前，输出到标准输出，并且扩展命令
+
+下面是使用`-x`参数的脚本。
+
+```bash
+#!/bin/bash -x
+
+for (( i = 0; i < 3; i++ )); do
+  echo $i
+done
+```
+
+运行结果如下。
+
+```bash
+$ ./my_script
++ (( i = 0 ))
++ (( i < 3 ))
++ echo 0
+0
++ (( i++  ))
++ (( i < 3 ))
++ echo 1
+1
++ (( i++  ))
++ (( i < 3 ))
++ echo 2
+2
++ (( i++  ))
++ (( i < 3 ))
+```
+
+如果只想对脚本的一部分除错，可以使用`set`命令，配合`+`和`-`来打开和关闭。
+
+```bash
+#!/bin/bash
+
+echo "xtrace is turned off"
+set -x
+echo "xtrace is enabled"
+set +x
+echo "xtrace is turned off again"
 ```
 
 ## 实例
@@ -806,3 +1137,7 @@ rsync -avz  -e "ssh " /path/to/yourfile user@backupserver.com:/backup/
 
 echo "backup for $(date) "| mail -s "backup complete" user@youremail.com
 ```
+
+## 参考链接
+
+- Denys Dovhan, [bash-handbook](https://github.com/denysdovhan/bash-handbook)
