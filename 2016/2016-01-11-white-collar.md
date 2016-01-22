@@ -2,13 +2,13 @@
 
 新年伊始，咨询公司埃森哲（Accenture）公布了一项[调查](http://www.cnbeta.com/articles/463129.htm)。
 
-![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016012201.jpg)
-
 他们找到17个行业的1700个白领人士，问了同样的一个问题。
 
 > “你觉得计算机对你构成威胁吗？”
 
 结果令人震惊。35%的人回答Yes。他们觉得在未来，机器可以自动完成他们现在的工作，因此职位可能保不住。最焦虑的就是科技行业的白领，回答Yes的人高达50%，其次是银行业，比例是49%。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016012201.jpg)
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016012202.png)
 
