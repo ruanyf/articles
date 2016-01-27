@@ -137,6 +137,159 @@ counter用来实现计数器。
 }
 ```
 
+## cursor
+
+`cousor`属性用来指定鼠标形状。
+
+```css
+.cursor_auto {
+    cursor: auto;
+}
+
+.cursor_default {
+    cursor: default;
+}
+
+.cursor_none {
+    cursor: none;
+}
+
+.cursor_pointer {
+    cursor: pointer;
+}
+
+.cursor_progress {
+    cursor: progress;
+}
+
+.cursor_help {
+    cursor: help;
+}
+
+.cursor_text {
+    cursor: text;
+}
+
+.cursor_cell {
+    cursor: cell;
+}
+
+.cursor_crosshair {
+    cursor: crosshair;
+}
+
+.cursor_alias {
+    cursor: alias;
+}
+
+.cursor_context-menu {
+    cursor: context-menu;
+}
+
+.cursor_vertical-text {
+    cursor: vertical-text;
+}  /*not compatible with opera*/
+
+.cursor_copy {
+    cursor: copy;
+}
+
+.cursor_move {
+    cursor: move;
+}
+
+.cursor_no-drop {
+    cursor: no-drop;
+}  /*not compatible with opera*/
+
+.cursor_not-allowed {
+    cursor: not-allowed;
+}  /*not compatible with opera*/
+
+.cursor_all-scroll {
+    cursor: all-scroll;
+}  /*not compatible with opera*/
+
+.cursor_col-resize {
+    cursor: col-resize;
+}  /*not compatible with opera*/
+
+.cursor_row-resize {
+    cursor: row-resize;
+}  /*not compatible with opera*/
+
+.cursor_nesw-resize {
+    cursor: nesw-resize;
+}
+.cursor_nwse-resize {
+    cursor: nwse-resize;
+}
+
+.cursor_n-resize {
+    cursor: n-resize;
+}
+
+.cursor_e-resize {
+    cursor: e-resize;
+}
+
+.cursor_s-resize {
+    cursor: s-resize;
+}
+
+.cursor_w-resize {
+    cursor: w-resize;
+}
+
+.cursor_ns-resize {
+    cursor: ns-resize;
+}
+
+.cursor_ew-resize {
+    cursor: ew-resize;
+}
+
+.cursor_ne-resize {
+    cursor: ne-resize;
+}
+
+.cursor_nw-resize {
+    cursor: nw-resize;
+}
+
+.cursor_sw-resize {
+    cursor: sw-resize;
+}
+
+.cursor_se-resize {
+    cursor: se-resize;
+}
+
+.cursor_wait {
+    cursor: wait;
+}
+
+.cursor_grab {
+    cursor: grab;
+}  /*only compatible with firefox and opera*/
+
+.cursor_grabbing {
+    cursor: grabbing;
+}  /*only compatible with firefox and opera*/
+
+.cursor_zoom-in {
+    cursor: zoom-in;
+}  /*not compatible with explorer*/
+
+.cursor_zoom-out {
+    cursor: zoom-out;
+}  /*not compatible with explorer*/
+
+.cursor_custom {
+    cursor: url(image.gif), url(image.cur), auto;
+}
+```
+
 ## display
 
 display属性表示如何展示元素。
