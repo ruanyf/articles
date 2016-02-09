@@ -163,7 +163,7 @@ Access-Control-Allow-Origin: *
 
 ### Cache-Control
 
-提供Cache控制。
+`Cache-Control`提供Cache控制。
 
 - `max-age=[seconds]` 当前cache最长保存时间
 - `s-maxage=[seconds]` 类似max-age，但只用于共享cache（即proxy服务器）

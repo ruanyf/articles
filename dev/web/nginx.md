@@ -19,6 +19,7 @@ $ sudo service nginx restart
 # 或者
 $ nginx -s reload
 ```
+
 nginx有一个主进程和几个worker进程，有多少个CPU，就有多少个worker进程。每一个worker进程能够处理几千个连接。
 
 ```bash
@@ -200,13 +201,13 @@ $
 基本配置。
 
 ```bash
-server {  
-    listen       80;  
+server {
+    listen       80;
     server_name  tecmintlovesnginx.com www.tecmintlovesnginx.com;
     access_log  /var/www/logs/tecmintlovesnginx.access.log;  
     error_log  /var/www/logs/tecmintlovesnginx.error.log error; 
         root   /var/www/tecmintlovesnginx.com/public_html;  
-        index  index.html index.htm;  
+        index  index.html index.htm;
 }
 ```
 
@@ -246,7 +247,15 @@ $ curl -X DELETE http://192.168.0.25/index.html
 
 ```bash
 server {
+  listen *:443;
+  ssl on;
+  server_name "";
   ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+
+  ssl_certificate        /etc/nginx/certs/server.crt;
+  ssl_certificate_key    /etc/nginx/certs/server.key;
+  ssl_client_certificate /etc/nginx/certs/ca.crt;
+  ssl_verify_client      on;
 }
 ```
 
@@ -325,6 +334,22 @@ server {
   return 301 https://$server_name$request_uri;
 }
 ```
+
+（6）反向代理，转发请求
+
+```
+http {
+
+  server {
+    location /app/ {
+      proxy_pass http://app/;
+      proxy_set_header X-ClientCert-DN $ssl_client_s_dn;
+    }
+  }
+}
+```
+
+上面代码中，用户对`/app`路径的访问请求，会被转发到后端服务。这时，nginx会增加一个HTTP信息头`X-ClientCert-DN`，它的值就是nginx变量`$ssl_client_s_dn`，这个值从客户端证书的Common Name部分获取。
 
 ### User Agent限制
 
