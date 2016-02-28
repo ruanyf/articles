@@ -4,11 +4,13 @@
 
 本文介绍如何将一个 Web 应用，启动为守护进程。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016022801.png)
+
 ## 一、问题的由来
 
 Web应用写好后，下一件事就是启动，让它一直在后台运行。
 
-这件事并不是那么容易。举例来说，下面是一个最简单的Node应用`server.js`，只有6行。
+这并不容易。举例来说，下面是一个最简单的Node应用`server.js`，只有6行。
 
 ```javascript
 var http = require('http');
@@ -25,7 +27,7 @@ http.createServer(function(req, res) {
 $ node server.js
 ```
 
-看上去一切正常，所有人都能快乐地访问5000端口了。但是，一旦你退出命令行窗口，这个应用就一起退出了，无法访问了。
+看上去一切正常，所有人都能快乐地访问 5000 端口了。但是，一旦你退出命令行窗口，这个应用就一起退出了，无法访问了。
 
 怎么才能让它变成系统的守护进程（daemon），成为一种服务（service），一直在那里运行呢？
 
@@ -33,13 +35,13 @@ $ node server.js
 
 上面这样启动的脚本，称为“前台任务”（foreground job）。它会独占命令行窗口，只有运行完了或者手动中止，才能执行其他命令。
 
-变成守护进程的第一步，就是改成“后台任务”（background job）模式启动。
+变成守护进程的第一步，就是把它改成“后台任务”（background job）。
 
 ```bash
 $ node server.js &
 ```
 
-只要在命令的尾部加上符号`&`，启动的进程就会成为“后台任务”。如果要让正在运行的“前台任务”变为“后台任务”，可以先按`ctrl + z`，然后执行`bg`命令（让最近一个暂停的“后台任务”重新开始执行）。
+只要在命令的尾部加上符号`&`，启动的进程就会成为“后台任务”。如果要让正在运行的“前台任务”变为“后台任务”，可以先按`ctrl + z`，然后执行`bg`命令（让最近一个暂停的“后台任务”继续执行）。
 
 “后台任务”有两个特点。
 
@@ -51,13 +53,13 @@ $ node server.js &
 
 ## 三、SIGHUP信号
 
-变为“后台任务”后，一个进程是否就成为了守护进程呢？或者说，用户退出 session 以后，该进程是否还会继续执行？
+变为“后台任务”后，一个进程是否就成为了守护进程呢？或者说，用户退出 session 以后，“后台任务”是否还会继续执行？
 
-Linux系统的设计是这样的。
+Linux系统是这样设计的。
 
 > 1. 用户准备退出 session
 > 2. 系统向该 session 发出`SIGHUP`信号
-> 3. 该 session 将`SIGHUP`信号发给所有子进程
+> 3.  session 将`SIGHUP`信号发给所有子进程
 > 4. 子进程收到`SIGHUP`信号后，自动退出
 
 上面的流程解释了，为什么“前台任务”会随着 session 的退出而退出：因为它收到了`SIGHUP`信号。
@@ -72,13 +74,13 @@ $ shopt | grep huponexit
 
 执行上面的命令，就会看到`huponexit`参数的值。
 
-大多数Linux系统，这个参数默认关闭（`off`）。因此，session 退出的时候，不会把`SIGHUP`信号发给“后台任务”，它也就不会退出了。
+大多数Linux系统，这个参数默认关闭（`off`）。因此，session 退出的时候，不会把`SIGHUP`信号发给“后台任务”。所以，一般来说，“后台任务”不会随着 session 一起退出。
 
 ## 四、disown 命令
 
-通过“后台任务”启动“守护进程”并不保险，因为有的系统`huponexit`参数可能是打开的（`on`）。
+通过“后台任务”启动“守护进程”并不保险，因为有的系统的`huponexit`参数可能是打开的（`on`）。
 
-更保险的方法是`disown`命令，它可以将指定任务从“后台任务”列表（`jobs`命令的返回结果）之中移除。一个进程只要不在这个列表之中，session 就肯定不会向它发出`SIGHUP`信号。
+更保险的方法是使用`disown`命令。它可以将指定任务从“后台任务”列表（`jobs`命令的返回结果）之中移除。一个“后台任务”只要不在这个列表之中，session 就肯定不会向它发出`SIGHUP`信号。
 
 ```bash
 $ node server.js &
@@ -87,7 +89,7 @@ $ disown
 
 执行上面的命令以后，`server.js`进程就被移出了“后台任务”列表。你可以执行`jobs`命令验证，输出结果里面，不会有这个进程。
 
-`disown`命令的用法如下。
+`disown`的用法如下。
 
 ```bash
 # 移出最近一个正在执行的后台任务
@@ -132,7 +134,7 @@ $ disown
 
 接着，你退出 session，访问5000端口，就会发现连不上。
 
-这是因为“后台任务”的标准 I/O 继承自当前 session，`disown`命令并没有改变这一点。一旦“后台任务”读写标准I/O，就会发现它已经不存在了，所以就出错终止执行。
+这是因为“后台任务”的标准 I/O 继承自当前 session，`disown`命令并没有改变这一点。一旦“后台任务”读写标准 I/O，就会发现它已经不存在了，所以就报错终止执行。
 
 为了解决这个问题，需要对“后台任务”的标准 I/O 进行重定向。
 
@@ -141,7 +143,7 @@ $ node server.js > stdout.txt 2> stderr.txt < /dev/null &
 $ disown
 ```
 
-上面这样执行，就基本上没有问题了。
+上面这样执行，基本上就没有问题了。
 
 ## 六、nohub 命令
 
@@ -163,9 +165,9 @@ $ nohup node server.js &
 
 ## 七、Screen 命令与 Tmux 命令
 
-另一种思路是使用 terminal multiplexer （终端复用器：在同一个终端里面，管理多个session），典型的就是 [Screen](https://www.gnu.org/software/screen/) 命令和 [Tmux]() 命令。
+另一种思路是使用 terminal multiplexer （终端复用器：在同一个终端里面，管理多个session），典型的就是 [Screen](https://www.gnu.org/software/screen/) 命令和 [Tmux](https://tmux.github.io/) 命令。
 
-它们可以在当前 session 里面，新建另一个 session。这样的话，当前 session 一旦结束，不影响其他 session。而且，以后重新登录，还可以重新连上早先新建的 session。
+它们可以在当前 session 里面，新建另一个 session。这样的话，当前 session 一旦结束，不影响其他 session。而且，以后重新登录，还可以再连上早先新建的 session。
 
 Screen 的用法如下。
 
@@ -194,7 +196,7 @@ $ screen -r pid_number
 $ screen -ls
 ```
 
-如果要停掉某个 session，可以按下`ctrl + c`和`ctrl + d`。
+如果要停掉某个 session，可以先切回它，然后按下`ctrl + c`和`ctrl + d`。
 
 Tmux 比 Screen 功能更多、更强大，它的基本用法如下。
 
@@ -271,7 +273,7 @@ $ nodemon server.js
 $ nodemon --watch app --watch libs server.js  
 ```
 
-pm2 的功能最强大，除了重启进程以外，还能实时收集日志和监控运行情况。
+pm2 的功能最强大，除了重启进程以外，还能实时收集日志和监控。
 
 ```bash
 # 启动应用
