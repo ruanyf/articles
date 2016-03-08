@@ -2,6 +2,8 @@
 
 上一篇文章，我介绍了 Systemd 的[主要命令](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html)，今天介绍如何使用它完成一些基本的任务。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016030801.jpg)
+
 ## 一、开机启动
 
 对于那些支持 Systemd 的软件，安装的时候，会自动在`/usr/lib/systemd/system`目录添加一个配置文件。
@@ -14,7 +16,7 @@ $ sudo systemctl enable httpd
 
 上面的命令相当于在`/etc/systemd/system`目录添加一个符号链接，指向`/usr/lib/systemd/system`里面的`httpd.service`文件。
 
-这是因为开机时，`Systemd`只执行`/etc/systemd/system`目录里面的配置文件。这也意味着，如果把修改后的配置文件放在该目录，就可以达到修改原始配置的效果。
+这是因为开机时，`Systemd`只执行`/etc/systemd/system`目录里面的配置文件。这也意味着，如果把修改后的配置文件放在该目录，就可以达到覆盖原始配置的效果。
 
 ## 二、启动服务
 
@@ -65,7 +67,7 @@ httpd.service - The Apache HTTP Server
 $ sudo systemctl stop httpd.service
 ```
 
-某些时候，该命令可能没有响应，服务停不下来。这时候就不得不“杀进程”了，向正在运行的进程发出`kill`信号。
+有时候，该命令可能没有响应，服务停不下来。这时候就不得不“杀进程”了，向正在运行的进程发出`kill`信号。
 
 ```bash
 $ sudo systemctl kill httpd.service
@@ -83,7 +85,7 @@ $ sudo systemctl restart httpd.service
 
 前面说过，配置文件主要放在`/usr/lib/systemd/system`目录，也可能在`/usr/lib/systemd/system`目录。找到配置文件以后，使用文本编辑器打开即可。
 
-`systemctl cat`命令也可以查看配置文件，下面以`sshd.service`文件为例，它的作用是启动一个 SSH 服务器，供其他用户以 SSH 方式登录。
+`systemctl cat`命令可以用来查看配置文件，下面以`sshd.service`文件为例，它的作用是启动一个 SSH 服务器，供其他用户以 SSH 方式登录。
 
 ```bash
 $ systemctl cat sshd.service
@@ -113,17 +115,17 @@ WantedBy=multi-user.target
 
 ## 五、 [Unit] 区块：启动顺序与依赖关系。
 
-`Unit`区块的`Description`给出当前服务的简单描述，`Documentation`字段给出文档位置，这里是要用`man`命令查看。
+`Unit`区块的`Description`给出当前服务的简单描述，`Documentation`字段给出文档位置。
 
-下面的设置是启动顺序和依赖关系，这个比较重要。
+接下来的设置是启动顺序和依赖关系，这个比较重要。
 
 > `After`字段：表示如果`network.target`或`sshd-keygen.service`需要启动，那么`sshd.service`应该在它们之后启动。
 
 相应地，还有一个`Before`字段，定义`sshd.service`应该在哪些服务之前启动。
 
-注意，`After`和`Before`字段只涉及启动顺序，与不涉及依赖关系。
+注意，`After`和`Before`字段只涉及启动顺序，不涉及依赖关系。
 
-请看一个例子，某 Web 应用需要 postgresql 数据库储存数据。在配置文件中，它只定义在 postgresql 之后启动，而没有定义依赖 postgresql 。上线后，由于某种原因，postgresql 需要重新启动，在停止服务期间，该 Web 应用就会无法建立数据库连接。
+举例来说，某 Web 应用需要 postgresql 数据库储存数据。在配置文件中，它只定义要在 postgresql 之后启动，而没有定义依赖 postgresql 。上线后，由于某种原因，postgresql 需要重新启动，在停止服务期间，该 Web 应用就会无法建立数据库连接。
 
 设置依赖关系，需要使用`Wants`字段和`Requires`字段。
 
@@ -139,17 +141,17 @@ WantedBy=multi-user.target
 
 ### 6.1 启动命令
 
-许多软件都有自己的设置文件，该文件可以用`EnvironmentFile`字段读取。
+许多软件都有自己的环境参数文件，该文件可以用`EnvironmentFile`字段读取。
 
-> `EnvironmentFile`字段：指定当前服务的设置文件。该文件内部的`key=value`键值对，可以用`$key`的形式，在服务配置文件中获取。
+> `EnvironmentFile`字段：指定当前服务的环境参数文件。该文件内部的`key=value`键值对，可以用`$key`的形式，在当前配置文件中获取。
 
-上面的例子中，sshd 的设置文件是`/etc/sysconfig/sshd`。
+上面的例子中，sshd 的环境参数文件是`/etc/sysconfig/sshd`。
 
 配置文件里面最重要的字段是`ExecStart`。
 
-> `ExecStart`字段：启动进程时执行的命令。
+> `ExecStart`字段：定义启动进程时执行的命令。
 
-上面的例子中，启动`sshd`，执行的命令是`/usr/sbin/sshd -D $OPTIONS`，其中的变量`$OPTIONS`就来自`EnvironmentFile`字段指定的设置文件。
+上面的例子中，启动`sshd`，执行的命令是`/usr/sbin/sshd -D $OPTIONS`，其中的变量`$OPTIONS`就来自`EnvironmentFile`字段指定的环境参数文件。
 
 与之作用相似的，还有如下这些字段。
 
@@ -178,7 +180,7 @@ post1
 post2
 ```
 
-所有的启动设置之前，都可以加上一个连词号，表示“抑制错误”，即发生错误的时候，不影响其他命令的执行。比如，`EnvironmentFile=-/etc/sysconfig/sshd`（注意等号后面的那个连词号），就表示即使`/etc/sysconfig/sshd`文件不存在，也不会抛出错误。
+所有的启动设置之前，都可以加上一个连词号（`-`），表示“抑制错误”，即发生错误的时候，不影响其他命令的执行。比如，`EnvironmentFile=-/etc/sysconfig/sshd`（注意等号后面的那个连词号），就表示即使`/etc/sysconfig/sshd`文件不存在，也不会抛出错误。
 
 ### 6.2 启动类型
 
@@ -191,7 +193,7 @@ post2
 - notify：类似于`simple`，启动结束后会发出通知信号，然后 Systemd 再启动其他服务
 - idle：类似于`simple`，但是要等到其他任务都执行完，才会启动该服务。一种使用场合是为让该服务的输出，不与其他服务的输出相混合
 
-下面是一个例子，笔记本电脑启动时，要把触摸板关掉，配置文件可以这样写。
+下面是一个`oneshot`的例子，笔记本电脑启动时，要把触摸板关掉，配置文件可以这样写。
 
 ```bash
 [Unit]
@@ -240,9 +242,9 @@ WantedBy=multi-user.target
 > - mixed：主进程将收到 SIGTERM 信号，子进程收到 SIGKILL 信号
 > - none：没有进程会被杀掉，只是执行服务的 stop 命令。
 
-`Restart`字段定义了服务意外退出时，怎么重启。
+接下来是`Restart`字段。
 
-> `Restart`字段：定义了如果 sshd 意外退出，Systemd 应该如何处理。
+> `Restart`字段：定义了 sshd 退出后，Systemd 的重启方式。
 
 上面的例子中，`Restart`设为`on-failure`，表示任何意外的失败，就将重启sshd。如果 sshd 正常停止（比如执行`systemctl stop`命令），它就不会重启。
 
@@ -266,7 +268,7 @@ WantedBy=multi-user.target
 
 `Install`区块，定义如何安装这个配置文件，即怎样做到开机启动。
 
-`WantedBy`字段：表示该服务所在的 Target。
+> `WantedBy`字段：表示该服务所在的 Target。
 
 `Target`的含义是服务组，表示一组服务。`WantedBy=multi-user.target`指的是，sshd 所在的 Target 是`multi-user.target`。
 
@@ -279,7 +281,9 @@ $ systemctl get-default
 multi-user.target
 ```
 
-上面的结果表示，默认的启动 Target 是`multi-user.target`。在这个组里的所有服务，都将开机启动。
+上面的结果表示，默认的启动 Target 是`multi-user.target`。在这个组里的所有服务，都将开机启动。这就是为什么`systemctl enable`命令能设置开机启动的原因。
+
+使用 Target 的时候，`systemctl list-dependencies`命令和`systemctl isolate`命令也很有用。
 
 ```bash
 # 查看 multi-user.target 包含的所有服务
