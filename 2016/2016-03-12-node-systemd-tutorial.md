@@ -1,10 +1,10 @@
 # Node 应用的 Systemd 启动
 
-这个系列的前两篇教程，介绍了 Systemd 的[操作命令](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html)和[基本用法](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html)。
+前面的文章介绍了 Systemd 的[操作命令](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html)和[基本用法](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html)，今天给出一个实例，如何使用 Systemd 启动一个 Node 应用。
 
-今天是最后一篇，给出一个实例，使用 Systemd 启动一个 Node 应用。你会从中感受到，Systemd 的强大和易用。
+本文是独立的，不需要前面的教程作为预备知识。
 
-需要说明的是，本文是独立的，不需要前面的教程作为预备知识 。事实上，Node应用启动为守护进程，你只看这篇文章就够了。如果有兴趣，想深入学习 Systemd ，再回过头去看前面的教程。
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016031201.jpg?i=362820196)
 
 # 一、克隆代码
 
@@ -15,7 +15,7 @@ $ git clone https://github.com/ruanyf/node-systemd-demo.git
 $ cd node-systemd-demo
 ```
 
-我们的示例脚本[`server.js`](https://github.com/ruanyf/node-systemd-demo/blob/master/server.js)非常简单，就是启动一个 HTTP 服务器。
+示例脚本[`server.js`](https://github.com/ruanyf/node-systemd-demo/blob/master/server.js)非常简单，就是一个 HTTP 服务器。
 
 ```javascript
 var http = require('http');
@@ -33,7 +33,7 @@ http.createServer(function(req, res) {
 
 ## 二、修改配置文件
 
-Systemd 启动上面这个脚本，需要一个配置文件，示例库里面是[`node-server.service`](https://github.com/ruanyf/node-systemd-demo/blob/master/node-server.service)。这个文件的文件名可以随便取，但是后缀名必须是`.service`。
+Systemd 启动上面这个脚本，需要一个配置文件[`node-server.service`](https://github.com/ruanyf/node-systemd-demo/blob/master/node-server.service)。这个文件的文件名可以随便取，但是后缀名必须是`.service`。
 
 ```bash
 [Unit]
@@ -60,7 +60,7 @@ WantedBy=multi-user.target
 - `[yourUserGroup]`：你的组名
 
 
-将上面这四个占位符，改成自己电脑的设置。下面是一个已经改好的例子。
+你需要将上面这四个占位符，改成自己电脑的设置。下面是一个已经改好的例子。
 
 ```bash
 [Unit]
@@ -79,7 +79,7 @@ WorkingDirectory=/tmp/node-systemd-demo
 WantedBy=multi-user.target
 ```
 
-如果你不知道，这几个占位符的值，下面的命令可以帮你找出来。
+如果你不知道这几个占位符的值，下面的命令可以帮你找出来。
 
 ```bash
 # node executable path
@@ -92,24 +92,24 @@ $ id -un
 $ id -gn
 ```
 
-三、配置文件的解释
+## 三、配置文件的解释
 
-简单解释一下，配置文件里面的几个参数。
+简单解释一下，上面的配置文件的几个参数。
 
-`Unit`区块的`Description`字段，是对该服务的简单描述。
+`Unit`区块的`Description`字段，是服务的简单描述。
 
 `Service`区块的字段含义如下。
 
 > - `ExecStart`：启动命令
-- `Restart`：重启行为。`always`表示如果进程退出，总是重启
+- `Restart`：如何重启。`always`表示如果进程退出，总是重启
 - `Environment`：环境变量
 - `WorkingDirectory`：工作目录
 
-`Install`区块的`WantedBy`字段指定如果设为开机启动，该服务所在的 Target 是`multi-user.target`。
+`Install`区块的`WantedBy`字段指定，设为开机启动时，该服务所在的 Target 是`multi-user.target`。
 
-四、启动服务
+## 四、启动服务
 
-将配置文件拷贝到 Systemd 之中。
+现在将配置文件拷贝到 Systemd 之中。
 
 ```bash
 $ sudo cp node-server.service /etc/systemd/system
@@ -125,7 +125,7 @@ $ sudo systemctl daemon-reload
 $ sudo systemctl start node-server
 ```
 
-访问 http://0.0.0.0:5000，这时应该看到网页显示“Hello World”。
+访问 http://0.0.0.0:5000，应该看到网页显示“Hello World”。
 
 ## 五、查看状态
 
@@ -160,19 +160,19 @@ $ sudo systemctl enable node-server
 
 ## 七、Socket 激活
 
-简单地启动一个服务，就是上面这些步骤。一般情况下，你学到这里就够用了。如果你还想体验一下 Systemd 的强大功能，请接着往下读。
+一般情况下，学到这里，应该就够用了。如果你还想体验一下 Systemd 的强大功能，请接着往下读。
 
-我们知道，HTTP服务器启动在那里，终究是耗费资源的。那么能不能做到，只有 有人访问时，才启动 Node 进程；没人访问时，就将 Node 进程关闭？
+我们知道，HTTP服务器启动在那里，终究是耗费资源的。那么能不能做到，只有 有人访问时，才启动服务，否则就关闭？
 
-Systemd 原生提供这项功能，就叫做“Socket 激活”。开发者可以指定 Socket 监听的端口，根据有没有收到请求，系统会自动启动和关闭服务。这样不仅节省资源，而且等同于实现了一个简单的云服务，只要前面加一层负载均衡器，就能自动扩展服务能力。
+这在 Systemd 里面叫做“Socket 激活”。开发者可以指定 Socket 监听的端口，系统根据有没有收到请求，自动启动或关闭服务。不难想到，只要前面加一层负载均衡器，这就等同于实现了一个简单的云服务，即根据访问量，系统自动扩容或收缩。
 
 下面就是“Socket 激活”的Demo。
 
 ## 八、安装依赖
 
-首先，确认上一部分启动的 Node 服务已经被关闭了，5000 端口已经释放出来了。
+首先，请确认前面启动的 Node 服务已经被关闭了，5000 端口已经释放出来了。
 
-打开启动脚本[`socket-server.js`](https://github.com/ruanyf/node-systemd-demo/blob/master/socket-server.js)，你会发现多出了两个模块：[`systemd`](https://www.npmjs.com/package/systemd) 和 [`autoquit`](https://www.npmjs.com/package/autoquit)。
+然后，打开启动脚本[`socket-server.js`](https://github.com/ruanyf/node-systemd-demo/blob/master/socket-server.js)，你会发现多出了两个模块：[`systemd`](https://www.npmjs.com/package/systemd) 和 [`autoquit`](https://www.npmjs.com/package/autoquit)。
 
 ```javascript
 require('systemd');
@@ -203,7 +203,7 @@ $ npm install
 
 Socket 激活需要两个配置文件。
 
-[`node-socket-server.socket`](https://github.com/ruanyf/node-systemd-demo/blob/master/node-socket-server.socket)。
+一个是[`node-socket-server.socket`](https://github.com/ruanyf/node-systemd-demo/blob/master/node-socket-server.socket)。
 
 ```bash
 [Socket]
@@ -214,7 +214,7 @@ WantedBy=sockets.target
 Status API Training Shop Blog About Pricing
 ```
 
-[`node-socket-server.service`](https://github.com/ruanyf/node-systemd-demo/blob/master/node-socket-server.service)。
+另一个是[`node-socket-server.service`](https://github.com/ruanyf/node-systemd-demo/blob/master/node-socket-server.service)。
 
 ```bash
 [Unit]
@@ -229,9 +229,9 @@ Environment=NODE_ENV=production
 WorkingDirectory=[/path/to/node-systemd-demo]
 ```
 
-上面这个文件需要改写占位符。另外，由于不是开机启动，所以不需要`Install`区块；这个服务也不需要重启，所以没有`Restart`字段。
+上面这个文件需要改写占位符。可以看到，由于不是开机启动，配置文件里面没有`Install`区块；由于不需要重启，也没有`Restart`字段。
 
-完成改写后，将这两个访问拷贝到 Systemd。
+改写后，将它们拷贝到 Systemd。
 
 ```bash
 $ sudo cp node-socket-server.socket /etc/systemd/system
@@ -262,7 +262,7 @@ $ sudo systemctl status node-socket-server.service
       Active: inactive (dead)
 ```
 
-可以看到，`node-socket-server.socket`是激活的（active），而`sudo systemctl status node-socket-server.service`是不激活的（inactive）。
+可以看到，`node-socket-server.socket`是激活的（active），而`node-socket-server.service`没有（inactive）。
 
 这时访问 http://0.0.0.0:5000 ，会发现网页可以正常访问。
 
@@ -296,7 +296,7 @@ Warning: Stopping node-socket-server.service, but it can still be activated by:
   node-socket-server.socket
 ```
 
-上面的输出表示，Socket 激活依然在运行，因此服务随时可能被重启，所以还需要关闭 Socket 激活。
+上面的警告表示，Socket 依然是激活的，因此服务随时可能被重启，所以还需要关闭 Socket 激活。
 
 ```bash
 $ sudo systemctl stop node-socket-server.socket
