@@ -351,6 +351,16 @@ http {
 
 上面代码中，用户对`/app`路径的访问请求，会被转发到后端服务。这时，nginx会增加一个HTTP信息头`X-ClientCert-DN`，它的值就是nginx变量`$ssl_client_s_dn`，这个值从客户端证书的Common Name部分获取。
 
+另一个例子。
+
+```
+location / {
+    proxy_pass http://localhost:15301/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+```
+
 ### User Agent限制
 
 新建一个文件`/etc/nginx/blockuseragents.rules`，定义屏蔽User Agent的规则。

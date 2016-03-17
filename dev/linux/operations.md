@@ -190,10 +190,20 @@ MIN HOUR DOM MON DOW CMD
 下面的命令可以进入contab的编辑模式。
 
 ```bash
+# 进入crontab编辑模式
 $ crontab -e
 
 # 列出所有定时任务
 $ crontab -l
+
+# 列出指定用户的所有定时任务
+$ crontab -u <userName> -l
+
+# 删除Crontab条目
+$ crontab -r
+
+# 删除前询问
+$ crontab -i -r
 ```
 
 下面是一些例子。
@@ -211,4 +221,40 @@ $ crontab -l
 # 每过10分钟执行一次，但是周末除外
 */10 * * * 0-4 /path/to/script
 ```
+
+## 周期性执行一个命令
+
+有多种方式，可以每隔几秒就执行一次命令。
+
+（1）watch
+
+`watch`周期性执行一个命令，输出结果。默认情况下，该命令每隔2秒就执行一次。
+
+```bash
+# 每隔2秒，清理一下内存
+$ watch free -m
+
+# 每隔10秒，执行某个脚本
+$ watch -n 10 script.sh
+```
+
+`watch`命令的参数
+
+- -n - 指定两次执行之间间隔的秒数
+- -b – 如果命令的退出码非0，则喇叭响一下
+- -c – 解释ANSI的颜色码
+- -d – 对输出结果发生变化的部分高亮显示
+
+（2）sleep命令
+
+`sleep`命令可以指定暂停多少秒之后，再继续执行。
+
+```bash
+# foo循环
+$ for i in {1..10}; do echo -n "This is a test in loop $i "; date ; sleep 5; done
+
+# while循环
+$ while true; do echo -n "This is a test of while loop";date ; sleep 5; done
+```
+
 
