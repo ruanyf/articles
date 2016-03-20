@@ -2,10 +2,28 @@
 
 ## cat
 
-`cat`用来将一个文本文件的内容，显示在标准输出。
+`cat`可以文件的内容，显示在标准输出。
 
 ```bash
-$ cat ls-output.txt
+$ cat text1
+1 apple
+2 pear
+3 banana
+```
+
+它也可以同时输出多个文件内容。
+
+```bash
+$ cat text1 text2
+```
+
+它与重定向结合，就可以合并多个文件。
+
+```bash
+# 合并文本文件
+$ cat text* > text.all
+
+# 合并二进制文件
 $ cat movie.mpeg.0* > movie.mpeg
 ```
 

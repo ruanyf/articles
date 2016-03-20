@@ -1,5 +1,7 @@
 # Session 管理
 
+## exit
+
 `exit`命令退出当前session。
 
 ```bash
