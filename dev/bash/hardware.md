@@ -24,6 +24,102 @@ Mem: 513712 503976 9736 0 5312 122916
 Swap: 1052248 104712 947536
 ```
 
+## 硬盘
+
+文件`/etc/fstab`配置系统启动时要挂载的设备。
+
+```
+LABEL=/12               /               ext3        defaults        1   1
+LABEL=/home             /home           ext3        defaults        1   2
+LABEL=/boot             /boot           ext3        defaults        1   2
+```
+
+输出结果一共有6个字段，含义依次如下。
+
+- 设备名：与物理设备相关联的设备文件（或设备标签）的名字，比如说`/dev/hda1`（第一个 IDE 通道上第一个主设备分区）。
+- 挂载点：设备所连接到的文件系统树的目录。
+- 文件系统类型：Linux 允许挂载许多文件系统类型。
+- 选项：文件系统可以通过各种各样的选项来挂载。
+- 频率：一位数字，指定是否和在什么时间用 dump 命令来备份一个文件系统。
+- 次序：一位数字，指定 fsck 命令按照什么次序来检查文件系统。
+
+## mount
+
+`mount`不带参数时，显示当前挂载的文件系统。
+
+```bash
+$ mount
+/dev/sda2 on / type ext3 (rw)
+proc on /proc type proc (rw)
+sysfs on /sys type sysfs (rw)
+devpts on /dev/pts type devpts (rw,gid=5,mode=620)
+/dev/sda5 on /home type ext3 (rw)
+```
+
+这个列表的格式是：设备 on 挂载点 type 文件系统类型（可选的）。
+
+`mount`带参数时，用于将设备文件挂载到挂载点，`-t`参数用来指定文件系统类型。
+
+```bash
+$ mount -t iso9660 /dev/hdc /mnt/cdrom
+
+# 挂载一个iso文件
+$ mount -t iso9660 -o loop image.iso /mnt/iso_image
+```
+
+## umount
+
+`umount`命令用来卸载设备。
+
+```bash
+$ umount [设备名]
+
+$ umount /dev/hdc
+```
+
+## fdisk
+
+`fdisk`命令用于格式化磁盘。
+
+```bash
+$ sudo umount /dev/sdb1
+$ sudo fdisk /dev/sdb
+```
+
+## mkfs
+
+`mkfs`命令用于在一个设备上新建文件系统。
+
+```bash
+$ sudo mkfs -t ext3 /dev/sdb1
+$ sudo mkfs -t vfat /dev/sdb1
+```
+
+## fsck
+
+`fsck`命令用于检查（修复）文件系统。
+
+```bash
+$ sudo fsck /dev/sdb1
+```
+
+## dd
+
+`dd`命令用于将大型数据块，从一个磁盘复制到另一个磁盘。
+
+```bash
+$ dd if=input_file of=output_file [bs=block_size [count=blocks]]
+
+# 将 /dev/sdb 的所有数据复制到 /dev/sdc
+$ dd if=/dev/sdb of=/dev/sdc
+
+# 将 /dev/sdb 的所有数据拷贝到一个镜像文件
+$ dd if=/dev/sdb of=flash_drive.img
+
+# 从cdrom制作一个iso文件
+$ dd if=/dev/cdrom of=ubuntu.iso
+```
+
 ## dmidecode
 
 `dmidecode`命令用于输出BIOS信息。

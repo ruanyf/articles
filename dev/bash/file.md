@@ -189,3 +189,37 @@ $ umask 0000
 上面命令将权限掩码设为`0000`，实际上就是关闭了权限掩码。
 
 `umask`命令设置的掩码值只能在当前Shell会话中生效，若当前Shell会话结束后，则必须重新设置。
+
+## du
+
+`du`命令用于查看指定目录的大小。
+
+```bash
+$ du -hs /path/to/directory
+```
+
+显示第一层子目录的大小。
+
+```bash
+$ du -h --max-depth=1 /path/to/folder
+```
+
+参数的含义。
+
+- `-h` 表示人类可读的格式
+- `-s` 表示总结信息，否则会显示该目录内所有文件和子目录的信息。
+
+`tree`命令也可以显示子目录大小。
+
+```bash
+$ tree --du -h /path/to/directory
+```
+
+## md5sum
+
+`md5sum`命令用来显示一个文件的md5校验码。
+
+```bash
+$ md5sum image.iso
+34e354760f9bb7fbf85c96f6a3f94ece    image.iso
+```

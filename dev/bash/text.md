@@ -55,6 +55,26 @@ $ ls /bin /usr/bin | sort | uniq | less
 $ ls /bin /usr/bin | sort | uniq -d | less
 ```
 
+`-V`参数可以按版本号排列（从小到大）。
+
+```bash
+$ sort -V input.txt
+1.0.15
+1.3.0
+2.1.2
+3.0.0
+```
+
+`-rV`参数可以按版本号逆序排列。
+
+```bash
+$ sort -rV input.txt
+3.0.0
+2.1.2
+1.3.0
+1.0.15
+```
+
 ## wc
 
 `wc`命令输出一个文本文件的统计信息（word count），一共有三个值，分别为行数、词数和字节数。
