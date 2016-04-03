@@ -81,14 +81,3 @@ $ ln file link
 $ ln -s item link
 ```
 
-## tar
-
-`tar`命令用于打包。
-
-```bash
-# 打包压缩
-$ tar -czvf assets.tgz dist
-
-# 解压 tar.gz 文件
-$ tar -xzv
-```

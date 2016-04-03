@@ -119,16 +119,43 @@ $ tail -f /var/log/messages
 
 ## grep
 
-`grep`命令用于在指定文件之中，搜索符合某个模式的行。
+`grep`程序用于在指定文件之中，搜索符合某个模式的行，并把搜索结果输出到标准输出。
 
 ```bash
-$ ls /bin /usr/bin | sort | uniq | grep zip
+$ grep keyword foo.txt
 ```
 
-上面命令搜索所有输出中包含`zip`的行。
+上面命令输出`foo.txt`之中匹配`keyword`的行。
+
+`grep`程序可以同时搜索多个文件。
+
+```bash
+$ grep keyword f*.txt
+```
+
+上面命令输出多个文件中匹配`keyword`的行。
+
+`-l`参数输出匹配的文件名，而不是文件行。
+
+```bash
+$ grep -l bzip dirlist*.txt
+```
+
+如果想搜索文件名，而不是文件内容，可以使用重定向。
+
+```bash
+$ ls /usr/bin | grep zip
+```
+
+上面命令会输出`/usr/bin`目录中，文件名中包含子字符串`zip`的所有文件。
 
 参数的含义。
 
-- `-i` 忽略大小写
-- `-v` 只返回不符合模式的行
+- `-c`或`--count` 输出匹配的数量，而不是匹配的文本行。如果使用了`-v`，则输出不匹配的数量。
+- `-h`或`--no-filename` 应用于多文件搜索，不在每行匹配的文本前，输出文件名
+- `-i`或`--ignore-case` 忽略大小写
+- `-l`或`--files-with-matches` 输出包含匹配项的文件名，而不是文本行本身
+- `-L`或`--files-without-match` 类似于`-l`，但输出不包含匹配项的文件名
+- `-n`或`--line-number` 每个匹配行之前输出其对应的行号
+- `-v`或`--invert-match` 只返回不符合模式的行
 
