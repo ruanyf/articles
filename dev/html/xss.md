@@ -159,10 +159,11 @@ var data = document.getElementById('myFrame').contentWindow.name;
 
 上面两种方法都属于破解，HTML5为了解决这个问题，引入了一个全新的API：跨文档通信 API（Cross-document messaging）。
 
-主窗口向子窗口发送 Message。
+父窗口`http://aaa.com`向子窗口`http://bbb.com`发消息。
 
 ```javascript
-document.getElementById("myIFrame").contentWindow.postMessage("changebgofchild","*");
+var popup = window.open('http://aaa.com', 'title');
+popup.postMessage('Hello World!', 'http://aaa.com');
 ```
 
 `postMessage`方法的第一个参数是具体的信息内容，第二个参数是指定发送的域名，`*`表示不限制域名，向所有域名发送。
@@ -170,15 +171,113 @@ document.getElementById("myIFrame").contentWindow.postMessage("changebgofchild",
 子窗口也可以向主窗口发送 Message。
 
 ```javascript
-window.parent.postMessage("changebgofparent","*");
+window.opener.postMessage('Nice to see you', 'http://bbb.com');
 ```
 
-父窗口和子窗口监听主窗口发来的消息。
+父窗口和子窗口都可以通过`message`事件，监听对方的消息。
 
 ```javascript
 window.addEventListener('message', function(e) {
   console.log(e.data);
 },false);
+```
+
+PostMessage API的事件对象`event`，还提供了以下三个属性。
+
+- `event.source`：发送消息的窗口
+- `event.origin`: 消息发向的网址
+- `event.data`: 消息内容
+
+子窗口回应父窗口发来的消息。
+
+```javascript
+window.addEventListener('message', receiveMessage);
+function receiveMessage(event) {
+  event.source.postMessage('Nice to see you!', '*');
+}
+```
+
+还是用上面的例子，父窗口`aaa.com`过滤子窗口`bbb.com`发来的消息。
+
+```javascript
+window.addEventListener('message', receiveMessage);
+
+function receiveMessage(event) {
+  if (event.origin !== 'http://bbb.com') return;
+  if (event.data === 'Hello World') {
+      event.source.postMessage('Hello', event.origin);
+  } else {
+    console.log(event.data);
+  }
+}
+```
+
+## 八、LocalStorage
+
+利用PostMessage API，实际可以在两个窗口之间，交换LocalStorage内容。
+
+下面是一个例子，主窗口写入iframe窗口的iframe。
+
+```javascript
+window.onmessage = function(e) {
+  if (e.origin !== 'http://bbb.com') {
+    return;
+  }
+  var payload = JSON.parse(e.data);
+  localStorage.setItem(payload.key, JSON.stringify(payload.data));
+};
+```
+
+上面代码中，子窗口将父窗口发来的消息，写入LocalStorage。
+
+父窗口发送消息的代码如下。
+
+```javascript
+window.onload = function() {
+  var win = document.getElementsByTagName('iframe')[0].contentWindow;
+  var obj = { name: 'Jack' };
+  win.postMessage(JSON.stringify({key: 'storage', data: obj}), 'http://bbb.com');
+};
+```
+
+加强版的子窗口接收消息的代码如下。
+
+```javascript
+window.onmessage = function(e) {
+  if (e.origin !== 'http://bbb.com') return;
+  var payload = JSON.parse(e.data);
+  switch (payload.method) {
+    case 'set':
+      localStorage.setItem(payload.key, JSON.stringify(payload.data));
+      break;
+    case 'get':
+      var parent = window.parent;
+      var data = localStorage.getItem(payload.key);
+      parent.postMessage(data, 'http://aaa.com');
+      break;
+    case 'remove':
+      localStorage.removeItem(payload.key);
+      break;
+  }
+};
+```
+
+加强版的父窗口发送消息代码。
+
+```javascript
+window.onload = function() {
+  var win = document.getElementsByTagName('iframe')[0].contentWindow;
+  var obj = { name: 'Jack' };
+  // 存入对象
+  win.postMessage(JSON.stringify({key: 'storage', method: 'set', data: obj}), 'http://bbb.com');
+  // 读取对象
+  win.postMessage(JSON.stringify({key: 'storage', method: "get"}), "*");
+  window.onmessage = function(e) {
+    if (e.origin != 'http://aaa.com') return;
+    // "Jack"
+    console.log(JSON.parse(e.data).name);
+  };
+};
 ```
 
 ## 八、AJAX
