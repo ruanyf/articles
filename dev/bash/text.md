@@ -33,27 +33,63 @@ $ cat movie.mpeg.0* > movie.mpeg
 $ cat > lazy_dog.txt
 ```
 
+它的参数如下。
+
+- `-n` 输出结果显示行号
+- `-s` 将多个连续的空白行，输出为一行
+- `-A` 输出结果中显示控制符，比如Tab键显示为`^I`，行尾显示`$`
+
+## nl
+
+`nl`命令为文本文件添加行号，显示在标准输出。
+
+```bash
+$ nl example.txt
+```
+
 ## sort
 
 `sort`命令将文本文件的所有行排序后输出。
 
 ```bash
-$ ls /bin /usr/bin | sort | less
+$ sort file1.txt file2.txt file3.txt > final_sorted_list.txt
 ```
+
+它的参数如下。
+
+- `-b` `--ignore-leading-blanks` 默认情况下，排序用的是每行的第一个字符。这个参数忽略每行开头的空格，从第一个非空白字符开始排序。
+- `-f` `--ignore-case` 让排序不区分大小写。
+- `-n` `--numeric-sort` 按照数值排序，而不是字符值，用于行首是数值的情况。
+- `-r` `--reverse` 按相反顺序排序。结果按照降序排列，而不是升序。
+- `-k` `--key=field1[,field2]` 指定按照每行的第几个字段（从1开始）排序，而不是按照行首字符排序。该属性可以多个连用，用于指定多重排序标准，还可以指定每个字段指定排序标准，这些值与全局属性一致，比如b（忽略开头的空格），n（数值排序），r（逆向排序）等等。
+- `-m` `--merge` 把每个参数看作是一个预先排好序的文件。把多个文件合并成一个排好序的文件，而没有执行额外的排序。
+- `-o` `--output=file` 把排好序的输出结果发送到文件，而不是标准输出。
+- `-t` `--field-separator=char` 定义字段分隔字符。默认情况下，字段由空格或制表符分隔。
+- `-u` 输出结果中删除重复行
+
+```bash
+$ sort --key=1,1 --key=2n distros.txt
+```
+
+上面命令中，第一个`--key`指定第一排序标准是只用第一字段（`1,1`），也可以指定使用第一字段第一个字符（`1.1`）；第二排序标准是第二字段，按数值排序。
 
 ## uniq
 
 `uniq`命令在排序后的行中，删除所有重复的行，保证所有输出没有重复。
 
 ```bash
-$ ls /bin /usr/bin | sort | uniq | less
+$ ls /bin /usr/bin | sort | uniq
 ```
 
-如果只想看重复的行，就要使用`-d`参数。
+它的参数如下。
 
-```bash
-$ ls /bin /usr/bin | sort | uniq -d | less
-```
+- `-c`	输出所有的重复行，并且每行开头显示重复的次数。
+- `-d`	只输出重复行，而不是不重复的文本行。
+- `-f n`	忽略每行开头的 n 个字段，字段之间由空格分隔，正如 sort 程序中的空格分隔符；然而， 不同于 sort 程序，uniq 没有选项来设置备用的字段分隔符。
+- `-i`	在比较文本行的时候忽略大小写。
+- `-s n`	跳过（忽略）每行开头的 n 个字符。
+- `-u`	只是输出独有的文本行。这是默认的。
+- `-V` 按照版本号排序。
 
 `-V`参数可以按版本号排列（从小到大）。
 
@@ -73,6 +109,39 @@ $ sort -rV input.txt
 2.1.2
 1.3.0
 1.0.15
+```
+
+## cut
+
+`cut`程序用来从文本行中抽取文本，并把其输出到标准输出。它能够接受多个文件参数或者标准输入。
+
+它的参数如下。
+
+- `-c char_list` 抽取指定范围的文本
+- `-f field_list` 抽取指定字段，字段之间可以tab分隔也可以逗号分隔
+- `-d delim_char` 指定字段分隔符，默认是tab键
+- `--complement`	抽取整个文本行，除了那些由-c 和／或-f 选项指定的文本。
+
+```bash
+# 抽取每行的第三个字段
+$ cut -f 3 distros.txt
+
+# 抽取每行的第7到第10个字符
+$ cut -c 7-10 distros.txt
+
+# 抽取每行的第23个到结尾的字符1
+$ cut -c 23- distros.txt
+
+# 指定字段分隔符为冒号
+$ cut -d ':' -f 1 /etc/passwd
+```
+
+## paste
+
+`paste`程序将多个文本文件按行合并，即每一行都由原来文本文件的每一行组成，显示在标准输出。
+
+```bash
+$ paste distros-dates.txt distros-versions.txt
 ```
 
 ## wc
@@ -159,3 +228,23 @@ $ ls /usr/bin | grep zip
 - `-n`或`--line-number` 每个匹配行之前输出其对应的行号
 - `-v`或`--invert-match` 只返回不符合模式的行
 
+## sed
+
+`sed`是一个强大的文本编辑工具。
+
+```bash
+# 输出前5行
+$ sed -n '1,5p' distros.txt
+
+# 输出包含指定内容的行
+$ sed -n '/SUSE/p' distros.txt
+
+# 输出不包含指定内容的行
+$ sed -n '/SUSE/!p' distros.txt
+
+# 替换内容（只替换第一个）
+$ sed 's/regexp/replacement/' distros.txt
+
+# 替换内容（全局替换）
+$ sed 's/regexp/replacement/g' distros.txt
+```

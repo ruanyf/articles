@@ -118,7 +118,7 @@ window.onhashchange = checkMessage;
 function checkMessage() {
   var message = window.location.hash;
   // ...
-}
+}r
 ```
 
 同样的，子窗口也可以改变父窗口的片段标识符。
@@ -320,7 +320,7 @@ foo({
 
 由于`<script>`元素请求的脚本，直接作为代码运行。这时，只要浏览器定义了`foo`函数，该函数就会立即调用。作为参数的JSON数据被视为JavaScript对象，而不是字符串，因此避免了使用`JSON.parse`的步骤。
 
-### 8.2 WebSocket
+### 4.2 WebSocket
 
 WebSocket是一种通信协议，使用`ws://`（非加密）和`wss://`（加密）作为协议前缀。该协议不实行同源政策，只要服务器支持，就可以通过它进行跨源通信。
 
@@ -349,7 +349,7 @@ Sec-WebSocket-Accept: HSmrc0sMlYUkAGmm5OPpG2HaGWk=
 Sec-WebSocket-Protocol: chat
 ```
 
-### 8.3 CORS
+### 4.3 CORS
 
 CORS是跨源资源分享（Cross-Origin Resource Sharing）的缩写。它是W3C标准，是跨源AJAX请求的根本解决方法。相比JSONP只能发`GET`请求，CORS允许任何类型的请求。
 
