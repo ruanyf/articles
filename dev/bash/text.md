@@ -39,6 +39,22 @@ $ cat > lazy_dog.txt
 - `-s` 将多个连续的空白行，输出为一行
 - `-A` 输出结果中显示控制符，比如Tab键显示为`^I`，行尾显示`$`
 
+`cat`支持Here document，显示多行文本。
+
+```bash
+cat << _EOF_
+<HTML>
+         <HEAD>
+                <TITLE>$TITLE</TITLE>
+         </HEAD>
+         <BODY>
+                <H1>$TITLE</H1>
+                <P>$TIME_STAMP</P>
+         </BODY>
+</HTML>
+_EOF_
+```
+
 ## nl
 
 `nl`命令为文本文件添加行号，显示在标准输出。

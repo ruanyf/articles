@@ -1,6 +1,19 @@
 # Bash脚本
 
-# shebang
+Bash脚本就是一个包含一系列Bash命令的文件。Shell 读取这个文件，然后执行文件中的所有命令，就好像这些命令已经直接被输入到了命令行中一样。所有能够在命令行中完成的任务也能够用脚本来实现。
+
+## 注释
+
+脚本中，`#`表示注释。
+
+```bash
+# This is our first script.
+echo 'Hello World!'
+
+echo 'Hello World!' # This is a comment too
+```
+
+## shebang
 
 `shebang`用来指定执行脚本的二进制文件，通常在脚本的第一行。
 
