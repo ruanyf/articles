@@ -1,43 +1,5 @@
 # Bash脚本
 
-## set命令
-
-`set`允许改变Shell的参数值，或设置新的参数。
-
-```bash
-# 打开bash的一个选项
-set -LETTER
-
-# 关闭bash的一个选项
-set +LETTER
-
-set -x # 打开debugging，执行的每条命令都会显示在终端
-# your commands go here...
-set +x # 关闭debugging
-
-# 只要有一个命令或管道返回非零值，脚本就退出。
-# 脚本的默认行为是忽略运行中的错误
-# e 表示 errexit
-set -e
-
-# 只要脚本中有未定义的变量，脚本就会退出
-set -u
-```
-
-下面的例子会输出`x`。
-
-```javascript
-foo() {
-    echo 'x'
-    return 42
-}
-
-out=$(foo)
-echo $out
-```
-
-上面代码的顶部，加上`set -e`以后，就没有任何输出。
-
 ## 变量
 
 ### 概述

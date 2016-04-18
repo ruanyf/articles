@@ -1,40 +1,5 @@
 # Bash 简介
 
-## echo
-
-`echo`命令用于将指定内容输出到显示屏（标准输出）。
-
-```bash
-$ echo this is a test
-this is a test
-```
-
-`-e`参数可以解释转义字符。
-
-```bash
-$ echo "a\nb"
-a\nb
-
-$ echo -e "a\nb"
-a
-b
-```
-
-上面代码中，如果不加`-e`参数，`\n`就会按字面形式输出；加了以后，就被解释成了换行符。
-
-引号之中可以包括多个换行符，即可以输出多行文本。
-
-```bash
-echo "<HTML>
-    <HEAD>
-          <TITLE>Page Title</TITLE>
-    </HEAD>
-    <BODY>
-          Page body.
-    </BODY>
-</HTML>"
-```
-
 ## 引号
 
 如果输出的文本之中包含括号，则需要使用双引号。
@@ -162,6 +127,17 @@ $ ls > less
 
 上面命令会在当前目录，生成一个名为`less`的文本文件。
 
+下面是标准错误重定向的一个例子。
+
+```bash
+invalid_input () {
+    echo "Invalid input '$REPLY'" >&2
+    exit 1
+}
+read -p "Enter a single item > "
+[[ -z $REPLY ]] && invalid_input
+```
+
 ## tee
 
 `tee`命令用于同时将标准输出重定向到文件，以及另一个命令的标准输入。
@@ -182,4 +158,23 @@ $ echo `ls`
 $ ls -l $(which cp)
 # 或者
 $ ls -l `which cp`
+```
+
+## basename
+
+`basename`命令清除 一个路径名的开头部分，只留下一个文件的基本名称。
+
+```bash
+#!/bin/bash
+# file_info: simple file information program
+PROGNAME=$(basename $0)
+if [[ -e $1 ]]; then
+    echo -e "\nFile Type:"
+    file $1
+    echo -e "\nFile Status:"
+    stat $1
+else
+    echo "$PROGNAME: usage: $PROGNAME file" >&2
+    exit 1
+fi
 ```
