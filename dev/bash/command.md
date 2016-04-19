@@ -141,3 +141,41 @@ command1 || command2
 ```
 
 上面三种执行方法的退出码，都是最后一条执行的命令的退出码。
+
+bash 允许把命令组合在一起。可以通过两种方式完成；要么用一个 group 命令，要么用一个子 shell。 这里是每种方式的语法示例：
+
+组命令：
+
+```bash
+{ command1; command2; [command3; ...] }
+```
+
+子 shell
+
+```bash
+(command1; command2; [command3;...])
+```
+
+这两种形式的不同之处在于，组命令用花括号把它的命令包裹起来，而子 shell 用括号。值得注意的是，鉴于 bash 实现组命令的方式， 花括号与命令之间必须有一个空格，并且最后一个命令必须用一个分号或者一个换行符终止。
+
+那么组命令和子 shell 命令对什么有好处呢？ 它们都是用来管理重定向的。
+
+```bash
+{ ls -l; echo "Listing of foo.txt"; cat foo.txt; } > output.txt
+```
+
+使用一个子 shell 是相似的。
+
+```bash
+(ls -l; echo "Listing of foo.txt"; cat foo.txt) > output.txt
+```
+
+组命令和子 shell 真正闪光的地方是与管道线相结合。 当构建一个管道线命令的时候，通常把几个命令的输出结果合并成一个流是很有用的。 组命令和子 shell 使这种操作变得很简单。
+
+```bash
+{ ls -l; echo "Listing of foo.txt"; cat foo.txt; } | lpr
+```
+
+这里我们已经把我们的三个命令的输出结果合并在一起，并把它们用管道输送给命令 lpr 的输入，以便产生一个打印报告。
+
+
