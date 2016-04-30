@@ -1,5 +1,11 @@
 # CSS选择器
 
+## 基本选择器
+
+`#elementId`选中指定`id`属性的元素。
+
+`.elementClass`选中指定`class`属性的元素。
+
 ## :first-of-type，:last-of-type
 
 `:first-of-type`选中容器里面，第一个符合要求的元素。

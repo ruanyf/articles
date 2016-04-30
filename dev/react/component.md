@@ -24,6 +24,8 @@ export default class App extends React.Component {
 - `this.props` 组件的参数
 - `this.state` 组件的状态
 
+`props`和`state`的主要区别是，`state`是组件私有的内部参数，不应暴露到外部。这就是为什么父组件或者外部使用者，不能操作子组件的state（即`setState`方法只能在当前组件内部使用）。
+
 ### setState
 
 组件的状态，通过`setState`方法改变。每当`state`发生变化，`render`方法就会自动调用，从而更新组件。
