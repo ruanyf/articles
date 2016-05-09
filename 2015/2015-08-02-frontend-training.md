@@ -73,7 +73,7 @@
 
 学习材料
 
-- [览器如何工作？](http://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/)
+- [浏览器如何工作？](http://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/)
 - [蚂蚁体验技术学院的视频](http://atit.alipay.net/index.php?r=themeDetail/newIndex&id=198)
 
 第一课
