@@ -1,4 +1,4 @@
-# React-Router 使用教程
+# React Router 使用教程
 
 真正学会 [React](https://facebook.github.io/react/) 是一个漫长的过程。
 
