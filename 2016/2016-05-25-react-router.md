@@ -2,19 +2,27 @@
 
 真正学会 [React](https://facebook.github.io/react/) 是一个漫长的过程。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016052501.jpg)
+
 你会发现，它不是一个库，甚至也不是一个框架，而是一个庞大的体系。想要发挥它的威力，整个技术栈都要配合它改造。你要学习一整套解决方案，从后端到前端，都是全新的做法。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016052503.png)
 
 举例来说，React 不使用 HTML，而使用 JSX 。它打算抛弃 DOM，要求开发者不要使用任何 DOM 方法。它甚至还抛弃了 SQL ，自己发明了一套查询语言 GraphQL 。当然，这些你都可以不用，React 照样运行，但是就发挥不出它的最大威力。
 
 这样说吧，你只要用了 React，就会发现合理的选择就是，采用它的整个技术栈。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016052502.png)
+
 本文介绍 React 体系的一个重要部分：路由库[`React-Router`](https://github.com/reactjs/react-router)。它是官方维护的，事实上也是唯一可选的路由库。它通过管理 URL，实现组件的切换和状态的变化，开发复杂的应用几乎肯定会用到。
 
-本文针对初学者，尽量写得简洁易懂。如果你还不会 React 的基本用法，请先学[《React 入门实例教程》](http://www.ruanyifeng.com/blog/2015/03/react.html)。另外，官方的[示例库](https://github.com/reactjs/react-router-tutorial/tree/master/lessons)非常棒，由浅入深，分成14步，每一步都有详细的代码解释。我强烈建议你先跟着做一遍，然后再看下面的API讲解。
+本文针对初学者，尽量写得简洁易懂。预备知识是 React 的基本用法，可以参考我写的[《React 入门实例教程》](http://www.ruanyifeng.com/blog/2015/03/react.html)。
+
+另外，我没有准备示例库，因为官方的[示例库](https://github.com/reactjs/react-router-tutorial/tree/master/lessons)非常棒，由浅入深，分成14步，每一步都有详细的代码解释。我强烈建议你先跟着做一遍，然后再看下面的API讲解。
 
 ## 一、基本用法
 
-React Router 安装后，就可以使用。
+React Router 安装命令如下。
 
 ```bash
 $ npm install -S react-router
@@ -45,7 +53,7 @@ render((
 
 `Route`组件定义了URL路径与组件的对应关系。你可以同时使用多个`Route`组件。
 
-```javascript
+```html
 <Router history={hashHistory}>
   <Route path="/" component={App}/>
   <Route path="/repos" component={Repos}/>
@@ -81,16 +89,14 @@ render((
 ```javascript
 export default React.createClass({
   render() {
-    return (
-      <div>
-        {this.props.children}
-      </div>
-    )
+    return <div>
+      {this.props.children}
+    </div>
   }
 })
 ```
 
-上面代码中，`App`组件的`this.props.children`属性会放置子组件。
+上面代码中，`App`组件的`this.props.children`属性就是子组件。
 
 子路由也可以不写在`Router`组件里面，单独传入`Router`组件的`routes`属性。
 
@@ -109,7 +115,7 @@ let routes = <Route path="/" component={App}>
 
 请看下面的例子。
 
-```javascript
+```html
 <Route path="inbox" component={Inbox}>
    <Route path="messages/:id" component={Message} />
 </Route>
@@ -125,7 +131,7 @@ let routes = <Route path="/" component={App}>
 
 如果省略外层`Route`的`path`参数，写成下面的样子。
 
-```javascript
+```html
 <Route component={Inbox}>
   <Route path="inbox/messages/:id" component={Message} />
 </Route>
@@ -143,7 +149,7 @@ let routes = <Route path="/" component={App}>
 
 ``path`属性可以使用通配符。
 
-```jsx
+```html
 <Route path="/hello/:name">
 // 匹配 /hello/michael
 // 匹配 /hello/ryan
@@ -189,7 +195,7 @@ let routes = <Route path="/" component={App}>
 
 路由匹配规则是从上到下执行，一旦发现匹配，就不再其余的规则了。
 
-```jsx
+```html
 <Route path="/comments" ... />
 <Route path="/comments" ... />
 ```
@@ -198,7 +204,7 @@ let routes = <Route path="/" component={App}>
 
 设置路径参数时，需要特别小心这一点。
 
-```jsx
+```html
 <Router>
   <Route path="/:userName/:id" component={UserPage}/>
   <Route path="/about/me" component={About}/>
@@ -228,7 +234,7 @@ let routes = <Route path="/" component={App}>
 
 `IndexRoute`就是解决这个问题，显式指定`Home`是根路由的子组件，即指定默认情况下加载的子组件。你可以把`IndexRoute`想象成某个路径的`index.html`。
 
-```javascript
+```html
 <Router>
   <Route path="/" component={App}>
     <IndexRoute component={Home}/>
@@ -238,7 +244,7 @@ let routes = <Route path="/" component={App}>
 </Router>
 ```
 
-现在，当用户访问`/`的时候，加载的组件结构如下。
+现在，用户访问`/`的时候，加载的组件结构如下。
 
 ```html
 <App>
@@ -254,7 +260,7 @@ let routes = <Route path="/" component={App}>
 
 `<Redirect>`组件用于路由的跳转，即用户访问一个路由，会自动跳转到另一个路由。
 
-```javascript
+```html
 <Route path="inbox" component={Inbox}>
    {/* 从 /inbox/messages/:id 跳转到 /messages/:id */}
    <Redirect from="messages/:id" to="/messages/:id" />
@@ -303,7 +309,7 @@ render() {
 
 另一种做法是，使用`activeClassName`指定当前路由的`Class`。
 
-```javascript
+```html
 <Link to="/about" activeClassName="active">About</Link>
 <Link to="/repos" activeClassName="active">Repos</Link>
 ```
@@ -312,7 +318,7 @@ render() {
 
 在`Router`组件之外，导航到路由页面，可以使用浏览器的History API，像下面这样写。
 
-```jsx
+```javascript
 import { browserHistory } from 'react-router';
 browserHistory.push('/some/path');
 ```
@@ -324,7 +330,7 @@ browserHistory.push('/some/path');
 
 这是因为对于根路由来说，`activeStyle`和`activeClassName`会失效，或者说总是生效，因为`/`会匹配任何子路由。而`IndexLink`组件会使用路径的精确匹配。
 
-```javascript
+```html
 <IndexLink to="/" activeClassName="active">
   Home
 </IndexLink>
@@ -334,7 +340,7 @@ browserHistory.push('/some/path');
 
 另一种方法是使用`Link`组件的`onlyActiveOnIndex`属性，也能达到同样效果。
 
-```javascript
+```html
 <Link to="/" activeClassName="active" onlyActiveOnIndex={true}>
   Home
 </Link>
@@ -394,7 +400,7 @@ const history = createMemoryHistory(location)
 
 下面是一个表单。
 
-```javascript
+```html
 <form onSubmit={this.handleSubmit}>
   <input type="text" placeholder="userName"/>
   <input type="text" placeholder="repo"/>
@@ -439,7 +445,7 @@ export default React.createClass({
 
 每个路由都有`Enter`和`Leave`钩子，用户进入或离开该路由时触发。
 
-```jsx
+```html
 <Route path="about" component={About} />
 <Route path="inbox" component={Inbox}>
   <Redirect from="messages/:id" to="/messages/:id" />
@@ -449,12 +455,12 @@ export default React.createClass({
 上面的代码中，如果用户离开`/messages/:id`，进入`/about`时，会依次触发以下的钩子。
 
 > - `/messages/:id`的`onLeave`
-> -  `/inbox`的`onLeave`
-> -  `/about`的`onEnter`
+> - `/inbox`的`onLeave`
+> - `/about`的`onEnter`
 
 下面是一个例子，使用`onEnter`钩子替代`<Redirect>`组件。
 
-```jsx
+```html
 <Route path="inbox" component={Inbox}>
   <Route
     path="messages/:id"
