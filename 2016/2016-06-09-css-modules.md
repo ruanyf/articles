@@ -1,12 +1,16 @@
 # CSS Modules 用法教程
 
-学过网页开发的人都知道，CSS 不能算编程语言，只是网页样式的一种描述方法。
+学过网页开发就会知道，CSS 不能算编程语言，只是网页样式的一种描述方法。
 
-为了让CSS也能应用软件工程方法，程序员发明了各种方法，往CSS里面添加变量、结构化编程、模块等功能，让它变得像一门编程语言。从最早的Less、SASS，到后来的PostCSS，再到最近的 CSS in JS，都是为了解决这个问题。
+为了让 CSS 也能适用软件工程方法，程序员想了各种办法，让它变得像一门编程语言。从最早的Less、SASS，到后来的 PostCSS，再到最近的 CSS in JS，都是为了解决这个问题。
 
-本文介绍的 [CSS Modules](https://github.com/css-modules/css-modules) 有所不同。虽然它也属于CSS的增强，但不是将CSS改造成编程语言，而是只做一件很单纯的事，就是为CSS加入了局部作用域和模块依赖，这恰恰是网页组件最急需的功能。
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016061001.png)
 
-因此，CSS Modules 很容易学，因为它的规则特别简单。同时，它又非常有用，可以保证某个组件的样式，不会影响到其他组件。
+本文介绍的 [CSS Modules](https://github.com/css-modules/css-modules) 有所不同。它不是将 CSS 改造成编程语言，而是功能很单纯，只加入了局部作用域和模块依赖，这恰恰是网页组件最急需的功能。
+
+因此，CSS Modules 很容易学，因为它的规则少，同时又非常有用，可以保证某个组件的样式，不会影响到其他组件。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016061002.png)
 
 ## 零、示例库
 
@@ -31,13 +35,13 @@ $ npm install
 $ npm run demo01
 ```
 
-打开浏览器，访问`http://localhost:8080`，查看结果。后面可以再接着运行其他示例。
+打开浏览器，访问`http://localhost:8080`，查看结果。其他示例的运行方法类似。
 
 ## 一、局部作用域
 
-CSS的规则都是全局的，即任何一个组件的样式规则，都对整个页面有效。
+CSS的规则都是全局的，任何一个组件的样式规则，都对整个页面有效。
 
-唯一产生局部作用域的方法，就是使用一个独一无二的`class`的名字，不会与其他选择器重名。这就是CSS Modules的做法。
+唯一产生局部作用域的方法，就是使用一个独一无二的`class`的名字，不会与其他选择器重名。这就是 CSS Modules 的做法。
 
 下面是一个React组件[`App.js`](https://github.com/ruanyf/css-modules-demos/blob/master/demo01/components/App.js)。
 
@@ -118,13 +122,13 @@ module.exports = {
 $ npm run demo01
 ```
 
-打开 http://localhost:8080 ，会可以看到[结果](http://ruanyf.github.io/css-modules-demos/demo01/)，`h1`标题显示为红色。
+打开 http://localhost:8080 ，可以看到[结果](http://ruanyf.github.io/css-modules-demos/demo01/)，`h1`标题显示为红色。
 
 ## 二、全局作用域
 
 CSS Modules 允许使用`:global(.className)`的语法，声明一个全局规则。凡是这样声明的`class`，都不会被编译成哈希字符串。
 
-在[`App.css`](https://github.com/ruanyf/css-modules-demos/blob/master/demo02/components/App.css)中加入一个全局`class`。
+[`App.css`](https://github.com/ruanyf/css-modules-demos/blob/master/demo02/components/App.css)加入一个全局`class`。
 
 ```css
 .title {
@@ -136,7 +140,7 @@ CSS Modules 允许使用`:global(.className)`的语法，声明一个全局规�
 }
 ```
 
-在[`App.js`](https://github.com/ruanyf/css-modules-demos/blob/master/demo02/components/App.css)中，使用普通的`class`的写法，就会引用全局`class`。
+[`App.js`](https://github.com/ruanyf/css-modules-demos/blob/master/demo02/components/App.css)使用普通的`class`的写法，就会引用全局`class`。
 
 ```javascript
 import React from 'react';
@@ -157,7 +161,7 @@ export default () => {
 $ npm run demo02
 ```
 
-打开 http://localhost:8080，应该会看到`h1`标题[显示为绿色](http://ruanyf.github.io/css-modules-demos/demo02/)。
+打开 http://localhost:8080，应该会[看到](http://ruanyf.github.io/css-modules-demos/demo02/)`h1`标题显示为绿色。
 
 CSS Modules 还提供一种显式的局部作用域语法`:local(.className)`，等同于`.className`，所以上面的`App.css`也可以写成下面这样。
 
@@ -175,7 +179,7 @@ CSS Modules 还提供一种显式的局部作用域语法`:local(.className)`，
 
 `css-loader`默认的哈希算法是`[hash:base64]`，这会将`.title`编译成`._3zyde4l1yATCOkgn-DBWEL`这样的字符串。
 
-可以在[`webpack.config.js`](https://github.com/ruanyf/css-modules-demos/blob/master/demo03/webpack.config.js)里面定制，生成哈希字符串的格式。
+[`webpack.config.js`](https://github.com/ruanyf/css-modules-demos/blob/master/demo03/webpack.config.js)里面可以定制哈希字符串的格式。
 
 ```javascript
 module: {
@@ -235,9 +239,9 @@ export default () => {
 $ npm run demo04
 ```
 
-打开`http://localhost:8080`，你会[看到](http://ruanyf.github.io/css-modules-demos/demo04/)红色的`h1`在蓝色的背景上。
+打开`http://localhost:8080`，会[看到](http://ruanyf.github.io/css-modules-demos/demo04/)红色的`h1`在蓝色的背景上。
 
-`App.css`编译后，会转成下面的代码。
+`App.css`编译成下面的代码。
 
 ```css
 ._2DHwuiHWMnKTOYG45T0x34 {
@@ -249,13 +253,13 @@ $ npm run demo04
 }
 ```
 
-相应地， `h1`的`class`也会编译成下面的样子`<h1 class="_2DHwuiHWMnKTOYG45T0x34 _10B-buq6_BEOTOl9urIjf8">`。
+相应地， `h1`的`class`也会编译成`<h1 class="_2DHwuiHWMnKTOYG45T0x34 _10B-buq6_BEOTOl9urIjf8">`。
 
 ## 五、输入其他模块
 
 选择器也可以继承其他CSS文件里面的规则。
 
-这里有一个[`another.css`](https://github.com/ruanyf/css-modules-demos/blob/master/demo05/components/another.css)。
+[`another.css`](https://github.com/ruanyf/css-modules-demos/blob/master/demo05/components/another.css)
 
 ```css
 .className {
@@ -278,11 +282,9 @@ $ npm run demo04
 $ npm run demo05
 ```
 
-打开`http://localhost:8080`，你应该会[看到](http://ruanyf.github.io/css-modules-demos/demo05/)蓝色的背景上有一个红色的`h1`。
+打开`http://localhost:8080`，会[看到](http://ruanyf.github.io/css-modules-demos/demo05/)蓝色的背景上有一个红色的`h1`。
 
 ## 六、输入变量
-
-[demo](http://ruanyf.github.io/css-modules-demos/demo06/) / [sources](https://github.com/ruanyf/css-modules-demos/tree/master/demo06)
 
 CSS Modules 支持使用变量，不过需要安装 PostCSS 和 [postcss-modules-values](https://github.com/css-modules/postcss-modules-values)。
 
@@ -349,6 +351,6 @@ module.exports = {
 $ npm run demo06
 ```
 
-打开`http://localhost:8080`，你应该会[看到](http://ruanyf.github.io/css-modules-demos/demo06/)蓝色的背景上有一个红色的`h1`。
+打开`http://localhost:8080`，会[看到](http://ruanyf.github.io/css-modules-demos/demo06/)蓝色的背景上有一个红色的`h1`。
 
 （完）
