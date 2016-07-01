@@ -1,10 +1,12 @@
 # 谷歌的代码管理
 
-谷歌和 Facebook 都只有一个代码库，全公司的代码都在这个库里。
+谷歌和 Facebook 都只有一个代码库，全公司的代码都放在这个库里。
 
-我一直很困惑，为什么要这样做，不同语言的项目在一个库有什么好处？
+我一直很困惑，为什么要这样做，不同语言的项目放在一个库有什么好处？
 
 最新一期的《ACM通信》（59卷第7期）有一篇论文[《为什么 Google 要把几十亿行代码放在一个库？》](http://m.cacm.acm.org/magazines/2016/7/204032-why-google-stores-billions-of-lines-of-code-in-a-single-repository/fulltext)，作者是谷歌基础设施小组的工程师，可以看作官方对这个问题的详细解答。我读后感到收获很大，下面就是摘录。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016070201.jpg)
 
 ## 一、概况
 
@@ -33,6 +35,8 @@ Piper 支持文件级别的权限控制。99% 的代码对所有用户可见，�
 ### 2.3 工作流
 
 Piper 的工作流（workflow）如下图。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016070202.jpg)
 
 开发者先创建文件的本地拷贝，这叫做“工作区”（workspace）。完成开发后，工作区的快照共享给其他开发者进行代码评审。只有通过了评审，代码才能合并到中央仓库。
 
