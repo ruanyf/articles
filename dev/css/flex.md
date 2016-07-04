@@ -654,6 +654,30 @@ CSS代码如下。
 }
 ```
 
+上面这样的设置，不管父容器之中有多少个项目，都会平分宽度。
+
+遇到小屏幕时，可以使用 media query，让项目占满一行。
+
+```css
+@media (max-width: 400px) {
+  .flex-grid {
+    display: block;
+  }
+}
+```
+
+网格之间的间隔，可以像下面这样设置。
+
+```css
+.flex-grid-thirds {
+  display: flex;
+  justify-content: space-between;
+}
+.flex-grid-thirds .col {
+  width: 32%;
+}
+```
+
 ### 2.2 百分比布局
 
 某项目占据固定的百分比，其余项目平均分配空间。
