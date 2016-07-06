@@ -7,9 +7,12 @@ Session有两种类型：登录Shell和非登录Shell。它们的区别有两点
 登录Shell的初始化脚本如下。
 
 - `/etc/profile`：所有用户的全局配置脚本。
+- `/etc/profile.d`目录里面所有`.sh`文件
 - `~/.bash_profile`：用户的个人配置脚本。
 - `~/.bash_login`：如果`~/.bash_profile`没找到，则尝试读取这个脚本。
 - `~/.profile`：如果`~/.bash_profile`和`~/.bash_login`都没找到，则尝试读取这个脚本。
+
+发行版更新的时候，会更新`/etc`里面的文件，比如`/etc/profile`，因此不要直接修改这个文件。如果想修改所有用户的登陆环境，就在`/etc/profile.d`目录里面新建`.sh`脚本。
 
 非登录Shell的初始化脚本如下。
 
@@ -32,6 +35,27 @@ export PATH
 ```
 
 上面代码中，只要`.bashrc`存在，就会执行它。
+
+`bash`命令的`--login`参数，会强制执行登陆shell会执行的脚本；`--noprofile`参数告诉Bash跳过这些profile脚本。`--norc`参数禁止在互动Shell执行`~/.bashrc`脚步；`--rcfile`参数指定一个配置，代替`.bashrc`。
+
+```bash
+$ echo VAR1=var1>testrc
+$ echo $VAR1
+
+$ bash --rcfile testrc
+$ echo $VAR1
+var1
+```
+
+## 键盘绑定
+
+可以用`"\C-t":"pwd\n"`将 Ctrl-t 绑定为运行`pwd`命令。
+
+全局的键盘绑定文件默认为`/etc/inputrc`，你可以创造自己的键盘绑定在主目录的`.inputrc`文件。如果你定义这个文件，需要在其中加入下面这行，保证全局绑定不会被遗漏。
+
+```bash
+$include /etc/inputrc
+```
 
 ## source
 

@@ -2,11 +2,25 @@
 
 ### alias
 
-alias用来为命令建立别名。
+`alias`用来为命令建立别名。
 
 ```bash
 alias cp="cp -R"
 alias mkdir="mkdir -p"
+```
+
+`unalias`用来解除别名。
+
+```bash
+# 列出现有别名
+$ alias ls ll
+alias ls='ls --color=auto'
+alias ll='ls -l --color=auto'
+# 增加一个别名
+$ alias llrt='ls -lrt --color=auto'
+
+# 解除别名
+$ unalias llrt
 ```
 
 ### bind

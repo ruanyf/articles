@@ -23,6 +23,12 @@ $ printenv
 - `TERM`：终端类型名，即终端仿真器所用的协议
 - `USER`：用户名
 
+Bash提供的特殊变量。
+
+- `$` 进程的ID
+- `?` 上一个命令的退出码
+- `0` 脚本的名字
+
 ## 自定义变量
 
 Shell遇到变量，会自动创建。
@@ -263,7 +269,7 @@ JPG.jpg
 
 ## declare
 
-这个 declare 命令可以用来把字符串规范成大写或小写字符。使用 declare 命令，我们能强制一个 变量总是包含所需的格式，无论如何赋值给它。
+`declare`命令可以用来把字符串规范成大写或小写字符。使用 declare 命令，我们能强制一个 变量总是包含所需的格式，无论如何赋值给它。
 
 ```bash
 #!/bin/bash
@@ -490,6 +496,33 @@ echo $x
 ```
 
 上面代码只会输出一个2。
+
+- `-v` 确保删除变量定义，同名的函数会保留
+- `-f` 删除函数定义
+
+没有`-f`和`-v`时，如果存在该变量，则删除该变量；否则就删除同名函数。
+
+Bash默认将未定义变量处理为空值。那么，为什么要删除一个变量，而不是将它设为空值呢？因为Bash发现引用未定义变量，会报错。`set -u`命令会使得未定义变量会报错，`set +u`会关闭未定义警告。
+
+```bash
+$ set -u
+$ VAR1=var1
+$ echo $VAR1
+var1
+$ unset VAR1
+$ echo $VAR1
+bash: VAR1: unbound variable
+$ VAR1=
+$ echo $VAR1
+
+$ unset VAR1
+$ echo $VAR1
+bash: VAR1: unbound variable
+$ unset -v VAR1
+$ set +u
+$ echo $VAR1
+
+```
 
 ## printenv
 

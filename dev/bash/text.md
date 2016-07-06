@@ -55,6 +55,21 @@ cat << _EOF_
 _EOF_
 ```
 
+Here document 常在脚本当中作为输入的手段。
+
+```bash
+$ sort -k2 <<END
+> 1 apple
+> 2 pear
+> 3 banana
+> END
+1 apple
+3 banana
+2 pear
+```
+
+如果使用`<<-`代替`<<`，行首的tab键将被剥离。
+
 ## nl
 
 `nl`命令为文本文件添加行号，显示在标准输出。
