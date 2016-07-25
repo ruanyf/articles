@@ -1,4 +1,6 @@
-# 母鸡与互联网工程师
+# 母鸡与前端工程师
+
+（说明：本文原载2016年第29期[《财新周刊》](http://www.ruanyifeng.com/blog/2016/06/your-destiny-is-not-like-a-mule.html)）
 
 1.
 
