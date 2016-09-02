@@ -6,13 +6,17 @@
 
 O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》](http://www.oreilly.com/programming/free/software-architecture-patterns.csp)（[PDF](http://www.oreilly.com/programming/free/files/software-architecture-patterns.pdf)）， 介绍了五种最常见的软件架构，是非常好的入门读物。我觉得受益匪浅，下面就是我的笔记。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090301.png)
+
 ## 一、分层架构
 
 分层架构（layered architecture）是最常见的软件架构，也是事实上的标准架构。如果你不知道要用什么架构，那就用它。
 
 这种架构将软件分成若干个水平层，每一层都有清晰的角色和分工，不需要知道其他层的细节。层与层之间通过接口通信。
 
-虽然没有明确约定，软件一定要分成几层，但是四层的结构最常见。
+虽然没有明确约定，软件一定要分成多少层，但是四层的结构最常见。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090302.png)
 
 > - 表现层（presentation）：用户界面，负责呈现视觉，以及与用户互动
 - 业务层（business）：实现业务逻辑
@@ -21,7 +25,9 @@ O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》]
 
 有的软件在逻辑层和持久层之间，加了一个服务层（service），提供不同业务逻辑需要的一些通用接口。
 
- 用户的请求将依次通过这四层的处理，不能跳过其中任何一层。
+用户的请求将依次通过这四层的处理，不能跳过其中任何一层。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090303.png)
 
 优点
 
@@ -42,12 +48,16 @@ O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》]
 
 事件驱动架构（event-driven architecture）是代码通过事件进行通信的软件架构。在结构上，它分成四个部分。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090304.png)
+
 > - 事件队列（event queue）：接收事件的入口
 - 分发器（event mediator）：将不同的事件分发到不同的业务逻辑单元
 - 事件通道（event channel）：分发器与处理器之间的联系渠道
 - 事件处理器（event processor）：实现业务逻辑
 
 对于简单的项目，事件队列、分发器和事件通道，可以合为一体，整个软件就分成事件代理和事件处理器两部分。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090305.png)
 
 优点
 
@@ -68,6 +78,8 @@ O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》]
 
 该架构的内核（core）通常只包含系统运行的最小功能。插件则是互相独立的，插件之间的通信，应该减少到最低，避免出现互相依赖的问题。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090306.png)
+
 优点
 
 > - 功能有良好的延伸性（extensibility），需要什么功能，开发一个插件即可
@@ -87,17 +99,13 @@ O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》]
 每一个服务就是一个独立的部署单元（separately
 deployed unit）。这些单元都是分布式的，互相解耦，通过远程通信协议联系（比如REST、SOAP）。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090307.png)
+
 微服务架构分成三种实现模式。
 
 > - RESTful API 模式：服务通过 API 提供，云服务就属于这一类
 - RESTful 应用模式：服务通过传统的网络协议或者应用协议提供，背后通常是一个多功能的应用程序，常见于企业内部
 - 集中消息模式：采用消息代理（message broker），可以实现消息队列、负载均衡、统一日志和异常处理，缺点是会出现单点失败，消息代理可能要做成集群
-
-RESTful API 模式
-
-RESTful 应用模式
-
-集中消息模式
 
 优点
 
@@ -122,6 +130,8 @@ RESTful 应用模式
 
 > - 处理单元：实现业务逻辑
 > - 虚拟中间件：处理通信、保持sessions、数据复制、分布式处理、处理单元的部署。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090311.png)
 
 虚拟中间件包括四个组件。
 
