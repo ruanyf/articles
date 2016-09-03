@@ -1,10 +1,10 @@
 # 软件架构入门
 
-软件架构（software architecture）指的是软件的基本结构。
+软件架构（software architecture）就是软件的基本结构。
 
 合适的架构是软件成功的最重要因素之一。大型软件公司通常有专门的架构师职位（architect），只有资深程序员才可以担任。
 
-O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》](http://www.oreilly.com/programming/free/software-architecture-patterns.csp)（[PDF](http://www.oreilly.com/programming/free/files/software-architecture-patterns.pdf)）， 介绍了五种最常见的软件架构，是非常好的入门读物。我觉得受益匪浅，下面就是我的笔记。
+O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》](http://www.oreilly.com/programming/free/software-architecture-patterns.csp)（[PDF](http://www.oreilly.com/programming/free/files/software-architecture-patterns.pdf)）， 介绍了五种最常见的软件架构，是非常好的入门读物。我读后受益匪浅，下面就是我的笔记。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090301.png)
 
@@ -18,7 +18,7 @@ O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》]
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090302.png)
 
-> - 表现层（presentation）：用户界面，负责呈现视觉，以及与用户互动
+> - 表现层（presentation）：用户界面，负责视觉和用户互动
 - 业务层（business）：实现业务逻辑
 - 持久层（persistence）：提供数据，SQL 语句就放在这一层
 - 数据库（database） ：保存数据 
@@ -38,7 +38,7 @@ O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》]
 缺点
 
 > - 一旦环境变化，需要代码调整或增加功能时，通常比较麻烦和费时
-- 部署比较麻烦，即使只修改一个小地方，往往需要整个软件重新部署，不容易做持续构建
+- 部署比较麻烦，即使只修改一个小地方，往往需要整个软件重新部署，不容易做持续发布
 - 软件升级时，可能需要整个服务暂停
 - 扩展性差。用户请求大量增加时，必须依次扩展每一层，由于每一层内部是耦合的，扩展会很困难
 
@@ -46,14 +46,14 @@ O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》]
 
 事件（event）是状态发生变化时，软件发出的通知。
 
-事件驱动架构（event-driven architecture）是代码通过事件进行通信的软件架构。在结构上，它分成四个部分。
+事件驱动架构（event-driven architecture）就是通过事件进行通信的软件架构。它分成四个部分。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090304.png)
 
 > - 事件队列（event queue）：接收事件的入口
 - 分发器（event mediator）：将不同的事件分发到不同的业务逻辑单元
 - 事件通道（event channel）：分发器与处理器之间的联系渠道
-- 事件处理器（event processor）：实现业务逻辑
+- 事件处理器（event processor）：实现业务逻辑，处理完成后会发出事件，触发下一步操作
 
 对于简单的项目，事件队列、分发器和事件通道，可以合为一体，整个软件就分成事件代理和事件处理器两部分。
 
@@ -69,23 +69,23 @@ O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》]
 缺点
 
 > - 涉及异步编程（要考虑远程通信、失去响应等情况），开发相对复杂
-- 难以支持原子性操作，由于有的事件涉及到多个处理器，很难回滚
+- 难以支持原子性操作，因为事件通过会涉及多个处理器，很难回滚
 - 分布式和异步特性导致这个架构较难测试
 
 ## 三、微核架构
 
 微核架构（microkernel architecture）又称为“插件架构”（plug-in architecture），指的是软件的内核相对较小，主要功能和业务逻辑都通过插件实现。
 
-该架构的内核（core）通常只包含系统运行的最小功能。插件则是互相独立的，插件之间的通信，应该减少到最低，避免出现互相依赖的问题。
+内核（core）通常只包含系统运行的最小功能。插件则是互相独立的，插件之间的通信，应该减少到最低，避免出现互相依赖的问题。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090306.png)
 
 优点
 
-> - 功能有良好的延伸性（extensibility），需要什么功能，开发一个插件即可
-- 功能之间的隔离，使得它比较容易部署
+> - 良好的功能延伸性（extensibility），需要什么功能，开发一个插件即可
+- 功能之间是隔离的，插件可以独立的加载和卸载，使得它比较容易部署，
 - 可定制性高，适应不同的开发需要
-- 可以渐进式的开发，逐步增加功能
+- 可以渐进式地开发，逐步增加功能
 
 缺点
 
@@ -97,7 +97,7 @@ O'Reilly 出版过一本免费的小册子[《Software Architecture Patterns》]
 微服务架构（microservices architecture）是服务导向架构（service-oriented architecture，缩写 SOA）的升级。
 
 每一个服务就是一个独立的部署单元（separately
-deployed unit）。这些单元都是分布式的，互相解耦，通过远程通信协议联系（比如REST、SOAP）。
+deployed unit）。这些单元都是分布式的，互相解耦，通过远程通信协议（比如REST、SOAP）联系。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090307.png)
 
@@ -117,23 +117,23 @@ deployed unit）。这些单元都是分布式的，互相解耦，通过远程�
 缺点
 
 > - 由于强调互相独立和低耦合，服务可能会拆分得很细。这导致系统依赖大量的微服务，变得很凌乱和笨重，性能也会不佳。
-- 一旦服务之间需要通信（即一个服务要用到另一个服务），整个架构就会变得复杂。典型的例子就是一些通用的Utility类，一种解决方案是把它们拷贝到每一个服务中去，用冗余换取架构的简单性。
+- 一旦服务之间需要通信（即一个服务要用到另一个服务），整个架构就会变得复杂。典型的例子就是一些通用的 Utility 类，一种解决方案是把它们拷贝到每一个服务中去，用冗余换取架构的简单性。
 - 分布式的本质使得这种架构很难实现原子性操作，交易回滚会比较困难。
 
 ## 五、云架构
 
 云结构（cloud architecture）主要解决扩展性和并发的问题，是最容易扩展的架构。
 
-它的高扩展性，主要原因是没使用中央数据库，而是把数据都复制到内存中，变成可复制的内存数据单元。然后，业务处理能力封装成一个个处理单元（prcessing unit）。访问量增加，就新建处理单元；访问量减少，就关闭处理单元。由于没有中央数据库，所以扩展性的最大瓶颈消失了。不过，每个处理单元的数据都在内存里，最好要进行数据持久化。
+它的高扩展性，主要原因是没使用中央数据库，而是把数据都复制到内存中，变成可复制的内存数据单元。然后，业务处理能力封装成一个个处理单元（prcessing unit）。访问量增加，就新建处理单元；访问量减少，就关闭处理单元。由于没有中央数据库，所以扩展性的最大瓶颈消失了。由于每个处理单元的数据都在内存里，最好要进行数据持久化。
 
 这个模式主要分成两部分：处理单元（processing unit）和虚拟中间件（virtualized middleware）。
 
 > - 处理单元：实现业务逻辑
-> - 虚拟中间件：处理通信、保持sessions、数据复制、分布式处理、处理单元的部署。
+> - 虚拟中间件：负责通信、保持sessions、数据复制、分布式处理、处理单元的部署。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016090311.png)
 
-虚拟中间件包括四个组件。
+虚拟中间件又包含四个组件。
 
 > - **消息中间件**（Messaging Grid）：管理用户请求和session，当一个请求进来以后，决定分配给哪一个处理单元。
 - **数据中间件**（Data Grid）：将数据复制到每一个处理单元，即数据同步。保证某个处理单元都得到同样的数据。
