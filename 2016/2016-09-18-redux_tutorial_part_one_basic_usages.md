@@ -387,7 +387,7 @@ function reducer(state = {}, action) {
 }
 ```
 
-⧸⧸总之，`combineReducers()`做的就是产生一个整体的 Reducer 函数。该函数根据 State 的 key 去执行相应的子⧸⧸总之，`combineReducers()`做的不过是产生一个新函数，它根据 State 的 key 去执行相应的⧸⧸ Reducer，并将返回结果合并成一个大的 State 对象。
+总之，`combineReducers()`做的就是产生一个整体的 Reducer 函数。该函数根据 State 的 key 去执行相应的子 Reducer，并将返回结果合并成一个大的 State 对象。
 
 下面是`combineReducer`的简单实现。
 
@@ -405,7 +405,7 @@ const combineReducers = reducers => {
 };
 ```
 
-你可以把所有子 Reducer ⧸⧸放在一个文件里面，然后统一引入。⧸⧸放在一个文件里面，使用`export`输出为一个对象，然后统一引入。⧸⧸
+你可以把所有子 Reducer 放在一个文件里面，然后统一引入。
 
 ```javascript
 import { combineReducers } from 'redux'
@@ -416,9 +416,9 @@ const reducer = combineReducers(reducers)
 
 ## 六、工作流程
 
-本节对 Redux ⧸⧸的工作流程，做一个梳理。
+本节对 Redux 的工作流程，做一个梳理。
 
-![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016091802.jpg)⧸⧸的工作流程，做一个梳理。⧸⧸
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016091802.jpg)
 
 首先，用户发出 Action。
 
