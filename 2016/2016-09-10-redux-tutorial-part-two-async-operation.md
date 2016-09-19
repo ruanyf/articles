@@ -293,7 +293,7 @@ export default function promiseMiddleware({ dispatch }) {
 
 从上面代码可以看出，如果 Action 本身是一个 Promise，它 resolve 以后的值应该是一个 Action 对象，会被`dispatch`方法送出（`action.then(dispatch)`），但 reject 以后不会有任何动作；如果 Action 对象的`payload`属性是一个 Promise 对象，那么无论 resolve 和 reject，`dispatch`方法都会发出 Action。
 
-中间件和异步操作，就介绍到这里。下一篇文章将是最后一部分，介绍如果使用`react-redux`这个库。
+中间件和异步操作，就介绍到这里。下一篇文章将是最后一部分，介绍如何使用`react-redux`这个库。
 
 （完）
 
