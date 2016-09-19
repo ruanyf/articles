@@ -246,7 +246,7 @@ const fetchPosts =
 });
 ```
 
-写法二，Action 对象的`payload`属性是一个 Promise 对象。这需要从`redux-actions`模块引入[`createAction`](https://github.com/acdlite/redux-actions)方法，并且写法也要变成下面这样。
+写法二，Action 对象的`payload`属性是一个 Promise 对象。这需要从[`redux-actions`](https://github.com/acdlite/redux-actions)模块引入`createAction`方法，并且写法也要变成下面这样。
 
 ```javascript
 import { createAction } from 'redux-actions';
