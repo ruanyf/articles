@@ -4,7 +4,9 @@
 
 为了方便使用，Redux 的作者封装了一个 React 专用的库 [React-Redux](https://github.com/reactjs/react-redux)，本文主要介绍它。
 
-这个库是可以选用的。实际项目中，你应该权衡一下，是直接使用 Redux，还是使用 React-Redux。后者虽然提供了便利，但是需要学习额外的 API，并且要遵守它的组件拆分规范。
+这个库是可以选用的。实际项目中，你应该权衡一下，是直接使用 Redux，还是使用 React-Redux。后者虽然提供了便利，但是需要掌握额外的 API，并且要遵守它的组件拆分规范。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016092101.jpg)
 
 ## 一、UI 组件
 
