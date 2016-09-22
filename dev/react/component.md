@@ -30,7 +30,51 @@ export default class App extends React.Component {
 
 组件的状态，通过`setState`方法改变。每当`state`发生变化，`render`方法就会自动调用，从而更新组件。
 
-`setState`方法可以接受第二个参数，当状态改变成功后，立即调用。
+它接受一个对象作为参数，这个对象会被合并进入`this.state`，然后重新渲染组件。
+
+```javascript
+this.setState({mykey: 'my new value'});
+```
+
+它也可以接受一个函数作为参数，该函数执行后返回的对象会合并进`this.state`。
+
+```javascript
+this.setState(function (previousState, currentProps) {
+  return {myInteger: previousState.myInteger + 1};
+});
+```
+
+从上面代码可以看到，回调函数的参数是更新的状态和当前的参数对象。
+
+`this.setState`这个方法是异步的，即`this.state`的变化，要在该方法执行后一段时间才能看到。这一点需要特别引起注意。
+
+```javascript
+class Select extends React.Component {
+  constructor(props, context) {
+    super(props, context)
+    this.state = {selection: 0};
+  }
+
+  render() {
+    return (
+      <ul>
+        <li onClick={() => this.onSelect(1)}>1</li>
+        <li onClick={() => this.onSelect(2)}>2</li>
+        <li onClick={() => this.onSelect(3)}>3</li>
+      </ul>
+    )
+  }
+
+  onSelect(value) {
+    this.setState({selection: value});
+    console.log(this.state.selection);
+  }
+}
+```
+
+上面代码中，每次点击会触发`this.setState`方法，但是`this.state`并没有立即改变，返回的仍然是上一次的值。
+
+所以，`setState`方法可以接受一个回调函数当作第二个参数，当状态改变成功、组件重新渲染后，立即调用。
 
 ```javascript
 this.setState(
@@ -39,9 +83,24 @@ this.setState(
 )
 ```
 
+`this.setState`总是会引起组件的重新渲染，除非`shouldComponentUpdate()`方法返回`false`。有时`this.setState`设置的状态在`render`方法中并没有用到，即不改变 UI 的呈现，但是这时也会引起组件的重新渲染。
+
 ### ref
 
 `ref`属性可以指定一个回调函数，在组件加载到DOM之后调用。
+
+```javascript
+  render: function() {
+    return <TextInput ref={(c) => this._input = c} />;
+  },
+  componentDidMount: function() {
+    this._input.focus();
+  },
+```
+
+`ref`作为一个函数，它的参数就是组件加载后生成的 DOM 节点。
+
+下面是另外一个例子。
 
 ```javascript
 <input type="text"

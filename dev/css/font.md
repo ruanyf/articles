@@ -32,3 +32,11 @@ button {
 }
 ```
 
+## 反锯齿
+
+```css
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+```

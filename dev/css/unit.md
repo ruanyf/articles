@@ -60,6 +60,10 @@ p {
 }
 ```
 
+## vh，vw
+
+`vh`表示百分之一的浏览器视口高度，`vw`表示百分之一的浏览器视口宽度。
+
 ## 参考链接
 
 - Zell, [REM vs EM – The Great Debate](http://zellwk.com/blog/rem-vs-em/)

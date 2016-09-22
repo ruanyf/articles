@@ -23,6 +23,22 @@
 - `table-caption` 对应`<caption>`
 - `inline-table` 将一个表格渲染具有`inline-block`的形式
 
+## 表格显示
+
+```css
+div {
+  display: table;
+  display: table-cell;
+  display: table-column;
+  display: table-colgroup;
+  display: table-header-group;
+  display: table-row-group;
+  display: table-footer-group;
+  display: table-row;
+  display: table-caption;
+}
+```
+
 ## flexbox
 
 `display: flexbox;`是一维布局，定义沿着一根直线的布局。这根直线可以折行。

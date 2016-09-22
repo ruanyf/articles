@@ -1,5 +1,44 @@
 # 生命周期方法
 
+## shouldComponentUpdate
+
+`shouldComponentUpdate`方法会在每次重新渲染之前，自动调用。它返回一个布尔值，决定是否应该进行此次渲染。默认为`true`，表示进行渲染，如果为`false`，就表示中止渲染。
+
+下面是父元素组件`Color`的代码。
+
+```javascript
+getInitialState: function () {
+  return {
+    colors: new Immutable.List(this.props.colors)
+  };
+},
+
+_addColor: function (newColor) {
+  this.setState({
+    colors = this.state.colors.push(newColor)
+  });
+},
+
+render: function () {
+  return (
+    <div>
+      <ColorList colors={this.state.colors} />
+      <ColorForm addColor={this._addColor} />
+    </div>
+  );
+}
+```
+
+上面代码中，父组件`Color`向子组件`ColorList`传入参数`this.state.colors`。每当父组件的`this.state.colors`变动时，子组件就会重新渲染，这时子组件的`shouldComponentUpdate`就会自动调用。
+
+```javascript
+shouldComponentUpdate: function (nextProps, nextState) {
+  return nextProps.colors !== this.props.colors;
+}
+```
+
+上面是子组件的`shouldComponentUpdate`方法，它接受两个参数，第一个是本次传入的新参数对象`nextProps`，第二个是新的状态对象`nextState`。在方法内部，`this.props`和`this.state`表示当前（没有重新渲染之前）的参数对象和状态对象。
+
 ## componentWillReceiveProps
 
 `componentWillReceiveProps`方法在父组件每次要求当前组件重新渲染时调用，它在当前组件的`render()`之前调用。
@@ -85,12 +124,12 @@ var Jake = React.createClass({
       isEating: "yum, code",
       isSleeping: "where's the code?"
     };
-  
+
     this.setState({
       thinking: thoughts[activity]
     })
   },
-  
+
   componentWillReceiveProps: function (nextProps) {
     this.calcThinking(nextProps.activity);
   },
