@@ -53,4 +53,6 @@ $ sudo lsof -p <processId>
 
 # 列出某个进程的工作目录
 $ pwdx <processId>
+# 或者
+$ ls -l /proc/<processId>/cwd
 ```

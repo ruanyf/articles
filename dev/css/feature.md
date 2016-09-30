@@ -1,4 +1,6 @@
-# 置中
+# 常用功能
+
+## 置中
 
 `transform`方法。
 
@@ -25,3 +27,36 @@
           transform: translate(-50%,-50%);
 }
 ```
+
+## 隐藏元素
+
+彻底隐藏一个元素。
+
+```css
+[hidden] {
+  display: none;
+}
+```
+
+在视觉上隐藏一个元素。
+
+```css
+.visuallyhidden {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+```
+
+## 参考链接
+
+- [Hiding DOM elements](https://allyjs.io/tutorials/hiding-elements.html)
+
