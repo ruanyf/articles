@@ -25,7 +25,27 @@ img {
 
 注意，变量名是大小写敏感的。
 
-变量不能直接添加单位。
+`var()`函数接受第二个参数，指定如果读取变量失败时的默认值。
+
+```css
+width: var(--custom-width, 20%);
+```
+
+变量可以嵌套。
+
+```css
+--base-color: #f93ce9;
+--background-gradient: linear-gradient(to top, var(--base-color), #444);
+```
+
+变量也可以与`calc`函数结合使用。
+
+```css
+--container-width: 1000px;
+max-width: calc(var(--container-width) / 2);
+```
+
+变量不包含单位时，不能直接添加单位。
 
 ```css
 /* 无效 */
