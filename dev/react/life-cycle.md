@@ -1,5 +1,40 @@
 # 生命周期方法
 
+## 执行顺序
+
+首次挂载组件时，按如下顺序执行。
+
+- getDefaultProps
+- getInitialState
+- componentWillMount
+- render
+- componentDidMount
+
+卸载组件时，按如下顺序执行。
+
+- componentWillUnmount
+
+重新挂载组件时，按如下顺序执行。
+- getInitialState
+- componentWillMount
+- render
+- componentDidMount
+
+再次渲染组件时，组件接受到父组件传来的新参数，按如下顺序执行。
+
+- componentWillReceiveProps
+- shouldComponentUpdate
+- componentWillUpdate
+- render
+- componentDidUpdate
+
+如果组件自身的 state 更新了，按如下顺序执行。
+
+1. shouldComponentUpdate
+1. componentWillUpdate
+1. render
+1. componentDidUpdate
+
 ## shouldComponentUpdate
 
 `shouldComponentUpdate`方法会在每次重新渲染之前，自动调用。它返回一个布尔值，决定是否应该进行此次渲染。默认为`true`，表示进行渲染，如果为`false`，就表示中止渲染。
@@ -41,9 +76,9 @@ shouldComponentUpdate: function (nextProps, nextState) {
 
 ## componentWillReceiveProps
 
-`componentWillReceiveProps`方法在父组件每次要求当前组件重新渲染时调用，它在当前组件的`render()`之前调用。
+`componentWillReceiveProps`方法在父组件每次要求当前组件重新渲染时调用，它在当前组件的`render()`之前调用。它只在父组件更新 `props`时执行，当前组件本身调用`setState`而引发重新渲染，是不会执行这个方法的。在此方法中调用 setState 是不会二次渲染的。
 
-`componentWillReceiveProps`在`componentWillUpdate`之前调用。
+`componentWillReceiveProps`在`shouldComponentUpdate`和`componentWillUpdate`之前调用。
 
 在`componentWillReceiveProps`之中，可以调用`setState`方法。而`componentWillUpdate`是一个方法，用来回应state的变化。
 
@@ -144,7 +179,7 @@ var Jake = React.createClass({
 
 ## componentWillMount
 
-`componentWillMount`方法在第一次渲染之前调用。它只会执行一次，在浏览器和服务器都会执行。
+`componentWillMount`方法在第一次渲染之前调用。它只会执行一次，在浏览器和服务器都会执行。一般用来对`props`和`state`进行初始化处理。
 
 ```javascript
   getInitialState: function() {
@@ -170,3 +205,5 @@ var Jake = React.createClass({
 ```
 
 上面代码中，`getInitialState`为首次渲染设置默认参数。在首次渲染之前，会执行`componentWillMount`方法。该方法内部调用`loadData`方法，发出AJAX请求。这个请求有可能成功，也有可能不成功，而且不知道需要多久才能完成。在AJAX请求返回结果，执行`setState`方法设置新的state之前，该组件将以默认值渲染。所以，使用`getInitialState`方法设置默认参数的意义就在这里。
+
+注意，该方法之中不能调用`setState`。

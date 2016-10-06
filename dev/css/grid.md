@@ -24,7 +24,7 @@ div {
 
 设为网格布局以后，`column`、`float`、`clear`、`vertical-align`这四个属性将失效。
 
-`grid-template-columns`用来指定列宽，`grid-template-rows`用来指定行宽。
+`grid-template-columns`用来指定列宽，`grid-template-rows`用来指定行高。
 
 ```css
 .container{

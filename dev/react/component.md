@@ -19,6 +19,16 @@ export default class App extends React.Component {
 }
 ```
 
+React原生提供的组件，都是HTML语言已经定义的标签，比如`<div>`、`<h1>`、`<p>`等等。这些组件的首字母必须小写。用户自定义的组件，首字母必须大写，比如`<MyTitle>`。
+
+也可以采用命名空间的方式，引用组件。
+
+```javascript
+const App = () => (
+  <MUI.RaisedButton label="Default" />
+);
+```
+
 组件有以下属性。
 
 - `this.props` 组件的参数
@@ -84,6 +94,36 @@ this.setState(
 ```
 
 `this.setState`总是会引起组件的重新渲染，除非`shouldComponentUpdate()`方法返回`false`。有时`this.setState`设置的状态在`render`方法中并没有用到，即不改变 UI 的呈现，但是这时也会引起组件的重新渲染。
+
+### defaultProps
+
+`defaultProps`用来指定`props`的默认值。
+
+```javascript
+class Account extends Component {
+  static defaultProps = {
+    email: '',
+    gender: '',
+  };
+
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const { name, email, gender } = this.props;
+    return (
+      <div className="mod-account">
+        <p>Name: {name}</p>
+        <p>Email: {email}</p>
+        <p>Gender: {gender}</p>
+      </div>
+    )
+  }
+}
+```
+
+注意，这时`constructor`方法里面，不能再对设置了默认值的属性赋值，否则会报错。
 
 ### ref
 
