@@ -1,5 +1,44 @@
 # 基本知识
 
+## docker-compose.yml
+
+项目根目录下的`docker-compose.yml`文件，是项目的Docker配置文件。
+
+```
+#  version 2 of the Docker Compose file format
+version: '2'
+
+# sets up a persistable filesystem volume
+volumes:
+    database_data:
+        driver: local
+
+services:
+  # create a container called nginx,
+  # which can be referred to by the other containers using the hostname nginx.
+  # It will use the latest, official, Docker Nginx container image
+  # as the base for the container.
+  nginx:
+      image: nginx:latest
+      # port 80 in the container to port 8080 on our host machine
+      # access our application by navigating to http://localhost:8080
+      ports:
+          - 8080:80
+      # copy ./docker/nginx/default.conf from the local filesystem
+      # to /etc/nginx/conf.d/default.conf in the container’s filesystem
+      volumes:
+          - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      # the container gets access to a filesystem volume in the PHP container
+      volumes_from:
+          - php
+  php:
+      build: ./docker/php/
+      expose:
+          - 9000
+      volumes:
+          - .:/var/www/html
+```
+
 ## Dockerfile
 
 ```
