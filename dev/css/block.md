@@ -8,11 +8,39 @@
 
 `max-width`设为`none`，可以让元素占满父元素的整个宽度。
 
+## overflow
+
+`overflow`属性指定如果元素的大小超出容器时的行为。
+
+- `visible`：默认值，表示溢出的部分可见
+- `hidden`：表示溢出的部分不可见
+- `scroll`：表示发生溢出时，会显示滚动条，用户可以拖动滚动条，看到溢出的部分
+
+## clip
+
+`clip`规则指定元素超出容器大小时，具体显示哪个部分。它只对绝对定位（absolute）和固定定位（fixed）的元素有效。
+
+```css
+clip: rect(0px, 100px, 100px, 0px);
+```
+
+`react`函数四个参数的含义如下。
+
+- 第一个参数：剪切后的顶边距离容器的顶边的距离
+- 第二个参数：剪切后的右边界距离容器的左边界的距离
+- 第三个参数：剪切后的底边距离容器的顶边的距离
+- 第四个参数：剪切后的左边界距离容器的左边界的距离
+
+```css
+clip: rect(auto 100px auto auto);
+```
+
 ## box-sizing
 
 `box-sizing`指定盒状模型的宽度范围。
 
-- `box-sizing: border-box;`宽度包括边框
+- `border-box`：宽度包括padding和border
+- `content-box`：默认值，只包括内容区的宽度，不包括padding和border
 
 ```css
 *, *:after, *:before {
