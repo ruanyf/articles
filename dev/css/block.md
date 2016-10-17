@@ -35,6 +35,47 @@ clip: rect(0px, 100px, 100px, 0px);
 clip: rect(auto 100px auto auto);
 ```
 
+该规则已经被废除，但是浏览器还是普遍支持。
+
+## clip-path
+
+`clip-path`是`clip`规则的继承者，用来剪切元素的大小。它对所有定位方式都适用。
+
+```css
+clip: rect(110px, 160px, 170px, 60px);
+/* 等同于 */
+clip-path: inset(10px 20px 30px 40px);
+```
+
+`clip-path`支持多种路径定义方式。
+
+```css
+.clip-me {
+
+  /* referencing path from an inline SVG <clipPath> */
+  clip-path: url(#c1);
+
+  /* referencing path from external SVG */
+  clip-path: url(path.svg#c1);
+
+  /* polygon */
+  clip-path: polygon(5% 5%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%);
+
+  /* circle */
+  clip-path: circle(30px at 35px 35px);
+
+  /* ellipse */
+  clip-path: ellipse(65px 30px at 125px 40px);
+
+  /* inset-rectangle() may replace inset() ? */
+  /* rectangle() coming in SVG 2 */
+
+  /* rounded corners... not sure if a thing anymore */
+  clip-path: inset(10% 10% 10% 10% round 20%, 20%);
+
+}
+```
+
 ## box-sizing
 
 `box-sizing`指定盒状模型的宽度范围。
