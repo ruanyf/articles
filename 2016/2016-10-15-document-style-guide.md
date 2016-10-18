@@ -1,14 +1,14 @@
 # 中文技术文档的写作规范
 
-很多人说，不知道怎么写技术文档，只能凭着感觉写。自己觉得读者能看懂，但现实却是另外一回事。
+很多人说，不知道怎么写文档，都是凭着感觉写。
 
-网上也很少有资料，教你怎么写文档。这已经大大影响了中文软件的发展。
+网上也很少有资料，教你写文档。这已经影响了中文软件的发展。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016101801.jpg)
 
-英语世界里，文档非常受重视，许多公司和组织都有自己的文档规范，清楚地设定文档的写作要求，比如[微软](https://www.microsoftpressstore.com/store/microsoft-manual-of-style-9780735648715)、[MailChimp](http://styleguide.mailchimp.com/)、[Apple](https://help.apple.com/asg/mac/2013/ASG_2013.pdf)、[Yahoo](https://www.amazon.com/dp/B003P8QDFU/ref=dp-kindle-redirect?_encoding=UTF8&btkr=1)、[docker](https://docs.docker.com/opensource/doc-style/)、[Struts](https://struts.apache.org/docs/documentation-style-guide.html) 等等（维基百科有一份完整的[清单](https://en.wikipedia.org/wiki/List_of_style_guides)）。[中文的](https://github.com/ruanyf/document-style-guide/blob/master/docs/reference.md)也有不少，但都不令人满意，要么太简单，要么不太适用。
+英语世界里，文档非常受重视，许多公司和组织都有自己的文档规范，清楚地规定写作要求，比如[微软](https://www.microsoftpressstore.com/store/microsoft-manual-of-style-9780735648715)、[MailChimp](http://styleguide.mailchimp.com/)、[Apple](https://help.apple.com/asg/mac/2013/ASG_2013.pdf)、[Yahoo](https://www.amazon.com/dp/B003P8QDFU/ref=dp-kindle-redirect?_encoding=UTF8&btkr=1)、[docker](https://docs.docker.com/opensource/doc-style/)、[Struts](https://struts.apache.org/docs/documentation-style-guide.html) 等等（维基百科有一份完整的[清单](https://en.wikipedia.org/wiki/List_of_style_guides)）。[中文的](https://github.com/ruanyf/document-style-guide/blob/master/docs/reference.md)也有不少，但都不令人满意，要么太简单，要么不太适用。
 
-我就动手，根据自己的文档实践，总结了一份简单的[《中文技术文档的写作规范》](https://github.com/ruanyf/document-style-guide)。
+我就动手，参考上面的规范，也结合自己的实践，总结了一份简单的[《中文技术文档的写作规范》](https://github.com/ruanyf/document-style-guide)。
 
 > 1. [标题](https://github.com/ruanyf/document-style-guide/blob/master/docs/title.md)
 1. [文本](https://github.com/ruanyf/document-style-guide/blob/master/docs/text.md)
@@ -19,7 +19,7 @@
 
 我希望，这样可以抛砖引玉，让更多人重视文档，进而真正出现大家普遍接受的文档规范。
 
-下面是关于写作风格的一个片段。欢迎提交 [Issue](https://github.com/ruanyf/document-style-guide/issues) 和 [PR](https://github.com/ruanyf/document-style-guide/pulls)来补充。
+下面是关于写作风格的一个片段。欢迎提交 [Issue](https://github.com/ruanyf/document-style-guide/issues) 和 [PR](https://github.com/ruanyf/document-style-guide/pulls) 补充。
 
 =================================
 
