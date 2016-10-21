@@ -185,6 +185,8 @@ if (TARGET === 'posttest') {
 }
 ```
 
+注意，`prepublish`这个钩子不仅会在`npm publish`命令之前运行，还会在`npm install`（不带任何参数）命令之前运行。这种行为很容易让用户感到困惑，所以 npm 4 引入了一个新的钩子`prepare`，行为等同于`prepublish`，而从 npm 5 开始，`prepublish`将只在`npm publish`命令之前运行。
+
 ## 八、简写形式
 
 四个常用的 npm 脚本有简写形式。
