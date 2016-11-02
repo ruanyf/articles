@@ -1,14 +1,14 @@
 # IntersectionObserver API 使用教程
 
-网页开发时，常常需要了解某个元素是否进入了“视口”（viewport），即用户是否可以看到它。
+网页开发时，常常需要了解某个元素是否进入了“视口”（viewport），即用户能不能看到它。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016110201.gif)
 
-上面图片中，随着屏幕底部的绿色方块的滚动，顶部会提示它的可见性。
+上图的绿色方块不断滚动，顶部会提示它的可见性。
  
 传统的实现方法是，监听到`scroll`事件后，调用目标元素（绿色方块）的[`getBoundingClientRect()`](https://developer.mozilla.org/en/docs/Web/API/Element/getBoundingClientRect)方法，得到它对应于视口左上角的坐标，再判断是否在视口之内。这种方法的缺点是，由于`scroll`事件密集发生，计算量很大，容易造成[性能问题](http://www.ruanyifeng.com/blog/2015/09/web-page-performance-in-depth.html)。
 
-为了解决这个问题，目前有一个新的 [IntersectionObserver API](https://wicg.github.io/IntersectionObserver/)，可以自动“观察”目标元素是否可见，Chrome 51+ 已经支持。由于可见（visible）的本质是，目标元素与视口产生一个交叉区，所以这个 API 叫做“交叉观察器”。
+目前有一个新的 [IntersectionObserver API](https://wicg.github.io/IntersectionObserver/)，可以自动“观察”元素是否可见，Chrome 51+ 已经支持。由于可见（visible）的本质是，目标元素与视口产生一个交叉区，所以这个 API 叫做“交叉观察器”。
 
 ## 一、API
 
@@ -18,9 +18,9 @@
 var io = new IntersectionObserver(callback, option);
 ```
 
-上面代码中，`IntersectionObserver`是浏览器原生提供的构造函数，接受两个参数：`callback`是可见性变化时的回调函数，`option`是配置对象，该参数可选。
+上面代码中，`IntersectionObserver`是浏览器原生提供的构造函数，接受两个参数：`callback`是可见性变化时的回调函数，`option`是配置对象（该参数可选）。
 
-构造函数会返回一个观察器实例。然后，使用`observe`方法指定应该观察哪个 DOM 节点。
+构造函数的返回值是一个观察器实例。实例的`observe`方法可以指定观察哪个 DOM 节点。
 
 ```javascript
 // 开始观察
@@ -33,7 +33,7 @@ io.unobserve(element);
 io.disconnect();
 ```
 
-上面代码中，`observe`方法的参数是一个 DOM 节点对象。如果要观察多个节点，就要多次调用这个方法。
+上面代码中，`observe`的参数是一个 DOM 节点对象。如果要观察多个节点，就要多次调用这个方法。
 
 ```javascript
 io.observe(elementA);
@@ -42,7 +42,9 @@ io.observe(elementB);
 
 ## 二、callback 参数
 
-目标元素的可见性发生变化时，就会调用观察器的回调函数`callback`。也就是说，`callback`一般会触发两次。一次是目标元素刚刚进入视口（开始可见），另一次是完全离开视口（开始不可见）。
+目标元素的可见性变化时，就会调用观察器的回调函数`callback`。
+
+`callback`一般会触发两次。一次是目标元素刚刚进入视口（开始可见），另一次是完全离开视口（开始不可见）。
 
 ```javascript
 var io = new IntersectionObserver(
@@ -147,7 +149,7 @@ intersectionObserver.observe(
 
 ## 六、Option 对象
 
-`IntersectionObserver`构造方法的第二个参数是一个配置对象。它可以设置以下属性。
+`IntersectionObserver`构造函数的第二个参数是一个配置对象。它可以设置以下属性。
 
 ### 6.1 threshold 属性
 
@@ -157,7 +159,7 @@ intersectionObserver.observe(
 new IntersectionObserver(
   entries => {/* … */}, 
   {
-    threshold: [0, 50%]
+    threshold: [0, 0.25, 0.5, 0.75, 1]
   }
 );
 ```
@@ -190,7 +192,7 @@ var observer = new IntersectionObserver(
 
 ## 七、注意点
 
-IntersectionObserver API 是异步的，不是随着目标元素的滚动同步触发的。
+IntersectionObserver API 是异步的，不随着目标元素的滚动同步触发。
 
 规格写明，`IntersectionObserver`的实现，应该采用`requestIdleCallback()`，即只有线程空闲下来，才会执行观察器。这意味着，这个观察器的优先级非常低，只在其他任务执行完，浏览器有了空闲才会执行。
 
