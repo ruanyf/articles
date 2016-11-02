@@ -1,0 +1,206 @@
+# IntersectionObserver API 使用教程
+
+网页开发的一个常见需求是，了解某个元素是否进入了“视口”（viewport），即用户是否可以看到它。
+
+![](https://developers.google.com/web/updates/images/2016/04/intersectionobserver/iframe.gif)
+
+上面图片中，随着屏幕底部的绿色方块的滚动，顶部会提示它的可见性。
+ 
+传统的实现方法是，监听`scroll`事件，不断调用目标元素（绿色方块）的[`getBoundingClientRect()`](https://developer.mozilla.org/en/docs/Web/API/Element/getBoundingClientRect)方法，得到它对应于视口左上角的坐标，判断是否在视口之内。这种方法的缺点是，由于`scroll`事件会大量发生，所以计算量很大，容易造成[性能问题](http://www.ruanyifeng.com/blog/2015/09/web-page-performance-in-depth.html)。
+
+为了解决这个问题，目前有一个 [IntersectionObserver API](https://wicg.github.io/IntersectionObserver/)，让浏览器自动观察某个目标元素是否可见。由于可见（visible）的本质是，目标元素与视口产生一个交叉区，所以这个 API 叫做“交叉观察器”。
+
+这个 API 非常新，目前只有 Chrome 51+ 支持。
+
+## 一、API
+
+“交叉观察器”的用法非常简单。
+
+```javascript
+var io = new IntersectionObserver(callback, option);
+```
+
+上面代码中，`IntersectionObserver`是一个浏览器原生提供的构造函数，接受两个参数：`callback`是目标元素的可见性变化时的回调函数，`option`是一个可选的配置对象。调用构造函数以后，会返回一个观察器实例。
+
+新建观察器以后，下一步就是指定应该观察哪个 DOM 节点。
+
+```javascript
+// 开始观察目标元素
+io.observe(document.getElementById('a'));
+
+// 停止观察
+io.unobserve(element);
+
+// 关闭观察器
+io.disconnect();
+```
+
+上面代码中，`observe`方法的参数是一个 DOM 节点对象。如果要观察多个节点，就要多次调用这个方法。
+
+```javascript
+io.observe(elementA);
+io.observe(elementB);
+```
+
+## 二、callback 参数
+
+目标元素的可见性发生变化时，就会调用观察器的回调函数`callback`。也就是说，`callback`一般会触发两次。一次是目标元素刚刚进入视口（开始可见），另一次是完全离开视口（开始不可见）。
+
+```javascript
+var io = new IntersectionObserver(
+  entries => {
+    console.log(entries);
+  }
+);
+```
+
+上面代码中，由于只有最新的 Chrome 浏览器才支持这个 API，所以采用[箭头函数](http://es6.ruanyifeng.com/#docs/function#箭头函数)的写法。
+
+`callback`函数的参数（上例的`entries`）是一个数组，它的每个成员都是一个[`IntersectionObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry)对象，提供可见性出现变化的目标元素的信息。比如，如果有两个对象的可视状态发生变化，`entries`数组就会有两个成员。
+
+## 三、IntersectionObserverEntry 对象
+
+`IntersectionObserverEntry`对象提供目标元素的信息，一共有六个属性。
+
+```javascript
+{
+  time: 3893.92,
+  rootBounds: ClientRect {
+    bottom: 920,
+    height: 1024,
+    left: 0,
+    right: 1024,
+    top: 0,
+    width: 920
+  },
+  boundingClientRect: ClientRect {
+     // ...
+  },
+  intersectionRect: ClientRect {
+    // ...
+  },
+  intersectionRatio: 0.54,
+  target: element
+}
+```  
+
+每个属性的含义如下。
+
+> - `time`：可见性发生变化的时间，是一个高精度时间戳，单位为毫秒
+- `target`：被观察的目标元素，是一个 DOM 节点对象
+- `rootBounds`：根元素的矩形区域的信息，`getBoundingClientRect()`方法的返回值，如果没有根元素，则返回`null`
+- `boundingClientRect`：目标元素的矩形区域的信息
+- `intersectionRect`：目标元素与视口（或根元素）的交叉区域的信息
+- `intersectionRatio`：目标元素的可见比例，即`intersectionRect`占`boundingClientRect`的比例，完全可见时为`1`，完全不可见时小于等于`0`
+
+![](https://developers.google.com/web/updates/images/2016/04/intersectionobserver/intersectratio.png)
+
+上图中，灰色的水平方框代表视口，深红色的区域代表四个被观察的目标元素。它们各自的`intersectionRatio`图中都已经注明。
+
+我写了一个 [Demo](http://jsbin.com/canuze/edit?js,console,output)，演示`IntersectionObserverEntry`对象。注意，它只能在 Chrome 51+ 运行。
+
+
+## 四、实例：惰性加载（lazy load）
+
+有时，我们希望某些静态资源，只有用户向下滚动变成可见时才加载，这样可以节省带宽，提高网页性能。这就叫做“惰性加载”。
+
+有了 IntersectionObserver API，实现起来就很容易了。
+
+```javascript
+function query(selector) {
+  return Array.from(document.querySelectorAll(selector));
+}
+
+var observer = new IntersectionObserver(
+  function(changes) {
+    changes.forEach(function(change) {
+      var container = change.target;
+      var content = container.querySelector('template').content;
+      container.appendChild(content);
+      observer.unobserve(container);
+    });
+  }
+);
+
+query('.lazy-loaded').forEach(function (item) {
+  observer.observe(item);
+});
+```
+
+上面代码中，只有目标区域可见时，才会将模板内容插入真实 DOM，从而引发静态资源的加载。
+
+## 五、实例：无限滚动
+
+无限滚动（infinite scroll）的实现也很简单。
+
+```javascript
+var intersectionObserver = new IntersectionObserver(
+  function (entries) {
+    // 如果不可见，就返回
+    if (entries[0].intersectionRatio <= 0) return;
+    loadItems(10);
+    console.log('Loaded new items');
+  });
+
+// 开始观察
+intersectionObserver.observe(
+  document.querySelector('.scrollerFooter')
+);
+```
+
+无限滚动时，最好在页面底部有一个页尾栏（又称[sentinels](sentinels)）。一旦页尾栏可见，就表示用户到达了页面底部，从而加载新的条目放在页尾栏前面。这样做的好处是，不需要再一次调用`observe()`方法，现有的`IntersectionObserver`可以保持使用。
+
+## 六、Option 对象
+
+`IntersectionObserver`构造方法的第二个参数是一个配置对象。它可以设置以下属性。
+
+### 6.1 threshold 属性
+
+`threshold`属性决定了什么时候触发回调函数。它是一个数组，每个成员都是一个门槛值，默认为`[0]`，即交叉比例（`intersectionRatio`）达到`0`时触发回调函数。
+
+用户可以自定义这个数组。比如，`[0, 0.25, 0.5, 0.75, 1]`就表示元素 0%、25%、50%、75%、100% 可见时，会触发这个函数。
+
+![](https://developers.google.com/web/updates/images/2016/04/intersectionobserver/threshold.gif)
+
+
+```javascript
+new IntersectionObserver(
+  entries => {/* … */}, 
+  {
+    threshold: [0, 50%]
+  }
+);
+```
+
+### 6.2  root 属性，rootMargin 属性
+
+很多时候，目标元素不仅会随着窗口滚动，还会在容器里面滚动（比如`iframe`窗口）。这时，即使窗口没有滚动，但是容器滚动了，目标元素的可见性依然会发生变化，可以参见本文开始时的那张示意图。
+
+IntersectionObserver API 支持容器内滚动。`root`属性指定目标元素所在的容器节点（即根元素）。注意，容器元素必须是目标元素的祖先节点。
+
+```javascript
+var opts = { 
+  root: document.querySelector('.container'),
+  rootMargin: "500px 0px" 
+};
+
+var observer = new IntersectionObserver(
+  callback,
+  opts
+);
+```
+
+上面代码中，除了`root`属性，还有[`rootMargin`](https://wicg.github.io/IntersectionObserver/#dom-intersectionobserverinit-rootmargin)属性。它用来定义根元素的`margin`，用来扩展或缩小`rootBounds`这个矩形的大小，从而影响`intersectionRect`交叉区域的大小。它使用CSS的定义方法，比如`10px 20px 30px 40px`，表示 top、right、bottom 和 left 四个方向的值。
+
+这样设置以后，不管是窗口滚动或者容器内滚动，造成目标元素不可见，都会触发观察器。
+
+
+## 七、注意点
+
+IntersectionObserver API 是异步的。规格写明，`IntersectionObserver`的实现，应该采用`requestIdleCallback()`，即只有线程空闲下来，才会执行观察器。这意味着，这个观察器的优先级非常低，只在其他任务执行完，浏览器有了空闲才会执行。
+
+## 八、参考链接
+
+- [IntersectionObserver’s Coming into View](https://developers.google.com/web/updates/2016/04/intersectionobserver)
+
+（完）
