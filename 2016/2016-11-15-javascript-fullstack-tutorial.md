@@ -4,7 +4,7 @@
 
 最近有一种感觉，我可以融汇贯通了，完整实现 JavaScript 全栈。
 
-![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016111501.png)
+[![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016111501.png)](https://github.com/ruanyf/jstraining)
 
 最初，只是想整理一份技术清单。但是内容越写越多，索性就做成一个[教程](https://github.com/ruanyf/jstraining)，放在 Github 上面。
 
@@ -43,7 +43,7 @@
 
 所有内容都配有 [Demo](https://github.com/ruanyf/jstraining/tree/master/demos) 和[操作指导](https://github.com/ruanyf/jstraining/blob/master/demos/README.md)，帮助读者边学边练，保证学会。
 
-![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016111502.png)
+[![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016111502.png)](https://github.com/ruanyf/jstraining/tree/master/demos)
 
 我已经找了一个场合，试讲了一次上面的内容，看看这套教程是否可行，觉得效果还可以。
 
