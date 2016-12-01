@@ -2,7 +2,7 @@
 
 学习 Linux 时，经常可以看到两个词：User space（用户空间）和 Kernel space（内核空间）。
 
-简单说，Kernel space 是 Linux 内核的运行空间，User space 是用户程序的运行空间。为了安全，这两者是隔离的，即使用户的程序崩溃了，内核也不受影响。
+简单说，Kernel space 是 Linux 内核的运行空间，User space 是用户程序的运行空间。为了安全，它们是隔离的，即使用户的程序崩溃了，内核也不受影响。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016120201-1.png)
 
@@ -16,7 +16,7 @@ file.write(str) // 切换到内核空间
 y = x + 4 // 切换回用户空间
 ```
 
-上面代码中，第一行和第二行都是简单的赋值运行，在 User space 执行。第三行需要写入文件，就要切换到 Kernel space，因为用户不能直接写文件，必须通过内核安排。第四行又是赋值运算，就切换回 User space。
+上面代码中，第一行和第二行都是简单的赋值运算，在 User space 执行。第三行需要写入文件，就要切换到 Kernel space，因为用户不能直接写文件，必须通过内核安排。第四行又是赋值运算，就切换回 User space。
 
 查看 CPU 时间在 User space 与 Kernel Space 之间的分配情况，可以使用`top`命令。它的第三行输出就是 CPU 时间分配统计。
 
@@ -32,7 +32,7 @@ y = x + 4 // 切换回用户空间
 
 > - `0.0 ni`： niceness 的缩写，CPU 消耗在 nice 进程（低优先级）的时间百分比
 - `73.6 id`：idle 的缩写，CPU 消耗在闲置进程的时间百分比，这个值越低，表示 CPU 越忙
-- `0.4 wa`：wait 的缩写，CPU 等待外部 I/O 的时间百分比，这段时间 CPU 不能干其他事，但是也没有执行运算
+- `0.4 wa`：wait 的缩写，CPU 等待外部 I/O 的时间百分比，这段时间 CPU 不能干其他事，但是也没有执行运算，这个值太高就说明外部设备有问题
 - `0.0 hi`：hardware interrupt 的缩写，CPU 响应硬件中断请求的时间百分比
 - `0.2 si`：software interrupt 的缩写，CPU 响应软件中断请求的时间百分比
 - `0.0 st`：stole time 的缩写，该项指标只对虚拟机有效，表示分配给当前虚拟机的 CPU 时间之中，被同一台物理机上的其他虚拟机偷走的时间百分比
