@@ -7,4 +7,10 @@
     font-size: 3rem
   }
 }
+
+@media only screen
+  and (max-width : 603px)
+  and (max-height : 966px) {
+  /* Styles here */
+}
 ```

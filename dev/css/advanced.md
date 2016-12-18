@@ -25,6 +25,20 @@ img {
 
 注意，变量名是大小写敏感的。
 
+变量值可以被覆盖。
+
+```css
+:root {
+  --my-color: white;
+}
+button {
+  background-color: var(--my-color, blue);
+}
+button.special {
+  --my-color: red;
+}
+```
+
 `var()`函数接受第二个参数，指定如果读取变量失败时的默认值。
 
 ```css
@@ -64,6 +78,18 @@ max-width: calc(var(--container-width) / 2);
 JavaScript可以操作这些变量。
 
 ```javascript
+element.style
+  .setProperty('--my-color', 'rebeccapurple');
+element.style
+  .getPropertyValue('--my-color');
+// => 'rebeccapurple'
+element.style
+  .removeProperty('--my-color');
+```
+
+下面是例子。
+
+```javascript
 // 取得变量值
 var styles = getComputedStyle(document.documentElement);
 var bgValue = String(styles.getPropertyValue('--background')).trim();
@@ -72,6 +98,17 @@ var bgValue = String(styles.getPropertyValue('--background')).trim();
 document.documentElement.style.setProperty('--background', 'black');
 // 另一种写法
 document.documentElement.style.setProperty('--h-color', 'var(--p-color)');
+```
+
+下面是一个监听事件的例子。
+
+```javascript
+const docStyle = document.documentElement.style;
+
+document.addEventListener('mousemove', (e) => {
+  docStyle.setProperty('--mouse-x', e.clientX);
+  docStyle.setProperty('--mouse-y', e.clientY);
+});
 ```
 
 下面是一个使用CSS变量的例子，只要`<input>`的值发生变化，样式就会随之发生变化。
@@ -149,3 +186,32 @@ html {
   filter: grayscale(100%);
 }
 ```
+
+## CSS Shape
+
+`shape-outside`属性使得行内（inline）的内容，围绕`outside`指定的曲线排列。
+
+`shape-margin`属性指定`shape-outside`与内容之间的`margin`。
+
+```css
+.circle {
+  width: 250px;
+  height: 250px;
+  background-color: #40a977;
+  border-radius: 50%;
+  float: left;
+  -webkit-shape-outside: circle();
+  shape-outside: circle();
+}
+```
+
+`circle`函数可以使用`circle(r at x y)`这样的形式，定义半径和圆心的坐标。注意，这里的坐标是相对于原始形状，而不是相对于父容器。
+
+其他形状的函数。
+
+- ellipse()
+- polygon()
+
+参考链接
+
+- [How to Use CSS Shapes in Your Web Design](https://webdesign.tutsplus.com/tutorials/how-to-use-css-shapes-in-your-web-design--cms-27498), by Louie R.
