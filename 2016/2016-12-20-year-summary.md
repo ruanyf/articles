@@ -1,12 +1,12 @@
 # 我的 2016 年
 
-2016年，我的生活没有大改变，一整年都在工作，没有停下来过。
+2016年，人生没有大变化，一整年都在工作。
 
 下图是我的 [Github](https://github.com/ruanyf) 的时间线。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016122001.png)](https://github.com/ruanyf)
 
-年初，[《ES6 标准入门》](http://es6.ruanyifeng.com)出版了第二版，反响和销量都还不错。然后一直在修改，争取明年推出第三版，ES2017 标准全覆盖。
+年初，[《ES6 标准入门》](http://es6.ruanyifeng.com)出版了第二版，反响和销量还不错。然后一直在修改，争取明年推出第三版，ES2017 标准全覆盖。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016122002.png)](http://es6.ruanyifeng.com)
 
@@ -14,11 +14,13 @@
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016122007.jpg)](http://www.ruanyifeng.com/blog/2016/09/react-technology-stack.html)
 
-稍后，又发布了[《JavaScript 全栈工程师培训教程》](http://www.ruanyifeng.com/blog/2016/11/javascript.html)，尝试推广全栈工程师的最短路径：React + Node。发布当天，就登上了热门项目排行榜的第一名。
+稍后，又发布了[《JavaScript 全栈工程师培训教程》](http://www.ruanyifeng.com/blog/2016/11/javascript.html)，推广全栈工程师的最短路径：React + Node。发布当天，就登上了热门项目排行榜的第一名。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016122003.jpg)](https://github.com/ruanyf/jstraining)
 
 我还发布了[《中文技术文档写作规范》](http://www.ruanyifeng.com/blog/2016/10/document_style_guide.html)，为将来的技术文档社区奠定基础。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016122004.png)](https://github.com/ruanyf/document-style-guide)
 
 年底，写了一个[静态站点生成器](https://github.com/ruanyf/loppo)，还没做完，但已经可用。
 
@@ -30,7 +32,7 @@
 
 2016年，知识可以变现了，公号打赏、分答、知乎 Live 这样的知识收费产品，层出不穷。我觉得这是一件好事，显示了知识的价值。但作为自由软件运动的支持者和受益者，这个博客还会继续这样写下去，坚持知识的自由分享。
 
-但是，上面这些都不重要。
+上面这些都不重要。
 
 2016年，发生在我身上最重要的事，其实与我没有直接关系。
 
