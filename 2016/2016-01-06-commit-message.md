@@ -233,7 +233,7 @@ INVALID COMMIT MSG: does not match "<type>(<scope>): <subject>" ! was: edit mark
 [conventional-changelog](https://github.com/ajoslin/conventional-changelog) 就是生成 Change log 的工具，运行下面的命令即可。
 
 ```bash
-$ npm install -g conventional-changelog
+$ npm install -g conventional-changelog-cli
 $ cd my-project
 $ conventional-changelog -p angular -i CHANGELOG.md -w
 ```
