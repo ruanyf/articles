@@ -58,7 +58,7 @@ $ locate "*.htmL"
 
 # 大小写不敏感的搜索
 $ find . -iname abc
-$ $ locate -i "*.HtmL"
+$ locate -i "*.HtmL"
 ```
 
 最后，大写字母需要按下 Shift 键，如果文件名小写，就不用碰这个键了，不仅节省体力，还可以提高打字速度。
