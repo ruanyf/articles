@@ -87,3 +87,23 @@ $ locate -i "*.HtmL"
 ---
 
 下面是推广时间。
+
+如果大家还有印象，以前我[介绍过](http://www.ruanyifeng.com/blog/2016/10/document_style_guide.html#promotion)一家前端开发的在线教育平台["海棠学院"](http://apeclass.cn/1212/index.html?utm_source=ruanyifeng)。
+
+他们的特色就是保证课程质量，不吹牛，非常低调地将所有精力，都投入课程准备和学员的悉心指导，让你循序渐进、多敲多练，学会前端编程，做出好的项目。如果你想投入前端行业，或者了解互联网技术，他们是一个不错的选择。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016101501.jpg)](http://apeclass.cn/1212/index.html?utm_source=ruanyifeng)
+
+现有学员的评价，可以看[这里](http://apeclass.cn/article/191)。
+
+> “身为一个应届生，接触前端完全是因为不喜欢自己的专业，又到了就业的时节，想想自己还是对互联网比较感兴趣，从网上了解了一下互联网各个方面的工作，发现自己对前端比较感兴趣，由此而入了坑......（[全文](http://apeclass.cn/article/192)）”
+
+现在，2017年[春季班](http://apeclass.cn/1212/index.html)开始招生了。和上次冬季班一样，依然是**0成本入学**，只需要缴纳 99 元，即可感受一周的课程，享受完全正式的待遇（录播 + 直播 + 教学监管 + 技术辅导）。一周后，如果觉得不满意，99 元可以退款。
+
+不管你最后是否报名，只要参加培训，都可以免费获得一份[前端学习资料](http://apeclass.cn/1212/index.html)。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017021005.png)](http://apeclass.cn/1212/index.html)
+
+春季班定在3月初开课，名额已经不多了。想从事前端开发，却不知道从何学起的朋友，不要错过这个机会，点击[这里](http://apeclass.cn/1212/index.html)，了解详情吧。
+
+（完）
