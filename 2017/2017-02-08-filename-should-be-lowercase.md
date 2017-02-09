@@ -94,7 +94,7 @@ $ locate -i "*.HtmL"
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016101501.jpg)](http://apeclass.cn/1212/index.html?utm_source=ruanyifeng)
 
-根据我的提议，创始人张小河开始[收集](http://apeclass.cn/article/191)现有学员的反馈。
+根据我的提议，创始人张小河[收集]了(http://apeclass.cn/article/191)前几期学员的反馈。
 
 > “身为一个应届生，接触前端完全是因为不喜欢自己的专业，又到了就业的时节，想想自己还是对互联网比较感兴趣，从网上了解了一下互联网各个方面的工作，发现自己对前端比较感兴趣，由此而入了坑......（[全文](http://apeclass.cn/article/192)）”
 
