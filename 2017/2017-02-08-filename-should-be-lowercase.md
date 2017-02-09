@@ -76,11 +76,11 @@ $ find . -iname abc
 $ locate -i "*.HtmL"
 ```
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017021004.png)
+
 另外，大写字母需要按下 Shift 键，多多少少有些麻烦。如果文件名小写，就不用碰这个键了，不仅省事，还可以提高打字速度。
 
 程序员长时间使用键盘，每分钟少按几次 Shift，一天下来就可以省掉很多手指动作。长年累月，也是对自己身体的一种保护。
-
-![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017021004.png)
 
 综上所述，文件名全部使用小写字母和连词线（all-lowercase-with-dashes），是一种值得推广的正确做法。
 
@@ -90,11 +90,11 @@ $ locate -i "*.HtmL"
 
 如果大家还有印象，以前我[介绍过](http://www.ruanyifeng.com/blog/2016/10/document_style_guide.html#promotion)一家前端开发的在线教育平台["海棠学院"](http://apeclass.cn/1212/index.html?utm_source=ruanyifeng)。
 
-他们的特色就是保证课程质量，不吹牛，非常低调地将所有精力，都投入课程准备和学员的悉心指导，让你循序渐进、多敲多练，学会前端编程，做出好的项目。如果你想投入前端行业，或者了解互联网技术，他们是一个不错的选择。
+他们的特色就是保证课程质量，不吹牛，非常低调地将所有精力，都投入课程准备和学员的悉心指导，让学员循序渐进、多敲多练，掌握前端编程，做出好的项目。如果你想投入前端行业，或者了解互联网技术，他们是一个不错的选择。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016101501.jpg)](http://apeclass.cn/1212/index.html?utm_source=ruanyifeng)
 
-现有学员的评价，可以看[这里](http://apeclass.cn/article/191)。
+根据我的提议，创始人张小河开始[收集](http://apeclass.cn/article/191)现有学员的反馈。
 
 > “身为一个应届生，接触前端完全是因为不喜欢自己的专业，又到了就业的时节，想想自己还是对互联网比较感兴趣，从网上了解了一下互联网各个方面的工作，发现自己对前端比较感兴趣，由此而入了坑......（[全文](http://apeclass.cn/article/192)）”
 
