@@ -23,6 +23,8 @@
 
 需要声明的是，我不是专家，而是一个初学者，最近两年才开始真正学习函数式编程。一直苦于看不懂各种资料，立志要写一篇清晰易懂的教程。我不保证这篇教程都是正确和严密的，但是我发现，像下面这样理解，初学者最容易懂。
 
+另外，本文比较长，阅读时请保持耐心。结尾还有一个 Udacity 的《前端工程师认证课程》推广，感谢他们对我这个小站的支持和赞助。
+
 ## 一、范畴论
 
 函数式编程的起源，是一门叫做范畴论（Category Theory）的数学分支。
@@ -470,3 +472,24 @@ readFile('./user.txt')
 
 （正文完）
 
+=============================================
+
+**下面是推广时间。**
+
+去年十月，我[介绍过](http://www.ruanyifeng.com/blog/2016/10/online_education.html)来自硅谷的技术学习平台[优达学城](https://www.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)（Udacity），他们推出了[纳米学位](http://cn.udacity.com/nanodegree/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)。
+
+在他们进入中国市场的周年之际，又有一个本地化课程要发布了。那就是由 Google 和 Github 合作制作的[“前端开发工程师”](http://cn.udacity.com/fend/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)认证课程。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022206.png)](http://cn.udacity.com/fend/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)
+
+这个课程完全是国际水准，讲解深入浅出，示例丰富，贴近大公司开发实践，帮助你牢牢掌握那些最实用的前端技术。硅谷工程师英语讲授，配有全套中文字幕，以及全中文的学习辅导。像其他纳米课程一样，还有同步学习小组和导师监督服务，包含一对一的代码辅导。课程通过后，还能拿到 Google、Github 参与颁发的学习认证。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022207.jpg)](http://cn.udacity.com/fend/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)
+
+这门课程今天（2月22日）就开始报名了，现在就点击[这里](http://cn.udacity.com/fend/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)，了解更多！我的读者报名时，请使用优惠码`ruanyfFEND`。
+
+最后，欢迎立即扫码，关注优达学城（微信号：youdaxue），跟踪最新的 IT 在线学习和培训咨询。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022208.jpg)
+
+（完）
