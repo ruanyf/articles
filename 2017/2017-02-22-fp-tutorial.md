@@ -2,7 +2,9 @@
 
 你可能听说过函数式编程（Functional programming），甚至已经使用了一段时间。
 
-但是，你能说清楚吗，它到底是什么？
+但是，你能说清楚，它到底是什么吗？
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022201.jpg)
 
 网上搜索一下，你会轻松找到好多答案。
 
@@ -457,6 +459,7 @@ readFile('./user.txt')
 
 ## 十、参考链接
 
+- [JS 函数式编程指南](https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/)
 - [Taking Things Out of Context: Functors in JavaScript](http://mattfield.github.io/javascript/2013/07/28/taking-things-out-of-context-functors-in-javascript/)
 - [Functor.js](https://gist.github.com/buzzdecafe/5721205)
 - [Maybe, Either & Try Functors in ES6](https://gist.github.com/rjchatfield/54393388f80f55fcc81a)
