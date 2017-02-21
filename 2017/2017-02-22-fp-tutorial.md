@@ -23,7 +23,7 @@
 
 需要声明的是，我不是专家，而是一个初学者，最近两年才真正开始学习函数式编程。一直苦于看不懂各种资料，立志要写一篇清晰易懂的教程。下面的内容肯定不够严密，甚至可能包含错误，但是我发现，像下面这样解释，初学者最容易懂。
 
-另外，本文比较长，阅读时请保持耐心。结尾还有 Udacity 的《前端工程师认证课程》推广，非常感谢他们对本文的赞助。
+另外，本文比较长，阅读时请保持耐心。结尾还有 Udacity 的《前端工程师认证课程》的推广，非常感谢他们对本文的赞助。
 
 ## 一、范畴论
 
@@ -476,7 +476,7 @@ readFile('./user.txt')
 
 **下面是推广时间。**
 
-去年十月，我[介绍了](http://www.ruanyifeng.com/blog/2016/10/online_education.html)来自硅谷的技术学习平台[优达学城](https://www.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)（Udacity），他们推出的[纳米学位](http://cn.udacity.com/nanodegree/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)。
+去年十月，我[介绍了](http://www.ruanyifeng.com/blog/2016/10/online_education.html)来自硅谷的技术学习平台[优达学城](https://cn.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)（Udacity），他们推出的[纳米学位](http://cn.udacity.com/nanodegree/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)。
 
 现在，他们进入中国市场，快满周年了，又有一个本地化课程发布了。那就是由 Google 和 Github 合作制作的[“前端开发工程师”](http://cn.udacity.com/fend/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)认证课程。
 
@@ -492,7 +492,7 @@ readFile('./user.txt')
 
 我的读者报名时，请使用优惠码`ruanyfFEND`。
 
-最后，欢迎立即扫码，关注优达学城（微信号：youdaxue），跟踪最新的 IT 在线学习和培训咨询。
+最后，欢迎立即扫码，关注优达学城（微信号：youdaxue），跟踪最新的 IT 在线学习和培训资讯。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022208.jpg)
 
