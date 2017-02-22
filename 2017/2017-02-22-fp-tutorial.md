@@ -167,9 +167,26 @@ add(2)(1) // 3
 
 函数不仅可以用于同一个范畴之中值的转换，还可以用于将一个范畴转成另一个范畴。这就涉及到了函子（Functor）。
 
-函子是函数式编程最重要的数据类型，也是基本的运算单位和功能单位。
+### 3.1 函子的概念
 
-首先，函子是一种范畴，也就是说，它是一个容器，包含了值和变形关系。**比较特殊的是，它的变形关系可以依次作用于每一个值，将当前容器变形成另一个容器。**
+函子是函数式编程里面最重要的数据类型，也是基本的运算单位和功能单位。
+
+它首先是一种范畴，也就是说，是一个容器，包含了值和变形关系。**比较特殊的是，它的变形关系可以依次作用于每一个值，将当前容器变形成另一个容器。**
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022203.png)
+
+
+上图中，左侧的圆圈就是一个函子，表示人名的范畴。外部传入函数`f`，会转成右边表示早餐的范畴。
+
+下面是一张更一般的图。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022211.jpg)
+
+上图中，函数`f`完成值的转换（`a`到`b`），将它传入函子，就可以实现范畴的转换（`Fa`到`Fb`）。
+
+### 3.2 函子的代码实现
+
+任何具有`map`方法的数据结构，都可以当作函子的实现。
 
 ```javascript
 class Functor {
@@ -183,18 +200,11 @@ class Functor {
 }
 ```
 
-上面代码中，`Functor`是一个容器，它的`map`方法接受一个函数`f`作为参数，然后返回一个新的容器，该容器的值是被`f`处理过的（`f(this.val)`）。
+上面代码中，`Functor`是一个函子，它的`map`方法接受函数`f`作为参数，然后返回一个新的函子，里面包含的值是被`f`处理过的（`f(this.val)`）。
 
-**一般约定，函子的标志就是容器具有`map`方法，将容器里面的每一个值，映射到另一个容器。**它的一般形式和类型签名如下。
+**一般约定，函子的标志就是容器具有`map`方法。该方法将容器里面的每一个值，映射到另一个容器。**
 
-```javascript
-// (a -> b) -> Container a -> Container b
-Functor.prototype.map = function(f) {
-  return new Functor(f(this.val));
-}
-```
-
-下面是一些例子。
+下面是一些用法的示例。
 
 ```javascript
 (new Functor(2)).map(function (two) {
@@ -211,7 +221,7 @@ Functor.prototype.map = function(f) {
 // Functor(10)
 ```
 
-上面的例子说明，函子就是函数式编程里面的运算单位，即运算不直接针对值，而是针对这个值的容器——函子。函子本身具有对外接口（`map`方法），各种函数就是运算符，通过接口接入容器，引发容器里面的值的变形。
+上面的例子说明，函数式编程里面的运算，都是通过函子完成，即运算不直接针对值，而是针对这个值的容器——函子。函子本身具有对外接口（`map`方法），各种函数就是运算符，通过接口接入容器，引发容器里面的值的变形。
 
 因此，学习函数式编程，实际上就是学习函子的各种运算。由于可以把运算方法封装在函子里面，所以又衍生出各种不同类型的函子，有多少种运算，就有多少种函子。函数式编程就变成了运用不同的函子，解决实际问题。
 
@@ -219,7 +229,7 @@ Functor.prototype.map = function(f) {
 
 你可能注意到了，上面生成新的函子的时候，用了`new`命令。这实在太不像函数式编程了，因为`new`命令是面向对象编程的标志。
 
-函数式编程一般约定，容器有一个`of`方法，用来生成新的容器。
+**函数式编程一般约定，函子有一个`of`方法，用来生成新的容器。**
 
 下面就用`of`方法替换掉`new`。
 
@@ -253,7 +263,7 @@ Functor.of(null).map(function (s) {
 
 上面代码中，函子里面的值是`null`，结果小写变成大写的时候就出错了。
 
-Maybe 函子就是为了解决这一类问题而设计的。简单说，它就是`map`方法里面设置了空值检查的函子。
+Maybe 函子就是为了解决这一类问题而设计的。简单说，它的`map`方法里面设置了空值检查。
 
 ```javascript
 class Maybe extends Functor {
@@ -274,7 +284,7 @@ Maybe.of(null).map(function (s) {
 
 ## 六、Either 函子
 
-条件运算`if...else`是最常见的运算之一，函数式编程里面，可以用 Either 函子 表达。
+条件运算`if...else`是最常见的运算之一，函数式编程里面，使用 Either 函子表达。
 
 Either 函子内部有两个值：左值（`Left`）和右值（`Right`）。右值是正常情况下使用的值，左值是右值不存在时使用的默认值。
 
@@ -335,11 +345,11 @@ function parseJSON(json) {
 }
 ```
 
-所有可能出错的运算，都可以返回一个 Either 函子。
+上面代码中，左值为空，就表示没有出错，否则左值会包含一个错误对象`e`。一般来说，所有可能出错的运算，都可以返回一个 Either 函子。
 
 ## 七、ap 函子
 
-函子包含的值，完全可以是函数。我们可以想象这样一种情况，一个函子的值是数值，另一个函子的值是函数。
+函子里面包含的值，完全可能是函数。我们可以想象这样一种情况，一个函子的值是数值，另一个函子的值是函数。
 
 ```javascript
 function addTwo(x) {
@@ -352,28 +362,28 @@ const B = Functor.of(addTwo)
 
 上面代码中，函子`A`内部的值是`2`，函子`B`内部的值是函数`addTwo`。
 
-有时，我们想要让函子`B`内部的函数，可以使用函子`A`内部的值进行运算。这时就需要用到 Ap 函子。
+有时，我们想让函子`B`内部的函数，可以使用函子`A`内部的值进行运算。这时就需要用到 ap 函子。
 
-Ap 是 applicative（应用）的缩写。凡是部署了`ap`方法的函子，就是 Ap 函子。
+ap 是 applicative（应用）的缩写。凡是部署了`ap`方法的函子，就是 ap 函子。
 
 ```javascript
 class Ap extends Functor {
   ap(F) {
-    return Functor.of(this.val(F.val));
+    return Ap.of(this.val(F.val));
   }
 }
 ```
 
-注意，`ap`的参数不是函数，而是另一个函子。
+注意，`ap`方法的参数不是函数，而是另一个函子。
 
 因此，前面例子可以写成下面的形式。
 
 ```javascript
 Ap.of(addTwo).ap(Function.of(2))
-// Functor(4)
+// Ap(4)
 ```
 
-Ap 函子的意义在于，对于那些多参数的函数，就可以从多个容器之中取值，实现函子的链式操作。
+ap 函子的意义在于，对于那些多参数的函数，就可以从多个容器之中取值，实现函子的链式操作。
 
 ```javascript
 function add(x) {
@@ -383,10 +393,10 @@ function add(x) {
 }
 
 Ap.of(add).ap(Maybe.of(2)).ap(Maybe.of(3));
-// Functor(5)
+// Ap(5)
 ```
 
-上面代码中，函数`add`是柯里化以后的形式，一共需要两个参数。通过 Ap 函子，我们就可以实现从两个容器之中取值。它还有另外一种写法。
+上面代码中，函数`add`是柯里化以后的形式，一共需要两个参数。通过 ap 函子，我们就可以实现从两个容器之中取值。它还有另外一种写法。
 
 ```javascript
 Ap.of(add(2)).ap(Maybe.of(3));
@@ -397,14 +407,16 @@ Ap.of(add(2)).ap(Maybe.of(3));
 函子是一个容器，可以包含任何值。函子之中再包含一个函子，也是完全合法的。但是，这样就会出现多层嵌套的函子。
 
 ```javascript
-Maybe(Maybe(Maybe({name: 'Mulburry', number: 8402})))
+Maybe.of(
+  Maybe.of(
+    Maybe.of({name: 'Mulburry', number: 8402})
+  )
+)
 ```
 
-上面这个函子，一共有三个`Maybe`嵌套。如果要取出内部的值，就要连续使用三次`this.value`方法。
+上面这个函子，一共有三个`Maybe`嵌套。如果要取出内部的值，就要连续取三次`this.val`。这当然很不方便，因此就出现了 Monad 函子。
 
-这当然很不方便，因此就出现了`Monad`函子。
-
-`Monad`函子有一个`flatMap`方法，作用与`map`方法相同，唯一的区别是如果传入的是一个函子，它会取出内部的值，保证返回的永远是一个单层的容器，不会出现容器嵌套的情况。
+**Monad 函子的作用是，总是返回一个单层的函子。**它有一个`flatMap`方法，与`map`方法作用相同，唯一的区别是如果生成了一个嵌套函子，它会取出后者内部的值，保证返回的永远是一个单层的容器，不会出现嵌套的情况。
 
 ```javascript
 class Monad extends Functor {
@@ -421,9 +433,9 @@ class Monad extends Functor {
 
 ## 九、IO 操作
 
-`Monad`有一个重要应用，就是可以实现 I/O （输入输出）操作。
+Monad 函子的重要应用，就是实现 I/O （输入输出）操作。
 
-I/O 是不纯的操作，普通的函数式编程没法做，所以可以把 IO 操作写成`Monad`函子，通过它来完成。
+I/O 是不纯的操作，普通的函数式编程没法做，这时就需要把 IO 操作写成`Monad`函子，通过它来完成。
 
 ```javascript
 var fs = require('fs');
@@ -463,6 +475,11 @@ var tail = function(x) {
 }
 
 readFile('./user.txt')
+.flatMap(tail)
+.flatMap(print)
+
+// 等同于
+readFile('./user.txt')
 .chain(tail)
 .chain(print)
 ```
@@ -482,17 +499,17 @@ readFile('./user.txt')
 
 =============================================
 
-**下面是推广时间。**
+**感谢你读完了全文。下面还有一个推广，请再花一分钟阅读。**
 
 去年十月，我[介绍了](http://www.ruanyifeng.com/blog/2016/10/online_education.html)来自硅谷的技术学习平台[优达学城](https://cn.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)（Udacity），他们推出的[纳米学位](http://cn.udacity.com/nanodegree/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)。
 
-现在，他们进入中国市场，快满周年了，又有一个本地化课程发布了。那就是由 Google 和 Github 合作制作的[“前端开发工程师”](http://cn.udacity.com/fend/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)认证课程。
+现在，他们进入中国市场快满周年了，又有一个本地化课程发布了。那就是由 Google 和 Github 合作制作的[“前端开发工程师”](http://cn.udacity.com/fend/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)认证课程。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022206.png)](http://cn.udacity.com/fend/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)
 
 这个课程完全是国际水准，讲解深入浅出，示例丰富，贴近大公司开发实践，帮助你牢牢掌握那些最实用的前端技术。
 
-硅谷工程师英语讲授，配有全套中文字幕，以及全中文的学习辅导，还有首次引入中国的同步学习小组和导师监督服务，包含一对一的代码辅导。课程通过后，还能拿到 Google、Github 参与颁发的学习认证。
+课程由硅谷工程师英语讲授，配有全套中文字幕，以及全中文的学习辅导，还有首次引入中国的同步学习小组和导师监督服务，包含一对一的代码辅导。课程通过后，还能拿到 Google、Github 参与颁发的学习认证。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022207.jpg)](http://cn.udacity.com/fend/?utm_source=ruanyf&utm_medium=referral&utm_campaign=newFEND)
 
