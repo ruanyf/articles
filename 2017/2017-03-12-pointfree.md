@@ -2,7 +2,7 @@
 
 本文要回答一个很重要的问题：[函数式编程](http://www.ruanyifeng.com/blog/2017/02/fp-tutorial.html)有什么用？
 
-目前，主流的编程语言都不是函数式的，已经能够解决各种问题。为何还要学函数式编程呢，只为了多理解一些新奇的概念？
+目前，主流的编程语言都不是函数式的，已经能够满足需求。为何还要学函数式编程呢，只为了多理解一些新奇的概念？
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017031201.jpg)
 
@@ -12,7 +12,7 @@
 >
 > “我感觉，这种写法可能会令人头痛吧。”
 
-如何将它用于实际项目？很长一段时间，我根本不知道从何入手。直到有一天，我学到了 Pointfree 这个概念，顿时豁然开朗，原来应该这样用！
+很长一段时间，我根本不知道从何入手，如何将它用于实际项目？直到有一天，我学到了 Pointfree 这个概念，顿时豁然开朗，原来应该这样用！
 
 我现在觉得，Pointfree 就是如何使用函数式编程的答案。
 
@@ -26,13 +26,13 @@
 
 上图是一个编程任务，左侧是数据输入（input），中间是一系列的运算步骤，对数据进行加工，右侧是最后的数据输出（output）。**一个或多个这样的任务，就组成了程序。**
 
-输入和输出（统称为 I/O），可能与键盘、屏幕、文件、数据库等相关，这些跟本文无关。**这里的关键是，中间的运算部分不能有 I/O 操作，应该是纯运算，即通过纯粹的数学运算来求值。**否则，就应该拆分出另一个任务。
+输入和输出（统称为 I/O）与键盘、屏幕、文件、数据库等相关，这些跟本文无关。**这里的关键是，中间的运算部分不能有 I/O 操作，应该是纯运算，即通过纯粹的数学运算来求值。**否则，就应该拆分出另一个任务。
 
 I/O 操作往往有现成命令，大多数时候，编程主要就是写中间的那部分运算逻辑。现在，主流写法是过程式编程和面向对象编程，但是我觉得，最合适纯运算的是函数式编程。
 
 ## 二、函数的拆分与合成
 
-回到上面那张图，其中的运算过程可以用一个函数`fn`表示。
+上面那张图中，运算过程可以用一个函数`fn`表示。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017031203.png)
 
@@ -76,13 +76,11 @@ fn = R.pipe(f1, f2, f3);
 
 ## 三、Pointfree 的概念
 
-再看一遍上面的公式。
-
 ```javascript
 fn = R.pipe(f1, f2, f3);
 ```
 
-它说明，如果先定义`f1`、`f2`、`f3`，就可以算出`fn`。整个过程，根本不需要知道`a`或`b`。
+这个公式说明，如果先定义`f1`、`f2`、`f3`，就可以算出`fn`。整个过程，根本不需要知道`a`或`b`。
 
 也就是说，我们完全可以把数据处理的过程，定义成一种与参数无关的合成运算。不需要用到代表数据的那个参数，只要把一些简单的运算步骤合成在一起即可。
 
@@ -109,16 +107,16 @@ addOneThenSquare(2) //  9
 
 ## 四、Pointfree 的本质
 
-Pointfree 的本质就是使用一些通用的小函数，组合出各种复杂运算。上层运算不要直接操作数据，而是通过一些小函数去处理。这就要求，将一些常用的操作封装成小函数。
+Pointfree 的本质就是使用一些通用的函数，组合出各种复杂运算。上层运算不要直接操作数据，而是通过底层函数去处理。这就要求，将一些常用的操作封装成函数。
 
-比如，如果要读取对象的`role`属性，不要直接写成`obj.role`，而是要把这个操作封装成函数。
+比如，读取对象的`role`属性，不要直接写成`obj.role`，而是要把这个操作封装成函数。
 
 ```javascript
 var prop = (p, obj) => obj[p];
 var propRole = R.curry(prop)('role');
 ```
 
-上面代码中，`prop`函数封装了读取属性的操作。它需要两个参数`p`（属性名）和`obj`（对象）。这时，要把数据`obj`要放在最后一个参数，这是为了方便柯里化。函数`propRole`则是指定读取`role`属性，下面是它的用法（查看[完整代码](http://jsbin.com/nevuje/edit?js,console)）。
+上面代码中，`prop`函数封装了读取操作。它需要两个参数`p`（属性名）和`obj`（对象）。这时，要把数据`obj`要放在最后一个参数，这是为了方便柯里化。函数`propRole`则是指定读取`role`属性，下面是它的用法（查看[完整代码](http://jsbin.com/nevuje/edit?js,console)）。
 
 ```javascript
 var isWorker = s => s === 'worker';
@@ -142,7 +140,7 @@ getWorkers(data)
 
 ## 五、Pointfree 的示例一
 
-下面，我们来看一个实例。
+下面，我们来看一个示例。
 
 ```javascript
 var str = 'Lorem ipsum dolor sit amet consectetur adipiscing elit';
@@ -166,7 +164,8 @@ var getLengthArr = arr => R.map(getLength, arr);
 var getBiggerNumber = (a, b) => a > b ? a : b;
 
 // 返回最大的一个数字
-var findBiggestNumber = arr => R.reduce(getBiggerNumber, 0, arr);
+var findBiggestNumber = 
+  arr => R.reduce(getBiggerNumber, 0, arr);
 ```
 
 然后，把基本运算合成为一个函数（查看[完整代码](http://jsbin.com/qusohax/edit?js,console)）。
@@ -202,7 +201,7 @@ var getLongestWordLength = R.pipe(
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017031207.png)
 
-现在要求是，找到并返回用户 Scott 的所有未完成任务，并按到期日期升序排列。
+现在要求是，找到用户 Scott 的所有未完成任务，并按到期日期升序排列。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017031208.png)
 
@@ -225,7 +224,9 @@ var getIncompleteTaskSummaries = function(membername) {
 };
 ```
 
-上面代码中，所有的数据处理都是同步的，因此还可以改进，把各个`then`里面的方法合成起来（查看[完整代码](http://jsbin.com/gexeme/edit?js,console)）。
+上面代码已经清晰很多了。
+
+另一种写法是，把各个`then`里面的函数合成起来（查看[完整代码](http://jsbin.com/gexeme/edit?js,console)）。
 
 ```javascript
 // 提取 tasks 属性
