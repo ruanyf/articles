@@ -4,6 +4,8 @@
 
 本文介绍两个基本术语：`reduce`和`transduce`。它们非常重要，也非常有用。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017031801.png)
+
 ## 一、reduce 的用法
 
 `reduce`是一种数组运算，通常用于将数组的所有成员“累积”为一个值。
