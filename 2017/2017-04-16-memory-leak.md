@@ -1,4 +1,4 @@
-# JavaScript 的内存泄露教程
+# JavaScript 内存泄露教程
 
 ## 一、什么是内存泄露？
 
