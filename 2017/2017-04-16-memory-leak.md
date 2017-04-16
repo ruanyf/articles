@@ -1,10 +1,12 @@
-# JavaScript 的内存泄露占用
+# JavaScript 的内存泄露教程
 
 ## 一、什么是内存泄露？
 
 程序的运行需要内存。只要程序提出要求，操作系统或者运行时（runtime）就必须供给内存。
 
 对于持续运行的服务进程（daemon），必须及时释放不再用到的内存。否则，内存占用越来越高，轻则影响系统性能，重则导致进程崩溃。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017041701-1.png)
 
 不再用到的内存，没有及时释放，就叫做内存泄露（memory leak）。
 
@@ -28,6 +30,8 @@ free(buffer);
 垃圾回收机制怎么知道，哪些内存不再需要呢？
 
 最常使用的方法叫做[“引用计数”](https://en.wikipedia.org/wiki/Reference_counting)（reference counting）：语言引擎有一张“引用表”，保存了内存里面所有的资源（通常是各种值）的引用次数。如果一个值的引用次数是`0`，就表示这个值不再用到了，因此可以将这块内存释放。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017041703.png)
 
 上图中，左下角的两个值，没有任何引用，所以可以释放。
 
@@ -62,6 +66,8 @@ arr = null;
 
 Chrome 浏览器查看内存占用，按照以下步骤操作。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017041704.png)
+
 > 1. 打开开发者工具，选择 Timeline 面板
 > 2. 在顶部的`Capture`字段里面勾选 Memory
 > 3. 点击左上角的录制按钮。
@@ -70,7 +76,11 @@ Chrome 浏览器查看内存占用，按照以下步骤操作。
 
 如果内存占用基本平稳，接近水平，就说明不存在内存泄露。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017041705.png)
+
 反之，就是内存泄露了。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017041706.png)
 
 ### 3.2 命令行
 
@@ -86,6 +96,8 @@ console.log(process.memoryUsage());
 
 `process.memoryUsage`返回一个对象，包含了 Node 进程的内存占用信息。该对象包含四个字段，单位是字节，[含义](http://stackoverflow.com/questions/12023359/what-do-the-return-values-of-node-js-process-memoryusage-stand-for)如下。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017041702.png)
+
 > - rss（resident set size）：所有内存占用，包括指令区和堆栈。
 > - heapTotal：“堆”占用的内存，包括用到的和没用到的。
 > - heapUsed：用到的堆的部分。
@@ -100,6 +112,8 @@ console.log(process.memoryUsage());
 最好能有一种方法，在新建引用的时候就声明，哪些引用必须手动清除，哪些引用可以忽略不计，当其他引用消失以后，垃圾回收机制就可以释放内存。这样就能大大减轻程序员的负担，你只要清除主要引用就可以了。
 
 ES6 考虑到了这一点，推出了两种新的数据结构：[WeakSet](http://es6.ruanyifeng.com/#docs/set-map#WeakSet) 和 [WeakMap](http://es6.ruanyifeng.com/#docs/set-map#WeakMap)。它们对于值的引用都是不计入垃圾回收机制的，所以名字里面才会有一个“Weak”，表示这是弱引用。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017041707.jpg)
 
 下面以 WeakMap 为例，看看它是怎么解决内存泄露的。
 
