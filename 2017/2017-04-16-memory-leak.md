@@ -96,7 +96,7 @@ console.log(process.memoryUsage());
 
 `process.memoryUsage`返回一个对象，包含了 Node 进程的内存占用信息。该对象包含四个字段，单位是字节，[含义](http://stackoverflow.com/questions/12023359/what-do-the-return-values-of-node-js-process-memoryusage-stand-for)如下。
 
-![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017041702.png)
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017041702-1.png)
 
 > - rss（resident set size）：所有内存占用，包括指令区和堆栈。
 > - heapTotal：“堆”占用的内存，包括用到的和没用到的。
