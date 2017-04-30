@@ -4,7 +4,7 @@
 
 命令行由 Shell 提供。各种命令通过 Shell，传递给操作系统的内核。学习命令行就是在学习 Shell。
 
-Shell 有好几种，目前最常用是 [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell) 和 [zsh](https://en.wikipedia.org/wiki/Z_shell)。但是，在我看来，它们都不如 [Fish Shell](http://fishshell.com/) 好用。
+Shell 有好几种，目前最常用是 [Bash](https://en.wikipedia.org/wiki/Bash_&lpar;Unix_shell&rpar;) 和 [zsh](https://en.wikipedia.org/wiki/Z_shell)。但是，在我看来，它们都不如 [Fish Shell](http://fishshell.com/) 好用。
 
 五年前，我第一次尝试 Fish，感到很惊艳，一直用到现在。本文介绍 Fish 的主要特点，希望你也来尝试它。
 
