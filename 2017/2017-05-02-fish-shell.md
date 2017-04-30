@@ -4,15 +4,21 @@
 
 命令行由 Shell 提供。各种命令通过 Shell，传递给操作系统的内核。学习命令行就是在学习 Shell。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050201.jpg)
+
 Shell 有好几种，目前最常用是 [Bash](https://en.wikipedia.org/wiki/Bash_&lpar;Unix_shell&rpar;) 和 [zsh](https://en.wikipedia.org/wiki/Z_shell)。但是，在我看来，它们都不如 [Fish Shell](http://fishshell.com/) 好用。
 
 五年前，我第一次尝试 Fish，感到很惊艳，一直用到现在。本文介绍 Fish 的主要特点，希望你也来尝试它。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050202.jpg)
 
 ## 一、简介
  
 Fish 是“the <span style="font-weight: 700;">f</span>riendly <span style="font-weight: 700;">i</span>nteractive <span style="font-weight: 700;">sh</span>ell”的简称，最大特点就是方便易用。很多其他 Shell 需要配置才有的功能，Fish 默认提供，不需要任何配置。
 
 如果你想拥有一个方便好用的 Shell，又不想学习一大堆语法，或者花费很多时间配置，那么你一定要尝试一下 Fish。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050204.png)
 
 ## 二、安装
 
@@ -228,5 +234,7 @@ $ fish_config
 ```
 
 输入上面的命令以后，浏览器就会自动打开本机的 8000 端口，用户可以在网页上对 Fish 进行配置，比如选择提示符和配色主题。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050203.png)
 
 （正文完）
