@@ -12,6 +12,8 @@ Shell 有好几种，目前最常用是 [Bash](https://en.wikipedia.org/wiki/Bas
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050202.jpg)
 
+感谢[优达学城](https://www.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)对本文提供赞助，结尾处有他们的课程推荐。
+
 ## 一、简介
  
 Fish 是“the <span style="font-weight: 700;">f</span>riendly <span style="font-weight: 700;">i</span>nteractive <span style="font-weight: 700;">sh</span>ell”的简称，最大特点就是方便易用。很多其他 Shell 需要配置才有的功能，Fish 默认提供，不需要任何配置。
@@ -238,3 +240,35 @@ $ fish_config
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050203.png)
 
 （正文完）
+
+---
+
+下面是推广时间。
+
+最近，Angela Zhu 在她的公众号发文[《怎样让自己成为不可替代的程序员？》](http://mp.weixin.qq.com/s?timestamp=1493558063&src=3&ver=1&signature=Da2dsb9cqdeBndI-g*22yHoy-*Kp3rcbntqOq9J8yOMlEqV3YTi8qmnYLzu-Hgt*uZxDvzQ25fXmJh5k3Uov371zC88SRl0K6LtDCefXziV8Visa5NbwKFFZCzdoHxvB7yR4vhqvth*B*gRwgiLkRIotEKmlvXWI09u1Xpi49Qk=)。
+
+> “前些日子，突发奇想，在我的小密圈里提了这样一个问题：‘未来，什么样的程序员才是不可替代的?’”
+
+曹政回复了一篇[《当我们追求不可替代……》](http://mp.weixin.qq.com/s?src=3&timestamp=1493558035&ver=1&signature=ACqPIwmLy3Q7-F46jJ38fJz1o4qvq4nnvZAtlspMrCweJQqfVPpA6HcdfCAJ72oGUcv2rQxImZ9gJZPWdzkVoOTYZQuUlzSlknoKfhRHJZ0Ds5BN4xgcYGgqifgH0BZ-Q4UkXPAHPE5A8KBNl50D0a8IOgfuOs8*SPMIpWAPfPQ=)。
+
+> “从我的历史来说，我一直追寻的是让自己可替代，不论是去尽可能培养年轻的接班人，还是外部延聘比我更出色的技术高手。如果没有人可以接手我的系统，我设计的平台，我才会觉得紧张和不安。”
+
+这个讨论涉及了很多问题。
+
+> - 个人如何保持竞争力
+> - 公司如何选人
+> - 如何留住人才
+
+这些问题没有标准答案。但是，有一点是肯定的：程序员必须勇于尝试、开拓和创新，在挑战和失败面前不放弃。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050205.jpg)](https://cn.udacity.com/course/machine-learning-engineer-nanodegree--nd009-cn-advanced/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)
+
+[优达学城](https://www.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)帮助你形成自己的竞争力。[《机器学习（纳米学位）》](https://cn.udacity.com/course/machine-learning-engineer-nanodegree--nd009-cn-advanced/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)课程的报名本周四（5月4日）截止，主讲人是大名鼎鼎的 [Sebastian Thrun](https://en.wikipedia.org/wiki/Sebastian_Thrun)，他是谷歌无人驾驶汽车项目的奠基人。感兴趣的朋友不要错过，如果试听不满意，一周内全额退款。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050206.jpg)](https://cn.udacity.com/course/machine-learning-engineer-nanodegree--nd009-cn-basic/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)
+
+优达学城还有一门[《机器学习入门课程》](https://cn.udacity.com/course/machine-learning-engineer-nanodegree--nd009-cn-basic/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)，重点讲授编程基础和数学基础（线性代数、微积分和统计学），适合不知道如何入门的年轻朋友。
+
+另外，还有[《无人驾驶汽车》](https://cn.udacity.com/drive/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)、[《人工智能》](https://cn.udacity.com/ai/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)、[《机器人工程师》](https://cn.udacity.com/robotics/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)等课程，大家也可以关注。
+
+（完）
