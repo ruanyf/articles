@@ -261,9 +261,11 @@ $ fish_config
 
 这些问题没有标准答案。但是，有一点是肯定的：程序员必须勇于尝试、开拓和创新，在挑战和失败面前不放弃。
 
+[优达学城](https://www.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)帮助你形成自己的竞争力。
+
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050205.jpg)](https://cn.udacity.com/course/machine-learning-engineer-nanodegree--nd009-cn-advanced/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)
 
-[优达学城](https://www.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)帮助你形成自己的竞争力。[《机器学习（纳米学位）》](https://cn.udacity.com/course/machine-learning-engineer-nanodegree--nd009-cn-advanced/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)课程的报名本周四（5月4日）截止，主讲人是大名鼎鼎的 [Sebastian Thrun](https://en.wikipedia.org/wiki/Sebastian_Thrun)，他是谷歌无人驾驶汽车项目的奠基人。感兴趣的朋友不要错过，如果试听不满意，一周内全额退款。
+[《机器学习（纳米学位）》](https://cn.udacity.com/course/machine-learning-engineer-nanodegree--nd009-cn-advanced/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)课程的报名本周四（5月4日）截止，主讲人是大名鼎鼎的 [Sebastian Thrun](https://en.wikipedia.org/wiki/Sebastian_Thrun)，他是谷歌无人驾驶汽车项目的奠基人。感兴趣的朋友不要错过，如果试听不满意，一周内全额退款。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050206.jpg)](https://cn.udacity.com/course/machine-learning-engineer-nanodegree--nd009-cn-basic/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)
 
