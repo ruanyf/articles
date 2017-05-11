@@ -344,6 +344,15 @@ $ git merge develop
 
 Git合并所采用的方法是Three-way merge，及合并的时候除了要合併的兩個檔案，還加上它们共同的父节点。这样可以大大減少人為處理 conflict 的情況。如果采用two-way merge，則只用兩個檔案進行合併（svn默认就是这种合并方法。）
 
+## git pull
+
+```bash
+# 合并指定分支到当前分支
+$ git pull . topic/branch
+```
+
+即使当前分支有没有 commit 的变动，也可以使用`git pull`从远程拉取分支。
+
 ## git rebase
 
 git rebase 将当前分支移植到指定分支或指定commit之上。
@@ -395,7 +404,7 @@ $ git remote add bravo ../bravo
 
 ## git reset
 
-将文件从暂存区移除。
+`git reset`将文件从暂存区移除。
 
 ```bash
 # 用法
@@ -403,6 +412,28 @@ $ git reset <commitID> <文件名>
 
 # 例子
 $ git reset HEAD lib/foo.rb
+```
+
+参数
+
+- soft: 不改变工作区和缓存区，只移动 HEAD 到指定 commit。
+- mixed: 只改变缓存区，不改变工作区。这是默认参数，通常用于撤销`git add`。
+- hard：改变工作区和暂存区到指定 commit。该参数等同于重置，可能会引起数据损失。`git reset --hard`等同于`git reset --hard HEAD`。
+
+```bash
+# Undo add
+$ git reset
+
+# Undo a commit，不重置工作区和缓存区
+# 回到 HEAD 之前的那个 commit
+$ git reset --soft HEAD^
+
+# Undo a commit，重置工作区和缓存区
+# 连续撤销三个 commit：HEAD, HEAD^, and HEAD~2
+$ git reset --hard HEAD~3
+
+# 从暂存区移除指定文件，但不改变工作区中的该文件
+$ git reset -- frotz.c
 ```
 
 ## git revert
