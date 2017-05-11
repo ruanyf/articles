@@ -12,7 +12,7 @@ Shell 有好几种，目前最常用是 [Bash](https://en.wikipedia.org/wiki/Bas
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050202.jpg)
 
-感谢[优达学城](https://www.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)对本文提供赞助，结尾处有他们的课程推荐。
+感谢[优达学城](https://cn.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)对本文提供赞助，结尾处有他们的课程推荐。
 
 ## 一、简介
  
@@ -26,15 +26,15 @@ Fish 是“the <span style="font-weight: 700;">f</span>riendly <span style="font
 
 Ubuntu 和 Debian 的安装方法。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ sudo apt-get install fish
-```
+</code></pre></blockquote>
 
 Mac 的安装方法。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ brew install fish
-```
+</code></pre></blockquote>
 
 其他系统的安装请参考[官方网站](http://fishshell.com/#platform_tabs)。
 
@@ -42,17 +42,17 @@ $ brew install fish
 
 安装完成后，就可以启动 Fish。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ fish
-```
+</code></pre></blockquote>
 
 由于 Fish 的语法与 Bash 有很大差异，Bash 脚本一般不兼容。因此，我建议不要将 Fish 设为默认 Shell，而是每次手动启动它。
 
 使用过程中，如果需要帮助，可以输入`help`命令。浏览器就会自动打开，显示在线文档。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ help
-```
+</code></pre></blockquote>
 
 ## 四、彩色显示
 
@@ -103,7 +103,7 @@ $ g<span style="color: gray;">it commit -m "feat: first commit"</span>
 
 如果有多个可能的结果，Fish 会把它们都列出，还带有简要介绍。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ vi[按下 Tab 键]
 
 vi (Executable link, 2.7MB)
@@ -111,13 +111,13 @@ view (Vi IMproved, 一个程序员的文本编辑器)
 viewer.py (Executable, 967B)
 viewres  (Graphical class browser for Xt)
 …and 12 more rows
-```
+</code></pre></blockquote>
 
 这时，再按一次`tab`，就可以在这些命令之中选择。
 
 除了补全命令，Fish 还可以补全参数。比如，`ls`命令的`-l`参数后面按下`Tab`键，就会显示可以连用的其他参数。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ ls -l[按下 Tab 键]
 
 -l1  (List one file per line)
@@ -125,7 +125,7 @@ $ ls -l[按下 Tab 键]
 -la  (Show hidden)
 -lB  (Ignore files ending with ~)
 …and 16 more rows```
-```
+</code></pre></blockquote>
 
 Fish 还可以自动补全 Git 分支。
 
@@ -139,7 +139,7 @@ Fish 的语法非常自然，一眼就能看懂。
 
 `if`语句。
 
-```bash
+<blockquote><pre><code class="language-bash">
 if grep fish /etc/shells
     echo Found fish
 else if grep bash /etc/shells
@@ -147,11 +147,11 @@ else if grep bash /etc/shells
 else
     echo Got nothing
 end
-```
+</code></pre></blockquote>
 
 `switch`语句。
 
-```bash
+<blockquote><pre><code class="language-bash">
 switch (uname)
 case Linux
     echo Hi Tux!
@@ -162,43 +162,43 @@ case FreeBSD NetBSD DragonFly
 case '*'
     echo Hi, stranger!
 end
-```
+</code></pre></blockquote>
 
 `while`循环。
 
-```bash
+<blockquote><pre><code class="language-bash">
 while true
     echo "Loop forever"
 end
-```
+</code></pre></blockquote>
 
 `for`循环。
 
-```bash
+<blockquote><pre><code class="language-bash">
 for file in *.txt
     cp $file $file.bak
 end
-```
+</code></pre></blockquote>
 
 ## 八、函数
 
 Fish 的函数用来封装命令，或者为现有的命令起别名。
 
-```bash
+<blockquote><pre><code class="language-bash">
 function ll
     ls -lhG $argv
 end
-```
+</code></pre></blockquote>
 
 上面代码定义了一个`ll`函数。命令行执行这个函数以后，就可以用`ll`命令替代`ls -lhG`。其中，变量`$argv`表示函数的参数。
 
 下面是另一个例子。
 
-```bash
+<blockquote><pre><code class="language-bash">
 function ls
     command ls -hG $argv
 end
-```
+</code></pre></blockquote>
 
 上面的代码重新定义`ls`命令。注意，函数体内的`ls`之前，要加上`command`，否则会因为无限循环而报错。
 
@@ -206,7 +206,7 @@ end
 
 `fish_prompt`函数用于定义命令行提示符（prompt）。
 
-```bash
+<blockquote><pre><code class="language-bash">
 function fish_prompt
     set_color purple
     date "+%m/%d/%y"
@@ -214,14 +214,14 @@ function fish_prompt
     echo (pwd) '>'
     set_color normal
 end
-```
+</code></pre></blockquote>
 
 执行上面的函数以后，你的命令行提示符就会变成下面这样。
 
-```bash
+<blockquote><pre><code class="language-bash">
 02/06/13
 /home/tutorial > 
-```
+</code></pre></blockquote>
 
 ## 十、配置
 
@@ -231,9 +231,9 @@ Fish 的配置文件是`~/.config/fish/config.fish`，每次 Fish 启动，就�
 
 Fish 还提供 Web 界面配置该文件。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ fish_config
-```
+</code></pre></blockquote>
 
 输入上面的命令以后，浏览器就会自动打开本机的 8000 端口，用户可以在网页上对 Fish 进行配置，比如选择提示符和配色主题。
 
@@ -261,7 +261,7 @@ $ fish_config
 
 这些问题没有标准答案。但是，有一点是肯定的：程序员必须勇于尝试、开拓和创新，在挑战和失败面前不放弃。
 
-[优达学城](https://www.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=ruanyf1st)帮助你形成自己的竞争力。
+[优达学城](https://cn.udacity.com/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)帮助你形成自己的竞争力。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017050205.jpg)](https://cn.udacity.com/course/machine-learning-engineer-nanodegree--nd009-cn-advanced/?utm_source=ruanyf&utm_medium=referral&utm_campaign=MLND02)
 
