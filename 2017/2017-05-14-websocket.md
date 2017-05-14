@@ -256,12 +256,100 @@ socket.addEventListener("error", function(event) {
 
 ## 五、服务端的实现
 
-https://github.com/theturtle32/WebSocket-Node
+WebSocket 服务器的实现，可以查看维基百科的[列表](https://en.wikipedia.org/wiki/Comparison_of_WebSocket_implementations)。
 
+常用的 Node 实现有以下三种。
 
+- [µWebSockets](https://github.com/uWebSockets/uWebSockets)
+- [Socket.IO](http://socket.io/)
+- [WebSocket-Node](https://github.com/theturtle32/WebSocket-Node)
 
-## 参考链接
+## 六、WebSocketd
+
+最后，我要推荐一款非常特别的 WebSocket 服务器实现：[Websocketd](http://websocketd.com)。
+
+它的最大特点就是，后台脚本不限语言，标准输入（stdin）就是 WebSocket 的输入，标准输出（stdout）就是 WebSocket 的输出。
+
+举例来说，下面是一个 Bash 脚本`counter.sh`。
+
+```bash
+#!/bin/bash
+
+echo 1
+sleep 1
+
+echo 2
+sleep 1
+
+echo 3
+```
+
+命令行下运行这个脚本，会输出1、2、3，每个数字之间间隔1秒。
+
+```bash
+$ bash ./counter.sh
+1
+2
+3
+```
+
+现在，启动`websocketd`，指定这个脚本作为服务。
+
+```bash
+$ websocketd --port=8080 bash ./counter.sh
+```
+
+上面的命令会启动一个 WebSocket 服务器，端口是`8080`。每当客户端请求这个服务器，就会执行`counter.sh`脚本，并将它的输出发送给客户端。
+
+```javascript
+var ws = new WebSocket('ws://localhost:8080/');
+
+ws.onmessage = function(event) {
+  console.log(event.data);
+};
+```
+
+上面是客户端的 JavaScript 代码，运行之后会在控制台依次输出1、2、3。
+
+有了它，就可以很方便地将命令行的输出，发给浏览器。
+
+```bash
+$ websocketd --port=8080 ls
+```
+
+上面的命令会执行`ls`命令，从而将当前目录的内容，发给浏览器。使用这种方式实时监控服务器，简直是轻而易举（[代码](https://github.com/joewalnes/web-vmstats)）。
+
+更多的用法可以参考[官方示例](https://github.com/joewalnes/websocketd/tree/master/examples/bash)。
+
+> - Bash 脚本[读取客户端输入](https://github.com/joewalnes/websocketd/blob/master/examples/bash/greeter.sh)的例子
+> - 五行代码实现一个最简单的[聊天服务器](https://github.com/joewalnes/websocketd/blob/master/examples/bash/chat.sh)
+
+websocketd 的实质，就是命令行的 WebSocket 代理。只要命令行可以执行的程序，都可以通过它与浏览器进行 WebSocket 通信。下面是一个 Node 实现的回声服务[`greeter.js`](https://github.com/joewalnes/websocketd/blob/master/examples/nodejs/greeter.js)。
+
+```javascript
+process.stdin.setEncoding('utf8');
+
+process.stdin.on('readable', function() {
+  var chunk = process.stdin.read();
+  if (chunk !== null) {
+    process.stdout.write('data: ' + chunk);
+  }
+});
+```
+
+启动这个脚本的命令如下。
+
+```bash
+$ websocketd --port=8080 node ./greeter.js
+```
+
+官方仓库还有其他[各种语言](https://github.com/joewalnes/websocketd/tree/master/examples)的例子。
+
+ 
+## 七、参考链接
 
 - [How to Use WebSockets](http://cjihrig.com/blog/how-to-use-websockets/)
 - [WebSockets - Send & Receive Messages](https://www.tutorialspoint.com/websockets/websockets_send_receive_messages.htm)
 - [Introducing WebSockets: Bringing Sockets to the Web](https://www.html5rocks.com/en/tutorials/websockets/basics/)
+
+（完）
