@@ -38,7 +38,7 @@ hello world
 {
   "name": "hello",
   "bin": {
-    "hello": "hello"
+    "hello": "./hello.js"
   }
 }
 ```
@@ -46,7 +46,7 @@ hello world
 然后执行 npm link 命令。
 
 ```bash
-$ npm link
+$ sudo npm link
 ```
 
 现在再执行 hello ，就不用输入路径了。
