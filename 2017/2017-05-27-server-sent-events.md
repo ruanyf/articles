@@ -2,6 +2,8 @@
 
 服务器向浏览器推送信息，除了 WebSocket，还有一种方法：Server-Sent Events（以下简称 SSE）。本文介绍它的用法。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017052701.png)
+
 ## 一、SSE 的本质
 
 严格地说，HTTP 协议无法做到服务器主动推送信息。但是，有一种变通方法，就是服务器向客户端声明，接下来要发送的是流信息（streaming）。
@@ -15,6 +17,8 @@ SSE 就是利用这种机制，使用流信息向浏览器推送信息。它基�
 SSE 与 WebSocket 作用相似，都是建立浏览器与服务器之间的通信渠道，然后服务器向浏览器推送信息。
 
 总体来说，WebSocket 更强大和灵活。因为它是全双工通道，可以双向通信；SSE 是单向通道，只能服务器向浏览器发送，因为流信息本质上就是下载。如果浏览器向服务器发送信息，就变成了另一次 HTTP 请求。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017052702.jpg)
 
 但是，SSE 也有自己的优点。
 
