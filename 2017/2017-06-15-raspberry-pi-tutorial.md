@@ -6,7 +6,7 @@
 
 本文根据我的亲身经验，介绍如何从零开始，搭建一个树莓派服务器，控制 LED 灯。你会看到，树莓派玩起来实在很容易。
 
-我要感谢 [100Offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng) 对我提供赞助。[100Offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng) 是国内第一流的人力资源服务网站，本文结尾有他们的[简介](#100offer)，最近想换工作的朋友可以[看一下](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng)。
+我要感谢 [100offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng) 对我提供赞助。[100offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng) 是国内第一流的人力资源服务网站，本文结尾有他们的[简介](#100offer)，最近想换工作的朋友可以[看一下](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng)。
 
 ## 一、型号
 
@@ -300,12 +300,12 @@ $ curl http://localhost:8080
 
 <a id="100offer"></a>
 
-下面是推广时间，向大家推荐求职就业的好帮手——[100Offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng)。
+下面是推广时间，向大家推荐求职就业的好帮手——[100offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng)。
 
-如果你对现在工作不甚满意，希望寻找更好的职位，或者你已经有了很多工作邀请，感到无所适从，不知道哪个最合适自己，请尝试一下 [100Offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng)。它能让你节省精力，从海量机会中找到最适合自己的那个。
+如果你对现在工作不甚满意，希望寻找更好的职位，或者你已经有了很多工作邀请，感到无所适从，不知道哪个最合适自己，请尝试一下 [100offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng)。它能让你节省精力，从海量机会中找到最适合自己的那个。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061520.png)](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng)
 
-[100Offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng) 会对平台上的人才和企业进行严格筛选，让“最好的人才”和“最好的公司”相遇。点击[这里](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng)注册，就可以收获 5～10 个满足你要求的好机会。
+[100offer](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng) 会对平台上的人才和企业进行严格筛选，让“最好的人才”和“最好的公司”相遇。点击[这里](https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&utm_medium=display&utm_campaign=ruanyifeng_20170615&utm_content=find_new_job&campaign_code=ruanyifeng)注册，提交资料并通过网站对您的评估和配对后，就可以收获 5～10 个满足你要求的好机会。
 
 （完）
