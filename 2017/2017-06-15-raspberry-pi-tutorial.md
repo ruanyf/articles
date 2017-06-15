@@ -2,6 +2,8 @@
 
 [树莓派](https://www.raspberrypi.org/)（Raspberry Pi）是学习计算机知识、架设服务器的好工具，价格低廉，可玩性高。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061501.png)
+
 本文根据我的亲身经验，介绍如何从零开始，搭建一个树莓派服务器，控制 LED 灯。你会看到，树莓派玩起来实在很容易。
 
 ## 一、型号
@@ -10,7 +12,11 @@
 
 （1）Raspberry Pi 3代 B 型 
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061502.jpg)
+
 （2）Raspberry Pi zero （含 zero w）
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061503.jpg)
 
 虽然后者便宜，但是少了许多接口（比如只有一个 USB 口），CPU 和内存都比较低，配件也少，因此推荐购买第3代的 B 型。以下都针对这个型号，但大部分内容对 zero 也适用。
 
@@ -22,19 +28,27 @@
 
 Micro USB 接口的手机充电器，就可以充当电源，但输出必须是 5V 电压、至少 2A 电流。充电宝当电源也没问题。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061504.jpg)
+
 （2）Micro SD 卡
 
 树莓派不带硬盘，Micro SD 卡就是硬盘。最小容量8G，推荐使用16G和32G的卡。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061506.jpg)
 
 （3）显示器
 
 树莓派有 HDMI 输出，显示器必须有该接口。如果有 HDMI 转 VGA 的转接线，那么 VGA 显示器也可以。我用的是一个 7 寸的液晶监视器。
 
-不过，显示器只在安装系统时需要，后面可以 [SSH](http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html) 登录，就不需要了。
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061507.jpg)
 
+不过，显示器只在安装系统时需要，后面可以 [SSH](http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html) 登录，就不需要了。
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061507.jpg)
 （4）无线键鼠
 
 树莓派内置蓝牙，USB 或蓝牙的无线键鼠都可以用。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061508.jpg)
 
 就像显示器一样，如果树莓派已经装好系统，而且只当作服务器，无线键鼠也可以不配。
 
@@ -44,15 +58,27 @@ Micro USB 接口的手机充电器，就可以充当电源，但输出必须是 
 
 （1）面包板（一块）
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061509.jpg)
+
 （2）连接线（若干）
 
 注意，连接线必须一端是公头，一端是母头。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061510.jpg)
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061511.jpg)
+
 另外，最好也备一些两端都是公头的连接线。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061512.jpg)
 
 （3）LED 二极管（若干）
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061512.gif)
+
 （4）270欧姆的电阻（若干）
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061513.jpg)
 
 ## 四、安装系统
 
@@ -60,8 +86,11 @@ Micro USB 接口的手机充电器，就可以充当电源，但输出必须是 
 
 官方提供的操作系统是 [Raspbian](https://www.raspberrypi.org/downloads/raspbian/)，这是 Debian 系统的定制版。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061514.png)
+
 官方还提供一个安装器 [NOOBS](https://www.raspberrypi.org/documentation/installation/noobs.md)，建议通过它来安装 Raspbian，相对简单一点。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061515.png)
 
 > 1. [下载 NOOBS](https://www.raspberrypi.org/downloads/noobs/)。
 > 1. 格式化 Micro SD 卡为 FAT 格式（[操作指导](https://www.raspberrypi.org/documentation/installation/noobs.md)）。
@@ -69,6 +98,8 @@ Micro USB 接口的手机充电器，就可以充当电源，但输出必须是 
 > 1. 插入 Micro SD 卡到树莓派底部的卡槽，接通电源，启动系统。
 
 正常情况下，按照屏幕上的提示，一路回车，就能装好系统。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061516.png)
 
 ## 五、SSH 登录
 
@@ -120,18 +151,27 @@ v8.1.0
 
 树莓派提供了一组对外的 IO 接口，称为 GPIO（ 通用 IO 接口，General-purpose input/output）。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061518.png)
+
 它的 40 个脚的定义如下图。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061519.png)
+
 注意，左上角的第1针（3.3V）是一个方块，其他针脚都是圆的。将树莓派翻过来，背后可以看到 GPIO 有一个角是方的，通过这种方法就可以确认哪一个针眼是3.3V。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061516.jpg)
 
 通过 GPIO ，树莓派可以与其他电子元件连接。下面根据 Jonathan Perkin 的[文章](http://www.perkin.org.uk/posts/a-nodejs-powered-8-bit-cpu-part-one.html)，使用树莓派连接 LED 二极管。
 
 这里需要用到面包板。本质上，面包板就是几根导线，上面开了许多可以连到导线的孔。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061519.jpg)
 
 `+`极和`-`极是两根垂直的导线，标着`1`、`5`、`10`这些数字的行，每一行都是一根水平的导线。导线与导线之间互不连接，另外，面包板的左右两半也是互不连接的。
 
 然后，按照下面的图，将树莓派、面包板、LED 灯、电阻连起来。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061520.jpg)
 
 上图中，红色导线表示电流的正极，从 GPIO 的第1针（3.3V）连到面包板。黑色导线表示电流的负极，从 GPIO 第三排的第6针（ground）连到面包板。它们连到面包板的哪个眼并不重要，但必须保证能组成一个完整的电路（上图的箭头流向）。注意，LED 二极管也有正负极，长脚表示正极，短脚表示负极。电阻没有正负极。
 
