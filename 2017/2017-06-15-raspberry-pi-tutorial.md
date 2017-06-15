@@ -43,7 +43,7 @@ Micro USB 接口的手机充电器，就可以充当电源，但输出必须是 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061507.jpg)
 
 不过，显示器只在安装系统时需要，后面可以 [SSH](http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html) 登录，就不需要了。
-![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061507.jpg)
+
 （4）无线键鼠
 
 树莓派内置蓝牙，USB 或蓝牙的无线键鼠都可以用。
