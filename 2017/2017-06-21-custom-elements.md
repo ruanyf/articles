@@ -6,6 +6,8 @@
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062201.png)
 
+文章结尾还有一则 [React 培训消息](#support)（含 React Native），欢迎关注。
+
 ## 一、浏览器处理
 
 我们一般都使用标准的 HTML 元素。
@@ -206,5 +208,11 @@ customElements.define('my-new-element', MyNewElement);
 -  John Negoita, [Extending HTML by Creating Custom Tags](https://code.tutsplus.com/tutorials/extending-the-html-by-creating-custom-tags--cms-28622)
 - StackOverflow, [Are custom elements valid HTML5?](https://stackoverflow.com/questions/9845011/are-custom-elements-valid-html5)
 - Eric Bidelman, [Custom Elements v1: Reusable Web Components](https://developers.google.com/web/fundamentals/getting-started/primers/customelements)
+
+（正文完）
+
+==============================
+
+<a id="support"></a>
 
 （完）
