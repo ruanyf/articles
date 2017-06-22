@@ -1,6 +1,6 @@
 # HTML 自定义元素教程
 
-组件是 Web 开发的方向，现在的热点是 JavaScript 组件，但是未来更有希望的可能是 HTML 组件。
+组件是 Web 开发的方向，现在的热点是 JavaScript 组件，但是 HTML 组件未来可能更有希望。
 
 本文就介绍 HTML 组件的基础知识：自定义元素（custom elements）。
 
