@@ -1,9 +1,12 @@
 # HTML 自定义元素教程
 
+组件是 Web 开发的方向，现在的热点是 JavaScript 组件，但是未来更有希望的可能是 HTML 组件。
+
+本文就介绍 HTML 组件的基础知识：自定义元素（custom elements）。
 
 ## 一、浏览器处理
 
-开发网页时，一般都使用标准的 HTML 元素。
+我们一般都使用标准的 HTML 元素。
 
 ```html
 <p>Hello World</p>
@@ -11,7 +14,7 @@
 
 上面代码中，`<p>`就是标准的 HTML 元素。
 
-如果使用非标准的自定义元素（custom element），会有什么结果？
+如果使用非标准的自定义元素，会有什么结果？
 
 ```html
 <greeting>Hello World</greeting>
@@ -101,13 +104,13 @@ tabs instanceof HTMLElement // true
 </article>
 ```
 
-HTML imports 的更多用法可以参考教程（[1](https://www.html5rocks.com/en/tutorials/webcomponents/imports/)，[2](https://www.webcomponents.org/community/articles/introduction-to-html-imports)）。不过，目前只有 Chrome 浏览器支持这个功能。
+HTML imports 的更多用法可以参考教程（[1](https://www.html5rocks.com/en/tutorials/webcomponents/imports/)，[2](https://www.webcomponents.org/community/articles/introduction-to-html-imports)）。目前只有 Chrome 浏览器支持这个语法。
 
 ## 三、Custom Elements 标准
 
-HTML5 标准规定了自定义元素是合法的。然后，W3C 就为自定义元素制定了一个单独的 [Custom Elements 标准](https://w3c.github.io/webcomponents/spec/custom/#custom-elements)。它与其他三个标准放在一起—— HTML Imports，HTML Template、Shadow DOM——统称为 [Web Components](https://www.w3.org/standards/techs/components#w3c_all) 规范。
+HTML5 标准规定了自定义元素是合法的。然后，W3C 就为自定义元素制定了一个单独的 [Custom Elements 标准](https://w3c.github.io/webcomponents/spec/custom/#custom-elements)。
 
-目前，该标准只有 Chrome 浏览器[支持](http://caniuse.com/#feat=custom-elements)。
+它与其他三个标准放在一起—— HTML Imports，HTML Template、Shadow DOM——统称为 [Web Components](https://www.w3.org/standards/techs/components#w3c_all) 规范。目前，这个规范只有 Chrome 浏览器[支持](http://caniuse.com/#feat=custom-elements)。
 
 Custom Elements 标准对自定义元素的名字做了[限制](https://developers.google.com/web/fundamentals/getting-started/primers/customelements)。
 
@@ -122,7 +125,7 @@ xTabs instanceof HTMLUnknownElement // false
 xTabs instanceof HTMLElement // true
 ```
 
-Custom Elements 标准最大的作用就是，规定了自定义元素可以使用 ES6 的[`class`语法](http://es6.ruanyifeng.com/#docs/class)定义。
+Custom Elements 标准规定了，自定义元素可以使用 ES6 的[`class`语法](http://es6.ruanyifeng.com/#docs/class)定义。
 
 ```javascript
 // 定义一个 <my-element></my-element>
@@ -185,9 +188,10 @@ customElements.define('my-new-element', MyNewElement);
 
 今天的教程就到这里，更多用法请参考谷歌的[官方教程](https://developers.google.com/web/fundamentals/getting-started/primers/customelements)。
 
-## 参考链接
+## 四、参考链接
 
 -  John Negoita, [Extending HTML by Creating Custom Tags](https://code.tutsplus.com/tutorials/extending-the-html-by-creating-custom-tags--cms-28622)
-- [Are custom elements valid HTML5?](https://stackoverflow.com/questions/9845011/are-custom-elements-valid-html5)
+- StackOverflow, [Are custom elements valid HTML5?](https://stackoverflow.com/questions/9845011/are-custom-elements-valid-html5)
+- Eric Bidelman, [Custom Elements v1: Reusable Web Components](https://developers.google.com/web/fundamentals/getting-started/primers/customelements)
 
 （完）
