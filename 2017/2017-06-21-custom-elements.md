@@ -219,7 +219,7 @@ customElements.define('my-new-element', MyNewElement);
 
 自从我写了[《React 技术栈系列教程》](http://www.ruanyifeng.com/blog/2016/09/react-technology-stack.html)以后，有两种反馈：一种是觉得内容不够完整深入，希望有更详细的介绍，另一种是要求补上 React Native。对此我也没办法，精力有限，无法持续投入，只能推荐大家自己去看官方文档。
 
-昨天，[优达学城](http://cn.udacity.com/)的朋友联系我。他们与 [React Training](https://reacttraining.com/) 合作，正式推出了 [React 培训课程](http://cn.udacity.com/course/react-nanodegree--nd019/)，希望我帮忙推广。
+昨天，[优达学城](http://cn.udacity.com/)的朋友联系我。他们与 [React Training](https://reacttraining.com/) 合作，正式推出了 [React 培训课程](https://cn.udacity.com/course/react-nanodegree--nd019/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=ReactND01)，希望我帮忙推广。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062101.png)
 
@@ -231,7 +231,7 @@ customElements.define('my-new-element', MyNewElement);
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062105.png)
 
-整个课程与美国完全同步，一共持续4个月，分成三个环节。
+[整个课程](https://cn.udacity.com/course/react-nanodegree--nd019/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=ReactND01)与美国完全同步，一共持续4个月，分成三个环节。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062103.png)
 
@@ -241,6 +241,6 @@ customElements.define('my-new-element', MyNewElement);
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062104.png)
 
-想学 React / React Native 的同学可以考虑一下，真的是很好的课程，点击[这里](https://cn.udacity.com/course/react-nanodegree--nd019)了解详情，报名到6月27日截止。
+想学 React / React Native 的同学可以考虑一下，真的是很好的课程，点击[这里](https://cn.udacity.com/course/react-nanodegree--nd019/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=ReactND01)了解详情，报名到6月27日截止。
 
 （完）
