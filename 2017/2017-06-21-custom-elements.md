@@ -4,6 +4,8 @@
 
 本文就介绍 HTML 组件的基础知识：自定义元素（custom elements）。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062201.png)
+
 ## 一、浏览器处理
 
 我们一般都使用标准的 HTML 元素。
@@ -22,6 +24,8 @@
 
 上面代码中，`<greeting>`就是非标准元素，浏览器不认识它。这段代码的[运行结果](http://jsbin.com/rifozonomu/edit?html,output)是，浏览器照常显示`Hello World`，这说明浏览器并没有过滤这个元素。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062202.png)
+
 现在，为自定义元素加上样式。
 
 ```css
@@ -33,6 +37,8 @@ greeting {
 ```
 
 [运行结果](http://jsbin.com/dawenun/edit?html,css,output)如下。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062203.png)
 
 接着，使用脚本操作这个元素。
 
@@ -51,6 +57,8 @@ customTag('greeting', greetingHandler);
 ```
 
 [运行结果](http://jsbin.com/bisege/edit?html,js,output)如下。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062204.png)
 
 这说明，浏览器对待自定义元素，就像对待标准元素一样，只是没有默认的样式和行为。这种处理方式是写入[HTML5 标准](https://www.w3.org/TR/html5/infrastructure.html#extensibility-0)的。
 
@@ -112,9 +120,13 @@ HTML5 标准规定了自定义元素是合法的。然后，W3C 就为自定义�
 
 它与其他三个标准放在一起—— HTML Imports，HTML Template、Shadow DOM——统称为 [Web Components](https://www.w3.org/standards/techs/components#w3c_all) 规范。目前，这个规范只有 Chrome 浏览器[支持](http://caniuse.com/#feat=custom-elements)。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062205.jpg)
+
 Custom Elements 标准对自定义元素的名字做了[限制](https://developers.google.com/web/fundamentals/getting-started/primers/customelements)。
 
 > “自定义元素的名字必须包含一个破折号（`-`）所以`<x-tags>`、`<my-element>`和`<my-awesome-app>`都是正确的名字，而`<tabs>`和`<foo_bar>`是不正确的。这样的限制使得 HTML 解析器可以分辨那些是标准元素，哪些是自定义元素。”
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062206.jpg)
 
 注意，一旦名字之中使用了破折号，自定义元素就不是`HTMLUnknownElement`的实例了。
 
@@ -175,6 +187,7 @@ customTag('my-element', myElementHandler);
 
 [运行结果](http://jsbin.com/filejeq/edit?html,js,output)如下。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062207.png)
 
 ES6 Class 的一个好处是，可以很容易地写出继承类。
 
