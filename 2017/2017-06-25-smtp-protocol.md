@@ -1,16 +1,18 @@
 # 如何验证 Email 地址：SMTP 协议入门教程
 
-Email 是最常用的用户识别手段，通常需要验证地址的真实性。
+Email 是最常用的用户识别手段，常常需要验证地址的真实性。
 
 常用的方法是向该地址发出一封验证邮件，要求用户阅读或回复该邮件。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062501.png)
 
-但是很多时候（比如要搞一次营销活动），拿到的就是数据库里面成千上万的 Email 地址，不可能通过回复来确认真实性，这时该怎么办呢？
+但是很多时候（比如要搞邮件营销时），拿到的就是数据库里面成千上万的 Email 地址，不可能通过回复来确认真实性，这时该怎么办呢？
 
-答案就是使用 [SMTP 协议](http://baike.baidu.com/item/SMTP/175887?fromtitle=SMTP%E5%8D%8F%E8%AE%AE&fromid=421587)。
+答案就是使用 [SMTP 协议](http://baike.baidu.com/item/SMTP/175887?fromtitle=SMTP%E5%8D%8F%E8%AE%AE&fromid=421587)。本文将介绍如何通过它验证邮箱地址的真假。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062502.jpg)
+
+结尾处，还有一则移动端 H5 开发的[培训消息](#support)，欢迎关注。
 
 ## 一、SMTP 协议简介
 
@@ -175,3 +177,28 @@ QUIT
 - [Simple Mail Transfer Protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)
 
 （正文完）
+
+==============================
+
+<a id="support"></a>
+
+下面是推广时间，希望学习移动端开发的同学看过来。
+
+海棠学院作为一家专业的前端教育机构，此次推出[《前端技能+职业课》](http://apeclass.cn/article/267)大型公开课，介绍 H5 开发，为期三周。
+
+该课程将带领您一步一步学习移动端页面的开发，手把手教你做出下面的页面。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062503.png)![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062504.png)
+
+完整的课程大纲请参考[这里](http://apeclass.cn/article/267)。
+
+除了技术课程，还会有一次《前端开发流程、求职、职场》的公开课，由海棠学院创始人张小河主讲，帮助你了解前端工程师的市场现状和职业规划。
+
+> - 前端新手如何进入喜欢的公司？
+> - 公司真实的开发流程是怎么样的？
+> - 为什么看了 100G 的视频/资料，你也没有学好？
+> - 如何成为高年薪的前端工程师？
+
+这堂公开课是免费的，点击[这里](http://apeclass.cn/article/267)了解详情。
+
+（完）
