@@ -1,26 +1,31 @@
 # 如何验证 Email 地址：SMTP 协议入门教程
 
-Email 是最常用的用户识别手段，常常需要验证地址的真实性。
+Email 是最常用的用户识别手段。
 
-常用的方法是向该地址发出一封验证邮件，要求用户阅读或回复该邮件。
+开发者常常需要验证邮箱的真实性。一般的方法是，注册时向该邮箱发出一封验证邮件，要求用户点击邮件里面的链接。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062501.png)
 
-但是很多时候（比如要搞邮件营销时），拿到的就是数据库里面成千上万的 Email 地址，不可能通过回复来确认真实性，这时该怎么办呢？
+但是很多时候（比如要搞邮件营销时），拿到的是成千上万现成的 Email 地址，不可能通过回复确认真实性，这时该怎么办呢？
 
-答案就是使用 [SMTP 协议](http://baike.baidu.com/item/SMTP/175887?fromtitle=SMTP%E5%8D%8F%E8%AE%AE&fromid=421587)。本文将介绍如何通过它验证邮箱地址的真假。
+答案就是使用 [SMTP 协议](http://baike.baidu.com/item/SMTP/175887?fromtitle=SMTP%E5%8D%8F%E8%AE%AE&fromid=421587)。本文将介绍如何通过该协议验证邮箱的真假。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017062502.jpg)
 
-结尾处，还有一则移动端 H5 开发的[培训消息](#support)，欢迎关注。
+另外，结尾处还有一则移动端 H5 开发的[培训消息](#support)，欢迎关注。
 
 ## 一、SMTP 协议简介
 
-SMTP 是“简单邮件传输协议”（Simple Mail Transfer Protocol）的缩写，用来发送电子邮件，基于 TCP 协议。
+SMTP 是“简单邮件传输协议”（Simple Mail Transfer Protocol）的缩写，基于 TCP 协议，用来发送电子邮件。
 
 只要运行了该协议的服务器端（daemon），当前服务器就变为邮件服务器，可以接收电子邮件。
 
-验证一个 Email 邮箱的真假，可以直接询问它所在域名的 SMTP 服务器，有没有这个邮箱。如果服务器返回 250  或 251 状态码，邮箱就是真的；如果返回 5xx（500～599），就是假的。
+验证 Email 邮箱的基本思路如下。
+
+> 1. 找到邮箱所在域名的 SMTP 服务器
+> 2. 连接该服务器
+> 3. 询问有没有该邮箱
+> 4. 如果服务器返回 250  或 251 状态码，邮箱就是真的；如果返回 5xx（500～599），就是假的。
 
 注意，即使服务器确认邮箱是真的， 也不代表邮件一定会发送到该邮箱，更不代表用户一定会读到该邮件。
 
@@ -56,7 +61,9 @@ gmail.com	mail exchanger = 5 gmail-smtp-in.l.google.com.
 gmail.com	mail exchanger = 40 alt4.gmail-smtp-in.l.google.com.
 ```
 
-`gmail.com`是很大的邮件服务商，所以会有五条记录，一般的域名只有一条。如果这一步查不到 MX 记录，该邮箱肯定是假的。更多 DNS 的介绍，请参考[《DNS 原理入门》](http://www.ruanyifeng.com/blog/2016/06/dns.html)。
+`gmail.com`是很大的邮件服务商，所以会有多条记录，一般的域名只有一条。如果这一步查不到 MX 记录，该邮箱肯定是假的。
+
+除了自己执行`nslookup`，也可以使用线上服务（[1](https://mxtoolbox.com/)，[2](http://www.nmonitoring.com/show-mx-record.html)，[3](http://www.dnsqueries.com/en/mx-lookup.php)）。更多 DNS 的介绍，请参考[《DNS 原理入门》](http://www.ruanyifeng.com/blog/2016/06/dns.html)。
 
 ## 三、建立 TCP 连接
 
@@ -68,7 +75,7 @@ $ telent gmail-smtp-in.l.google.com 25
 $ nc gmail-smtp-in.l.google.com 25
 ```
 
-如果服务器返回`220`状态码，就表示连接成功。
+服务器返回`220`状态码，就表示连接成功。
 
 ```bash
 220 mx.google.com ESMTP f14si7006176pln.607 - gsmtp
@@ -78,9 +85,9 @@ $ nc gmail-smtp-in.l.google.com 25
 
 ## 四、HELO 命令和 EHLO 命令
 
-SMTP 协议规定，连接成功后，必须向邮件服务器通报连接的域名，也就是邮件将从哪里发来。
+SMTP 协议规定，连接成功后，必须向邮件服务器提供连接的域名，也就是邮件将从哪台服务器发来。
 
-假定我们从`mail@example.com`向`test@gmail.com`发送邮件，这里要通报的域名就是`example.com`。
+假定从`mail@example.com`向`test@gmail.com`发送邮件，这里要提供的域名就是`example.com`。
 
 ```bash
 HELO exampl.com
@@ -92,7 +99,7 @@ HELO exampl.com
 250 mx.google.com at your service
 ```
 
-`HELO`命令现在比较少用，一般都使用`EHLO`命令。
+不过，`HELO`命令现在比较少用，一般都使用`EHLO`命令。
 
 ```bash
 EHLO example.com
@@ -113,7 +120,7 @@ EHLO example.com
 
 ## 五、MAIL FROM 命令
 
-然后，连接者要使用`MAIL FROM`命令，向邮件服务器通报邮件的来源地址。
+然后，连接者要使用`MAIL FROM`命令，向邮件服务器提供邮件的来源邮箱。
 
 ```bash
 MAIL FROM:<mail@example.com>
@@ -182,7 +189,7 @@ QUIT
 
 <a id="support"></a>
 
-下面是推广时间，希望学习移动端开发的同学看过来。
+下面是推广时间，希望学习移动端 H5 开发的同学看过来。
 
 海棠学院作为一家专业的前端教育机构，此次推出[《前端技能+职业课》](http://apeclass.cn/article/267)大型公开课，介绍 H5 开发，为期三周。
 
@@ -192,7 +199,7 @@ QUIT
 
 完整的课程大纲请参考[这里](http://apeclass.cn/article/267)。
 
-除了技术课程，还会有一次《前端开发流程、求职、职场》的公开课，由海棠学院创始人张小河主讲，帮助你了解前端工程师的市场现状和职业规划。
+除了技术课程，还会有一次《前端开发流程、求职、职场》的公开课，由海棠学院创始人张小河主讲，帮助你了解前端工程师的就业市场和职业规划。
 
 > - 前端新手如何进入喜欢的公司？
 > - 公司真实的开发流程是怎么样的？
