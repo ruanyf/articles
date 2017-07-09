@@ -2,17 +2,17 @@
 
 ## 简介
 
-Nginx（发音engine x）是一个轻量级的开源HTTP服务器软件，可以用来取代Apache，或者与Apache配合使用。
+Nginx（发音/engine x/）是一个轻量级的开源 HTTP 服务器软件，可以用来取代 Apache，或者与 Apache 配合使用。
 
-它与Apache的区别在于：它的设计基于事件和异步操作，而Apache完全依赖线程。当访问量很大的时候，大量新增的线程 很快会耗尽内存，而基于事件的非阻塞设计能够轻松处理。
+它与 Apache 的区别在于：它的设计基于事件和异步操作，而 Apache 完全依赖线程。当访问量很大的时候，大量新增的线程 很快会耗尽内存，而基于事件的非阻塞设计能够轻松处理。
 
-Nginx的安装。
+Nginx 的安装。
 
 ```bash
 $ sudo apt-get install nginx
 ```
 
-重启 nginx 。
+重启 nginx。
 
 ```bash
 $ sudo service nginx restart
@@ -20,26 +20,83 @@ $ sudo service nginx restart
 $ nginx -s reload
 ```
 
-nginx有一个主进程和几个worker进程。有多少个CPU，就有多少个worker进程。每一个worker进程能够处理几千个连接。
+nginx 有一个主进程和几个 worker 进程。有多少个 CPU，就有多少个 worker 进程。每一个 worker 进程能够处理几千个连接。
 
 ```bash
 $ ps -ef --forest | grep nginx
 ```
 
-上面的命令可以查看所有nginx进程，一般是1个主进程，与CPU内核数对应的worker进程，1个cache manager 进程，1个cache loader进程。
+上面的命令可以查看所有 nginx 进程，一般是1个主进程，与 CPU 内核数对应的 worker 进程，1个 cache manager 进程，1个 cache loader 进程。
 
-nginx进程分工如下。
+nginx 进程分工如下。
 
 - 主进程：读取配置，绑定端口，创造子进程。
-- worker进程：执行实际任务的进程，包括处理网络请求，读取或写入硬盘，与上游服务器通信。
-- cache loader进程：将硬盘上的缓存读入内存，然后退出。
-- cache manager进程：周期性执行，从缓存清除过时的条目。
+- worker 进程：执行实际任务的进程，包括处理网络请求，读取或写入硬盘，与上游服务器通信。
+- cache loader 进程：将硬盘上的缓存读入内存，然后退出。
+- cache manager 进程：周期性执行，从缓存清除过时的条目。
 
-worker进程在创建时，根据配置文件初始化，并且留有多个socket用于与主进程通信。每当有新的网络请求，worker进程就会监听到事件，从而启动。
+worker 进程在创建时，根据配置文件初始化，并且留有多个socket用于与主进程通信。每当有新的网络请求，worker进程就会监听到事件，从而启动。
+
+### Web 根目录
+
+新建一个目录作为 Web 服务的根目录。
+
+```bash
+$ sudo mkdir -p /var/www/example.com/public_html
+$ sudo chown -R www-data:www-data /var/www/example.com/public_html
+$ sudo chmod 755 /var/www
+```
+
+然后，可以在该目录下写入一个首页文件`index.html`。
+
+```bash
+$ sudo nano /var/www/example.com/public_html/index.html
+```
+
+### 配置文件
+
+将默认的配置文件，拷贝成一份指定站点的配置文件。
+
+```bash
+$ sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/example.com
+```
+
+编辑该文件。
+
+```bash
+$ sudo nano /etc/nginx/sites-available/example.com
+```
+
+下面是一份简单的配置。
+
+```nginx
+server {
+        listen   80; ## listen for ipv4; this line is default and implied
+        #listen   [::]:80 default ipv6only=on; ## listen for ipv6
+
+        root /var/www/example.com/public_html;
+        index index.html index.htm;
+
+        # Make site accessible from http://localhost/
+        server_name example.com;
+}
+```
+
+最后，激活这个配置文件。
+
+```bash
+$ sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/example.com
+```
+
+然后，重启 nginx。
+
+```bash
+$ sudo service nginx restart
+```
 
 ### 内置模块
 
-nginx采用模块式设计，通过加载模块扩展功能。目前，nginx不支持动态加载模块，模块必须和内核一起编译。所有的模块都是中间件，即接收上一个模块的输入，处理后再将输出传给下一个模块。
+nginx 采用模块式设计，通过加载模块扩展功能。目前，nginx不支持动态加载模块，模块必须和内核一起编译。所有的模块都是中间件，即接收上一个模块的输入，处理后再将输出传给下一个模块。
 
 下面是一些默认编译的模块。
 
@@ -165,7 +222,7 @@ server {
 }
 ```
 
-（4）指定SSL证书
+（4）指定 SSL 证书
 
 首先，删除或注释掉下面指定监听80端口的两行。
 
