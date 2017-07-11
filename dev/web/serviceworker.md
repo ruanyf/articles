@@ -1,4 +1,8 @@
-# Service Worker的用法
+# Service Worker
+
+## 简介
+
+Service worker 是后台运行的一个 JavaScript 脚本。它由前台页面的 JavaScript 脚本新建，运行在独立的线程。它是异步的，不会造成页面的堵塞，可以发出通知（push notification），但拿不到 DOM。它要求页面必须使用 HTTPS 协议。
 
 Service Worker 一共有6种状态。
 
@@ -11,16 +15,16 @@ Service Worker 一共有6种状态。
 
 登记Service Worker。
 
-```javascript
+``` javascript
 /* In main.js */
-if ('serviceWorker' in navigator) {  
-    navigator.serviceWorker.register('./sw.js')
-    .then(function(registration) {
-        console.log("Service Worker Registered", registration);
-    })
-    .catch(function(err) {
-        console.log("Service Worker Failed to Register", err);
-    })
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+  .then(function(registration) {
+    console.log("Service Worker Registered", registration);
+  })
+  .catch(function(err) {
+    console.log("Service Worker Failed to Register", err);
+  })
 }
 ```
 
@@ -43,22 +47,35 @@ navigator.serviceWorker
 
 ```javascript
 /* In sw.js */
+var cacheName = 'your-first-service-worker';
+var urlsToCache = [
+  '/',
+  'css/tachyons.min.css',
+  'img/andre-benz-248755.jpg',
+  'img/andre-benz-250740.jpg',
+  'img/andre-benz-256762.jpg',
+  'img/redd-angelo-230297.jpg'
+];
+
 self.addEventListener('install', function(event) {
-  event.waitUntil(
-    caches.open(currentCacheName).then(function(cache) {
-      return cache.addAll(arrayOfFilesToCache);
-    })
-  );
+    // Perform install steps
+    event.waitUntil(
+        caches.open(cacheName)
+        .then(function(cache) {
+            console.log('Opened cache');
+            return cache.addAll(urlsToCache);
+        })
+    );
 });
 ```
 
-上面代码中，事件对象有一个`event.waitUntil()`方法，只有这个方法内部的Promise变成`resolved`以后，`installing`事件才会成功。如果Promise变成`rejected`，`installing`事件就会失败，Service Worker变成`redundant`状态。
+上面代码中，事件对象有一个`event.waitUntil()`方法，只有这个方法内部的 Promise 变成`resolved`以后，`installing`事件才会成功。如果Promise变成`rejected`，`installing`事件就会失败，Service Worker 变成`redundant`状态。
 
 ```javascript
 /* In sw.js */
-self.addEventListener('install', function(event) {  
+self.addEventListener('install', function(event) {
   event.waitUntil(
-   return Promise.reject(); // Failure
+    Promise.reject(); // Failure
   );
 });
 ```
@@ -69,7 +86,7 @@ self.addEventListener('install', function(event) {
 
 ```javascript
 /* In main.js */
-navigator.serviceWorker.register('./sw.js').then(function(registration) {  
+navigator.serviceWorker.register('./sw.js').then(function(registration) {
   if (registration.waiting) {
     // Service Worker is Waiting
   }
@@ -89,7 +106,7 @@ navigator.serviceWorker.register('./sw.js').then(function(registration) {
 
 ```javascript
 /* In sw.js */
-self.addEventListener('activate', function(event) {  
+self.addEventListener('activate', function(event) {
   event.waitUntil(
     // Get all the cache names
     caches.keys().then(function(cacheNames) {
@@ -140,6 +157,25 @@ self.addEventListener('message', function(event) {
 - activating 事件失败
 - 一个新的Service Worker取代了当前活跃的Service worker
 
+用户发出请求时，会触发`fetch`事件。
+
+```javascript
+// Fetch the contents and reply with cache
+self.addEventListener('fetch', function (event) {
+    event.respondWith(
+        caches.match(event.request)
+        .then(function(response) {
+            // Cache hit - return response
+            if (response) {
+              return response;
+            }
+            return fetch(event.request);
+        })
+    );
+});
+```
+
 ## 参考链接
 
 - [The Service Worker Lifecycle](https://bitsofco.de/the-service-worker-lifecycle/), by Ire Aderinokun
+- [Your first service worker](https://www.hacklabo.com/your-first-service-worker/), by Nicola

@@ -8,10 +8,8 @@ git是一种源码管理系统（source code management，缩写为SCM）。它�
 - 提交用户名和电子邮件
 
 ```bash
-
 $ git config --global user.name "Some One"
 $ git config --global user.email "someone@gmail.com"
-
 ```
 
 1. git init：新建一个git库
