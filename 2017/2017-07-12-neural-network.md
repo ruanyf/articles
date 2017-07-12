@@ -8,6 +8,8 @@
 
 什么是神经网络呢？网上似乎[缺乏](https://www.zhihu.com/question/22553761)通俗的解释。前两天，我读到 Michael Nielsen 的开源教材[《神经网络与深度学习》](http://neuralnetworksanddeeplearning.com/index.html)（Neural Networks and Deep Learning），意外发现里面的解释非常好懂。下面，我就按照这本书，介绍什么是神经网络。
 
+这里我要感谢[优达学城](http://cn.udacity.com/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)的赞助，本文[结尾](#support)有他们的[《前端开发（进阶）》](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)课程的消息，欢迎关注。
+
 ## 一、感知器
 
 历史上，科学家一直希望模拟人的大脑，造出可以思考的机器。人为什么能够思考？科学家发现，原因在于人体的神经网络。
@@ -167,7 +169,29 @@ z = wx + b
 
 即`Δσ`和`Δw`和`Δb`之间是线性关系，变化率是偏导数。这就有利于精确推算出`w`和`b`的值了。
 
-（完 ）
+（正文完）
+
+=============================================
+
+<a id="support"></a>
+
+下面是推广时间。
+
+前端开发是[优达学城](http://cn.udacity.com/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05) Udacity 的纳米学位课程，分成两个级别：入门班和进阶班。今年下半年的[进阶班](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)，今天（7月13日）开始报名了，感兴趣的朋友不要错过！。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071218.png)](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)
+
+本课程的重点是讲解如何应用 CSS 框架和 JavaScript 框架，做出高性能、高可用性的产品，并且使用测试工具保证代码质量。学习过程中，学员必须完成以下课堂练习。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071219.jpg) ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071220.jpg)
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071221.jpg) ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071222.jpg)
+
+该课程是纳米学位课程，学员提交的每一行代码都有人 code review，并且每周可以预约导师一对一辅导，对于提高个人能力极有帮助。
+
+由于有 code review，所以报名人数有限，本期只有100个名额，目前已经预定了67席。[点击这里](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)了解详情，也可以[直接报名](http://t.cn/RoTwVL8)。
+
+（完）
 
 
 
