@@ -177,7 +177,7 @@ z = wx + b
 
 下面是推广时间。
 
-前端开发是[优达学城](http://cn.udacity.com/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05) Udacity 的纳米学位课程，分成两个级别：入门班和进阶班。今年下半年的[进阶班](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)，今天（7月13日）开始报名了，感兴趣的朋友不要错过！。
+前端开发是[优达学城](http://cn.udacity.com/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05) Udacity 的纳米学位课程，分成两个级别：入门班和进阶班。今年下半年的[进阶班](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)，今天（7月13日）开始报名了，感兴趣的朋友不要错过！
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071218.png)](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)
 
