@@ -189,7 +189,7 @@ z = wx + b
 
 该课程是纳米学位课程，学员提交的每一行代码都有导师 code review，并且每周可以预约导师一对一辅导，对于提高个人能力极有帮助。
 
-由于有 code review，所以报名人数有限，本期只有100个名额，目前已经预定了67席。[点击这里](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)了解详情，也可以[直接报名](http://t.cn/RoTwVL8)。
+由于有真人 code review 环节，所以招生人数有限制，本期只有100个名额，目前已经预定了67席。[点击这里](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)了解详情，报名从速哦。
 
 （完）
 
