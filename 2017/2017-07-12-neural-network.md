@@ -183,7 +183,7 @@ z = wx + b
 
 本课程的重点是讲解如何应用 CSS 框架和 JavaScript 框架，做出高性能、高可用性的产品，并且使用测试工具保证代码质量。学习过程中，学员必须完成以下课堂练习。
 
-<img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071219.jpg" style="width: 400px;height: 483px;"/> <img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071220.jpg" style="width: 400px;height: 483px;"/>
+<img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071219.jpg" height="483" style="width: 400px;height: 483px;"/> <img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071220.jpg" height="483"  style="width: 400px;height: 483px;"/>
 
 <img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071221.jpg" style="width: 400px;height: 483px;"/> <img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071222.jpg" style="width: 400px;height: 483px;"/>
 
