@@ -183,9 +183,9 @@ z = wx + b
 
 本课程的重点是讲解如何应用 CSS 框架和 JavaScript 框架，做出高性能、高可用性的产品，并且使用测试工具保证代码质量。学习过程中，学员必须完成以下课堂练习。
 
-![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071219.jpg) ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071220.jpg)
+<img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071219.jpg" style="width: 400px;height: 483px;"/> <img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071220.jpg" style="width: 400px;height: 483px;"/>
 
-![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071221.jpg) ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071222.jpg)
+<img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071221.jpg" style="width: 400px;height: 483px;"/> <img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071222.jpg" style="width: 400px;height: 483px;"/>
 
 该课程是纳米学位课程，学员提交的每一行代码都有人 code review，并且每周可以预约导师一对一辅导，对于提高个人能力极有帮助。
 
