@@ -187,7 +187,7 @@ z = wx + b
 
 <img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071221.jpg" width="400"  height="483" style="width: 400px;height: 483px;"/> <img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071222.jpg" width="400"  height="483" style="width: 400px;height: 483px;"/>
 
-该课程是纳米学位课程，学员提交的每一行代码都有人 code review，并且每周可以预约导师一对一辅导，对于提高个人能力极有帮助。
+该课程是纳米学位课程，学员提交的每一行代码都有导师 code review，并且每周可以预约导师一对一辅导，对于提高个人能力极有帮助。
 
 由于有 code review，所以报名人数有限，本期只有100个名额，目前已经预定了67席。[点击这里](http://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=ruanyfarticle&utm_medium=referral&utm_campaign=FEND05)了解详情，也可以[直接报名](http://t.cn/RoTwVL8)。
 
