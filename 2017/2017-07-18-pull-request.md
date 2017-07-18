@@ -2,7 +2,9 @@
 
 Github 的一大特色就是 [Pull Request](https://help.github.com/articles/about-pull-requests/) 功能（简写为 PR）。
 
-对于多人合作的项目，该功能简直必不可少。本文介绍如何在命令行下处理 PR，翻译自 Cédric Beust 的[文章](http://beust.com/weblog/2010/09/15/a-quick-guide-to-pull-requests/)。
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071801.png)
+
+对于多人合作的项目，该功能简直必不可少。大部分人都是使用 Web 界面（如上图），本文介绍如何在命令行下处理 PR，翻译自 Cédric Beust 的[文章](http://beust.com/weblog/2010/09/15/a-quick-guide-to-pull-requests/)。
 
 ## 一、Pull Request 是什么？
 
@@ -18,27 +20,31 @@ Pull Request 本质上是一种软件的合作方式，是将涉及不同功能�
 
 第二步，在你仓库的修改后的分支上，按下“New pull request”按钮。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071802.png)
+
 这时，会进入一个新页面，有Base 和 Head 两个选项。Base 是你希望提交变更的目标，Head  是目前包含你的变更的那个分支或仓库。
 
-最后， 按下“create pull request”按钮即可。
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071806.png)
 
-PR 创建以后，目标仓库（或分支）的管理者就要决定，是否接受你的提交。他可以在页面上查看发生变更的代码，发起讨论。
+第三步，填写说明，帮助别人理解你的提交，然后按下“create pull request”按钮即可。
 
-对于非代码变更（比如文档），单单使用 Web 界面就足够了。但是，代码变更有时需要运行查看效果，或者你要修改他人的提交，这时 Web 界面就不够了，就要用到命令行了。
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017071805.png)
+
+PR 创建后，管理者就要决定是否接受该 PR。对于非代码变更（比如文档），单单使用 Web 界面就足够了。但是，对于代码变更，Web 界面可能不够用，需要命令行验证是否可以运行。
 
 ## 三、git am
 
-`git am`命令用于应用（apply）一个 patch，即当前代码合并该 patch。
+`git am`命令用于将一个 patch 文件，合并进入当前代码。
 
-Github 对每个 PR 会自动生成一个 patch。我们下载这个 patch，应用于当前代码工作区代码，就可以在本地查看效果了。
+Github 对每个 PR 会自动生成一个 patch 文件。我们下载该文件，合并进本地代码，就可以在本地查看效果了。
 
 ```bash
 $ curl -L http://github.com/cbeust/testng/pull/17.patch | git am
 ```
 
-上面代码中，`curl`的`-L`参数表示，如果有302跳转会自动跟进。后面网址里面的`/cbeust/testng`是目标仓库，`pull/17`表示该仓库收到的第17个 PR。
+上面代码中，`curl`的`-L`参数表示，如果有302跳转，`curl`会自动跟进。后面网址里面的`/cbeust/testng`是目标仓库，`pull/17`表示该仓库收到的第17个 PR。
 
-如果 PR 只包含一个 commit，那么也可以直接下载这个 commit 的 patch。
+如果 PR 只包含一个 commit，那么也可以直接下载这个 commit 的 patch 文件。
 
 ```bash
 $ curl https://github.com/sclasen/jcommander/commit/bd770141029f49bcfa2e0d6e6e6282b531e69179.patch | git am
