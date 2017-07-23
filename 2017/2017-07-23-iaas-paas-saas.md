@@ -6,27 +6,27 @@
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072301.jpg)
 
-> **IaaS**：Infrastructure-as-a-service，基础设施即服务
-> **PaaS**：Platform-as-a-service，平台即服务
-> **SaaS**：Software-as-a-service，软件即服务
+> - **IaaS**：Infrastructure-as-a-service，基础设施即服务
+> - **PaaS**：Platform-as-a-service，平台即服务
+> - **SaaS**：Software-as-a-service，软件即服务
 
 它们有什么区别呢？
 
-IBM 的软件架构师 Albert Barron，曾经使用披萨作为比喻，[解释](https://www.linkedin.com/pulse/20140730172610-9679881-pizza-as-a-service)这个问题。David Ng 进一步[引申](https://m.oursky.com/saas-paas-and-iaas-explained-in-one-graphic-d56c3e6f4606)，让它变得更准确易懂。
+IBM 的软件架构师 Albert Barron 曾经使用披萨作为比喻，[解释](https://www.linkedin.com/pulse/20140730172610-9679881-pizza-as-a-service)这个问题。David Ng 进一步[引申](https://m.oursky.com/saas-paas-and-iaas-explained-in-one-graphic-d56c3e6f4606)，让它变得更准确易懂。
 
 请设想你是一个餐饮业者，打算做披萨生意。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072302.jpg)
 
-你可以从头到尾，自己生产披萨，但是这样比较麻烦，需要准备的东西多，因此你决定外包一部分工作，采用他人的服务。
+你可以从头到尾，自己生产披萨，但是这样比较麻烦，需要准备的东西多，因此你决定外包一部分工作，采用他人的服务。现在，你有三个方案。
 
-**（1）IaaS**
+**（1）方案一：IaaS**
 
 他人提供厨房、炉子、煤气，你使用这些基础设施，来烤你的披萨。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072303.jpg)
 
-**（2）PaaS**
+**（2）方案二：PaaS**
 
 除了基础设施，他人还提供披萨饼皮。
 
@@ -37,13 +37,13 @@ IBM 的软件架构师 Albert Barron，曾经使用披萨作为比喻，[解释]
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072308.jpg)
 
 
-**（3）SaaS**
+**（3）方案三：SaaS**
 
 他人直接做好了披萨，不用你的介入，拿到手的就是一个成品。你要做的就是把它卖出去，最多再包装一下，印上你自己的 Logo。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072305.jpg)
 
-上面的几种情况，可以总结成下面这张图。
+上面的三种方案，可以总结成下面这张图。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072306.png)
 
@@ -73,7 +73,7 @@ IBM 的软件架构师 Albert Barron，曾经使用披萨作为比喻，[解释]
 > - Digital Ocean
 > - RackSpace Cloud
 
-从参考链接
+**参考链接**
 
 - [SaaS, PaaS and IaaS explained in one graphic](https://m.oursky.com/saas-paas-and-iaas-explained-in-one-graphic-d56c3e6f4606), by David Ng
 - [When to use SaaS, PaaS, and IaaS](https://www.computenext.com/blog/when-to-use-saas-paas-and-iaas/), by Eamonn Colman
