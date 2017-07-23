@@ -6,9 +6,9 @@
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072301.jpg)
 
-> - **IaaS**：Infrastructure-as-a-service，基础设施即服务
-> - **PaaS**：Platform-as-a-service，平台即服务
-> - **SaaS**：Software-as-a-service，软件即服务
+> - **IaaS**：基础设施服务，Infrastructure-as-a-service
+> - **PaaS**：平台服务，Platform-as-a-service
+> - **SaaS**：软件服务，Software-as-a-service
 
 它们有什么区别呢？
 
@@ -18,7 +18,7 @@ IBM 的软件架构师 Albert Barron 曾经使用披萨作为比喻，[解释](h
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072302.jpg)
 
-你可以从头到尾，自己生产披萨，但是这样比较麻烦，需要准备的东西多，因此你决定外包一部分工作，采用他人的服务。现在，你有三个方案。
+你可以从头到尾，自己生产披萨，但是这样比较麻烦，需要准备的东西多，因此你决定外包一部分工作，采用他人的服务。你有三个方案。
 
 **（1）方案一：IaaS**
 
@@ -39,7 +39,7 @@ IBM 的软件架构师 Albert Barron 曾经使用披萨作为比喻，[解释](h
 
 **（3）方案三：SaaS**
 
-他人直接做好了披萨，不用你的介入，拿到手的就是一个成品。你要做的就是把它卖出去，最多再包装一下，印上你自己的 Logo。
+他人直接做好了披萨，不用你的介入，到手的就是一个成品。你要做的就是把它卖出去，最多再包装一下，印上你自己的 Logo。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072305.jpg)
 
@@ -53,7 +53,7 @@ IBM 的软件架构师 Albert Barron 曾经使用披萨作为比喻，[解释](h
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072307.jpg)
 
-**SaaS 是软件的开发、管理、部署都交给第三方，不需要关心技术问题，可以拿来即用。**普通用户接触到的互联网产品，几乎都是 SaaS，下面是一些例子。
+**SaaS 是软件的开发、管理、部署都交给第三方，不需要关心技术问题，可以拿来即用。**普通用户接触到的互联网服务，几乎都是 SaaS，下面是一些例子。
 
 > - 客户管理服务 Salesforce
 > - 团队协同服务 Google Apps
