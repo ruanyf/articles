@@ -73,6 +73,11 @@ IBM 的软件架构师 Albert Barron，曾经使用披萨作为比喻，[解释]
 > - Digital Ocean
 > - RackSpace Cloud
 
+从参考链接
+
+- [SaaS, PaaS and IaaS explained in one graphic](https://m.oursky.com/saas-paas-and-iaas-explained-in-one-graphic-d56c3e6f4606), by David Ng
+- [When to use SaaS, PaaS, and IaaS](https://www.computenext.com/blog/when-to-use-saas-paas-and-iaas/), by Eamonn Colman
+
 （完）
 
 
