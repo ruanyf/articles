@@ -10,28 +10,29 @@ Elastic 的底层是开源库 [Lucene](https://lucene.apache.org/)。但是，�
 
 ## 一、安装
 
-Elastic 需要 Java 8。如果你的机器还没安装 Java，可以参考[这篇文章](https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-debian-8)，并且要保证环境变量`JAVA_HOME`正确设置。
+Elastic 需要 Java 8 环境。如果你的机器还没安装 Java，可以参考[这篇文章](https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-debian-8)，并且要保证环境变量`JAVA_HOME`正确设置。
 
-然后，参考[官方文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/zip-targz.html) 安装 Elastic。我觉得直接下载压缩包比较简单。
+然后，根据[官方文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/zip-targz.html) 安装 Elastic。直接下载压缩包比较简单。
 
 ```bash
+$ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.1.zip
 $ unzip elasticsearch-5.5.1.zip
 $ cd elasticsearch-5.5.1/ 
 ```
 
-进入解压后的目录，运行下面的命令就可以直接启动了。
+进入解压后的目录，运行下面的命令就可以启动 Elastic 了。
 
 ```bash
 $ ./bin/elasticsearch
 ```
 
-如果[遇上](https://github.com/spujadas/elk-docker/issues/92)“max virtual memory areas vm.max_map_count [65530] is too low”错误，要将虚拟机的最大内存提升。
+如果这时[报错](https://github.com/spujadas/elk-docker/issues/92)“max virtual memory areas vm.max_map_count [65530] is too low”，要将运行下面的命令。
 
 ```bash
 $ sudo sysctl -w vm.max_map_count=262144
 ```
 
-如果一切正常，Elastic 就会在默认的9200端口运行。打开另一个命令行窗口，请求该端口，会得到服务信息。
+如果一切正常，Elastic 就会在默认的9200端口运行。打开另一个命令行窗口，请求该端口，会得到说明信息。
 
 ```bash
 $ curl localhost:9200
@@ -51,9 +52,9 @@ $ curl localhost:9200
 }
 ```
 
-上面代码中，访问9200端口，就会得到一个 JSON 对象，包含当前 Node 的名称、cluster 的名称和 ID、版本等信息。
+上面代码中，访问9200端口，Elastic 返回一个 JSON 对象，包含当前 Node 的名称、cluster 的名称，以及 ID、版本等信息。
 
-默认情况下，Elastic 只允许本机访问，如果需要远程访问，可以修改 Elastic 安装目录的`config/elasticsearch.yml`文件，去掉`network.host`的注释，并将它的值改成`0.0.0.0`。
+默认情况下，Elastic 只允许本机访问，如果需要远程访问，可以修改 Elastic 安装目录的`config/elasticsearch.yml`文件，去掉`network.host`的注释，并将它的值改成`0.0.0.0`，然后重新启动 Elastic。
 
 ```bash
 network.host: 0.0.0.0
@@ -61,17 +62,17 @@ network.host: 0.0.0.0
 
 上面代码中，设成`0.0.0.0`让任何人都可以访问。线上服务不要这样设置，要设成具体的 IP。
 
-## 三、基本概念
+## 二、基本概念
 
-### 3.1 Node 与 Cluster
+### 2.1 Node 与 Cluster
 
-本质上，Elastic 是一个分布式数据库，可以多台服务器协同工作。
+本质上，Elastic 是一个分布式数据库，允许多台服务器协同工作，每台服务器可以运行多个 Elastic 实例。
 
-一台服务器可以运行多个 Elastic 实例，但是通常只会运行一个。单个 Elastic 实例称为一个节点（node）。一组 node （多台服务器）构成一个集群（cluster）。
+单个 Elastic 实例称为一个节点（node）。一组 node （多台服务器）构成一个集群（cluster）。
 
-### 3.2 Index
+### 2.2 Index
 
-Elastic 会索引所有字段，也就是所有字段共用一个反向索引（Inverted Index）。查找数据的时候不是查找数据库，而是查找索引。索引的英语是 index，所以 Elastic 数据管理的顶层单位就是 Index，它就是单个数据库的同义词。每个 Index （即数据库）的名字必须是小写。
+Elastic 会索引所有字段，也就是所有字段都会生成反向索引（Inverted Index）。查找数据的时候不是查找数据库，而是查找索引。索引的英语是 index，所以 Elastic 数据管理的顶层单位就是 Index，它就是单个数据库的同义词。每个 Index （即数据库）的名字必须是小写。
 
 下面的命令可以查看当前集群的所有 Index。
 
@@ -79,7 +80,7 @@ Elastic 会索引所有字段，也就是所有字段共用一个反向索引（
 $ curl -X GET 'http://localhost:9200/_cat/indices?v'
 ```
 
-### 3.3 Document
+### 2.3 Document
 
 Index 里面单条的记录称为 Document。许多条 Document 构成了一个 Index。
 
@@ -95,7 +96,7 @@ Document 使用 JSON 格式表示，下面是一个例子。
 
 同一个 Index 里面的 Document，不要求有相同的结构（scheme），但是最好保持相同，这样有利于提高搜索效率。
 
-### 3.4 Type
+### 2.4 Type
 
 同一个 Index 里面，相似的 Document 可以分组。比如，`weather`这个 Index 里面，可以按城市分组（北京和上海），也可以按气候分组（晴天和雨天）。这种分组就叫做 Type，它是虚拟的逻辑分组，用来过滤 Document。
 
@@ -111,7 +112,7 @@ $ curl 'localhost:9200/_mapping?pretty=true'
 
 根据[规划](https://www.elastic.co/blog/index-type-parent-child-join-now-future-in-elasticsearch)，Elastic 6.x 版只允许每个 Index 包含一个 Type，7.x 版将会测试移除 Type。
 
-## 四、新建和删除 Index
+## 三、新建和删除 Index
 
 新建 Index，可以直接向 Elastic 服务器发出 PUT 请求。下面的例子是新建一个名叫`weather`的 Index。
 
@@ -128,7 +129,7 @@ $ curl -X PUT 'localhost:9200/weather'
 $ curl -X DELETE 'localhost:9200/weather'
 ```
 
-## 五、中文分词设置
+## 四、中文分词设置
 
 如果需要中文的全文搜索，就要特别地做一些配置。
 
@@ -189,9 +190,9 @@ Elastic 的分词器统一称为 analyzer。我们对每个字段指定两个分
 
 上面代码中，`analyzer`是字段文本的分词器，`search_analyzer`是搜索词的分词器。`ik_max_word`分词器是插件`ik`提供的，可以对文本进行最大数量的分词。
 
-## 六、数据操作
+## 五、数据操作
 
-### 6.1 新增记录
+### 5.1 新增记录
 
 向指定的 Index/Type 发送 PUT 请求，就可以在 Index 里面新增一条记录。比如，向`/accounts/person`发送请求，就可以新增一条人员记录。
 
@@ -255,7 +256,7 @@ $ curl -X POST 'localhost:9200/accounts/person' -d '
 
 注意，如果没有先创建 Index（这个例子是`accounts`），直接执行上面的命令，Elastic 也不会报错，而是直接生成指定的 Index。所以，打字的时候要小心，一定要写对 Index 的名称。
 
-### 6.2 查看记录
+### 5.2 查看记录
 
 向`/Index/Type/Id`发出 GET 请求，就可以查看这条记录。
 
@@ -295,7 +296,7 @@ $ curl 'localhost:9200/weather/beijing/abc?pretty=true'
 }
 ```
 
-### 6.3 删除记录
+### 5.3 删除记录
 
 删除记录就是发出 DELETE 请求。
 
@@ -305,7 +306,7 @@ $ curl -X DELETE 'localhost:9200/accounts/person/1'
 
 这里先不要删除这条记录，后面还要用到。
 
-### 6.4 更新记录
+### 5.4 更新记录
 
 更新记录就是使用 PUT 请求，重新发送一次数据。
 
@@ -338,9 +339,9 @@ $ curl -X PUT 'localhost:9200/accounts/person/1' -d '
 
 可以看到，记录的 Id 没变，但是版本（version）从`1`变成`2`，操作类型（result）从`created`变成`updated`，`created`字段变成`false`，因为这次不是新建记录。
 
-## 七、数据查询
+## 六、数据查询
 
-### 7.1 返回所有记录
+### 6.1 返回所有记录
 
 使用 GET 方法，直接请求`/Index/Type/_search`，就会返回所有记录。
 
@@ -390,7 +391,7 @@ $ curl 'localhost:9200/accounts/person/_search'
 
 返回的记录中，每条记录都有一个`_score`字段，表示匹配的程序，默认是按照这个字段降序排列。
 
-### 7.2 全文搜索
+### 6.2 全文搜索
 
 Elastic 的查询非常特别，允许 GET 请求带有数据体，并且使用自己的[查询语法](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/query-dsl.html)。
 
@@ -453,7 +454,7 @@ $ curl 'localhost:9200/accounts/person/_search'  -d '
 
 上面代码指定，从位置1开始（默认是从位置0开始），只返回一条结果。
 
-### 7.3 逻辑运算
+### 6.3 逻辑运算
 
 如果有多个搜索关键字， Elastic 认为它们是`or`关系。
 
@@ -482,7 +483,7 @@ $ curl 'localhost:9200/accounts/person/_search'  -d '
 }'
 ```
  
-## 八、参考链接
+## 七、参考链接
 
 - [ElasticSearch 官方手册](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html)
 - [A Practical Introduction to Elasticsearch](https://www.elastic.co/blog/a-practical-introduction-to-elasticsearch)
