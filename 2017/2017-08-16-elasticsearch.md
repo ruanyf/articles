@@ -1,6 +1,6 @@
 # ElasticSearch 入门教程
 
-[全文搜索](https://baike.baidu.com/item/%E5%85%A8%E6%96%87%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E)属于最常见的需求，开源的 [ElasticSearch](https://www.elastic.co/) （以下简称 Elastic）是目前全文搜索引擎的首选方案。
+[全文搜索](https://baike.baidu.com/item/%E5%85%A8%E6%96%87%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E)属于最常见的需求，开源的 [ElasticSearch](https://www.elastic.co/) （以下简称 Elastic）是目前全文搜索引擎的首选。
 
 它可以快速地储存、搜索和分析海量数据。维基百科、Stack Overflow、Github 都是它的用户。
 
@@ -10,9 +10,9 @@ Elastic 的底层是开源库 [Lucene](https://lucene.apache.org/)。但是，�
 
 ## 一、安装
 
-Elastic 需要 Java 8 环境。如果你的机器还没安装 Java，可以参考[这篇文章](https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-debian-8)，并且要保证环境变量`JAVA_HOME`正确设置。
+Elastic 需要 Java 8 环境。如果你的机器还没安装 Java，可以参考[这篇文章](https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-debian-8)，注意要保证环境变量`JAVA_HOME`正确设置。
 
-然后，根据[官方文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/zip-targz.html) 安装 Elastic。直接下载压缩包比较简单。
+[官方文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/zip-targz.html) 有 Elastic 的安装方法。直接下载压缩包比较简单。
 
 ```bash
 $ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.1.zip
@@ -26,13 +26,13 @@ $ cd elasticsearch-5.5.1/
 $ ./bin/elasticsearch
 ```
 
-如果这时[报错](https://github.com/spujadas/elk-docker/issues/92)“max virtual memory areas vm.max_map_count [65530] is too low”，要将运行下面的命令。
+如果这时[报错](https://github.com/spujadas/elk-docker/issues/92)“max virtual memory areas vm.max_map_count [65530] is too low”，要运行下面的命令。
 
 ```bash
 $ sudo sysctl -w vm.max_map_count=262144
 ```
 
-如果一切正常，Elastic 就会在默认的9200端口运行。打开另一个命令行窗口，请求该端口，会得到说明信息。
+如果一切正常，Elastic 就会在默认的9200端口运行。这时，打开另一个命令行窗口，请求该端口，会得到说明信息。
 
 ```bash
 $ curl localhost:9200
@@ -52,9 +52,9 @@ $ curl localhost:9200
 }
 ```
 
-上面代码中，访问9200端口，Elastic 返回一个 JSON 对象，包含当前 Node 的名称、cluster 的名称，以及 ID、版本等信息。
+上面代码中，请求9200端口，Elastic 返回一个 JSON 对象，包含当前节点、集群、版本等信息。
 
-默认情况下，Elastic 只允许本机访问，如果需要远程访问，可以修改 Elastic 安装目录的`config/elasticsearch.yml`文件，去掉`network.host`的注释，并将它的值改成`0.0.0.0`，然后重新启动 Elastic。
+默认情况下，Elastic 只允许本机访问，如果需要远程访问，可以修改 Elastic 安装目录的`config/elasticsearch.yml`文件，去掉`network.host`的注释，将它的值改成`0.0.0.0`，然后重新启动 Elastic。
 
 ```bash
 network.host: 0.0.0.0
@@ -66,15 +66,17 @@ network.host: 0.0.0.0
 
 ### 2.1 Node 与 Cluster
 
-本质上，Elastic 是一个分布式数据库，允许多台服务器协同工作，每台服务器可以运行多个 Elastic 实例。
+Elastic 本质上是一个分布式数据库，允许多台服务器协同工作，每台服务器可以运行多个 Elastic 实例。
 
-单个 Elastic 实例称为一个节点（node）。一组 node （多台服务器）构成一个集群（cluster）。
+单个 Elastic 实例称为一个节点（node）。一组节点构成一个集群（cluster）。
 
 ### 2.2 Index
 
-Elastic 会索引所有字段，也就是所有字段都会生成反向索引（Inverted Index）。查找数据的时候不是查找数据库，而是查找索引。索引的英语是 index，所以 Elastic 数据管理的顶层单位就是 Index，它就是单个数据库的同义词。每个 Index （即数据库）的名字必须是小写。
+Elastic 会索引所有字段，经过处理后写入一个反向索引（Inverted Index）。查找数据的时候，Elastic 直接查找该索引。
 
-下面的命令可以查看当前集群的所有 Index。
+Elastic 数据管理的顶层单位就叫做 Index（索引）。它是单个数据库的同义词。每个 Index （即数据库）的名字必须是小写。
+
+下面的命令可以查看当前节点的所有 Index。
 
 ```bash
 $ curl -X GET 'http://localhost:9200/_cat/indices?v'
@@ -82,7 +84,7 @@ $ curl -X GET 'http://localhost:9200/_cat/indices?v'
 
 ### 2.3 Document
 
-Index 里面单条的记录称为 Document。许多条 Document 构成了一个 Index。
+Index 里面单条的记录称为 Document（文档）。许多条 Document 构成了一个 Index。
 
 Document 使用 JSON 格式表示，下面是一个例子。
 
@@ -98,11 +100,11 @@ Document 使用 JSON 格式表示，下面是一个例子。
 
 ### 2.4 Type
 
-同一个 Index 里面，相似的 Document 可以分组。比如，`weather`这个 Index 里面，可以按城市分组（北京和上海），也可以按气候分组（晴天和雨天）。这种分组就叫做 Type，它是虚拟的逻辑分组，用来过滤 Document。
+Document 可以分组，比如`weather`这个 Index 里面，可以按城市分组（北京和上海），也可以按气候分组（晴天和雨天）。这种分组就叫做 Type，它是虚拟的逻辑分组，用来过滤 Document。
 
-不同的 Type 应该有相似的结构（schema），如果字段同名，那么类型必须相同。举例来说，`id`字段不能在这个组是字符串，在另一个组是数值。这一点与关系型数据库的表有[截然不同](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html)。
+不同的 Type 应该有相似的结构（schema），举例来说，`id`字段不能在这个组是字符串，在另一个组是数值。这是与关系型数据库的表的[一个区别](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html)。
 
-截然不同的数据（比如`products`和`logs`）应该存成两个 Index，而不是一个 Index 里面的两个 Type（虽然可以做到）。
+性质完全不同的数据（比如`products`和`logs`）应该存成两个 Index，而不是一个 Index 里面的两个 Type（虽然可以做到）。
 
 下面的命令可以列出每个 Index 所包含的 Type。
 
@@ -110,7 +112,7 @@ Document 使用 JSON 格式表示，下面是一个例子。
 $ curl 'localhost:9200/_mapping?pretty=true'
 ```
 
-根据[规划](https://www.elastic.co/blog/index-type-parent-child-join-now-future-in-elasticsearch)，Elastic 6.x 版只允许每个 Index 包含一个 Type，7.x 版将会测试移除 Type。
+根据[规划](https://www.elastic.co/blog/index-type-parent-child-join-now-future-in-elasticsearch)，Elastic 6.x 版只允许每个 Index 包含一个 Type，7.x 版将会彻底移除 Type。
 
 ## 三、新建和删除 Index
 
@@ -121,7 +123,7 @@ $ curl -X PUT 'localhost:9200/weather'
                                               {"acknowledged":true,"shards_acknowledged":true}
 ```
 
-服务器返回的 JSON 对象，里面的`acknowledged`字段表示确认操作成功。
+服务器返回一个 JSON 对象，里面的`acknowledged`字段表示确认操作成功。
 
 然后，我们发出 DELETE 请求，删除这个 Index。
 
@@ -131,9 +133,9 @@ $ curl -X DELETE 'localhost:9200/weather'
 
 ## 四、中文分词设置
 
-如果需要中文的全文搜索，就要特别地做一些配置。
+中文的全文搜索需要额外做一些配置。
 
-首先，安装中文分词插件。这里使用的是 [ik](https://github.com/medcl/elasticsearch-analysis-ik/)，也可以考虑其他插件，比如 [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html)。
+首先，安装中文分词插件。这里使用的是 [ik](https://github.com/medcl/elasticsearch-analysis-ik/)，也可以考虑其他插件（比如 [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html)）。
 
 ```javascript
 $ ./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v5.5.1/elasticsearch-analysis-ik-5.5.1.zip
@@ -176,9 +178,9 @@ $ curl -X PUT 'localhost:9200/accounts' -d '
 > - title
 > - desc
 
-由于这个三个字段都是中文，而且类型都是文本（text），需要指定中文分词器，不能使用默认的英文分词器。
+由于这三个字段都是中文，而且类型都是文本（text），需要指定中文分词器，不能使用默认的英文分词器。
 
-Elastic 的分词器统一称为 analyzer。我们对每个字段指定两个分词器。
+Elastic 的分词器称为 [analyzer](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html)。我们对每个字段指定分词器。
 
 ```javascript
 "user": {
@@ -219,7 +221,9 @@ $ curl -X PUT 'localhost:9200/accounts/person/1' -d '
 }
 ```
 
-如果你仔细看，会发现请求路径是`/accounts/person/1`，最后的`1`是该条记录的 Id。它不一定是数字，任意字符串（比如`abc`）都可以。新增记录的时候，也可以不指定 Id，这时要改成 POST 请求。
+如果你仔细看，会发现请求路径是`/accounts/person/1`，最后的`1`是该条记录的 Id。它不一定是数字，任意字符串（比如`abc`）都可以。
+
+新增记录的时候，也可以不指定 Id，这时要改成 POST 请求。
 
 ```bash
 $ curl -X POST 'localhost:9200/accounts/person' -d '
@@ -240,7 +244,7 @@ $ curl -X POST 'localhost:9200/accounts/person' -d '
 }
 ```
 
-上面代码中，向`/accounts/person`发出一个 POST 请求，添加了一个记录。服务器返回的 JSON 对象，里面的`_id`字段就是一个随机字符串。
+上面代码中，向`/accounts/person`发出一个 POST 请求，添加了一个记录。这时，服务器返回的 JSON 对象里面，`_id`字段就是一个随机字符串。
 
 ```javascript
 {
@@ -254,7 +258,7 @@ $ curl -X POST 'localhost:9200/accounts/person' -d '
 }
 ```
 
-注意，如果没有先创建 Index（这个例子是`accounts`），直接执行上面的命令，Elastic 也不会报错，而是直接生成指定的 Index。所以，打字的时候要小心，一定要写对 Index 的名称。
+注意，如果没有先创建 Index（这个例子是`accounts`），直接执行上面的命令，Elastic 也不会报错，而是直接生成指定的 Index。所以，打字的时候要小心，写对 Index 的名称。
 
 ### 5.2 查看记录
 
@@ -393,7 +397,7 @@ $ curl 'localhost:9200/accounts/person/_search'
 
 ### 6.2 全文搜索
 
-Elastic 的查询非常特别，允许 GET 请求带有数据体，并且使用自己的[查询语法](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/query-dsl.html)。
+Elastic 的查询非常特别，使用自己的[查询语法](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/query-dsl.html)，要求 GET 请求带有数据体。
 
 ```bash
 $ curl 'localhost:9200/accounts/person/_search'  -d '
@@ -402,7 +406,7 @@ $ curl 'localhost:9200/accounts/person/_search'  -d '
 }'
 ```
 
-上面代码使用 [Match 查询](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/query-dsl-match-query.html)，指定匹配条件是`desc`字段里面包含“软件”这个词。返回结果如下。
+上面代码使用 [Match 查询](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/query-dsl-match-query.html)，指定的匹配条件是`desc`字段里面包含“软件”这个词。返回结果如下。
 
 ```javascript
 {
@@ -429,7 +433,7 @@ $ curl 'localhost:9200/accounts/person/_search'  -d '
 }
 ```
 
-Elastic 默认一次性返回10条结果，可以通过`size`字段改变这个设置。
+Elastic 默认一次返回10条结果，可以通过`size`字段改变这个设置。
 
 ```bash
 $ curl 'localhost:9200/accounts/person/_search'  -d '
@@ -439,7 +443,7 @@ $ curl 'localhost:9200/accounts/person/_search'  -d '
 }'
 ```
 
-上面代码指定，只返回一条结果。
+上面代码指定，每次只返回一条结果。
 
 还可以通过`from`字段，指定位移。
 
