@@ -291,8 +291,8 @@ $ curl 'localhost:9200/accounts/person/1?pretty=true'
 $ curl 'localhost:9200/weather/beijing/abc?pretty=true'
                
 {
-  "_index" : "weather",
-  "_type" : "beijing",
+  "_index" : "accounts",
+  "_type" : "person",
   "_id" : "abc",
   "found" : false
 }
