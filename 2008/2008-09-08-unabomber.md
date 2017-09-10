@@ -50,7 +50,7 @@ FBI 局长和美国司法部长最终同意刊登这篇文章。1995年9月19日
 
 《论工业社会及其未来》这篇论文值得细细阅读，它对人类现状和未来的分析描述，是非常震撼的。
 
-![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017090907![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017090903.jpg).jpg)
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017090907.jpg)
 
 关于人类的现状，作者的第一句话就是：“工业文明带给人类的是极大的灾难。”
 
