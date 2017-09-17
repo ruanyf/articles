@@ -2,15 +2,23 @@
 
 2017年6月，TC39 委员会正式发布了[《ES2017 标准》](https://www.ecma-international.org/publications/standards/Ecma-262.htm)。
 
-相比两年前，JavaScript 语法有了很大的升级，主要是引入了 [async 函数](http://es6.ruanyifeng.com/#docs/async)和 [decorator](http://es6.ruanyifeng.com/#docs/decorator)。这让我觉得，[《ES6 标准入门》](http://es6.ruanyifeng.com/)必须要出新版，否则就跟不上了。
+相比两年前，JavaScript 语法有了很大的升级，主要是引入了 [async 函数](http://es6.ruanyifeng.com/#docs/async)和 [decorator](http://es6.ruanyifeng.com/#docs/decorator)。这让我觉得，[《ES6 标准入门》](http://es6.ruanyifeng.com/)必须要出新版，否则就跟不上形势了。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091801.jpg)](http://es6.ruanyifeng.com/images/cover-3rd.jpg)
 
 电子工业出版社的张春雨编辑很支持我的想法，最快时间投入出版社的资源；孙奇俏编辑连续几周都忙于校对排版。7月初我交稿，8月底送印刷厂，9月中旬《ES6 标准入门（第3版）》就全面上市了。
 
 四年不间断的修改增订，1000多次提交，100多位网友的补丁，8000颗 star，官网每天上万次的页面请求，所有的努力都包含在这个版本里面了。我对它的质量很有信息。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091804.png)
+
 第三版比第二版厚了许多，547页 vs. 317页。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091802.jpg)
+
 价格当然也贵了不少。但是请不要忘记，这是一本开源教材，你随时可以去[官网](http://es6.ruanyifeng.com/)，免费阅读所有内容。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091805.png)
 
 如果读完，觉得这件事值得支持，欢迎购买实体书，以及为[源码仓库](https://github.com/ruanyf/es6tutorial)加一颗 star。
 
@@ -19,6 +27,8 @@
 > - [当当](http://product.dangdang.com/25156888.html)
 > - [亚马逊](https://www.amazon.cn/ES6%E6%A0%87%E5%87%86%E5%85%A5%E9%97%A8-%E9%98%AE%E4%B8%80%E5%B3%B0/dp/B0755547ZZ)
 > - [China-pub](http://product.china-pub.com/6504650)
+
+（正文完）
 
 ================================
 
@@ -39,6 +49,8 @@
 我在微博上曾经[说过](http://www.weibo.com/1400854834/F0AIlfAJr)一段话，就把它放在这里作为结束。
 
 > ”我水平其实不高，只是好奇心重，从没想到这么多人会关注。希望不要让大家失望，未来做一块垫脚石，为需要的朋友提供帮助，为技术的推广和发展做出力所能及的贡献。“
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091806.jpg)
 
 阮一峰  
 2017年8月1日，写于杭州
