@@ -16,11 +16,11 @@
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091802.jpg)
 
-价格当然也贵了不少。但是请不要忘记，这是一本开源教材，你随时可以去[官网](http://es6.ruanyifeng.com/)，免费阅读所有内容。
+价格当然也贵了不少。不过，这是一本开源教材，你随时可以去[官网](http://es6.ruanyifeng.com/)，免费阅读所有内容。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091805.png)
 
-如果读完，觉得这件事值得支持，欢迎购买实体书，以及为[源码仓库](https://github.com/ruanyf/es6tutorial)加一颗 star。
+如果读完，觉得这件事值得支持，欢迎购买实体书。如果能够再为[源码仓库](https://github.com/ruanyf/es6tutorial)加一颗 star，那就更好了。
 
 > - [淘宝](https://s.taobao.com/search?q=ES6%E6%A0%87%E5%87%86%E5%85%A5%E9%97%A8+%E7%AC%AC3%E7%89%88)
 > - [京东](https://item.jd.com/12172449.html)
