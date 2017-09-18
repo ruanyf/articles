@@ -8,7 +8,13 @@
 
 电子工业出版社的张春雨编辑很支持我的想法，最快时间投入出版社的资源；孙奇俏编辑连续几周都忙于校对排版。7月初我交稿，8月底送印刷厂，9月中旬《ES6 标准入门（第3版）》就全面上市了。
 
-四年不间断的修改增订，1000多次提交，100多位网友的补丁，8000颗 star，官网每天上万次的页面请求，所有的努力都包含在这个版本里面了。我对它的质量很有信息。
+> - [淘宝](https://s.taobao.com/search?q=ES6%E6%A0%87%E5%87%86%E5%85%A5%E9%97%A8+%E7%AC%AC3%E7%89%88)
+> - [京东](https://item.jd.com/12172449.html)
+> - [亚马逊](https://www.amazon.cn/ES6%E6%A0%87%E5%87%86%E5%85%A5%E9%97%A8-%E9%98%AE%E4%B8%80%E5%B3%B0/dp/B0755547ZZ)
+> - [当当](http://product.dangdang.com/25156888.html)
+> - [China-pub](http://product.china-pub.com/6504650)
+
+新版本的背后是，四年不间断的修改增订，1000多次提交，100多位网友的补丁。我对它的质量很有信心，这本书已经有了8000颗 star，官网每天有上万次的页面请求。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091804.png)
 
@@ -20,13 +26,7 @@
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091805.png)
 
-如果读完，觉得这件事值得支持，欢迎购买实体书。如果能够再为[源码仓库](https://github.com/ruanyf/es6tutorial)加一颗 star，那就更好了。
-
-> - [淘宝](https://s.taobao.com/search?q=ES6%E6%A0%87%E5%87%86%E5%85%A5%E9%97%A8+%E7%AC%AC3%E7%89%88)
-> - [京东](https://item.jd.com/12172449.html)
-> - [当当](http://product.dangdang.com/25156888.html)
-> - [亚马逊](https://www.amazon.cn/ES6%E6%A0%87%E5%87%86%E5%85%A5%E9%97%A8-%E9%98%AE%E4%B8%80%E5%B3%B0/dp/B0755547ZZ)
-> - [China-pub](http://product.china-pub.com/6504650)
+如果读完线上版本，觉得这件事值得支持，欢迎购买实体书。如果能够再为[源码仓库](https://github.com/ruanyf/es6tutorial)加一颗 star，那就更好了。
 
 （正文完）
 
