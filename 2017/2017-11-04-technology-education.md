@@ -108,7 +108,7 @@
 
 [海棠学院](http://apeclass.cn/?utm_source=ruanyifeng)是一家前端开发的在线教育平台，位于北京，跟我有过多次合作。
 
-他们的[《全栈工程师基础课程》](http://apeclass.cn/course/27/lesson/list/?utm_source=ruanyifeng)已经开班了10期，从零开始教起，培训了近千名学员，其中近百人就业后的年薪可以达到20W。
+他们的[《全栈工程师基础课程》](http://apeclass.cn/lesson/index.html?utm_source=ruanyifeng)已经开班了10期，从零开始教起，培训了近千名学员，其中近百人就业后的年薪可以达到20W。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017110713.jpg)](http://apeclass.cn/lesson/nodejs.html?utm_source=ruanyifeng)
 
@@ -116,7 +116,7 @@
 
 课程内容包括 Node、Express、MongoDB、React、BootStrap 等主题（[完整的授课内容](http://apeclass.cn/lesson/nodejs.html#syllabus?utm_source=ruanyifeng)），重点讲解 Node 应用和微信公众号开发，实战导向，注重动手练习加深理解。
 
-该课程的核心内容一共37讲，为期2~3个月，全部直播。价格是 3499 元，双十一优惠卷可以抵扣 500 元。主讲人是海棠学院的技术合伙人 Rocky 老师。
+该课程的核心内容一共37讲，为期2~3个月，全部直播。价格是 2999 元，双十一优惠卷可以抵扣 500 元。主讲人是海棠学院的技术合伙人 Rocky 老师。
 
 ![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017110712.jpg)
 
