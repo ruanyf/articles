@@ -15,6 +15,33 @@ $ apt-get install apache2
 - sites-enabled/：该目录包含实际使用的虚拟主机，通常是指向`sites-available`目录的符号链接。
 - `mods-[enabled,available]/`：这些目录的功能与对应的site目录类似，用来定义可加载的模块。
 
+常用命令
+
+```bash
+# 启动
+$ sudo service apache2 start
+
+# 关闭
+$ sudo service apache2 stop
+
+# 重启
+$ sudo service apache2 restart
+
+# 重新加载配置文件
+$ sudo service apache2 reload
+```
+
+使用 Systemd 的系统，可以使用下面的命令。
+
+```bash
+## Start command ##
+systemctl start apache2.service
+## Stop command ##
+systemctl stop apache2.service
+## Restart command ##
+systemctl restart apache2.service
+```
+
 ## apache2.conf
 
 `/etc/apache2/apache2.conf`文件是Apache的主配置文件。
@@ -153,3 +180,4 @@ Compiled in modules:
 ## 参考链接
 
 - Justin Ellingwood, [How To Configure the Apache Web Server on an Ubuntu or Debian VPS](https://www.digitalocean.com/community/tutorials/how-to-configure-the-apache-web-server-on-an-ubuntu-or-debian-vps)
+- [Start / Stop and Restart Apache 2 Web Server Command](https://www.cyberciti.biz/faq/star-stop-restart-apache2-webserver/), by nixCraft
