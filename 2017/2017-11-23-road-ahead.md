@@ -1,20 +1,18 @@
-
-
 # 博客文集《前方的路》发布
 
 年初，我定了一个目标：今年要完成三本书。
 
-第一本书是**《ES6 标准入门（第三版）》**（[官网](http://es6.ruanyifeng.com/)，[源码](https://github.com/ruanyf/es6tutorial/)），今年9月已经出版。
+第一本书是 **《ES6 标准入门（第三版）》**（[官网](http://es6.ruanyifeng.com/)，[源码](https://github.com/ruanyf/es6tutorial/)），今年9月已经出版。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017091801.jpg)](http://es6.ruanyifeng.com/)
 
-第二本书是**《未来世界的幸存者》**（[官网](http://survivor.ruanyifeng.com/)，[源码](https://github.com/ruanyf/survivor)），两周前[写完](http://www.ruanyifeng.com/blog/2017/11/technology-training.html)。我说出了自己对于未来的看法。
+第二本书是 **《未来世界的幸存者》**（[官网](http://survivor.ruanyifeng.com/)，[源码](https://github.com/ruanyf/survivor)），两周前[写完](http://www.ruanyifeng.com/blog/2017/11/technology-training.html)。我说出了自己对于未来的看法。
 
 [![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017110701.jpg)](http://survivor.ruanyifeng.com/)
 
-第三本书是**《前方的路》**（[官网](http://road.ruanyifeng.com/)，[源码](https://github.com/ruanyf/road)），昨天整理完成，总结了我走过的人生道路。
+第三本书是 **《前方的路》**（[官网](http://road.ruanyifeng.com/)，[源码](https://github.com/ruanyf/road)），昨天整理完成，总结了我走过的人生道路。
 
-[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017112301.jpg)](http://road.ruanyifeng.com/)]
+[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017112301.jpg)](http://road.ruanyifeng.com/)
 
 我写博客十多年了，从一个愤青 + 文青的学生，变成如今沉默寡言的中年人。一路上，那些随手写下的文字，累积有1000多篇。我早有心愿，整理出书，一方面为了纪念，另一方面现在的博客网站不易用，老文章很难找，迫切需要一个便于查找和阅读的精华版。
 
