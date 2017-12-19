@@ -3,17 +3,19 @@
 
 写代码只是软件开发的一小部分，更多的时间往往花在构建（build）和测试（test）上面。
 
-所以毫不奇怪，自动化构建和测试工具层出不穷，用来提高软件开发的效率。[Travis CI](https://travis-ci.org/) 就是这类工具之中，[市场份额](https://github.com/blog/2463-github-welcomes-all-ci-tools)最大的一个。
+所以毫不奇怪，为了提高软件开发的效率，构建和测试的自动化工具层出不穷。[Travis CI](https://travis-ci.org/) 就是这类工具之中，[市场份额](https://github.com/blog/2463-github-welcomes-all-ci-tools)最大的一个。
 
-本文介绍 Travis CI 的基本用法。我的体会是，用好这个工具不仅可以提高效率，还能使开发流程变得更可靠和专业化，从而提高软件的价值。而且它对于开源项目是免费的，不花一分钱，就能帮你做掉很多事情。
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017121901.png)
+
+本文介绍 Travis CI 的基本用法。我的体会是，用好这个工具不仅可以提高效率，还能使开发流程变得更可靠和专业化，从而提高软件的价值。而且，它对于开源项目是免费的，不花一分钱，就能帮你做掉很多事情。
 
 ## 一、什么是持续集成？
 
-“持续集成”（Continuous Integration，简称 CI）指的是只要代码有变更，就自动运行构建和测试，反馈运行结果。确保符合预期以后，再将新代码“集成”到主干。
+Travis CI 提供的是持续集成服务（Continuous Integration，简称 CI）。它绑定 Github 上面的项目，只要有新的代码，就会自动抓取。然后，提供一个运行环境，执行测试，完成构建，还能部署到服务器。
 
-CI 的好处在于，每次代码的小幅变更，就能看到运行结果，从而不断累积小的变更，而不是在开发周期结束时，一下子合并一大块代码。
+持续集成指的是只要代码有变更，就自动运行构建和测试，反馈运行结果。确保符合预期以后，再将新代码“集成”到主干。
 
-Travis CI 提供的就是持续集成服务。它绑定 Github 上面的项目，只要有新的代码，就会自动抓取。然后，提供一个运行环境，执行测试，完成构建，还能部署到服务器。
+持续集成的好处在于，每次代码的小幅变更，就能看到运行结果，从而不断累积小的变更，而不是在开发周期结束时，一下子合并一大块代码。
 
 ## 二、使用准备
 
@@ -28,11 +30,13 @@ Travis CI 只支持 Github，不支持其他代码托管服务。这意味着，
 
 首先，访问官方网站 [travis-ci.org](https://travis-ci.org/)，点击右上角的个人头像，使用 Github 账户登入 Travis CI。
 
-Travis 会列出 Github 上面你的所有仓库，以及你所属于的组织。然后，选择你需要 Travis 帮你构建的仓库，打开仓库旁边的开关。一旦激活了一个仓库，Travis 会监听这个仓库的所有变化。
+Travis 会列出 Github 上面你的所有仓库，以及你所属于的组织。此时，选择你需要 Travis 帮你构建的仓库，打开仓库旁边的开关。一旦激活了一个仓库，Travis 会监听这个仓库的所有变化。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017121902.png)
 
 ## 三、.travis.yml
 
-Travis 要求项目的根目录下面，有一个`.travis.yml`文件。这是一个配置文件，指定了 Travis 的行为。该文件必须保存在 Github 仓库里面，一旦代码仓库有新的 Commit，Travis 就会去找这个文件，执行里面的命令。
+Travis 要求项目的根目录下面，必须有一个`.travis.yml`文件。这是配置文件，指定了 Travis 的行为。该文件必须保存在 Github 仓库里面，一旦代码仓库有新的 Commit，Travis 就会去找这个文件，执行里面的命令。
 
 这个文件采用 [YAML](http://www.ruanyifeng.com/blog/2016/07/yaml.html) 格式。下面是一个最简单的 Python 项目的`.travis.yml`文件。
 
@@ -56,14 +60,98 @@ script: py.test
 
 上面代码中，设置了四个字段：运行环境是 Python，需要`sudo`权限，在安装依赖之前需要安装`foo`模块，然后执行脚本`py.test`。
 
-## 四、生命周期
+## 四、运行流程
 
-所谓“生命周期”，就是 Travis 的运行流程。简单说，任何项目都会经过两个阶段。
+Travis 的运行流程很简单，任何项目都会经过两个阶段。
 
 > - install 阶段：安装依赖
 > - script 阶段：运行脚本
 
-`script`阶段用来运行构建和测试，结束以后可以设置[通知步骤](https://docs.travis-ci.com/user/notifications/)（notification）和[部署步骤](https://docs.travis-ci.com/user/deployment/)（deployment），不过它们不是必须的。
+### 4.1 install 阶段
+
+`install`阶段用来指定安装脚本。
+
+```yaml
+install: ./install-dependencies.sh
+```
+
+如果有多个脚本，可以写成下面的形式。
+
+```yaml
+install:
+  - command1
+  - command2
+```
+
+上面代码中，如果`command1`失败了，整个构建就会停下来，不再往下进行。
+
+如果不需要安装，即跳过安装阶段，就直接设为`true`。
+
+```yml
+install: true
+```
+
+### 4.2、script 阶段
+
+`script`阶段用来指定构建或测试脚本。
+
+```yml
+script: bundle exec thor build
+```
+
+如果有多个脚本，可以写成下面的形式。
+
+```yml
+script:
+- command1
+- command2
+```
+
+注意，`script`与`install`不一样，如果`command1`失败，`command2`会继续执行。但是，整个构建阶段的状态是失败。
+
+如果`command2`只有在`command1`成功后才能执行，就要写成下面这样。
+
+```yaml
+script: command1 && command2
+```
+
+### 4.3 实例：Node 项目
+
+Node 项目的预设环境需要写成下面这样。
+
+```yaml
+language: node_js
+node_js:
+  - "8"
+```
+
+上面代码中，`node_js`字段用来指定 Node 版本。
+
+Node 项目的`install`和`script`阶段都有默认脚本，可以省略。
+
+- `install`默认值：npm install
+- `script`默认值：npm test
+
+更多设置请看[官方文档](https://docs.travis-ci.com/user/languages/javascript-with-nodejs/)。
+
+### 4.4 部署
+
+`script`阶段结束以后，还可以设置[通知步骤](https://docs.travis-ci.com/user/notifications/)（notification）和[部署步骤](https://docs.travis-ci.com/user/deployment/)（deployment），它们不是必须的。
+
+部署的脚本可以在`script`阶段执行，也可以使用 Travis 为几十种常见服务提供的快捷部署功能。比如，要部署到 [Github Pages](https://docs.travis-ci.com/user/deployment/pages/)，可以写成下面这样。
+
+```yml
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  on:
+    branch: master
+```
+
+其他部署方式，请看[官方文档](https://docs.travis-ci.com/user/deployment/)。
+
+### 4.5 钩子方法
 
 Travis 为上面这些阶段提供了7个钩子。
 
@@ -75,7 +163,7 @@ Travis 为上面这些阶段提供了7个钩子。
 > - after_deploy：deploy 步骤之后执行
 > - after_script：script 阶段之后执行
 
-因此，完整的生命周期，从开始到结束是下面的流程。
+完整的生命周期，从开始到结束是下面的流程。
 
 > 1. before_install
 > 1. install
@@ -97,102 +185,18 @@ before_install:
 
 上面代码表示`before_install`阶段要做两件事，第一件事是要更新依赖，第二件事是安装`libxml2-dev`。用到的几个参数的含义如下：`-qq`表示减少中间步骤的输出，`-y`表示如果需要用户输入，总是输入`yes`。
 
+### 4.6 运行状态
 
-## 五、运行状态
-
-Travis 每次运行，可能会返回四种状态。
+最后，Travis 每次运行，可能会返回四种状态。
 
 > - passed：运行成功，所有步骤的退出码都是`0`
 > - canceled：用户取消执行
 > - errored：`before_install`、`install`、`before_script`有非零退出码，运行会立即停止
 > - failed ：`script`有非零状态码 ，会继续运行
 
-## 六、install 阶段
+## 五、使用技巧
 
-`install`阶段用来指定安装脚本。
-
-```yaml
-install: ./install-dependencies.sh
-```
-
-如果有多个脚本，可以写成下面的形式。
-
-```yaml
-install:
-  - command1
-  - command2
-```
-
-上面代码中，如果`command1`失败了，整个构建就会停下来，不再往下进行。
-
-如果不需要安装，即跳过安装阶段，就直接设为`true`。
-
-```yaml
-install: true
-```
-
-## 七、script 阶段
-
-`script`阶段用来指定构建或测试脚本。
-
-```yaml
-script: bundle exec thor build
-```
-
-如果有多个脚本，可以写成下面的形式。
-
-```yaml
-script:
-- command1
-- command2
-```
-
-注意，`script`与`install`不一样，如果`command1`失败，`command2`会继续执行。但是，整个构建阶段的状态是失败。
-
-如果`command2`只有在`command1`成功后才能执行，就要写成下面这样。
-
-```yaml
-script: command1 && command2
-```
-
-## 八、Node 项目
-
-Node 项目的预设环境需要写成下面这样。
-
-```yaml
-language: node_js
-node_js:
-  - "8"
-```
-
-上面代码中，`node_js`字段用来指定 Node 版本。
-
-Node 项目的`install`和`script`阶段都有默认脚本，可以省略。
-
-- `install`默认值：npm install
-- `script`默认值：npm test
-
-更多设置请看[官方文档](https://docs.travis-ci.com/user/languages/javascript-with-nodejs/)。
-
-
-## 九、部署
-
-构建完成以后，Travis 还可以将构建产物，部署到指定的服务器。
-
-构建脚本可以在`script`阶段完成，可以使用 Travis 提供的快捷部署功能。比如，要部署到 [Github Pages](https://docs.travis-ci.com/user/deployment/pages/)，可以写成下面这样。
-
-```yml
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
-  on:
-    branch: master
-```
-
-其他部署方式，请看[官方文档](https://docs.travis-ci.com/user/deployment/)。
-
-## 十、环境变量
+### 5.1 环境变量
 
 `.travis.yml`的`env`字段可以定义环境变量。
 
@@ -207,9 +211,11 @@ env:
 
 有些环境变量（比如用户名和密码）不能公开，这时可以通过 Travis 网站，写在每个仓库的设置页里面，Travis 会自动把它们加入环境变量。这样一来，脚本内部依然可以使用这些环境变量，但是只有管理员才能看到变量的值。具体操作请看[官方文档](https://docs.travis-ci.com/user/environment-variables)。
 
-## 十一、加密信息
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017121903.png)
 
-有些信息实在太关键（比如 Token），不能明文存在 Travis 的网站上。这时，Travis 提供了加密处理。
+### 5.2 加密信息
+
+如果不放心保密信息明文存在 Travis 的网站，可以使用 Travis 提供的加密功能。
 
 首先，安装 Ruby 的包`travis`。
 
@@ -249,9 +255,9 @@ $ travis encrypt SOMEVAR=secretvalue --add
 
 详细信息请看[官方文档](https://docs.travis-ci.com/user/encryption-keys/)。
 
-## 十二、加密文件
+### 5.3 加密文件
 
-部署时，有些文件是不能公开的（比如私钥），Travis 提供了加密文件功能。
+如果要加密的是文件（比如私钥），Travis 提供了加密文件功能。
 
 安装命令行客户端以后，使用下面的命令登入 Travis CI。
 
@@ -263,6 +269,7 @@ $ travis login
 
 ```bash
 $ travis encrypt-file bacon.txt
+
 encrypting bacon.txt for rkh/travis-encrypt-file-example
 storing result as bacon.txt.enc
 storing secure env variables for decryption
@@ -278,7 +285,7 @@ Make sure not to add bacon.txt to the git repository.
 Commit all changes to your .travis.yml.
 ```
 
-加密后会生成`super_secret.txt.enc`，该文件需要提交到代码库。此外，该命令还会生成一个环境变量，保存密钥，储存在 Travis CI，文件解密时需要这个环境变量。详细步骤请仔细看上面的命令行提示。
+上面的代码对文件`bacon.txt`进行加密，加密后会生成`bacon.txt.enc`，该文件需要提交到代码库。此外，该命令还会生成一个环境变量`$encrypted_0a6446eb3ae3_key`，保存密钥，储存在 Travis CI，文件解密时需要这个环境变量。你需要把解密所需的`openssl`命令，写在`.travis.yml`的`before_install`字段里面。这些都写在上面的命令行提示里面。
 
 `--add`参数可以自动把环境变量写入`.travis.yml`。
 
@@ -293,7 +300,7 @@ Make sure not to add bacon.txt to the git repository.
 Commit all changes to your .travis.yml.
 ```
 
-详细信息请看[官方文档](https://docs.travis-ci.com/user/encrypting-files/)，实际的应用可以参考下面两篇文章。
+详细信息请看[官方文档](https://docs.travis-ci.com/user/encrypting-files/)，实际的例子可以参考下面两篇文章。
 
 > - [Auto-deploying built products to gh-pages with Travis](https://gist.github.com/domenic/ec8b0fc8ab45f39403dd)
 > - [SSH deploys with Travis CI](https://oncletom.io/2016/travis-ssh-deploy/)
