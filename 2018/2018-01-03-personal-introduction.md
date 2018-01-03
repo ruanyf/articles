@@ -16,7 +16,7 @@ My technology [blog](http://www.ruanyifeng.com/blog) is famous in China, which h
 
 Last year, My book ["ES6 Primer"](http://es6.ruanyifeng.com) published the third version, and became a technology [bestseller](https://item.jd.com/12172449.html).
 
-<a href="http://es6.ruanyifeng.com"><img src="../images/2018-intro-05.png" width="250" /></a>
+<a href="http://es6.ruanyifeng.com"><img src="../images/2018-intro-05.jpg" width="250" /></a>
 
 ## React
 
@@ -26,7 +26,9 @@ I choose React as my frontend framework for daily use. My [React tutorial](https
 
 ## Other Works
 
-I also wrote a [full-stack tutorial](https://github.com/ruanyf/jstraining) for training JS developers, which ranked number one in its category. In Github, my [followers](https://github.com/ruanyf?tab=followers) is more than 34,000 [ranked first](http://githubrank.com/) in China.
+I also wrote a [full-stack tutorial](https://github.com/ruanyf/jstraining) for training JS developers, which ranked number one in its category.
+
+You could visit my other works in Github. My [followers](https://github.com/ruanyf?tab=followers) there is more than 34,000 [ranked first](http://githubrank.com/) in China.
 
 <a href="https://github.com/ruanyf?tab=followers"><img src="../images/2018-intro-04.png" width="400" /></a>
 
