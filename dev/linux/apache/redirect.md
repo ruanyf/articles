@@ -139,7 +139,7 @@ RewriteRule .*\.(gif|jpeg|png)$ - [F]
 
 ```
 RewriteEngine on
-RewriteCond %{HTTP_HOST} ^example\.com$
+RewriteCond %{HTTP_HOST} ^example\.com$ [NC]
 RewriteRule ^(.*)$ http://www.example.com/$1 [R=301,L]
 ```
 
