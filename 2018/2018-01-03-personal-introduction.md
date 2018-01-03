@@ -2,7 +2,7 @@
 
 <img src="../images/2018-intro-01.jpg" width="250" />
 
-My name is Ruan Yifeng (阮一峰).
+My name is [Ruan Yifeng](http://www.ruanyifeng.com) (阮一峰).
 
 I am an advanced JavaScript developer. My developing experience with JS is longer than a decade.
 
