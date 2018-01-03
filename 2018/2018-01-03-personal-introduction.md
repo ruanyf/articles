@@ -28,12 +28,12 @@ I choose React as my frontend framework for daily use. My [React tutorial](https
 
 I also wrote a [full-stack tutorial](https://github.com/ruanyf/jstraining) for training JS developers, which ranked number one in its category.
 
-You could visit my other works in Github. My [followers](https://github.com/ruanyf?tab=followers) there is more than 34,000 [ranked first](http://githubrank.com/) in China.
+You could visit my [other works](https://github.com/ruanyf) in Github. My [followers](https://github.com/ruanyf?tab=followers) there is more than 34,000 [ranked first](http://githubrank.com/) in China.
 
 <a href="https://github.com/ruanyf?tab=followers"><img src="../images/2018-intro-04.png" width="400" /></a>
 
 ## Employer
 
-Now, I work for [Alipay](https://www.alipay.com/) in Hangzhou, China.
+Now, I work for [Alipay](https://www.alipay.com/) as a JS expert in Hangzhou, China.
 
 (END)
