@@ -1,163 +1,227 @@
 # Docker 入门教程
 
-2013年 [Docker](https://www.docker.com/) 发布，从那时起，它就广受瞩目，被认为是最重要的新工具之一，可能会改变软件开发的整个流程。
+从2013年发布至今， [Docker](https://www.docker.com/) 一直广受瞩目，被认为是最重要的新工具之一，可能会改变软件行业。
 
-由于这个工具很新，许多人并不清楚它是什么，到底要解决什么问题，好处又在哪里？本文就来帮助大家理解 Docker，告诉你如何将它用在日常开发之中。
+但是，许多人并不清楚它到底是什么，要解决什么问题，好处又在哪里？本文就来详细解释，帮助大家理解 Docker，还带有通俗易懂的编写实例，教你如何将它用于日常开发。
 
 ## 一、环境配置的难题
 
-软件开发最麻烦的事情之一，就是环境配置。软件依赖于环境，但是每一台计算机的环境都不尽相同，一方面是操作系统的设置，另一方面是依赖的各种库和组件，只有这两方面都配置正确，软件才能正确运行。
+软件开发最麻烦的事情之一，就是环境配置。每一台计算机的环境都不尽相同，你怎么知道自家的软件，能在用户的计算机上跑起来？用户必须保证两件事：操作系统的设置，各种库和组件的安装。只有它们都正确，软件才能运行。
 
-举例来说，如果安装一个 Python 应用，你的计算机必须有 Python 引擎，然后还必须安装依赖，配置环境变量。如果遇到某些老旧的模块与当前环境不兼容，那就很麻烦了。开发者常常会说：“它在我的机器上可以跑了”（It works on my machine），言下之意就是，在其他机器上很可能跑不了。
+举例来说，你要安装一个 Python 应用，首先计算机必须有 Python 引擎，然后还必须有各种依赖，可能还要配置环境变量。如果某些老旧的模块与当前环境不兼容，那就麻烦了。开发者常常会说：“它在我的机器可以跑了”（It works on my machine），言下之意就是，其他机器很可能跑不了。
 
-环境配置要花掉很多时间，还无法保证每次都能解决问题。很早就有人提出，能不能带环境安装？也就是说，安装的时候，把开放时的环境一模一样地复制过来。
+环境配置如此麻烦，换一台机器，就要重来一次，旷日费时。终于有一天，有人想到了一个根本的解决方案：能不能带环境安装？也就是说，安装的时候，把开发环境一模一样地复制过来。
 
 ## 二、虚拟机
 
-## Docker 是什么
+虚拟机（virtual machine）是一种特殊的软件，可以在一种操作系统里面运行另一种操作系统，比如在 Windows 系统里面运行 Linux 系统。应用程序对此毫无感知，因为虚拟机看上去跟真实系统一模一样，而对于底层系统来说，虚拟机就是一个普通文件，不需要了就删掉，对系统的其他部分毫无影响。
 
-Docker 是容器，提供软件的运行环境，与底层系统隔离。比虚拟机更轻量级。2013年开源
+看上去，虚拟机能够完美解决环境配置问题：用户可以通过虚拟机还原软件的开发环境。但是，这个方案有几个缺点。
 
-> Docker 可以将应用与它的依赖打包在一个虚拟容器之中。应用在这个虚拟容器里运行，就好像在真实的物理机上运行一样。因此，就可以在一台机器上同时提供多种环境。
+（1）资源占用多
 
-有了 Docker，你不用安装任何依赖，只需要安装 Docker，它会帮你创建一个虚拟容器，让应用跑在这个容器里面，与外部隔绝。因此，就不用担心环境问题，不存在不兼容的情况，因为 Docker 就是一个虚拟环境，让应用可以跑起来。
+内存和硬盘空间分配给虚拟机以后，其他程序就不能使用这些资源了。假定虚拟机运行需要 4G 内存，那么底层系统可用的内存就会少掉 4G。更糟糕的是，应用程序真正使用的内存可能只有一点点，但也无法减少分配给虚拟机的内存。
 
-## 虚拟机的缺点
+（2）冗余步骤多
 
-- 占用大量资源，实际又用不到
-- 大量的多余步骤，比如需要设置根用户、权限，还需要登录等等
-- 启动慢。启动一个操作系统需要多久，启动一个虚拟机就需要多久。
+虚拟机是完整的操作系统，一些系统级别的操作步骤，往往无法跳过，比如用户登录。
 
-## 容器的优点
+（3）启动慢
 
-- 它就是一个物理机的进程，而不是虚拟机内部的进程，所以启动快。
-- 它只占用用到的资源，不占用那些没有用到的资源，所以比虚拟机占用的资源少得多，因为虚拟机需要启动完整的操作系统。
-- 多个容器可以共享资源，虚拟机都是独享资源。
+启动操作系统需要多久，启动虚拟机就需要多久。发出命令后，可能要等几分钟，应用程序才能真正运行起来。
 
-## 名词解释
+## 三、Linux 容器
 
-### Linux 容器
+由于虚拟机存在这些缺点，Linux 内核开始发展另一种虚拟化技术：Linux 容器（Linux Containers，缩写为 LXC）。
 
-容器（container）提供一个与物理机隔离的虚拟系统。里面可以提供各种依赖，让应用可以带着环境安装，更方便地运行起来。
+Linux 容器不是模拟一个完整的操作系统，而是对进程进行隔离，或者说，在正常进程的外面套了一个[保护层](https://opensource.com/article/18/1/history-low-level-container-runtimes)。对于容器里面的进程来说，它接触到的各种资源都是虚拟的，从而实现与底层系统的隔离。由于容器是进程级别的，相比虚拟机有很多优势。
 
-容器看上去很像虚拟机（virtual machine），但是容器并不是完整的操作系统，不会复制整个操作系统，仅仅复制用到的组件。这大大提高了表现，以及减少容器的大小，运行起来很快。它的进程就是运行在物理机的进程，外面多了一层[保护层](https://opensource.com/article/18/1/history-low-level-container-runtimes)，而不是运行在虚拟机的进程。
+（1）启动快
 
-有了容器，就可以保证在一台计算机上写的程序，在另一台计算机也能跑起来。它对开发者和系统管理员都有吸引力。对于开发者来说，不用关心运行环境了，只要本机能跑起来，就有办法在其他机器上跑起来。另一方面，还可以在自己的机器上，随时起一个环境，测试其他人的程序，对自己的机器毫无影响。
+容器里面的应用，直接就是底层系统的一个进程，而不是虚拟机内部的进程。所以，启动容器相当于启动本机的一个进程，而不是启动一个操作系统，速度就快很多。
 
-相比虚拟机，容器的启动和运行速度都比较快。所以，很适合用来持续集成。
+（2）资源占用少
 
-Docker 是最有名的容器实现。让用户可以更方便地创建和使用容器。它的好处是让你可以很容易地将应用放在容器里面，并且可以对容器版本管理、复制、分享、修改，就像管理普通的代码，运行和部署起来也方便。也就是说，Docker 是一个方便好用的容器解决方案。
+容器只占用所用到的资源，不占用那些没有用到的资源，而虚拟机由于是完整的操作系统，不可避免要占用所有资源。另外，多个容器可以共享资源，虚拟机都是独享资源。
 
-容器本身是一个可执行文件，称为 image 文件。它把应用和依赖都包含在这个文件里面。
+（3）体积小
 
-容器是 image 文件的运行实例，或者说容器加载进入内存。一个正在运行的 Docker 就构成了一个容器（container）。
+容器只要包含用到的组件即可，而虚拟机是整个操作系统的打包，所以容器文件比虚拟机文件要小很多。
 
-下面的命令可以列出所有正在运行的容器。
+总之，容器有点像轻量级的虚拟机，能够提供虚拟化的环境，但是成本开销小得多。
 
-```bash
-$ docker ps
-```
+## 四、Docker 是什么？
 
-容器之间可以共享资源，虚拟机是独占资源，是一个完整的操作系统。所以，Docker 是轻量级。
+Docker 属于 Linux 容器的一种封装，提供简单易用的接口。它是目前最流行的 Linux 容器解决方案。
 
-## image 文件
+Docker 将应用程序与该程序的依赖，打包在一个文件里面。运行这个文件，就会生成一个虚拟容器。程序在这个虚拟容器里运行，就好像在真实的物理机上运行一样。因此，一台物理机可以同时提供多种环境。有了 Docker，就不用担心环境问题。只要保证虚拟环境正确，就能让应用跑起来。
 
-image 文件是一个二进制文件。它的生成要依赖一个配置文件 Dockerfile 文件。Dockerfile 文件配置好了容器的虚拟环境。这个环境里面，文件系统和网络接口是虚拟的，与物理机的文件系统和网络接口是隔离的，必须分配资源给这些虚拟资源。因此，需要在 Dockefile 里面定义容器与物理机的映射（map）。
+总体来说，Docker 的接口相当简单，用户可以方便地创建和使用容器，把自己的应用放入容器。容器还可以进行版本管理、复制、分享、修改，就像管理普通的代码一样。
 
-image 文件是可以运行的，它运行后形成的实例就是 Docker 容器。
+## 五、Docker 的用途
 
-image 文件是保存后的容器，容器是正在运行的 image 文件。
+Docker 的主要用途，目前有三大类。
 
-## Dockerfile 文件
+第一类是提供一次性的环境，比如本地测试他人的软件、持续集成的时候提供单元测试和构建的环境。
 
-image 文件是一个配置文件，用来创建 Docker 容器。image 文件可以继承，通常来说，一个 image 文件往往是继承另一个 image 文件，然后加上一些个性化设置。举例来说，你可以在 Ubuntu image 的基础上，加上 Apache 服务器，形成你的 image。
+第二类是提供弹性的云服务，因为 Docker 容器可以随开随关，很适合动态扩容和缩容。
 
+第三类是组建微服务架构。通过多个容器，一台机器可以跑多个服务，因此在本机就可以模拟出微服务架构。
 
-```
-# Use an official Python runtime as a parent image
-FROM python:2.7-slim
+## 六、Docker 的安装
 
-# Set the working directory to /app
-WORKDIR /app
-
-# Copy the current directory contents into the container at /app
-ADD . /app
-
-# Install any needed packages specified in requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
-
-# Make port 80 available to the world outside this container
-EXPOSE 80
-
-# Define environment variable
-ENV NAME World
-
-# Run app.py when the container launches
-CMD ["python", "app.py"]
-```
-
-## 安装
-
-https://docs.docker.com/engine/installation/
-
-Docker 有两个版本：社区版（Community Edition，缩写为 CE）和企业版（Enterprise Edition，缩写为 EE）。企业版包含了一些收费服务，一般情况下用不到。下面的介绍都针对社区版。
+Docker 是一个开源的商业产品，有两个版本：社区版（Community Edition，缩写为 CE）和企业版（Enterprise Edition，缩写为 EE）。企业版包含了一些收费服务，个人开发者一般用不到。下面的介绍都针对社区版。
 
 Docker CE 的安装请参考官方文档。
 
-- [Mac](https://docs.docker.com/docker-for-mac/install/)
-- [Windows](https://docs.docker.com/docker-for-windows/install/)
-- [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
-- [Debian](https://docs.docker.com/install/linux/docker-ce/debian/)
-- [CentOS](https://docs.docker.com/install/linux/docker-ce/centos/)
-- [Fedora](https://docs.docker.com/install/linux/docker-ce/fedora/)
-- [其他 Linux 发行版](https://docs.docker.com/install/linux/docker-ce/binaries/)
+> - [Mac](https://docs.docker.com/docker-for-mac/install/)
+> - [Windows](https://docs.docker.com/docker-for-windows/install/)
+> - [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+> - [Debian](https://docs.docker.com/install/linux/docker-ce/debian/)
+> - [CentOS](https://docs.docker.com/install/linux/docker-ce/centos/)
+> - [Fedora](https://docs.docker.com/install/linux/docker-ce/fedora/)
+> - [其他 Linux 发行版](https://docs.docker.com/install/linux/docker-ce/binaries/)
 
+安装完成后，运行下面的命令，验证是否安装成功。
 
 ```bash
 $ docker version
 ```
 
-Docker 需要用户具有 sudo 权限，为了避免每次命令都输入`sudo`，可以把用户加入 Docker 用户组。https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user
+Docker 需要用户具有 sudo 权限，为了避免每次命令都输入`sudo`，可以把用户加入 Docker 用户组（参考[官方文档](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user)）。
 
 ```bash
-$ sudo groupadd docker
 $ sudo usermod -aG docker $USER
 ```
 
-## hello world
+还有一点，Docker 是服务器——客户端架构。命令行运行`docker`命令的时候，需要本机有 Docker 服务。如果这项服务没有启动，可以用下面的命令启动（参考[官方文档](https://docs.docker.com/config/daemon/systemd/)）。
+
+```bash
+# service 命令的用法
+$ sudo service docker start
+
+# systemctl 命令的用法
+$ sudo systemctl start docker
+```
+
+## 六、image 文件
+
+用户必须有 image 文件，才能生成 Docker 容器。image 文件可以看作是容器的模板。Docker 根据 image 文件生成容器的实例。同一个 image 文件，可以生成多个同时运行的容器实例。
+
+image 是二进制文件，应用程序和程序的依赖都包含在这个文件里面。image 文件可以继承，实际开发中，一个 image 文件往往是在另一个 image 文件的基础上，加上一些个性化设置。举例来说，你可以在 Ubuntu image 的基础上，加上 Apache 服务器，形成你的 image。
+
+下面的命令可以列出本机的所有 image 文件。
+
+```bash
+$ docker image ls
+```
+
+如果要删除 image 文件，可以使用[`docker image rm`](https://docs.docker.com/engine/reference/commandline/image_rm/)命令。
+
+```bash
+$ docker image rm [imageName]
+```
+
+image 文件是通用的，一台机器的 image 文件拷贝到另一台机器，照样可以使用。一般来说，为了节省时间，我们应该尽量使用别人制作好的 image 文件，而不是自己制作。即使要定制，也应该基于别人的 image 文件进行加工，而不是从零开始制作。
+
+为了方便共享，image 文件制作完成后，可以上传到网上的仓库。Docker 的官方仓库 [Docker Hub](https://hub.docker.com/) 是最重要、最常用的 image 仓库。
+
+## 七、实例：hello world
+
+下面，我们通过最简单的 image 文件“[hello world”](https://hub.docker.com/r/library/hello-world/)，感受一下 Docker。
+
+首先，运行下面的命令，将 image 文件从仓库抓取到本地。
+
+```bash
+$ docker pull library/hello-world
+```
+
+上面代码中，`docker pull`是抓取 image 文件的命令。`library/hello-world`是 image 文件在仓库里面的位置，其中`library`是 image 文件所在的组，`hello-world`是 image 文件的名字。
+
+由于 Docker 官方提供的 image 文件，都放在[`library`](https://hub.docker.com/r/library/)组里面，所以它的是默认组，可以省略。因此，上面的命令可以写成下面这样。
+
+```bash
+$ docker pull hello-world
+```
+
+抓取成功以后，就可以在本机看到这个 image 文件了。
+
+```javascript
+$ docker image ls
+```
+
+现在，可以运行这个 image 文件了。
+
+```bash
+$ docker run hello-world
+```
+
+`docker run`命令会从 image 文件，生成一个正在运行的容器实例。
+
+注意，`docker run`具有自动抓取 image 文件的功能。如果发现本地没有指定的 image 文件，就会从仓库自动抓取。因此，前面的`docker pull`命令并不是必需的步骤。
+
+如果运行成功，你会在屏幕上读到下面的输出。
 
 ```bash
 $ docker run hello-world
 
-Unable to find image 'hello-world:latest' locally
-latest: Pulling from library/hello-world
-ca4f61b1923c: Pull complete
-Digest: sha256:ca0eeb6fb05351dfc8759c20733c91def84cb8007aa89a5bf606bc8b315b9fc7
-Status: Downloaded newer image for hello-world:latest
-
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
-...
+
+... ...
 ```
-上面代码中，发现本地没有`hello-world`镜像，就从官方仓库下载。
+
+输出这段提示以后，`hello world`就会停止运行。
+
+有些容器提供的是服务，比如 Ubuntu 的 image。
 
 ```bash
-$ sudo service docker restart
+$ docker run -it ubuntu bash
 ```
-列出所有的 image 文件
+
+上面命令运行以后，就可以在命令行体验 Ubuntu 了。这个命令的`-it`参数的具体含义，后文再介绍。
+
+如果容器提供是服务（就像上面那行命令），启动后就会一直运行，不会自动停止，除非手动中断。下面就是停止容器运行的命令。
 
 ```bash
-$ sudo docker image ls
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-hello-world         latest              f2a91732366c        2 months ago        1.85kB
+$ docker kill [containID]
+```
 
-# 正在运行的 image
-# 等同于 docker ps
+## 八、容器文件
+
+image 文件生成的容器实例，本身也是一个文件，称为容器文件。也就是说，一旦`docker run`命令生成容器实例以后，就会同时存在 image 文件和容器文件。而且关闭容器并不会删除容器文件，只是容器停止运行而已。
+
+下面的命令可以列出本机所有的容器文件。
+
+```bash
+# 列出正在运行的容器
 $ docker container ls
 
-# 所有 container，包括已经退出运行的 container
-$ docker container ls -all
+# 列出所有容器，包括停止运行的容器
+$ docker container ls --all
 ```
+
+上面命令的输出结果之中，容器的 ID 比较有用。很多地方都需要提供这个 ID，比如上一节停止容器运行的`docker kill`命令。
+
+停止运行的容器文件，依然会占据硬盘空间，可以使用[`docker container rm`](https://docs.docker.com/engine/reference/commandline/container_rm/)命令删除。
+
+```bash
+$ docker container rm [containerID]
+```
+
+运行上面的命令之后，再使用`docker container ls`命令，就会发现被删除的容器文件已经消失了。
+
+## 九、Dockerfile 文件
+
+Dockerfile 文件是 image 的配置文件，属于文本文件。Docker 根据 Dockerfile 文件生成二进制的 image 文件。
+
+Dockerfile 文件用来配置容器的虚拟环境。这个环境里面，文件系统和网络接口是虚拟的，与物理机的文件系统和网络接口是隔离的，必须分配资源给这些虚拟资源。因此，需要在 Dockefile 里面定义容器与物理机的映射（map）。
+
+```bash
+$ docker ps
+```
+
+
 
 ## 创建 image 文件
 
