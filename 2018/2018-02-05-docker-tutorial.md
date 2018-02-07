@@ -86,6 +86,8 @@ Docker CE 的安装请参考官方文档。
 
 ```bash
 $ docker version
+# 或者
+$ docker info
 ```
 
 Docker 需要用户具有 sudo 权限，为了避免每次命令都输入`sudo`，可以把用户加入 Docker 用户组（参考[官方文档](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user)）。
@@ -181,10 +183,10 @@ $ docker run -it ubuntu bash
 
 上面命令运行以后，就可以在命令行体验 Ubuntu 了。这个命令的`-it`参数的具体含义，后文再介绍。
 
-如果容器提供是服务（就像上面那行命令），启动后就会一直运行，不会自动停止，除非手动中断。下面就是停止容器运行的命令。
+如果容器提供是服务（就像上面那行命令），启动后就会一直运行，不会自动停止，除非手动中断。下面就是停止容器运行的命令[`docker container kill`](https://docs.docker.com/engine/reference/commandline/container_kill/)。
 
 ```bash
-$ docker kill [containID]
+$ docker container kill [containID]
 ```
 
 ## 八、容器文件
@@ -213,47 +215,79 @@ $ docker container rm [containerID]
 
 ## 九、Dockerfile 文件
 
-Dockerfile 文件是 image 的配置文件，属于文本文件。Docker 根据 Dockerfile 文件生成二进制的 image 文件。
+### 9.1 格式
+
+学会使用 image 文件以后，接下来的问题就是，如何可以生成 image 文件？如果你要推广自己的软件，那么势必要自己做 image 文件。
+
+这就需要用到 Dockerfile 文件。它是一个文本文件，用来配置 image。Docker 根据 这个文件生成二进制的 image 文件。
+
+下面我以自己的 [koa-demos](http://www.ruanyifeng.com/blog/2017/08/koa.html) 项目为例，介绍怎么写 Dockerfile 文件，目的是让用户在 Docker 里面运行 Koa 框架。
+
+首先，在项目的根目录下，新建一个文本文件，文件名为`.dockerignore`，在里面写入下面的[内容](https://github.com/ruanyf/koa-demos/blob/master/.dockerignore)。
+
+```bash
+node_modules
+npm-debug.log
+```
+
+上面代码表示，这两个路径要排除，不要打包进入 image 文件。
+
+然后，在项目的根目录下，新建一个文本文件，文件名为 Dockerfile，在里面写入下面的[内容](https://github.com/ruanyf/koa-demos/blob/master/Dockerfile)。
+
+```bash
+FROM node:8.4
+COPY . /app
+WORKDIR /app
+RUN ["npm", "install"]
+EXPOSE 3000/tcp
+```
+
+上面代码一共五行，含义如下。
+
+- `FROM node:8.4`：该 image 文件基于官方的 node image，冒号表示标签，这里标签是`8.4`，即8.4版本的 node。
+- `COPY . /app`：将当前目录下的所有文件（除了`.dockerignore`排除的路径），都拷贝进入 image 文件的`/app`目录。
+- `WORKDIR /app`：指定接下来的工作路径为`/app`。
+- `RUN ["npm", "install"]`：在`/app`目录下，运行`npm install`命令安装依赖。注意，安装后所有的依赖，都将打包进入 image 文件。
+- `EXPOSE 3000/tcp`：将容器 3000 端口（TCP 协议）暴露出来， 允许外部连接这个端口。
+
+### 9.2 创建 image 文件
+
+有了这个 Dockerfile 文件以后，就可以使用`docker build`命令创建 image 了。
+
+```bash
+$ docker build -t koa-demo .
+# 或者
+$ docker build -t koa-demo:0.0.1 .
+```
+
+上面代码中，`-t`参数用来指定 image 文件的名字，后面可以用冒号指定标签。最后的那个点表示 Dockerfile 文件所在的路径，上例是当前路径，所以是一个点。
+
+如果运行成功，下面的命令就可以看到新生成的 image 文件`koa-demo`。
+
+```bash
+$ docker image ls
+```
+
+### 9.3 生成容器
+
+`docker run`命令运行这个 image 文件，就可以生成容器。
+
+```bash
+$ docker run -p 3000:3001 -it koa-demo /bin/bash
+# 或者
+$ docker run -p 3000:3001 -it koa-demo:0.0.1 /bin/bash
+```
+
+上面命令的各个部分含义如下：
+
+- `-p`参数：容器的 3000 端口映射到本机的 3001 端口。
+- `-it`参数：容器的 Shell 映射到当前的 Shell，然后你在本机窗口输入的命令，就会传入容器。
+- `koa-demo:0.0.1`：image 文件的名字（如果有标签，还需要提供标签）。
+- `/bin/bash`：容器启动以后，内部第一个执行的命令。这里是启动 Bash，保证用户可以使用 Shell。
 
 Dockerfile 文件用来配置容器的虚拟环境。这个环境里面，文件系统和网络接口是虚拟的，与物理机的文件系统和网络接口是隔离的，必须分配资源给这些虚拟资源。因此，需要在 Dockefile 里面定义容器与物理机的映射（map）。
 
-```bash
-$ docker ps
-```
-
-
-
-## 创建 image 文件
-
-在 Dockerfile 目录里面，可以创建 image 文件。
-
-```bash
-$ docker build -t friendlyhello .
-```
-
-`-t`参数用于为镜像指定名字。
-
-运行下面的命令，就可以看到这个镜像了。
-
-```bash
-$ docker images
-
-REPOSITORY            TAG                 IMAGE ID
-friendlyhello         latest              326387cea398
-```
-
-运行这个镜像。
-
-```bash
-$ docker run -p 4000:80 friendlyhello
-```
-
-`-p`参数表示端口的映射，物理机的 4000 端口映射到容器的 80 端口。因此，访问 http://localhost:4000 会映射到容器的 80 端口。
- 
-
-## 发布镜像
-
-镜像可以发布，与其他人共享。
+### 9.4 发布 image 文件
 
 首先，去 https://hub.docker.com/  或 https://cloud.docker.com 注册一个账户。然后，用下面的命令登录。
 
@@ -306,23 +340,11 @@ $ docker run -p 4000:80 username/repository:tag
 创建 Dockerfile 文件
 
 ```bash
-// 基础镜像
-// 基础镜像都放在 Dockerhub
 FROM node:8.4
-
-// 拷贝当前目录到镜像的 /app 目录
 COPY . /app
-
-// 指定工作目录
 WORKDIR /app
-
-// 执行 npm install 命令
 RUN ["npm", "install"]
-
-// 开放 3000 端口
 EXPOSE 3000/tcp
-
-// 启动应用
 CMD ["npm", "start"]
 ```
 
