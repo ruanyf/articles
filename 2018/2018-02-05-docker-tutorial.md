@@ -215,22 +215,27 @@ $ docker container rm [containerID]
 
 ## 九、Dockerfile 文件
 
-### 9.1 格式
-
 学会使用 image 文件以后，接下来的问题就是，如何可以生成 image 文件？如果你要推广自己的软件，那么势必要自己做 image 文件。
 
 这就需要用到 Dockerfile 文件。它是一个文本文件，用来配置 image。Docker 根据 这个文件生成二进制的 image 文件。
 
-下面我以自己的 [koa-demos](http://www.ruanyifeng.com/blog/2017/08/koa.html) 项目为例，介绍怎么写 Dockerfile 文件，目的是让用户在 Docker 里面运行 Koa 框架。
+下面通过一个实例，演示如何编写 Dockerfile 文件。
+
+## 十、实例：制作自己的 Docker 容器
+
+下面我以 [koa-demos](http://www.ruanyifeng.com/blog/2017/08/koa.html) 项目为例，介绍怎么写 Dockerfile 文件，实现让用户在 Docker 里面运行 Koa 框架。
+
+### 10.1 编写 Dockerfile 文件
 
 首先，在项目的根目录下，新建一个文本文件，文件名为`.dockerignore`，在里面写入下面的[内容](https://github.com/ruanyf/koa-demos/blob/master/.dockerignore)。
 
 ```bash
+.git
 node_modules
 npm-debug.log
 ```
 
-上面代码表示，这两个路径要排除，不要打包进入 image 文件。
+上面代码表示，这两个路径要排除，不要打包进入 image 文件。如果你没有路径要排除，这个文件可以不新建。
 
 然后，在项目的根目录下，新建一个文本文件，文件名为 Dockerfile，在里面写入下面的[内容](https://github.com/ruanyf/koa-demos/blob/master/Dockerfile)。
 
@@ -238,21 +243,21 @@ npm-debug.log
 FROM node:8.4
 COPY . /app
 WORKDIR /app
-RUN ["npm", "install"]
-EXPOSE 3000/tcp
+RUN npm install --registry=https://registry.npm.taobao.org
+EXPOSE 3000
 ```
 
 上面代码一共五行，含义如下。
 
-- `FROM node:8.4`：该 image 文件基于官方的 node image，冒号表示标签，这里标签是`8.4`，即8.4版本的 node。
-- `COPY . /app`：将当前目录下的所有文件（除了`.dockerignore`排除的路径），都拷贝进入 image 文件的`/app`目录。
-- `WORKDIR /app`：指定接下来的工作路径为`/app`。
-- `RUN ["npm", "install"]`：在`/app`目录下，运行`npm install`命令安装依赖。注意，安装后所有的依赖，都将打包进入 image 文件。
-- `EXPOSE 3000/tcp`：将容器 3000 端口（TCP 协议）暴露出来， 允许外部连接这个端口。
+> - `FROM node:8.4`：该 image 文件基于官方的 node image，冒号表示标签，这里标签是`8.4`，即8.4版本的 node。
+> - `COPY . /app`：将当前目录下的所有文件（除了`.dockerignore`排除的路径），都拷贝进入 image 文件的`/app`目录。
+> - `WORKDIR /app`：指定接下来的工作路径为`/app`。
+> - `RUN npm install`：在`/app`目录下，运行`npm install`命令安装依赖。注意，安装后所有的依赖，都将打包进入 image 文件。
+> - `EXPOSE 3000`：将容器 3000 端口暴露出来， 允许外部连接这个端口。
 
-### 9.2 创建 image 文件
+### 10.2 创建 image 文件
 
-有了这个 Dockerfile 文件以后，就可以使用`docker build`命令创建 image 了。
+有了这个 Dockerfile 文件以后，就可以使用`docker build`命令创建 image 文件了。
 
 ```bash
 $ docker build -t koa-demo .
@@ -260,220 +265,153 @@ $ docker build -t koa-demo .
 $ docker build -t koa-demo:0.0.1 .
 ```
 
-上面代码中，`-t`参数用来指定 image 文件的名字，后面可以用冒号指定标签。最后的那个点表示 Dockerfile 文件所在的路径，上例是当前路径，所以是一个点。
+上面代码中，`-t`参数用来指定 image 文件的名字，后面还可以用冒号指定标签。最后的那个点表示 Dockerfile 文件所在的路径，上例是当前路径，所以是一个点。
 
-如果运行成功，下面的命令就可以看到新生成的 image 文件`koa-demo`。
+如果运行成功，下面的命令就可以看到新生成的 image 文件`koa-demo`了。
 
 ```bash
 $ docker image ls
 ```
 
-### 9.3 生成容器
+### 10.3 生成容器
 
 `docker run`命令运行这个 image 文件，就可以生成容器。
 
 ```bash
-$ docker run -p 3000:3001 -it koa-demo /bin/bash
+$ docker run -p 8000:3000 -it koa-demo /bin/bash
 # 或者
-$ docker run -p 3000:3001 -it koa-demo:0.0.1 /bin/bash
+$ docker run -p 8000:3000 -it koa-demo:0.0.1 /bin/bash
 ```
 
 上面命令的各个部分含义如下：
 
-- `-p`参数：容器的 3000 端口映射到本机的 3001 端口。
-- `-it`参数：容器的 Shell 映射到当前的 Shell，然后你在本机窗口输入的命令，就会传入容器。
-- `koa-demo:0.0.1`：image 文件的名字（如果有标签，还需要提供标签）。
-- `/bin/bash`：容器启动以后，内部第一个执行的命令。这里是启动 Bash，保证用户可以使用 Shell。
+> - `-p`参数：容器的 3000 端口映射到本机的 8000 端口。
+> - `-it`参数：容器的 Shell 映射到当前的 Shell，然后你在本机窗口输入的命令，就会传入容器。
+> - `koa-demo:0.0.1`：image 文件的名字（如果有标签，还需要提供标签）。
+> - `/bin/bash`：容器启动以后，内部第一个执行的命令。这里是启动 Bash，保证用户可以使用 Shell。
 
-Dockerfile 文件用来配置容器的虚拟环境。这个环境里面，文件系统和网络接口是虚拟的，与物理机的文件系统和网络接口是隔离的，必须分配资源给这些虚拟资源。因此，需要在 Dockefile 里面定义容器与物理机的映射（map）。
-
-### 9.4 发布 image 文件
-
-首先，去 https://hub.docker.com/  或 https://cloud.docker.com 注册一个账户。然后，用下面的命令登录。
+如果一切正常，运行上面的命令以后，就会返回一个命令行提示符。
 
 ```bash
-$ docker login
+root@66d80f4aaf1e:/app#
 ```
 
-然后，为 image 标注版本。
+这表示你已经在容器里面了，返回的提示符就是容器内部的 Shell 提示符。
+
+执行下面的命令。
 
 ```bash
-$ docker tag <imageName> <username>/<repository>:<tag>
-
-# 实例
-$ docker tag friendlyhello john/get-started:part2
+root@66d80f4aaf1e:/app# node demos/01.js
 ```
+如果没有报错，那么 Koa 框架已经运行起来了。打开本机的浏览器，访问 http://127.0.0.1:8000，网页显示“Not Found”，这是因为这个 [demo](https://github.com/ruanyf/koa-demos/blob/master/demos/01.js) 没有写路由。
 
-或者，重新构建一下 image 文件。
+这个例子中，Node 进程运行在 Docker 容器的虚拟环境里面，进程接触到的文件系统和网络接口都是虚拟的，与本机的文件系统和网络接口是隔离的，因此需要定义容器与物理机的端口映射（map）。
+
+现在，在容器的命令行下，按下 Ctrl + c 停止 Node 进程，然后按下 Ctrl + d （或者输入 exit）退出容器。除此以外，还可以用下面的方式停止容器运行。
 
 ```bash
-$ docker build -t [USERNAME]/hello-world .
+# 在本机的另一个终端窗口
+# 查出容器的 ID
+$ docker container ls
+
+# 停止指定的容器运行
+$ docker container kill [containerID]
 ```
 
-再次查看最新的 image 文件。
+容器停止运行之后，并不会消失。需要用下面的命令删除容器文件。
 
 ```bash
- $ docker images
- REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
-friendlyhello            latest              d9e555c53008        3 minutes ago       195MB
-john/get-started         part2               d9e555c53008        3 minutes ago       195MB
-python                   2.7-slim            1c7128a655f6        5 days ago          183MB
+# 查出容器的 ID
+$ docker container ls --all
+
+# 删除指定的容器文件
+$ docker container rm [containerID]
 ```
 
-发布镜像
+`docker run`命令的`--rm`参数，可以在容器退出运行后，自动删除容器文件。
 
 ```bash
-$ docker push username/repository:tag
-$ docker push [USERNAME]/hello-world
+$ docker run --rm -p 8000:3000 -it koa-demo /bin/bash
 ```
 
-发布成功以后，登录 https://hub.docker.com/ ，就可以看到已经发布的镜像。
+### 10.4 CMD 命令
 
-然后，就可以在本地运行远程镜像。
-
-```bash
-$ docker run -p 4000:80 username/repository:tag
-```
-
-## 实例：Node 应用的 Docker 用法
-
-创建 Dockerfile 文件
+上一节的例子里面，容器启动以后，需要手动输入命令`node demos/01.js`。我们可以把这个命令写在 Dockerfile 里面，这样容器启动以后，这个命令就已经执行了，不用再手动输入了。
 
 ```bash
 FROM node:8.4
 COPY . /app
 WORKDIR /app
-RUN ["npm", "install"]
-EXPOSE 3000/tcp
-CMD ["npm", "start"]
-```
-
-```
-FROM node:7
-WORKDIR /app
-COPY package.json /app
-RUN npm install
-COPY . /app
-CMD node index.js
-EXPOSE 8081
-```
-
-[`run`](https://docs.docker.com/engine/reference/builder/#run)命令是 image 构建的一个步骤，它的运行结果会保存进 image 文件。一个  Dockerfile 文件可以有多个 RUN 命令，它们会一个个按步骤运行。
-
-[`cmd`](https://docs.docker.com/engine/reference/builder/#cmd) 是 docker 容器运行以后，在容器内部执行的 Shell 命令。一个 Dockerfile 文件只能有一个`cmd`命令。启动 docker 容器的时候，`cmd`命令可以被覆盖，比如` docker run $image $other_command`.
-
-下面是一个例子。
-
-```bash
-FROM ubuntu
-MAINTAINER David Weinstein <david@bitjudo.com>
-
-# install our dependencies and nodejs
-RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get -y install python-software-properties git build-essential
-RUN add-apt-repository -y ppa:chris-lea/node.js
-RUN apt-get update
-RUN apt-get -y install nodejs
-
-# use changes to package.json to force Docker not to use the cache
-# when we change our application's nodejs dependencies:
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
-RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
-
-# From here we load our application's code in, therefore the previous docker
-# "layer" thats been cached will be used if possible
-WORKDIR /opt/app
-ADD . /opt/app
-
+RUN npm install --registry=https://registry.npm.taobao.org
 EXPOSE 3000
-
-CMD ["node", "server.js"]
+CMD node demos/01.js
 ```
 
-新建一个`.dockerignore`文件。
+上面的 Dockerfile 里面，多了最后一行`CMD node demos/01.js`，它表示容器启动后自动执行`node demos/01.js`。
+
+你可能会问，`RUN`命令与`CMD`命令的区别在哪里？简单说，`RUN`命令在 image 文件的构建阶段执行，执行结果都会打包进入 image 文件；`CMD`命令则是在容器启动后执行。另外，一个 Dockerfile 可以包含多个`RUN`命令，但是只能有一个`CMD`命令。
+
+注意，指定了`CMD`命令以后，`docker run`命令就不能附加命令（比如前面的`/bin/bash`）了，否则它会覆盖`CMD`命令。现在，启动容器可以使用下面的命令。
 
 ```bash
-node_modules
-npm-debug.log
+$ docker run --rm -p 8000:3000 -it koa-demo:0.0.1
 ```
 
-新建 image。
+### 10.5 发布 image 文件
+
+容器运行成功后，就确认了 image 文件的有效性。这时，我们就可以考虑把 image 文件分享到网上，让其他人使用。
+
+首先，去 [hub.docker.com](https://hub.docker.com/)  或 [cloud.docker.com](https://cloud.docker.com) 注册一个账户。然后，用下面的命令登录。
 
 ```bash
-$ docker build -t koa-demo:0.0.1 .
-$ docker build -t hello-world .
-
-# create a repository named “tutorial” and tag it with 0.0.1
-$ docker build -t tutorial:0.0.1 .
+$ docker login
 ```
 
-创建基于镜像的容器，开始运行容器。
+接着，为本地的 image 标注用户名和版本。
 
 ```bash
-# create a container based on the tutorial:0.0.1 image
-# name it ‘demo’
-# -d 在后台运行
-# -p switch that maps port 3000 on the host machine (your local machine) to the exposed port on the container (formatted like [host port]:[container port]). This will allow you to go to http://localhost:3000 on your machine and be viewing the container’s response on that same port.
-$ docker run -p 3000:3000 -d --name demo tutorial:0.0.1
-$ docker run -p 49160:8080 -d <your username>/node-web-app
-$ docker run -p 8081:8081 hello-world
-$ docker run -it nginx:latest /bin/bash
-
-$ docker run --rm -it -p 3000:3000 --name demo koa-demo:0.0.1 /bin/bash
+$ docker tag [imageName] [username]/[repository]:[tag]
+# 实例
+$ docker tag koa-demos:0.0.1 ruanyf/koa-demos:0.0.1
 ```
 
-`docker run`命令运行指定的  docker image 文件。`-i`表示采用互动模式，`-t`表示新建一个 tty shell，shell 设定为`/bin/bash`，一旦容器里面的 bash shell 退出，容器就会停止运行。
+不标注用户名，重新构建一下 image 文件，也是可以的。
 
 ```bash
-root@1d357b2706c2:/app# node demos/01.js
+$ docker build -t [username]/[repository]:[tag] .
 ```
 
-然后，访问 http://127.0.0.1:3000 ，看到 Not Found。
-
-然后，按下 Ctrl + C，终止应用运行。
-
-然后，按下 Ctrl + D 或输入 exit， 终止 Docker 容器运行。
-
-查看 docker 容器的输出。
+最后，发布 image 文件。
 
 ```bash
-# Get container ID
-$ docker ps
+$ docker push [username]/[repository]:[tag]
+```
 
-# Print app output
+发布成功以后，登录 hub.docker.com，就可以看到已经发布的 image 文件。
+
+## 十一、其他有用的命令
+
+docker 的主要用法就是上面这些，此外还有一些命令，也非常有用。
+
+`docker logs`命令用来查看 docker 容器的输出，即容器里面的标准输入。如果`docker run`命令运行容器的时候，没有使用`-it`参数，就要用这个命令查看输出。
+
+```bash
 $ docker logs [containerID]
 ```
 
-进入 docker 容器。
+`docker exec`命令用于进入 docker 容器。如果`docker run`命令运行容器的时候，没有使用`-it`参数，就要用这个命令进入容器。
 
 ```bash
-# Enter the container
 $ docker exec -it [containerID] /bin/bash
 ```
 
-```bash
-$ curl -I 127.0.0.1:3000
-HTTP/1.1 404 Not Found
-Date: Sun, 04 Feb 2018 07:50:15 GMT
-Connection: keep-alive
-```
-
-停止 docker 运行。
+`docker cp`命令用于从正在运行的 Docker 容器里面，将文件拷贝到本机。下面是拷贝到当前目录的写法。
 
 ```bash
-$ docker kill [containID]
+$ docker cp [containID]:[/path/to/file] .
 ```
 
-docker container 停止运行以后，并不会删除。可以手动将 container 删除。
-
-```bash
-$ docker container ls -all
-$ docker rm [containerID]
-```
-
-
+（完）
 
 ## 附录：Docker 常用命令清单
 
