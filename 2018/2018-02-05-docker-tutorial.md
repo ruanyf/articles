@@ -4,6 +4,8 @@
 
 但是，许多人并不清楚 Docker 到底是什么，要解决什么问题，好处又在哪里？本文就来详细解释，帮助大家理解它，还带有通俗易懂的实例，教你如何将它用于日常开发。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018020901.png)
+
 ## 一、环境配置的难题
 
 软件开发最大的麻烦事之一，就是环境配置。用户计算机的环境都不相同，你怎么知道自家的软件，能在那些机器跑起来？
@@ -126,7 +128,7 @@ $ docker image rm [imageName]
 
 image 文件是通用的，一台机器的 image 文件拷贝到另一台机器，照样可以使用。一般来说，为了节省时间，我们应该尽量使用别人制作好的 image 文件，而不是自己制作。即使要定制，也应该基于别人的 image 文件进行加工，而不是从零开始制作。
 
-为了方便共享，image 文件制作完成后，可以上传到网上的仓库。Docker 的官方仓库 [Docker Hub](https://hub.docker.com/) 是最重要、最常用的 image 仓库。
+为了方便共享，image 文件制作完成后，可以上传到网上的仓库。Docker 的官方仓库 [Docker Hub](https://hub.docker.com/) 是最重要、最常用的 image 仓库。此外，出售自己制作的 image 文件也是可以的。
 
 ## 七、实例：hello world
 
@@ -148,7 +150,7 @@ $ docker image pull hello-world
 
 抓取成功以后，就可以在本机看到这个 image 文件了。
 
-```javascript
+```bash
 $ docker image ls
 ```
 
@@ -387,7 +389,25 @@ $ docker image push [username]/[repository]:[tag]
 
 docker 的主要用法就是上面这些，此外还有几个命令，也非常有用。
 
-**（1）docker container logs**
+**（1）docker container start**
+
+前面的`docker container run`命令是新建容器，每运行一次，就会新建一个容器。同样的命令运行两次，就会生成两个一模一样的容器文件。如果希望重复使用容器，就要使用`docker container start`命令，它用来启动已经生成、已经停止运行的容器文件。
+
+```bash
+$ docker container start [containerID]
+```
+
+**（2）docker container stop**
+
+前面的`docker container kill`命令终止容器运行，相当于向容器里面的主进程发出 SIGKILL 信号。而`docker container stop`命令也是用来终止容器运行，相当于向容器里面的主进程发出 SIGTERM 信号，然后过一段时间再发出 SIGKILL 信号。
+
+```bash
+$ bash container stop [containerID]
+```
+
+这两个信号的差别是，应用程序收到 SIGTERM 信号以后，可以自行进行收尾清理工作，但也可以不理会这个信号。如果收到 SIGKILL 信号，就会强行立即终止，那些正在进行中的操作会全部丢失。
+
+**（3）docker container logs**
 
 `docker container logs`命令用来查看 docker 容器的输出，即容器里面 Shell 的标准输出。如果`docker run`命令运行容器的时候，没有使用`-it`参数，就要用这个命令查看输出。
 
@@ -395,7 +415,7 @@ docker 的主要用法就是上面这些，此外还有几个命令，也非常�
 $ docker container logs [containerID]
 ```
 
-**（2）docker container exec**
+**（4）docker container exec**
 
 `docker container exec`命令用于进入一个正在运行的 docker 容器。如果`docker run`命令运行容器的时候，没有使用`-it`参数，就要用这个命令进入容器。一旦进入了容器，就可以在容器的 Shell 执行命令了。
 
@@ -403,7 +423,7 @@ $ docker container logs [containerID]
 $ docker container exec -it [containerID] /bin/bash
 ```
 
-**（3）docker container cp**
+**（5）docker container cp**
 
 `docker container cp`命令用于从正在运行的 Docker 容器里面，将文件拷贝到本机。下面是拷贝到当前目录的写法。
 
