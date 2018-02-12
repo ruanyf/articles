@@ -4,11 +4,19 @@ Docker 是一个容器工具，提供虚拟环境。很多人认为，它改变�
 
 站在 Docker 的角度，软件就是容器的组合：业务逻辑容器、数据库容器、储存容器、队列容器……Docker 使得软件可以拆分成若干个标准化容器，然后像搭积木一样组合起来。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021306.png)
+
 这正是微服务（microservices）的思想：软件把任务外包出去，让各种外部服务完成这些任务，软件本身只是底层服务的调度中心和组装层。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021302.png)
 
 微服务很适合用 Docker 容器实现，每个容器承载一个服务。一台计算机同时运行多个容器，从而就能很轻松地模拟出复杂的微服务架构。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021303.png)
+
 [上一篇教程](http://www.ruanyifeng.com/blog/2018/02/docker-tutorial.html)介绍了 Docker 的概念和基本用法，本文接着往下介绍，如何在一台计算机上实现多个服务，让它们互相配合，组合出一个应用程序。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021304.png)
 
 我选择的示例软件是 [WordPress](https://wordpress.org/)。它是一个常用软件，全世界用户据说超过几千万。同时它又非常简单，只要两个容器就够了（业务容器 + 数据库容器），很适合教学。而且，这种“业务 + 数据库”的容器架构，具有通用性，许多应用程序都可以复用。
 
@@ -85,6 +93,8 @@ phpinfo();
 
 保存以后，浏览器刷新`172.17.0.2`，应该就会看到熟悉的`phpinfo`页面了。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021305.jpg)
+
 ### 2.2 拷贝 WordPress 安装包
 
 既然本地的`docker-demo`目录可以映射到容器里面，那么把 WordPress 安装包拷贝到`docker-demo`目录下，不就可以通过容器访问到 WordPress 的安装界面了吗？
@@ -99,6 +109,8 @@ $ tar -xvf wordpress-4.9.4-zh_CN.tar.gz
 解压以后，WordPress 的安装文件会在`docker-demo/wordpress`目录下。
 
 这时浏览器访问`http://172.17.0.2/wordpress`，就能看到 WordPress 的安装提示了。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021307.png)
 
 ### 2.3 官方的 MySQL 容器
 
@@ -191,6 +203,8 @@ $ chmod -R 777 wordpress
 
 WordPress 提示要输入数据库参数。输入的参数如下。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021308.png)
+
 > - 数据库名：`wordpress`
 > - 用户名：`root`
 > - 密码：`123456`
@@ -198,6 +212,8 @@ WordPress 提示要输入数据库参数。输入的参数如下。
 > - 表前缀：`wp_`（不变）
 
 点击“下一步”按钮，如果 Wordpress 连接数据库成功，就会出现下面的页面，这就表示可以安装了。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021309.png)
 
 至此，自建 WordPress 容器的演示完毕，可以把正在运行的两个容器关闭了（容器文件会自动删除）。
 
@@ -207,7 +223,7 @@ $ docker container stop wordpress wordpressdb
 
 ## 三、方法 B：Wordpress 官方镜像
 
-上一部分的自建 WordPress 容器，还是挺麻烦的。其实不用这么麻烦，Docker 已经提供了官方 WordPress image，直接用那个就可以了。有了上一部分的基础，下面的操作就很容易理解了。
+上一部分的自建 WordPress 容器，还是挺麻烦的。其实不用这么麻烦，Docker 已经提供了官方 [WordPress](https://hub.docker.com/_/wordpress/) image，直接用那个就可以了。有了上一部分的基础，下面的操作就很容易理解了。
 
 ### 3.1 基本用法
 
@@ -246,6 +262,8 @@ $ docker container inspect wordpress
 上面命令运行以后，会输出很多内容，找到`IPAddress`字段即可。我的机器返回的 IP 地址是`172.17.0.3`。 
 
 浏览器访问`172.17.0.3`，就会看到 WordPress 的安装提示。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021310.png)
 
 ### 3.2 WordPress 容器的定制
 
@@ -294,6 +312,8 @@ $ docker container stop wordpress wordpressdb
 上面的方法 B 已经挺简单了，但是必须自己分别启动两个容器，启动的时候，还要在命令行提供容器之间的连接信息。因此，Docker 提供了一种更简单的方法，来管理多个容器的联动。
 
 ### 4.1 Docker Compose 简介
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018021311.jpg)
 
 [Compose](https://docs.docker.com/compose/) 是 Docker 公司推出的一个工具软件，可以管理多个 Docker 容器组成一个应用。你需要定义一个 YAML 格式的配置文件`docker-compose.yml`，写好多个容器之间的调用关系。然后，只要一个命令，就能同时启动/关闭这些容器。
 
