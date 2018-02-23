@@ -7,6 +7,8 @@ JavaScript 是单线程运行，异步操作特别重要。
 
 Node 的异步语法比浏览器更复杂，因为它可以跟内核对话，不得不搞了一个专门的库 [libuv](http://thlorenz.com/learnuv/book/history/history_1.html) 做这件事。这个库负责各种回调函数的执行时间，毕竟异步任务最后还是要回到主线程，一个个排队执行。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018022301.jpg)
+
 为了协调异步任务，Node 居然提供了四个定时器，让任务可以在指定的时间运行。
 
 > - setTimeout()
@@ -38,7 +40,7 @@ $ node test.js
 2
 ```
 
-如果你能一口说对，可能就不需要再看下去了。本文详细解释，Node 怎么处理各种定时器，或者更广义地说，异步任务怎么在主线程上执行。
+如果你能一口说对，可能就不需要再看下去了。本文详细解释，Node 怎么处理各种定时器，或者更广义地说，libuv 库怎么安排异步任务在主线程上执行。
 
 ## 一、同步任务和异步任务
 
@@ -76,6 +78,8 @@ Promise.resolve().then(() => console.log(4));
 
 `process.nextTick`这个名字有点误导，它是在本轮循环执行的，而且是所有异步任务里面最快执行的。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018022302.png)
+
 Node 执行完所有同步任务，接下来就会执行`process.nextTick`的任务队列。所以，下面这行代码是第二个输出结果。
 
 ```javascript
@@ -96,6 +100,8 @@ Promise.resolve().then(() => console.log(4));
 // 3
 // 4
 ```
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018022303.png)
 
 注意，只有前一个队列全部清空以后，才会执行下一个队列。
 
@@ -154,6 +160,8 @@ Node 的[官方文档](https://nodejs.org/en/docs/guides/event-loop-timers-and-n
 
 每个阶段都有一个先进先出的回调函数队列。只有一个阶段的回调函数队列清空了，该执行的回调函数都执行了，事件循环才会进入下一个阶段。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018022304.png)
+
 下面简单介绍一下每个阶段的含义，详细介绍可以看[官方文档](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/)，也可以参考 libuv 的[源码解读](https://jsblog.insiderattack.net/handling-io-nodejs-event-loop-part-4-418062f917d1)。
 
 **（1）timers**
@@ -211,6 +219,8 @@ fs.readFile('test.js', () => {
 ```
 
 上面代码有两个异步任务，一个是 100ms 后执行的定时器，一个是至少需要 200ms 的文件读取。请问运行结果是什么？
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018022305.jpg)
 
 脚本进入第一轮事件循环以后，没有到期的定时器，也没有已经可以执行的 I/O 回调函数，所以会进入 Poll 阶段，等待内核返回文件读取的结果。由于读取小文件一般不会超过 100ms，所以在定时器到期之前，Poll 阶段就会得到结果，因此就会继续往下执行。
 
