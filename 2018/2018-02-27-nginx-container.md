@@ -4,6 +4,8 @@
 
 正好这些天，我在学习 Docker，就想到可以用 [Nginx 容器](https://hub.docker.com/_/nginx/)。万一哪里改乱了，直接删掉，再重启一个容器就可以了。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018022701.png)
+
 下面就是我搭建 Nginx 容器的过程，以及如何加入 SSL 证书。你会看到 Docker 用来测试软件的新功能，真的很方便，很值得学习。如果你还不会 Docker，可以先看[《Docker 入门教程》](http://www.ruanyifeng.com/blog/2018/02/docker-tutorial.html)，非常简单，半小时以内就能学会。
 
 ## 一、HTTP 服务
@@ -29,6 +31,8 @@ $ docker container run \
 > - `--name`：容器的名字为`mynginx`
 
 如果没有报错，就可以打开浏览器访问 127.0.0.2:8080 了。正常情况下，显示 Nginx 的欢迎页。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018022703.png)
 
 然后，把这个容器终止，由于`--rm`参数的作用，容器文件会自动删除。
 
@@ -147,6 +151,8 @@ $ sudo openssl req \
 - `-out`：新生成的证书文件为当前目录下的`example.crt`。
 
 执行后，命令行会跳出一堆问题要你回答，比如你在哪个国家、你的 Email 等等。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018022702.png)
 
 其中最重要的一个问题是 Common Name，正常情况下应该填入一个域名，这里可以填 127.0.0.2。
 
