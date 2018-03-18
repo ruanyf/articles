@@ -2,6 +2,8 @@
 
 JavaScript 程序越来越复杂，调试工具的重要性日益凸显。客户端脚本有浏览器，Node 脚本怎么调试呢？
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031901.png)
+
 2016年，Node 决定将 Chrome 浏览器的“开发者工具”作为官方的调试工具，使得 Node 脚本也可以使用图形界面调试，这大大方便了开发者。
 
 本文介绍如何使用 Node 脚本的调试工具。
@@ -63,11 +65,17 @@ listening on port 3000
 
 上面代码中，`--inspect`参数是启动调试模式必需的。这时，打开浏览器访问 http://127.0.0.1//3000，就可以看到 Hello World 了。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031902.png)
+
 接下来，就要开始调试了。一共有两种打开调试工具的方法，第一种是在 Chrome 浏览器的地址栏，键入 `chrome://inspect`或者`about:inspect`，回车后就可以下面的页面。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031903.png)
 
 在 Target 部分，点击 inspect 链接，就能进入调试工具了。
 
 第二种进入调试工具的方法，是在 http://127.0.0.1//3000 的窗口打开“开发者工具”，顶部左上角有一个 Node 的绿色标志，点击就可以进入。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031904.png)
 
 ## 三、调试工具窗口
 
@@ -80,11 +88,15 @@ listening on port 3000
 > - Profiler：性能
 > - Sources：源码
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031905.png)
+
 这些面板的用法，基本上跟浏览器环境差不多，这里只介绍 Sources （源码）面板。
 
 ## 四、设置断点
 
 进入 Sources 面板，找到正在运行的脚本`app.js`。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031906.png)
 
 在第11行（也就是下面这一行）的行号上点一下，就设置了一个断点。
 
@@ -92,17 +104,29 @@ listening on port 3000
 ctx.response.body = 'Hello ' + name;
 ```
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031907.png)
+
 这时，浏览器访问 http://127.0.0.1:3000/alice ，页面会显示正在等待服务器返回。切换到调试工具，可以看到 Node 主线程处于暂停（paused）阶段。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031908.png)
+
 进入 Console 面板，输入 name，会返回 alice。这表明我们正处在断点处的上下文（context）。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031909.png)
 
 再切回 Sources 面板，右侧可以看到 Watch、Call Stack、Scope、Breakpoints 等折叠项。打开 Scope 折叠项，可以看到 Local 作用域和 Global 作用域里面的所有变量。
 
 Local 作用域里面，变量`name`的值是`alice`，双击进入编辑状态，把它改成`bob`。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031910.png)
+
 然后，点击顶部工具栏的继续运行按钮。
 
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031911.png)
+
 页面上就可以看到 Hello bob 了。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031912.png)
 
 命令行下，按下 ctrl + c，终止运行`app.js`。
 
@@ -117,6 +141,8 @@ $ node --inspect=9229 -e "setTimeout(function() { console.log('yes'); }, 30000)"
 上面代码中，`--inspect=9229`指定调试端口为 9229，这是调试工具默认的通信端口。`-e`参数指定一个字符串，作为代码运行。
 
 访问`chrome://inspect`，就可以进入调试工具，调试这段代码了。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018031913.png)
 
 代码放在`setTimeout`里面，总是不太方便。那些运行时间较短的脚本，可能根本来不及打开调试工具。这时就要使用下面的方法。
 
