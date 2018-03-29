@@ -1,125 +1,158 @@
-# Systemd 定时任务教程
+# Systemd 定时器教程
 
-## 优点
+Systemd 作为 Linux 的系统启动器，功能强大。
 
-- 自动日志，容器除错
-- 可以设置内存和 CPU 的使用额度
-- 任务可以简单地独立于他们的定时器启动，简化调试。
-每个任务可配置运行于特定的环境中（参见 systemd.exec(5) man page）。
-任务可以使用 cgroups 特性。
-任务可以配置依赖于其他 systemd 单元。
+本文通过一个简单例子，介绍 Systemd 如何设置定时任务。这不仅很实用，而且可以作为 Systemd 的上手教程。
 
-## 基本概念
+## 一、定时任务
 
-- Services：定义工作。
-- Timers：定义何时运行工作
-- Slices：定义资源的额度
+所谓定时任务，就是未来的某个或多个时点，预定要执行的任务，比如每五分钟收一次邮件、每天半夜两点分析一下日志等等。
 
-Unit 是单个进程的描述文件，用于描述如何启动该进程。
+Linux 系统通常都使用 [cron](https://wiki.archlinux.org/index.php/Cron_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29) 设置定时任务，但是 Systemd 也可以，而且有一些显著的优点。
 
-Ideas that in other init systems may be handled with one unified service definition can be broken out into component units according to their focus. This organizes by function and allows you to easily enable, disable, or extend functionality without modifying the core behavior of a unit.
+> - 自动生成日志，配合 Systemd 的日志工具，很方便除错
+> - 可以设置内存和 CPU 的使用额度，比如最多使用50%的 CPU
+> - 任务可以拆分，依赖其他 Systemd 单元，可以完成非常复杂的任务
 
-Unit 就是启动过程中要完成的一件事情。默认的 Unit 文件在`/lib/systemd/system`目录，自定义 Unit 文件在`/etc/systemd/system`。
+下面，我就来演示一个 Systemd 定时任务：每10分钟发送一封电子邮件。
 
-/usr/lib/systemd/system
+作为先决条件，你的 Linux 系统应该可以执行下面的命令，正常发出一封邮件。
 
-查看所有的 Unit
+```bash
+$ echo "This is the body" | mail -s "Subject" someone@example.com
+```
+
+请将上面命令中的`someone@example.com`替换成你的邮箱地址，执行后，该邮箱应该就会收到一封标题为`Subject`的邮件。`mail`命令的介绍，可以参考[这里](https://www.binarytides.com/linux-mail-command-examples/)。
+
+如果报错或者邮件发送不成功，建议安装 [ssmtp](https://wiki.archlinux.org/index.php/SSMTP) 或者 [msmtp](https://wiki.archlinux.org/index.php/msmtp)。
+
+## 二、Systemd 单元
+
+学习 Systemd 的第一步，就是理解“单元”（unit）是什么。
+
+简单说，单元就是 Systemd 的最小功能单位，是单个进程的描述。一个个小的单元互相调用和依赖，组成一个庞大的任务管理系统，这就是 Systemd 的基本思想。
+
+由于 Systemd 要做的事情太多，导致单元有很多[不同的种类](https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files)，大概一共有12种。举例来说，Service 单元负责后台服务，Timer 单元负责定时器，Slice 单元负责资源的分配。
+
+System 默认提供的单元文件，都存放在`/lib/systemd/system`目录，各种软件定义的单元文件在`/etc/systemd/system`目录，用户自己定义的单元文件在`/usr/lib/systemd/system`目录，后面的例子就会用这个目录。
+
+下面的命令可以查看所有的单元文件。
 
 ```bash
 $ systemctl list-unit-files
-
-# 查看特定类型的 Unit
-$ systemctl list-unit-files --type service
-$ systemctl list-unit-files --type target
 ```
 
-
-
-Target 是一组相关进程，有点像 init 模式下面的启动级别。启动某个target的时候，这些进程全部启动。
-
-Each target is actually a collection of symlinks to our unit files. This is specified in the unit file by WantedBy=multi-user.target. Running systemctl enable foo.service creates symlinks to the unit inside multi-user.target.wants.
-
-ExecStart= allows you to specify any command that you'd like to run when this unit is started. 
-
-`ExecStart`命令就是启动 Unit 时，`systemctl start`要执行的命令。`ExecStop`就是关闭 Unit 时，`systemctl stop`要执行的命令。
-
-
-## [Unit] 单元
-
-`[Unit]`单元用来定义元数据。
-
-`[Install]`就是 enable 和 disable 这个 Unit 时，要执行的命令。
-
-- ExecStart=: This specifies the full path and the arguments of the command to be executed to start the process. This may only be specified once (except for "oneshot" services). If the path to the command is preceded by a dash "-" character, non-zero exit statuses will be accepted without marking the unit activation as failed.
-- ExecStartPre=: This can be used to provide additional commands that should be executed before the main process is started. This can be used multiple times. Again, commands must specify a full path and they can be preceded by "-" to indicate that the failure of the command will be tolerated.
-- ExecStartPost=: This has the same exact qualities as ExecStartPre= except that it specifies commands that will be run after the main process is started.
-- ExecReload=: This optional directive indicates the command necessary to reload the configuration of the service if available.
-- ExecStop=: This indicates the command needed to stop the service. If this is not given, the process will be killed immediately when the service is stopped.
-- ExecStopPost=: This can be used to specify commands to execute following the stop command.
-- RestartSec=: If automatically restarting the service is enabled, this specifies the amount of time to wait before attempting to restart the service.
-
-- Restart=: This indicates the circumstances under which systemd will attempt to automatically restart the service. This can be set to values like "always", "on-success", "on-failure", "on-abnormal", "on-abort", or "on-watchdog". These will trigger a restart according to the way that the service was stopped.
-
-- TimeoutSec=: This configures the amount of time that systemd will wait when stopping or stopping the service before marking it as failed or forcefully killing it. You can set separate timeouts with TimeoutStartSec= and TimeoutStopSec= as well.
-
-`[Timer]`部分
-
-- OnActiveSec=: 激活后多少秒开始执行
-- OnBootSec=: 系统启动后多少秒激活该单元
-- OnStartupSec=: systemd 进程本身启动后，多少秒激活该单元
-- OnUnitActiveSec=: 该 Unit 上次激活后多少秒，再激活该单元
-- OnUnitInactiveSec=: Unit 上次关闭后多少秒，再激活该单元
-- OnCalendar=: 基于绝对时间，而不是相对时间，激活该单元
-- AccuracySec=: 如果因为各种原因，Unit 必须推迟激活，推迟的最大秒数，默认是60秒。
-- Unit=: 激活时间到了以后，真正执行的 Unit，默认是同名的带有`.service`后缀的 Unit。
-- Persistent=: 如果设置了该字段，即使定时器到时没有启动，也会自动激活对应的 Unit。
-- WakeSystem=: 如果系统休眠，是否自动唤醒系统。
-
-## 服务
+这个命令还可以指定查看的类型。
 
 ```bash
-# /etc/systemd/system/shopify-recent.service
+# 查看所有 Service 单元
+$ systemctl list-unit-files --type service
+
+# 查看所有 Timer 单元
+$ systemctl list-unit-files --type timer
+```
+
+## 三、单元的管理命令
+
+下面是常用的单元管理命令。
+
+```bash
+# 启动单元
+$ systemctl start [UnitName]
+# 关闭单元
+$ systemctl stop [UnitName]
+# 重启单元
+$ systemctl restart [UnitName]
+
+# 激活单元，即启动后自动执行该单元
+$ systemctl enable [UnitName]
+# 废置单元，即让激活的单元不再自动执行
+$ systemctl disable [UnitName]
+```
+
+## 四、Service 单元
+
+前面说过，Service 单元就是所要执行的任务，比如发送邮件就是一种 Service。
+
+首先，在`/usr/lib/systemd/system`目录里面，新建一个`mytimer.service`文件，写入下面的内容。
+
+```bash
 [Unit]
-Description=Runs shopify recent scraper
-Wants=shopify-recent.timer
+Description=MyTimer
+
 [Service]
-ExecStart=/usr/local/bin/node /app/shoes-scraper/src/scraper --recent --platform shopify
-WorkingDirectory=/app/shoes-scraper
-Slice=shoes-scraper.slice
+ExecStart=/bin/echo "This is the body" | /usr/bin/mail -s "Subject" someone@example.com
+```
+
+可以看到，这个 Service 单元的描述文件，分成两个部分。
+
+`[Unit]`部分介绍本单元的基本信息（即元数据），`Description`字段给出这个单元的简单介绍，比如`MyTimer`。
+
+`[Service]`部分是实际所要执行的命令，Systemd 提供许多字段用来定制 Service。
+
+> - `ExecStart`：`systemctl start`所要执行的命令
+> - `ExecStop`：`systemctl stop`所要执行的命令
+> - `ExecReload`：`systemctl reload`所要执行的命令
+> - `ExecStartPre`：`ExecStart`之前自动执行的命令
+> - `ExecStartPost`：`ExecStart`之后自动执行的命令
+> - `ExecStopPost`：`ExecStop`之后自动执行的命令
+
+注意，定义命令的时候，所有命令都要给出绝对路径，比如`mail`命令要写成`/usr/bin/mail`，否则 Systemd 会找不到。一个解决办法就是把命令写成单独的脚本文件，然后这里定义`/bin/bash [脚本的绝对路径]`即可。
+
+## 五、Timer 单元
+
+Service 单元只是定义了发送邮件的命令，要定时执行这个 Service，还必须定义 Timer 单元。
+
+在`/usr/lib/systemd/system`目录里面，新建一个`mytimer.timer`文件，写入下面的内容。
+
+```bash
+[Unit]
+Description=Runs mytimer every hour
+
+[Timer]
+OnUnitActiveSec=1h
+Unit=mytimer.service
+
 [Install]
 WantedBy=multi-user.target
 ```
 
-## 定时器
+这个 Timer 单元的描述文件，也分成几个部分。
+
+`[Unit]`部分定义一些描述信息，即元数据。
+
+`[Timer]`部分定义定时器。Systemd 提供以下一些字段。
+
+> - `OnActiveSec`：定时器生效后，多少时间开始执行任务
+> - `OnBootSec`：系统启动后，多少时间开始执行任务
+> - `OnStartupSec`：Systemd 进程启动后，多少时间开始执行任务
+> - `OnUnitActiveSec`：该单元上次执行后，等多少时间再次执行
+> - `OnUnitInactiveSec`： 定时器上次关闭后多少时间，再次执行
+> - `OnCalendar`：基于绝对时间，而不是相对时间执行
+> - `AccuracySec`：如果因为各种原因，任务必须推迟执行，推迟的最大秒数，默认是60秒
+> - `Unit`：真正要执行的任务，默认是同名的带有`.service`后缀的单元
+> - `Persistent`：如果设置了该字段，即使定时器到时没有启动，也会自动执行相应的单元
+> - `WakeSystem`：如果系统休眠，是否自动唤醒系统
+
+上面的脚本里面，`OnUnitActiveSec=1h`表示一小时执行一次任务。其他的写法还有`OnUnitActiveSec=*-*-* 02:00:00`表示每天凌晨零点执行，`OnUnitActiveSec=Mon *-*-* 02:00:00`表示每周一凌晨两点执行，具体请参考[官方文档](https://www.freedesktop.org/software/systemd/man/systemd.time.html)。
+
+## 六、[Install] 和 target
+
+`mytimer.timer`文件里面，还有一个`[Install]`部分，定义`systemctl enable`和`systemctl disable`这个单元时，所要执行的命令。
+
+上面脚本中，`[Install]`部分只写了一个字段，即`WantedBy=multi-user.target`。它的意思是，如果设置了机器启动就执行这个定时器，那么它归属于`multi-user.target`。
+
+所谓 Target 指的是一组相关进程，有点像 init 进程模式下面的启动级别。启动某个Target 的时候，属于这个 Target 的所有进程都会全部启动。
+
+`multi-user.target`是一个最常用的 Target，意为多用户模式。也就是说，当系统以多用户模式启动时，就会一起启动`mytimer.timer`。它背后的操作其实很简单，执行`systemctl enable mytimer.timer`命令时，就会在`multi-user.target.wants`目录里面创建一个符号链接，指向`mytimer.timer`。
+
+## 七、运行定时器
+
+下面，运行刚刚新建的这个定时器。
 
 ```bash
-# /etc/systemd/system/shopify-recent.timer
-[Unit]
-Description=Run shopify-recent every 15-30 minutes
-Requires=shopify-recent.service
-[Timer]
-Unit=shopify-recent.service
-OnUnitInactiveSec=15m
-RandomizedDelaySec=15m
-AccuracySec=1s
-[Install]
-WantedBy=timers.target
+$ sudo systemctl start mytimer.timer
 ```
-
-## 资源额度
-
-```bash
-# /etc/systemd/system/shoes-scraper.slice
-[Unit]
-Description=Limited resources Slice
-DefaultDependencies=no
-Before=slices.target
-[Slice]
-CPUQuota=80%
-MemoryLimit=2.7G
-```
-
-## 运行任务
 
 start: starts a systemd unit
 stop: attempts to “nicely” end a service
