@@ -2,10 +2,7 @@
 
 这里记录过去一周，我看到的值得分享的东西。
 
-
-
-![bg2018042901.jpg | center | 518x518](https://cdn.yuque.com/yuque/0/2018/jpeg/84141/1524924119440-a595bfc6-ddb5-4a8f-a1db-d64b13216777.jpeg "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042801.jpg)
 
 （题图：青岛火车站）
 
@@ -19,10 +16,7 @@
 
 1、[夫妻双双去世 四年后儿子出生](http://epaper.bjnews.com.cn/html/2018-04/10/content_716660.htm?div=0)
 
-
-
-![wangzch84238_b (1).jpg | center | 400x300](https://cdn.yuque.com/yuque/2018/jpeg/84141/1523589617472-328576bc-03a5-46a2-9416-e5167fbb322b.jpeg "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042802.jpg)
 
 2013年3月20日，一对年轻夫妻死于车祸，他们还没来得及生育。幸运的是，就在五天前，他们在南京鼓楼医院做了人工受精，留下了四枚有效的受精胚胎，冷冻在摄氏零下196度的液氮罐里。
 
@@ -32,19 +26,14 @@
 
 2、[Go 语言的新 Logo](https://blog.golang.org/go-brand)
 
-
-
-![Go-BB_cover.jpg | center | 510x298](https://cdn.yuque.com/yuque/0/2018/jpeg/84141/1524779207951-db9b0818-3ff9-4b3d-b04e-c7be35637ab9.jpeg "")
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042803.jpg)
 
 
 Go 编程语言发布新的 Logo， 很有现代感。大家往往忽略，编程语言其实也存在市场竞争，只有注意包装自己的语言才有更好的市场份额，从而得到更大的社区、更多的资源。
 
 3、[Flutter 框架发布 Beta 版](https://developers.googleblog.com/2018/02/announcing-flutter-beta-1.html)
 
-
-
-![flutter beta hero image for blog post.png | center | 422x247](https://cdn.yuque.com/yuque/2018/png/84141/1523846911528-b54e65b0-9457-483a-a8fa-ce6b53e60819.png "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042805.png)
 
 2月底，谷歌的手机应用开发框架 Flutter 发布了 Beta 版，这意味着，这个框架已经具备可用性了，今年应该就会发正式版了。现在，安卓系统有了两套 SDK：安卓 SDK 和 Flutter SDK。
 
@@ -61,25 +50,19 @@ Flutter 的最大特点在于，它是跨平台的，不仅可以开发安卓应
 
 4、[Oracle 发布多语言版的 JVM](https://github.com/oracle/graal)
 
-
-
-![graavl-vm-490x287.png | center | 490x287](https://cdn.yuque.com/yuque/0/2018/png/84141/1524032786911-cbcd728a-ee34-4300-9f82-398b10c96a1c.png "")
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042806.jpg)
 
 
 Oracle 发布了一个很神奇的产品 [GraalVM](http://www.graalvm.org/)。我们知道，Java 最厉害的就是它的虚拟机 JVM，现在这个虚拟机扩展成可以支持多种语言，不同语言都可以被它编译成字节码，然后运行。
 
 因此，它能支持多种语言混写，JS 里面直接调用 Java 或者 Python（就像下图），照样编译运行。
 
-
-![GraalVM.png | center | 342x330](https://cdn.yuque.com/yuque/0/2018/png/84141/1524032760727-ec369160-281d-45b1-8eda-22c25a9800ca.png "")
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042807.jpg)
 
 
 5、[欧盟数据保护条例 GDPR](http://dbaplus.cn/news-73-1510-1.html)
 
-
-
-![下载 (3).png | center | 251x201](https://cdn.yuque.com/yuque/0/2018/png/84141/1524831864890-c74d2a83-3838-4e91-a52a-02ffec0326e9.png "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042808.png)
 
 今年5月25日，欧盟新的《数据保护条例》就要生效了。我看了一下，好像是说凡是收集用户数据都必须得到用户同意，且不得用于未授权的用途。
 
@@ -93,19 +76,13 @@ Rust 语言入门教程
 
 2、[电子书] [D3 Graph Theory](https://mrpandey.github.io/d3graphTheory/index.html)
 
-
-
-![D3 Graph Theory.png | center | 472x249](https://cdn.yuque.com/yuque/2018/png/84141/1523589508893-99bd5bd5-57bc-48e2-868e-81a6ffbfed9a.png "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042809.jpg)
 
 图理论（graph theory）是重要的数学分支，在数据处理领域有着重要应用。这个教程采用可视化库 D3，把图理论变成了可视化互动教程。
 
 3、[文章] [数据回归的15种类型](https://www.listendata.com/2018/03/regression-analysis.html)
 
-
-
-![img1.png | center | 715x216](https://cdn.yuque.com/yuque/2018/png/84141/1523662289575-263a7155-bbd6-4bcd-8702-46899df659fb.png "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042810.jpg)
 
 回归（regression）是数据处理的常用技术，用来找出数据的模式。本文介绍数据回归的15种拟合。
 
@@ -137,10 +114,7 @@ Uber 架构师分享在搭建分布式支付系统过程中，遇到的最重要
 
 1、[Mustard UI](https://mustard-ui.com/)
 
-
-
-![Mustard UI · A CSS framework that actually looks good .png | center | 588x334](https://cdn.yuque.com/yuque/2018/png/84141/1523746563399-36ea0005-9eac-4df7-8f2c-cf34690def71.png "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042811.png)
 
  一个简洁、好看的 CSS 框架，压缩后只有5.28KB。
 
@@ -155,27 +129,19 @@ ReactOS 是一个开源的操作系统，目标是兼容 Windows，能够运行 
 4、[rebound](。https://github.com/shobrook/rebound)
 
 
-
-![下载 (1).png | center | 537x214](https://cdn.yuque.com/yuque/0/2018/png/84141/1524035195715-64cf0110-f427-4a85-b4f7-cbb3be4b479e.png "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042812.jpg)
 
 有人终于把这个工具写出来了，一旦 Python 或 JS 脚本报错，就到 Stack Overflow 取回报错信息的解释。
 
 5、[React Slate](http://react-slate.surge.sh/)
 
-
-
-![react-slate·将React应用呈现给终端.png | center | 531x250](https://cdn.yuque.com/yuque/0/2018/png/84141/1524650637288-2210a2a1-f79b-463d-84c8-3ec9ce3c0e40.png "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042813.jpg)
 
 一个使用 React 组件写命令行脚本的框架。
 
 6、[RSUITE](https://github.com/rsuite/rsuite)
 
-
-
-![39298633-53826e50-4979-11e8-99fa-fac162d0830e.png | center | 383x87](https://cdn.yuque.com/yuque/0/2018/png/84141/1524807207488-589044b7-27d5-4b24-89d0-ff9ea9623f73.png "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042814.png)
 
 一个国产的 React 组件库。
 
@@ -185,16 +151,11 @@ ReactOS 是一个开源的操作系统，目标是兼容 Windows，能够运行 
 
 1、[网易丁磊专访](https://finance.sina.cn/usstock/mggd/2018-04-11/detail-ifyzeyqa6917956.d.html)
 
-
-
-![Phqn-fytnfyp2809000.jpg | center | 299x323](https://cdn.yuque.com/yuque/0/2018/jpeg/84141/1524616177681-b601a8b5-c71d-47d3-a934-24cfb7d1f79b.jpeg "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042816.jpg)
 
 > 全世界网游市场排名是：中国、美国、日本、其他国家。第四到第十的市场全部加起来还没有日本大，而中国占了整个市场的三成到四成。我们的游戏在日本排第一，它的一天收入只是中国的十分之一。
 
 2、[黑产和大数据风控之间的攻守之战](https://xw.qq.com/cmsid/20180413A1LJBD)
-
-
 
 ![641.jpeg | center | 406x371](https://cdn.yuque.com/yuque/2018/jpeg/84141/1523843579567-237452d2-2b56-4b37-89d4-84373cfe956c.jpeg "")
 
@@ -217,7 +178,7 @@ ReactOS 是一个开源的操作系统，目标是兼容 Windows，能够运行 
 > 
 > 
 > 
-> ![aa9fe7c1-e4ed-4dd1-b18f-3e6e52aef3c6.png | center | 259x324](https://cdn.yuque.com/yuque/0/2018/png/84141/1524404105082-0eee6f49-cbeb-409d-a01b-f51220314f68.png "")
+> ![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042815.jpg)
 > 
 > 
 > <span data-type="color" style="color: rgb(41, 47, 51);"><span data-type="background" style="background-color: rgb(255, 255, 255);">结果，这位 Yablon 先生是 FBI 的卧底，偷偷把</span></span>绝密文件<span data-type="color" style="color: rgb(41, 47, 51);"><span data-type="background" style="background-color: rgb(255, 255, 255);">都交出去。美国政府根据这些文件，宣布重罚中兴。</span></span>
@@ -226,16 +187,16 @@ ReactOS 是一个开源的操作系统，目标是兼容 Windows，能够运行 
 
 4月2日，日本吉卜力動畫工作室创始人之一的高畑勲导演去世，享年82岁。
 
-![046b7716ac7b0ff14609aa3b0c10flj5.JPG | center | 540x358](https://cdn.yuque.com/yuque/2018/jpeg/84141/1523746935374-35a2ff7e-082f-4864-a83d-db2d920564c3.jpeg "")
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042817.jpg)
 
 
 他最著名的作品是动画电影《螢火蟲之墓》，1988年上映。电影海报上，哥哥清太和妹妹節子在夜晚的草叢中，滿滿黃色亮光，呼應螢火蟲像星星一樣飛舞，哥哥望著張嘴大笑的妹妹，畫面溫馨。
 
-![d3224340.jpg | center | 317x450](https://cdn.yuque.com/yuque/2018/jpeg/84141/1523747016218-a438669d-1177-49a9-bbd9-f7b8ab427823.jpeg "")
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042818.jpg)
 
 不過，你把海报的亮度调高，就可以看到，原來夜空中有一架B29轟炸機正在飛行，天空中的黃色亮點其實是燃燒彈的火光。
 
-![d3224344.jpg | center | 317x450](https://cdn.yuque.com/yuque/2018/jpeg/84141/1523747025101-74e910a2-7c8c-4269-a6f7-6ccc247122cd.jpeg "")
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042819.jpg)
 
 《螢火蟲之墓》改編自日本作家野坂昭如的半自傳小說，背景是第二次世界大战的神戶空襲，讲述作者失去妹妹的悲伤故事。
 
@@ -243,10 +204,7 @@ ReactOS 是一个开源的操作系统，目标是兼容 Windows，能够运行 
 
 一位台湾网友下班回家，累得倒在沙发上，心想休息一会再去喂狗，结果眼睛一闭睡着了。等醒来，发现狗狗正居高临下，盯着他看，仿佛在说：“你到底什么时候给我吃的？”
 
-
-
-![Davx_FDVMAAIfuo.jpg | center | 552x736](https://cdn.yuque.com/yuque/2018/jpeg/84141/1523747484731-9017c1d1-c320-48ce-b826-5afd312fbeb8.jpeg "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042820.jpg)
 
 这表情像不像产品经理找到程序员，“需求还要多久才能做完？”
 
@@ -256,10 +214,7 @@ ReactOS 是一个开源的操作系统，目标是兼容 Windows，能够运行 
 
 微信搜索“__阮一峰的网络日志__”或者扫描二维码，即可订阅。
 
-
-
-![bg2018042311.jpg | center | 258x258](https://cdn.yuque.com/yuque/0/2018/jpeg/84141/1524407963102-5cfbd2f2-ec88-4db2-9caf-09f1fccec9a8.jpeg "")
-
+![](http://www.ruanyifeng.com/blogimg/asset/2018/bg2018042311.jpg)
 
 （完）
 
