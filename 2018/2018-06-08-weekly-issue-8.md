@@ -99,7 +99,7 @@ Web Components 是浏览器原生的组件解决方案。如果你愿意对新�
 * 定存计划：中长期投资，历史年化收益率达10.5%以上。
 * 分红计划：15天锁定期，30天后可以支取，低到100元起投，历史平均年化收益率达10%。
 
-[![bm2.png | center | 826x276](https://www.wangbase.com/blogimg/asset/201806/bg2018060812.jpg "")](https://m.bmqb.com/a/activities/group_invest?track_id=ryf_zutuan)
+[![bm2.png | center | 826x276](https://cdn.yuque.com/yuque/0/2018/png/84141/1528279458174-ac6c630c-6ed6-427d-95f8-0281913653ec.png "")](https://m.bmqb.com/a/activities/group_invest?track_id=ryf_zutuan)
 
 现在，[贝米钱包](https://www.bmqb.com/?track_id=ryf_zutuan)<span data-type="color" style="color:#3E3E3E">推出了[贝米战队](https://m.bmqb.com/a/activities/group_invest?track_id=ryf_zutuan)<span data-type="color" style="color:#3E3E3E">活动。专门针对程序员群体，提供更高的收益。一个战队2~5人，所有队员均可邀请好友入队，成功组队投资，最高可获得2958元现金红包。活动到6月20日就结束了，扫描以下二维码了解更多！
 
