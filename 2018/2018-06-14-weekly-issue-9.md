@@ -62,7 +62,7 @@
 
 Nodejs 的创始人 Ryan Dahl 一共做过两次关于 JS 的公开演讲。 一次是2009年宣布 Node 项目诞生，另一次是九年后的昨天，演讲题目是《Node 的设计失误》。
 
-这个演讲的内容非常火爆，基本上把 Node 全部否定了，认为 libuv 和 npm（包括 package.json）都是设计错误，怪不得 JS 圈里面没人作声。他觉得，Node 已经无药可救了，所以动手写了一个新项目 deno。
+这个演讲的内容非常火爆，基本上把 Node 全部否定了，认为 libuv 和 npm（包括 package.json）都是设计错误，怪不得 JS 圈里面没人作声。他觉得，Node 已经无药可救了，所以动手写了一个新项目 deno（这个名字是 node 的拆分，表示 node 重组）。
 
 7、[史上最大 ICO](http://finance.sina.com.cn/stock/usstock/c/2018-06-04/doc-ihcmurvh4058680.shtml)
 
@@ -76,7 +76,7 @@ Nodejs 的创始人 Ryan Dahl 一共做过两次关于 JS 的公开演讲。 一
 
 微软在宣布收购 GitHub 几天后表示，未来几个月里面，就会发布 Visual Studio 2019。
 
-5月份的 Build 2018 开发者大会上，微软展示了两个新的 Visual Studio 功能：IntelliCode 和 Live Share。前者使用 AI 提供改进代码质量和工作效率的智能建议，后者可让开发人员与团队成员进行实时协作，这些团队成员可以直接从Visual Studio和Visual Studio Code进行协同编辑和调试。
+5月份的 Build 2018 开发者大会上，微软展示了两个新的 Visual Studio 功能：IntelliCode 和 Live Share。前者使用 AI 提供改进代码质量和工作效率的智能建议，后者可让开发人员与团队成员进行实时协作，这些团队成员可以直接从 Visual Studio 和 Visual Studio Code 进行协同编辑和调试。
 
 ## 免费 Python 课程
 
@@ -99,7 +99,7 @@ Python 是现在最热门的语言，[路飞学城](https://www.luffycity.com/ho
 [![4779557561561238374.jpg](https://www.wangbase.com/blogimg/asset/201806/bg2018061411.jpg "")
 ](https://www.luffycity.com/home/camp?source=ruanyifeng)
 
-最重要的事情放在最后说，上面这两门课程都是免费的！缴纳99元保证金即可参与，只要完成3次作业和参与直播，提交学习笔记，就可以退还保证金，还可获得《Python全栈开发实战》其内部教材书籍，视频课程、定制文化衫等作为奖励。另外，还会有1对1的导师逐行批改你的代码、讲师3次直播答疑，还有班主任组队小伙伴共同学习。
+**最重要的事情放在最后说，上面这两门课程都是免费的！**缴纳99元保证金即可参与，只要完成3次作业和参与直播，提交学习笔记，就可以退还保证金，还可获得《Python全栈开发实战》及内部教材书籍，视频课程、定制文化衫等作为奖励。另外，还会有1对1的导师逐行批改你的代码、讲师3次直播答疑，还有班主任组队小伙伴共同学习。
 
 这两门课都只有 200 个名额，点击这里加入[课程的 QQ 群](https://shang.qq.com/wpa/qunwpa?idkey=7a018d556e4c87a1424d3cc35160445701a3b7432826b4f16deb71d453f7eda4)。跟客服说看了阮一峰博客，还可以获得50元课程代金券。
 
@@ -181,17 +181,13 @@ Python 语言的格式要求特别高，因为它通过缩进判断语法区块�
 
 一个新的 JavaScript 转码器，号称比 Babel 快20倍。
 
-5、[deno](https://github.com/ry/deno)
-
-一个基于 V8 引擎、使用 Go 语言写的 TypeScript 运行时。
-
-6、[deck.gl](https://eng.uber.com/deckgl-v5/) 
+5、[deck.gl](https://eng.uber.com/deckgl-v5/) 
 
 ![](https://www.wangbase.com/blogimg/asset/201806/bg2018061418.jpg)
 
 Uber 开源的基于地图的数据可视化框架。
 
-7、[抖音机器人](https://github.com/wangshub/Douyin-Bot)
+6、[抖音机器人](https://github.com/wangshub/Douyin-Bot)
 
 作者用 Python + ADB 做的 Bot。它会自动打开 APP 对视频截图，然后请求腾讯的 [人脸识别 API](http://ai.qq.com/)，当颜值大于门限值 `BEAUTY_THRESHOLD`时，点赞并关注，接着翻到下一页，重复进行该过程。
 
