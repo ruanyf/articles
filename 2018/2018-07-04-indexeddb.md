@@ -28,13 +28,13 @@ IndexedDB 具有以下特点。
 
 IndexedDB 是一个比较复杂的 API，涉及不少概念。它把不同的实体，抽象成一个个对象接口。学习这个 API，就是学习它的各种对象接口。
 
-- 数据库：IDBDatabase 对象
-- 对象仓库：IDBObjectStore 对象
-- 索引： IDBIndex 对象
-- 事务： IDBTransaction 对象
-- 操作请求：IDBRequest 对象
-- 指针： IDBCursor 对象
-- 主键集合：IDBKeyRange 对象
+> - 数据库：IDBDatabase 对象
+> - 对象仓库：IDBObjectStore 对象
+> - 索引： IDBIndex 对象
+> - 事务： IDBTransaction 对象
+> - 操作请求：IDBRequest 对象
+> - 指针： IDBCursor 对象
+> - 主键集合：IDBKeyRange 对象
 
 下面是一些主要的概念。
 
@@ -94,7 +94,7 @@ request.onerror = function (event) {
 };
 ```
 
-**（2）`success` 事件**
+**（2）success 事件**
 
 `success`事件表示成功打开数据库。
 
