@@ -135,7 +135,7 @@ Skia 是一个由C++编写的开源图形库，能在低端设备如手机上呈
 
 2、[Clock Shop](https://a-jie.github.io/clock-shop/)
 
-![](https://www.wangbase.com/blogimg/asset/201807/bg2018071314.jpg)
+![](https://www.wangbase.com/blogimg/asset/201807/bg2018071329.jpg)
 
 这个网站收集各种时钟的代码。
 
