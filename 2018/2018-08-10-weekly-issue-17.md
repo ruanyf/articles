@@ -43,7 +43,7 @@
 
 现在最富有的1%家庭获得全部收入的22％，只比1928年的23.9％低一点。美国人的年收入至少需要42.2万美元，才能跻身前1％的高收入者。这只是全国平均数，一些州的门槛要高得多，比如康涅狄格州的1%门槛为70万美元。
 
-这就是技术革命的一个社会后果，贫富分化不断扩大，贫穷的人越来越多，财富日益集中在少数富豪手里。
+这就是技术革命的一个社会后果，贫富分化不断扩大，中产阶级消失，财富日益集中在少数富豪手里。
 
 3、[开放式办公室](https://m.signalvnoise.com/the-open-plan-office-is-a-terrible-horrible-no-good-very-bad-idea-42bd9cd294e3)
 
@@ -109,7 +109,7 @@ Ruby on Rails 的创始人 DHH 公开抨击，开放式办公室是一个极其�
 
 这台游戏机搭配 128GB SSD + 1TB HDD 硬盘，支持正版Windows 10系统，售价4998元，并有中文独占游戏 Onrush。由于没有自己的操作系统，这个所谓的游戏主机其实是一台 Windows 10 电脑。
 
-11、[AI 取到 Dota2 的胜利](https://blog.openai.com/openai-five-benchmark-results/)
+11、[AI 取得 Dota2 的胜利](https://blog.openai.com/openai-five-benchmark-results/)
 
 ![](https://www.wangbase.com/blogimg/asset/201808/bg2018081012.jpg)
 
