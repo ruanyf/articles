@@ -58,7 +58,7 @@
 
 ICANN 允许各大公司申请自己的顶级域名，比如 .google 和 .apple。但是，不少公司花了18.5万美元以后，又把申请到的顶级域名放弃了。
 
-索尼公司最近就放弃了 .xperia 顶级域名。其他被放弃的顶级域名还有 .iwc，.sapo，.meo，.boots，.htc, .chloe，.pamperedchef，.montblanc，.mcd，以及看上去不太可能的 .mcdonalds。
+索尼公司最近就放弃了 .xperia 顶级域名。其他被放弃的顶级域名还有 .iwc，.sapo，.meo，.boots，.htc, .chloe，.pamperedchef，.montblanc，.mcd，以及看上去不太可能放弃的 .mcdonalds。
 
 7、[硅谷禁止互联网公司的员工餐饮补贴](https://www.businessinsider.com/san-francisco-free-cafeteria-food-facebook-ban-2018-7)
 
