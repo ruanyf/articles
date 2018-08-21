@@ -1,9 +1,13 @@
-# Apache的用法
+# Apache 的用法
 
 ## 安装
 
 ```bash
-$ apt-get install apache2
+# centos
+$ sudo yum install httpd
+
+# debian
+$ sudo apt-get install apache2
 ```
 
 它的配置文件在`/etc/apache2`。
@@ -15,13 +19,39 @@ $ apt-get install apache2
 - sites-enabled/：该目录包含实际使用的虚拟主机，通常是指向`sites-available`目录的符号链接。
 - `mods-[enabled,available]/`：这些目录的功能与对应的site目录类似，用来定义可加载的模块。
 
-常用命令
+## 常用命令
+
+CentOS 系统。
+
+```bash
+$ sudo systemctl enable httpd
+
+# To stop the Apache service, run:
+$ sudo systemctl stop httpd
+
+# To start it again, type:
+$ sudo systemctl start httpd
+
+# To restart the Apache service:
+$ sudo systemctl restart httpd
+
+# To reload the Apache service after you made some configuration changes:
+$ sudo systemctl reload httpd
+
+# disable the Apache service to start at boot
+$ sudo systemctl disable httpd
+
+# 系统重启时自动加载 
+$ sudo systemctl enable httpd
+```
+
+Debian 系统。
 
 ```bash
 # 启动
 $ sudo service apache2 start
 
-# 关闭
+# debian 关闭
 $ sudo service apache2 stop
 
 # 重启
@@ -41,6 +71,24 @@ systemctl stop apache2.service
 ## Restart command ##
 systemctl restart apache2.service
 ```
+
+## 配置文件
+
+Centos 系统 
+
+- 所有配置文件在`/etc/httpd`目录。
+- 主配置文件在`/etc/httpd/conf/httpd.conf`。
+- 所有以`.conf`结尾、并且在`/etc/httpd/conf.d`目录的配置文件，都会被自动加载到主配置文件。
+- 负责加载不同的模块的配置文件在`etc/httpd/conf.modules.d`目录。
+- 为了方便维护，最好每个域名创建一个配置文件，比如`/etc/httpd/conf.d/mydomain.com.conf`
+- Apache 日志文件（access_log和error_log）的位置在`/var/log/httpd/`目录。
+
+HTML 文件的根目录可以自由设置，可以设成下面的位置。
+
+- /home/<user_name>/<site_name>
+- /var/www/<site_name>
+- /var/www/html/<site_name>
+- /opt/<site_name>
 
 ## apache2.conf
 
