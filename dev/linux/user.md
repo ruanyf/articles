@@ -38,7 +38,7 @@ jane
 
 ```bash
 # 新增用户
-$ useradd <username>
+$ sudo useradd <username>
 
 # 定制新用户的参数
 $ useradd -u 2000 -g 5000 -c "Admin Account of SAP" -d /opt/sap -s /bin/ksh john
@@ -230,7 +230,7 @@ $ passwd -n <days> <username>
 $ passwd -w <days> <username>
 
 # 锁定用户密码，不得修改
-$ passwd -l <username>
+$ suod passwd -l <username>
 
 # 解锁用户密码
 $ passwd -u <username>
