@@ -1,8 +1,12 @@
-# Debian的用法
+# Debian
+
+1993 年8月16日，Ian Murdock 宣布 Debian 发行版诞生。这个名字来自他和妻子的姓名结合。
+
+Debian 是完全的自由软件。在开发哲学上，它比较保守，注重系统的稳定甚于功能。一般来说，它的稳定版里面的软件，会比最新版落后一到两年。这样避免了使用最新版，导致的各种 Bug 和系统不稳定。
 
 ## 分支
 
-Debian总是同时至少维护三个版本：stable，testing和unstable。
+Debian 总是同时至少维护三个版本：stable，testing和unstable。
 
 - stable是最新的官方发行版，也是推荐安装的版本。目前是version 8，代码名jessie。该分支有backports服务，提供某些软件当前版本。
 - testing是正在测试、将要成为stable的版本，会包含更新的软件。目前的testing版是sid。
@@ -15,16 +19,25 @@ Debian总是同时至少维护三个版本：stable，testing和unstable。
 
 ## 版本名称
 
-- Debian 8 (jessie)
-- Debian 7 (wheezy)
-- Debian 6.0 (squeeze)
-- Debian GNU/Linux 5.0 (lenny)
-- Debian GNU/Linux 4.0 (etch)
-- Debian GNU/Linux 3.1 (sarge)
-- Debian GNU/Linux 3.0 (woody)
-- Debian GNU/Linux 2.2 (potato)
-- Debian GNU/Linux 2.1 (slink)
-- Debian GNU/Linux 2.0 (hamm)
+Debian 每个版本的名字是以《玩具总动员》的人物命名的。
+
+- 1.1：Buzz
+- 1.2：Rex
+- 1.3：Bo
+- 2.0：Hamm
+- 2.1：Slink
+- 2.2：Potato
+- 3.0：Woody
+- 3.1：Sarge
+- 4.0：Etch
+- 5.0：Lenny
+- 6.0：Squeeze
+- 7.0：Wheezy
+- 8.0：Jessie
+- 9.0：Stretch
+- 10.0：Buster
+- 11.0：Bullseye
+- 12.0：Bookworm
 
 ## apt
 
