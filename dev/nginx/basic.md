@@ -12,13 +12,40 @@ Nginx 的安装。
 $ sudo apt-get install nginx
 ```
 
-重启 nginx。
+安装成功后，下面是一些常用命令。
 
 ```bash
-$ sudo service nginx restart
-# 或者
-$ nginx -s reload
+# 系统启动时，自动启动 nginx
+$ sudo systemctl enable nginx
+
+# 启动 nginx
+$ sudo systemctl start nginx
+
+# 重启 nginx
+$ sudo systemctl restart nginx
+
+# 停止 nginx
+$ sudo systemctl stop nginx
+
+# 重新加载配置文件
+$ sudo systemctl reload nginx
+
+# 查看 nginx 状态
+$ sudo systemctl status nginx
+
+# 验证配置文件是否有语法错误
+$ sudo nginx -t
 ```
+
+nginx 一般使用下面的目录位置。
+
+- /var/log/nginx/ ：日志文件目录，通常包含`access.log`和`error.log`两个主日志文件，以及各个站点的日志。
+- /etc/nginx/：配置文件目录。
+- /etc/nginx/sites-available/：所有站点的配置文件目录。
+- /etc/nginx/sites-enabled/：生效站点的配置文件目录，通常是`/etc/nginx/sites-available/`对应文件的软连接。
+- /etc/nginx/nginx.conf：主配置文件。
+
+## 工作原理
 
 nginx 有一个主进程和几个 worker 进程。有多少个 CPU，就有多少个 worker 进程。每一个 worker 进程能够处理几千个连接。
 
