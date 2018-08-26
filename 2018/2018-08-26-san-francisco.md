@@ -4,7 +4,7 @@
 
 每年，无数年轻人涌向那里，寻找自己的梦想，结果形成了一个类似“北漂”的特殊群体。
 
-昨天，美国的 [Salon 杂志](https://www.salon.com/2016/09/17/hacker-house-blues-my-life-with-12-programmers-2-rooms-and-one-21st-century-dream/)发表了一篇文章，作者讲述了自己在旧金山的一段生活。我读了很有感触，就把它翻译了出来。大家以后想到硅谷的时候，不要只想到那些光鲜亮丽的科技巨头，也要想到那些努力奋斗的底层程序员。
+昨天，美国的 [Salon 杂志](https://www.salon.com/2016/09/17/hacker-house-blues-my-life-with-12-programmers-2-rooms-and-one-21st-century-dream/)发表了一篇文章，讲述了旧金山普通程序员的生活。我读了很有感触，就把它翻译了出来。硅谷不仅仅是光鲜亮丽的科技巨头，更多的是努力奋斗的普通程序员。
 
 ================================
 
