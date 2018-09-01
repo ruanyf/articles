@@ -1,6 +1,4 @@
-# 进程处理
-
-## 端口（port）
+# 端口
 
 端口（port）是网络通信的一种机制，用于将网络数据分配到指定的软件。端口号是一个16位整数，从0到65535。
 
@@ -34,25 +32,3 @@ $ lsof -i :<processId> | grep LISTEN
 $ netstat -nat | grep LISTEN
 ```
 
-## 进程号
-
-```bash
-# 从进程名找出进程号
-$ ps -aef | grep <processName>
-# 实例
-$ ps -aef | grep httpd
-
-# 或者
-$ pgrep sudo <processName>
-
-# 从进程ID查看正在使用它的程序
-$ ls -l /proc/<processId>/exe
-
-# 列出某个进程打开的所有文件
-$ sudo lsof -p <processId>
-
-# 列出某个进程的工作目录
-$ pwdx <processId>
-# 或者
-$ ls -l /proc/<processId>/cwd
-```
