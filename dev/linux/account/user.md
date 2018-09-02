@@ -42,6 +42,7 @@ $ sudo useradd <username>
 
 # 定制新用户的参数
 $ useradd -u 2000 -g 5000 -c "Admin Account of SAP" -d /opt/sap -s /bin/ksh john
+$ useradd -g users -G wheel,developers nathan
 
 # 查看新增的用户
 $ grep john /etc/passwd
@@ -297,46 +298,4 @@ $ sudo -l
 $ sudo -i
 ```
 
-## 用户组
 
-### groupadd
-
-`groupadd`命令用来添加用户组。
-
-- -f	如果组已存在，则以成功状态退出。当您不需要在尝试创建某个组之前检查它是否存在时，此选项对于脚本编写很方便。
-- -g	手动指定组 ID。默认设置是使用不低于 GID_MIN 且大于任何现有组的 ID 的最小值。组 ID 通常是唯一的，而且必须是非负的。
-- -o	允许组拥有一个非唯一 ID。
-- -K	可用于覆盖来自 /etc/login.defs 的默认值。
-
-### groupdel
-
-`groupdel`命令只需要组名称，就能删除这个组。它没有选项。您不能删除作为用户的主要组的任何组。
-
-### groupmod
-
-`groupmod`命令用来修改组信息。
-
-- `-n` 选项更改组名称
-- `-g` 选项更改组编号
-
-```bash
-$ id john
-uid=1001(john) gid=1001(john) groups=1001(john)
-$ groupmod -n john2 john
-$ id john
-uid=1001(john) gid=1001(john2) groups=1001(john2)
-$ ls -ld ~john
-drwx------. 3 john john2 4096 Feb 15 16:03 /home/john
-```
-
-### gpasswd
-
-组也可以有密码，可以使用`gpasswd`命令设置。知道组密码的用户可以使用 newgrp 命令临时加入该组。您需要权衡使用 usermod 命令将用户添加到组的优势与有太多人知道组密码的安全问题。
-
-在某些情况下，您可能希望非 root 的用户能够管理一个或多个组，添加或删除组成员。根用户可以使用 gpasswd 的 -A 选项来添加用户作为组的管理员。
-
-```bash
-$ gpasswd -A jane john2
-```
-
-上面命令将用户 jane 设置为组 john2 的管理员。用户 jane 现在可以使用 groupadd 的 -a 选项向组 john2 添加成员。类似地，管理员可以删除组的成员。备注：如果组管理员不是组的成员，添加他或她不会使其成为组的成员。
