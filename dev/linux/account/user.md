@@ -198,104 +198,38 @@ GID_MAX			60000
 
 这些帐户通常可以控制文件，不应被普通登录用户访问。因此，它们通常将登录 shell 指定为`/sbin/nologin`或`/bin/false`，以便让登录尝试失败。
 
-## passwd
-
-`passwd`命令用于修改用户的密码。
-
-```bash
-# 根用户可以修改其他用户的密码
-$ passwd <username>
-
-# 非根用户只能修改自己的密码
-$ passwd
-
-# 一行命令完成密码输入
-$ echo -e "<newpassword>\n<newpassword>" | passwd username
-
-# 显示密码状态信息
-$ passwd -S <username>
-
-# 查看所有密码状态信息（根用户权限）
-$ passwd -Sa
-
-# 删除指定用户的密码
-$ passwd -d <username>
-
-# 设置密码立即过期，下次登陆时就会要求修改密码
-$ passwd -e <username>
-
-# 设置密码多少天后过期
-$ passwd -n <days> <username>
-
-# 设置密码过期前多少天，开始向用户显示警告
-$ passwd -w <days> <username>
-
-# 锁定用户密码，不得修改
-$ suod passwd -l <username>
-
-# 解锁用户密码
-$ passwd -u <username>
-
-# 设置密码不活跃期
-# 密码到期后，多少天内用户不修改，此后用户不得再登陆
-$ passwd -i <days> <username>
-```
-
-非根用户会被要求先输入当前密码，然后再设置新密码。
-
-密码状态信息一共有7栏，含义如下。
-
-- 用户名
-- 密码状态：PS（Password Set）、LK（Password locked）、NP（No Password）
-- 密码上次修改时间
-- minimum age
-- maximum age
-- warning period
-- inactivity period for the password
-
-`passwd`命令的选项如下。
-
-- -l 锁定或挂起帐户。
-- -u 解锁帐户。
-- -d 通过将帐户设置为无密码来禁用它。
-- -f 设置帐户的有效期。
-- -n 密码的最短有效天数。
-- -x 密码的最长有效天数。
-- -w 在必须更改密码之前提醒的天数。
-- -i 密码过期之后到禁用帐户之前的天数。
-- -S 输出一条有关当前帐户状态的短消息。
-
-## chage
-
-`chage`命令用于指定用户密码过期时间。
-
-```bash
-# 指定密码0天后过期，即下次登陆就必须更新密码
-$ chage -d 0 <username>
-
-# 查看密码过期信息
-$ chage -l <username>
-```
-
-change命令的选项
-
-- -E 设置帐户的有效期。
-- -m 密码的最短有效天数。
-- -M 密码的最长有效天数。
-- -W 在必须更改密码之前提醒的天数。
-- -I 密码过期之后到禁用帐户之前的天数。
-- -l 输出一条有关当前帐户状态的短消息。
-
 ## sudo
 
-`sudo`命令用于以根用户的身份执行命令。
+`sudo`命令让普通用户以根用户的身份执行命令。
 
 ```bash
-# 列出用户可以执行的命令
-$ sudo -l
+# 格式
+$ sudo <command>
 
-# 进入根用户的shell
+# 示例
+$ sudo ls
+```
+
+`-l`参数列出当前用户以根用户身份可以执行的命令。
+
+```bash
+$ sudo -l
+```
+
+`-i`参数让当前用户进入根用户的 shell。
+
+```bash
 $ sudo -i
 ```
 
+`-s`参数让本次 sudo 的有效期直到对话终止。默认情况下， sudo 的有效期只有15分钟，过了这段时候，就会提示用户再次输入密码。
 
+```bash
+$ sudo -s
+````
+
+`-k`参数使得当前 sudo 立刻到期。注意，该参数对于`-s`参数创造的对话无效。
+
+```bash
+$ sudo -k
+```

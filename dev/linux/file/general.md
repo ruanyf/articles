@@ -1,4 +1,32 @@
-# 文件操作
+# 文件管理
+
+## touch 命令
+
+如果文件不存在，`touch`命令用来生成一个空文件。
+
+```bash
+$ touch <filename>
+```
+
+如果文件已经存在，`touch`命令会改变该文件的时间戳（详见《时间戳》一章）。
+
+如果不确定一个文件是否存在，并且不想创建不存在的空文件，可以使用`-c`参数。
+
+```bash
+$ touch -c <filename>
+```
+
+上面代码中，如果文件不存在，不会新建。如果文件存在，就改变它的时间戳。
+
+`touch`命令可以同时创建多个空文件。
+
+```bash
+# 格式
+$ touch <file1> <file2> <file3>
+
+# 示例
+$ touch new-file-{1..10}.txt
+```
 
 ## 硬链接和软链接
 
@@ -11,3 +39,16 @@
 使用 ln 命令创建现有文件的额外的硬链接，但不能是目录。
 
 使用 ln 命令和 -s 选项来创建软链接。
+
+## find 命令
+
+```bash
+# 找出某个目录下面所有文件，然后删除
+$ find /some/path -type f -delete
+# 或者
+$ find /some/path -type f -exec rm -f {} \;
+
+# 找出某个目录下面指定类型的文件，然后删除
+$ find /some/path -type f -iname "*.txt" -exec rm -f {} \;
+```
+
