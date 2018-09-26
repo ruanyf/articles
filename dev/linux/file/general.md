@@ -1,5 +1,36 @@
 # 文件管理
 
+## file 命令
+
+`file`命令用来查看文件类型。
+
+```bash
+$ file /etc
+/etc: directory
+```
+
+上面命令显示`/etc`是一个目录。
+
+`-f`参数用于查询一个文件里面的多个路径的类型（每行一个文件）。
+
+```bash
+$ file -f files.list
+```
+
+`-s`参数读取块文件或者字符文件。
+
+```bash
+$ file -s /dev/sda
+/dev/sda: DOS/MBR boot sector, extended partition table (last)
+```
+
+`-i`参数输出 mime 类型。
+
+```bash
+$ file -i -s /dev/sda
+/dev/sda: application/octet-stream; charset=binary
+```
+
 ## touch 命令
 
 如果文件不存在，`touch`命令用来生成一个空文件。
