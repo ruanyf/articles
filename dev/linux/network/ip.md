@@ -114,3 +114,65 @@ $ sudo /etc/init.d/networking restart
 # 或者
 $ sudo systemctl restart networking
 ```
+
+## traceroute 命令
+
+traceroute 命令查找网络数据包在本机与目标计算机之间的路径。它是了解数据如何通过网络流动的有用工具。
+
+traceroute 命令将数据包发送到目标计算机，并记录这些数据包所采取的所有步骤。它打印出这些数据包所经过的服务器的IP地址和域名。用户可以看到数据包到达目标计算机所需的总时间，以及每一步的时间。
+
+traceroute 的工作原理是利用网络数据包所具有的转发次数的限制。所有数据包都有一定数量的转发限制，防止数据包无休止地在网络中传递。当数据包从一台设备转发到另一台设备时，设备会检查该数据包的转发次数。如果它剩下的转发次数高于1，它会将数字减少1，然后再转发。如果该数字为1，它将丢弃数据包，并向发送者发回一个消息，告诉它丢弃了数据包，因为它的最大转发次数已经到了。
+
+traceroute 使用这些消息来测试本地计算机和目标计算机之间的路由。它会开始发送一个只能一次转发的数据包。第一个设备将丢弃它，发回一个带有自己IP地址的消息。然后，traceroute 将发送另一个两次转发的数据包。第二个设备将发回丢弃消息。traceroute 将继续该过程，直到达到目标计算机。
+
+traceroute 命令一般已经默认安装。如果不是这样，你可以手动安装。
+
+```bash
+# Ubuntu/Debian
+$ sudo apt install traceroute
+
+# Fedora
+$ sudodnf install traceroute
+
+# OpenSUSE
+$ sudo zypper in traceroute
+
+# Arch Linux
+$ sudo pacman -S traceroute
+```
+
+使用的时候，直接`traceroute`加上目标计算机的域名或 IP 地址即可。
+
+```bash
+$ traceroute example.com
+```
+
+注意，有些网络设置为屏蔽 traceroute，所以可能不一定能得到结果。
+
+`-4`参数表示使用 IPv4，`-6`参数表示使用 IPv6。
+
+```bash
+$ traceroute -4 example.com
+```
+
+`-T`参数表示使用 TCP 协议，这个协议更适合访问网站时发现的路由。默认情况下，使用 icmp(ping) 协议。
+
+```bash
+$ traceroute -T example.com
+```
+
+`-p`参数用于指定端口。
+
+```bash
+$ traceroute -p 53 192.168.1.1
+```
+
+`-f`参数指定起始的转发次数，`-m`参数指定结束的转发次数。下面命令指定只返回第3跳到第10跳的结果。
+
+```bash
+$ traceroute -f 3 -m 10 example.com
+```
+
+## 参考链接
+
+- [Traceroute Basics](https://linuxconfig.org/traceroute-basics), by Nick Congleton
