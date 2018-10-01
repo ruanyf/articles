@@ -10,7 +10,7 @@ RESTful 是目前最流行的 API 设计规范，用于规范客户端与服务�
 
 REST 的核心思想就是，客户端发出的数据操作指令都是“动词 + 谓语”的结构。比如，`GET /articles`这个命令，`GET`是动词，`/articles`是谓语。
 
-动词通常只有五个。就是下面五种 HTTP 方法，分别对应 CRUD 操作。
+动词通常只有五个，就是下面五种 HTTP 方法，分别对应 CRUD 操作。
 
 > - GET：读取（Read）
 > - POST：新建（Create）
@@ -18,11 +18,22 @@ REST 的核心思想就是，客户端发出的数据操作指令都是“动词
 > - PATCH：更新（Update），通常是部分更新
 > - DELETE：删除（Delete）
 
+根据 HTTP 规范，动词一律大写。
+
 ### 1.2 动词的覆盖
 
-有些客户端对动词有限制，只能使用`GET`和`POST`这两个动词。
+有些客户端对动词有限制，只能使用`GET`和`POST`这两个动词。其他三个动词（`PUT`、`PATCH`、`DELETE`）必须要通过`POST`模拟。
 
-但流行的约定是接受一个请求头X-HTTP-Method-Override，其字符串值包含PUT，PATCH或DELETE之一。
+这时，客户端发出的 HTTP 请求，要加上`X-HTTP-Method-Override`属性，告诉服务器应该使用哪一个动词，覆盖`POST`方法。
+
+```http
+POST /api/Person/4 HTTP/1.1  
+X-HTTP-Method-Override: PUT
+```
+
+上面代码中，`X-HTTP-Method-Override`指定本次请求的动词是`PUT`，而不是`POST`。
+
+### 1.3 谓语必须是名词
 
 宾语就是服务器的 API。这就是说，服务器 API 的网址应该是名词，不能是动词。比如，`/articles`这样的网址就是正确的，而下面这样的动词 URL 都是错误的。
 
