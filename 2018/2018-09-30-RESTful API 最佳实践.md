@@ -69,7 +69,7 @@ GET /authors/12?categories=2
 下面是另一个例子，查询已发布的文章。你可以会设计成下面的 URL。
 
 ```http
-GET /articles/published/
+GET /articles/published
 ```
 
 查询字符串的写法明显更好。
