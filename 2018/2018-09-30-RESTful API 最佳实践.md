@@ -173,7 +173,7 @@ API 返回的数据格式，不应该是纯文本，而应该是一个 JSON 对�
 客户端请求时，也要明确告诉服务器，可以接受 JSON 格式，即请求的 HTTP 头的`ACCEPT`属性也要设成`application/json`。下面是一个例子。
 
 ```http
-GET  https://adventure-works.com/orders/2 HTTP/1.1 
+GET /orders/2 HTTP/1.1 
 Accept: application/json
 ```
 
