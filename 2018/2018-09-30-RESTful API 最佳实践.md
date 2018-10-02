@@ -1,7 +1,7 @@
 
 # RESTful API 最佳实践
 
-RESTful 是目前最流行的 API 设计规范，用于规范客户端与服务器的数据交互接口。
+RESTful 是目前最流行的 API 设计规范，用于客户端与服务器的数据交互接口的设计。
 
 它的大原则容易把握，但是细节不容易做对。这篇文章就是总结 API 的设计细节，介绍怎么设计出易于理解和使用的 API。
 
@@ -36,7 +36,7 @@ X-HTTP-Method-Override: PUT
 
 ### 1.3 谓语必须是名词
 
- AP。这，服务器 P 的谓语是 HTTP 动词作用的对象，就是 API 的 URL。它应该是名词，不能是动词。比如，`/articles` URL 就是正确的，而下面的 URL 不是名词，所以都是错误的。
+谓语是 HTTP 动词作用的对象，也就是 API 的 URL。它应该是名词，不能是动词。比如，`/articles` 就是正确的，而下面的 URL 不是名词，所以都是错误的。
 
 > - /getAllCars
 > - /createNewCar
@@ -44,21 +44,21 @@ X-HTTP-Method-Override: PUT
 
 ### 1.4 复数 URL
 
-既然 URL 是名词，那么应该使用复数，还是单数？这没有统一的看法，但是常见的需求是读取数据的集合，比如`GET /articles`，那就是读取所有文章，这里的 URL 明显应该是复数。
+既然 URL 是名词，那么应该使用复数，还是单数？
 
-，为了统一起见，建议都使用复数 URL，即`GET /articles/2`要好于`GET /article/2`。
+这没有统一的规定，但是常见的操作是读取一个集合，比如`GET /articles`（读取所有文章），这里明显应该是复数。
 
-### 1.5 避免多层级的 URL
+为了统一起见，建议都使用复数 URL，比如`GET /articles/2`要好于`GET /article/2`。
 
-RESTful 的 UR表示某常见的情况是，资源需要分，因此很容易的 URL，比如获取某个作者的写的某一类文章。
+### 1.5 避免多级 URL
+
+常见的情况是，资源需要多级分类，因此很容易写出多级的 URL，比如获取某个作者的某一类文章。
 
 ```http
 GET /authors/12/categories/2
 ```
 
-这种 URL 不利于扩展，语义也不明确，
-
-API 最多只有两层。往往要想一会，才能明白含义。
+这种 URL 不利于扩展，语义也不明确，往往要想一会，才能明白含义。
 
 更好的做法是，除了第一级，其他级别都用查询字符串表达。
 
@@ -66,7 +66,7 @@ API 最多只有两层。往往要想一会，才能明白含义。
 GET /authors/12?categories=2
 ```
 
-下面是另一个例子。查询已发布的文章，你可以会设计成的 URL。
+下面是另一个例子，查询已发布的文章。你可以会设计成下面的 URL。
 
 ```http
 GET /articles/published/
@@ -82,14 +82,17 @@ GET /articles?published=true```
 
 ### 2.1 状态码必须精确
 
-客户端的每一次，服务器都必须给出回应。回应状态码和数据两部分。
+客户端的每一次请求，服务器都必须给出回应。回应包括状态码和数据两部分。
 
 状态码就是一个三位数的数字。，分成五个类别。
-`1xx`表示：相息，`2x `2xx`：操作成功
-> - `3xx`重定向，> - `4xx`表客户端错误和
-> - `5xx`：服务器错误。
 
-几个主要操作的成功这五个大类，总共包含[100多种](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)状态码，覆盖了绝大部分可能遇到的情况。每一种状态码都有标准的（或者约定的）解释。状态码，可以判断出发生了什么情况，所以服务器应该返回尽可能精确的状态码。
+> - `1xx`：相息
+> - `2xx`：操作成功
+> - `3xx`：重定向
+> - `4xx`：客户端错误
+> - `5xx`：服务器错误
+
+这五个大类总共包含[100多种](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)状态码，覆盖了绝大部分可能遇到的情况。每一种状态码都有标准的（或者约定的）解释，可以判断出发生了什么情况，所以服务器应该返回尽可能精确的状态码。
 
 API 不需要`1xx`状态码，下面介绍其他四类状态码的精确含义。
 
@@ -103,26 +106,26 @@ API 不需要`1xx`状态码，下面介绍其他四类状态码的精确含义�
 > - PATCH: 200 OK
 > - DELETE: 204 No Content
 
-01 aue
-40 Fodden，4201 thuored户返回4 rben。0 terae，服务器了解用户的要`状态码，表示生成了新的资源；`DELETE`返回`204`状态码，表示资源已经不存在。
+上面代码中，`POST`返回`201`状态码，表示生成了新的资源；`DELETE`返回`204`状态码，表示资源已经不存在。
 
-此外，`202 Accepted`状态码表示服务器时求，。
+此外，`202 Accepted`状态码表示服务器已经收到请求，但还未进行处理，会在未来哪个时候再处理，通常用于异步操作。下面是一个例子。
 
-HTTP/1.1 303 See Other
-Location: /api/orders/12345
+```http
+HTTP/1.1 202 Accepted
 
-- **303 See Other** 参考其他位置。通常用于异步操作，异步操作在其他位置创建了资源。
--   **304 Not Modified**表示客户端已在其缓存中有响应。因此无需再次传输相同的数据。
-
--   **再操作，通常用于异步操作。
+{
+  "task": {
+    "href": "/api/company/job-management/jobs/2130040",
+    "id": "2130040"
+  }
+}
+```
 
 ### 2.3 3xx 状态码
 
 API 用不到`301`状态码（永久重定向）和`302`状态码（暂时重定向，`307`也是这个含义），因为它们可以由应用级别返回，浏览器会直接跳转，API 级别可以不考虑这两种情况。
 
-API 用到的`3xx`状态码，主要是`303 See Other`。
-
-它表示参考另一个 URL。它与`302`和`307`含义一样，也是“暂时重定向”，区别在于`302`和`307`用于`GET`请求，而`303`用于`POST`、`PUT`和`DELETE`请求。这时，浏览器不会自动跳转，而会让用户自己决定下一步怎么办。下面是一个例子。
+API 用到的`3xx`状态码，主要是`303 See Other`，表示参考另一个 URL。它与`302`和`307`的含义一样，也是“暂时重定向”，区别在于`302`和`307`用于`GET`请求，而`303`用于`POST`、`PUT`和`DELETE`请求。收到`303`以后，浏览器不会自动跳转，而会让用户自己决定下一步怎么办。下面是一个例子。
 
 ```http
 HTTP/1.1 303 See Other
@@ -133,25 +136,21 @@ Location: /api/orders/12345
 
 `4xx`状态码表示客户端错误，主要由下面几种。
 
-`400 Bad Request** `：服务器不理解客户端的请求，未做任何处理。
--   **
+`400 Bad Request`：服务器不理解客户端的请求，未做任何处理。
+
 `401 Unauthorized`：用户未提供身份验证凭据，或者没有通过身份验证。
 
 `403 Forbidden`：用户通过了身份验证，但是不具有访问资源所需的权限。
 
-`404 Not Found** `：所请求的资源不存在，或不可用。
-- -   
-`405 Method Not Allowed  - When an HTTP method is being requested that isn't allowed for the authenticated user
--   **`：用户已经通过身份验证，但是所用的 HTTP 方法不在他的权限之内。
+`404 Not Found`：所请求的资源不存在，或不可用。
 
-`410 Gone** `：所请求的资源已从这个地址转移，不再可用。
-- 
-`415 Unsupported Media Type`：客户端要求的返回的格式不是 JSON
-- 支持。比如，API 只能返回 JSON 格式，但是客户端要求返回 XML 格式。
+`405 Method Not Allowed`：用户已经通过身份验证，但是所用的 HTTP 方法不在他的权限之内。
 
-`422 – Unprocessable Entity –` ：客户端上传的附件无法处理，导致请求失败。Should be used if the server cannot process the enitity, e.g. if an image cannot be formatted or mandatory fields are missing in the payload.
-- [429 Too Many Requests](http://tools.ietf.org/html/rfc6585#section-4) 请求超过限额。
--   **
+`410 Gone`：所请求的资源已从这个地址转移，不再可用。
+ 
+`415 Unsupported Media Type`：客户端要求的返回的格式不支持。比如，API 只能返回 JSON 格式，但是客户端要求返回 XML 格式。
+
+`422 Unprocessable Entity` ：客户端上传的附件无法处理，导致请求失败。
 
 `429 Too Many Requests`：客户端的请求次数超过限额。
 
@@ -159,21 +158,19 @@ Location: /api/orders/12345
 
 `5xx`状态码表示服务端错误。一般来说，API 不会向用户透露服务器的详细信息，所以只要两个状态码就够了。
 
-`500 Internal Server Error**  `：客户端请求有效，服务器处理时发生了意外。
--   **错误。
+`500 Internal Server Error`：客户端请求有效，服务器处理时发生了意外。
 
-`503 Service Unavailable** 服务器瘫痪或`：服务器无法处理请求，一般用于网站维护状态。
-
+`503 Service Unavailable`：服务器无法处理请求，一般用于网站维护状态。
 
 ## 三、服务器回应
 
 ### 3.1 不要返回纯本文
 
-服务器回应API 返回的数据格式，不应该是纯文本，而应该是一个 JSON 对象，因为这样才能返回标准的结构化数据。
+API 返回的数据格式，不应该是纯文本，而应该是一个 JSON 对象，因为这样才能返回标准的结构化数据。
 
-，服务器回应的 HTTP 头的`Content-Type`属性要设为`application/json`。
+所以，服务器回应的 HTTP 头的`Content-Type`属性要设为`application/json`。
 
-客户端请求时，HTTP 头信息需要提供`ACCEPT`属性也要明确告诉服务器，可以接受 JSON 格式，即请求的 HTTP 头的`ACCEPT`属性也要设成`application/json`。下面是一个例子。
+客户端请求时，也要明确告诉服务器，可以接受 JSON 格式，即请求的 HTTP 头的`ACCEPT`属性也要设成`application/json`。下面是一个例子。
 
 ```http
 GET  https://adventure-works.com/orders/2 HTTP/1.1 
@@ -182,17 +179,17 @@ Accept: application/json
 
 ### 3.2 发生错误时，不要返回 200 状态码
 
-有一做法是，不使发生错误，也返回`200`状态码，而把错误信息放在数据体里面，就像下面这样。
+有一种做法是，即使发生错误，也返回`200`状态码，把错误信息放在数据体里面，就像下面这样。
 
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "status": "failure",
-    "data": {
-        "error": "Expected at least two items in list."
-    }
+  "status": "failure",
+  "data": {
+    "error": "Expected at least two items in list."
+  }
 }
 ```
 
@@ -205,10 +202,10 @@ HTTP/1.1 400 Bad Request
 Content-Type: application/json
 
 {
-    "error": "Invalid payoad.",
-    "detail": {
-        "surname": "This field is required."
-    }
+  "error": "Invalid payoad.",
+  "detail": {
+     "surname": "This field is required."
+  }
 }
 ```
 
