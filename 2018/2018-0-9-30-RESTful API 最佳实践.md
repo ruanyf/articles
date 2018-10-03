@@ -1,8 +1,11 @@
+
 # RESTful API 最佳实践
 
 [RESTful](http://www.ruanyifeng.com/blog/2011/09/restful.html) 是目前最流行的 API 设计规范，用于 Web 数据接口的设计。
 
 它的大原则容易把握，但是细节不容易做对。这篇文章就是总结 API 的设计细节，介绍怎么设计出易于理解和使用的 API。
+
+![](https://www.wangbase.com/blogimg/asset/201810/bg2018100301.jpg)
 
 ## 一、URL 设计
 
@@ -212,7 +215,7 @@ API 的使用者未必知道，URL 是怎么设计的。一个解决方法就是
 
 举例来说，GitHub 的 API 都在 api.github.com 这个域名。访问它，就可以得到其他 URL。
 
-```javascript
+```http
 {
   ...
   "feeds_url": "https://api.github.com/feeds",
@@ -228,7 +231,7 @@ API 的使用者未必知道，URL 是怎么设计的。一个解决方法就是
 
 HATEOAS 的格式没有统一规定，上面例子中，GitHub 将它们与其他属性放在一起。更好的做法应该是，将相关链接与其他属性分开。
 
-```javascript
+```http
 HTTP/1.1 200 OK
 Content-Type: application/json
 
@@ -236,8 +239,8 @@ Content-Type: application/json
   "status": "In progress",
    "links": {[
     { "rel":"cancel", "method": "delete", "href":"/api/status/12345" } ,
-    { "rel":"edit", "method": "put", "href":"/api/status/12345" 
-  ]
+    { "rel":"edit", "method": "put", "href":"/api/status/12345" }
+  ]}
 }
 ```
 
