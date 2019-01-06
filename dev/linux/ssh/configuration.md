@@ -1,6 +1,20 @@
 # SSH 的配置
 
-SSH 的配置文件是`/etc/ssh/sshd_config`（服务端）和`/etc/ssh/ssh_config`（客户端）。
+SSH 的配置文件是`/etc/ssh/sshd_config`（服务端）和`/etc/ssh/ssh_config`（客户端），用户个人的配置文件在`~/.ssh/config`，下面是一个例子。
+
+```bash
+Host *
+     Port 2222
+
+Host remoteserver
+     HostName remoteserver.thematrix.io
+     User neo
+     Port 2112
+     IdentityFile /home/test/.ssh/remoteserver.private_key
+```
+
+上面代码中，`Host *`表示对所有主机生效，后面单个主机的设置可以覆盖它。
+
 
 修改配置文件以后，可以使用下面的命令验证，配置文件是否有错误。
 

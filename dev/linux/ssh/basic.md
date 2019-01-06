@@ -145,9 +145,42 @@ $ ssh-copy-id username@host
 
 ### 命令行参数
 
-`-i`指定登陆服务器所需要的私钥，意为“identity_file”，默认为`~/.ssh/id_dsa`。
+`-4`：连接时使用 IPv4。
+
+`-6`：连接时使用 IPv6。
+
+`-C`：传输数据时采用压缩。
+
+`-D`：指定本机的 Socks 监听端口，该端口收到的请求，都将转发到远程的 SSH 主机。
+
+```bash
+$ ssh -D 8888 user@remoteserver
+```
+
+`-i`：指定登陆服务器所需要的私钥，意为“identity_file”，默认为`~/.ssh/id_dsa`。
 
 ```bash
 $ ssh johndoe@host.example.com -i ~/.ssh/host.key
 ```
+
+`-L`：指定本地端口绑定。
+
+```bash
+$ ssh  -L 9999:targetServer:80 user@remoteserver
+```
+
+上面代码中，所有发向本地`9999`端口的请求，都会经过`remoteserver`发往 targetServer 的 80 端口，这就相当于直接连上了 targetServer 的 80 端口。
+
+`-p`：指定远程的端口，比如`-p 22`。
+
+`-R`：指定远程端口绑定。
+
+```bash
+$ ssh -R 9999:targetServer:902 user@remoteserver
+```
+
+上面命令中，指定`remoteserver`监听自己的 9999 端口，所有发向这个端口的请求，都会转向 targetServer 的 902 端口。
+
+`-v`：输出详细的调试信息。
+
 
