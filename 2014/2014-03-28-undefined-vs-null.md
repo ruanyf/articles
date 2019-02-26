@@ -91,6 +91,24 @@ Number(undefined)
 
 </code></pre></blockquote>
 
+在IE8及更老的浏览器版本中，undefined是可以被重写的：
+
+<blockquote><pre><code class="language-javascript">
+undefined = 1
+// 1
+// NaN
+</code></pre></blockquote>
+
+在2009年发布的ES5中，这个问题已经被修复了，undefined不再能被重写。[15.1.1.3 undefined](https://es5.github.io/#x15.1.1.3)
+为了兼容以前的JavaScript版本，避免undefined被重写，会用下面的写法来判断值是否等于undefined。
+<blockquote><pre><code class="language-javascript">
+undefined = 1
+var foo
+foo === void 0
+// undefined
+</code></pre></blockquote>
+
+
 ## 四、目前的用法
 
 但是，上面这样的区分，在实践中很快就被证明不可行。目前，null和undefined基本是同义的，只有一些细微的差别。
