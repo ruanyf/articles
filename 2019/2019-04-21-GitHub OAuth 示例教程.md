@@ -98,8 +98,9 @@ http://localhost:8080/oauth/redirect?
 
 后端收到这个请求以后，就拿到了授权码（`code`参数）。
 
+## 六、后端实现
 
-示例的[后端](https://github.com/ruanyf/node-oauth-demo/blob/master/index.js)采用 Koa 框架编写，具体用法请看[教程](http://www.ruanyifeng.com/blog/2017/08/koa.html)。
+示例的[后端](https://github.com/ruanyf/node-oauth-demo/blob/master/index.js)采用 Koa 框架编写，具体语法请看[教程](http://www.ruanyifeng.com/blog/2017/08/koa.html)。
 
 这里的关键是针对`/oauth/redirect`的请求，编写一个[路由](https://github.com/ruanyf/node-oauth-demo/blob/master/index.js#L16)，完成 OAuth 认证。
 
@@ -113,13 +114,13 @@ app.use(route.get('/oauth/redirect', oauth));
 
 上面代码中，`oauth`函数就是路由的处理函数。下面的代码都写在这个函数里面。
 
-路由函数的第一件事是，从 URL 取出授权码。
+路由函数的第一件事，是从 URL 取出授权码。
 
 ```javascript
 const requestToken = ctx.request.query.code;
 ```
 
-## 六、令牌
+## 七、令牌
 
 后端使用这个授权码，向 GitHub 请求令牌。
 
@@ -148,7 +149,7 @@ const tokenResponse = await axios({
 const accessToken = tokenResponse.data.access_token;
 ```
 
-## 七、API 数据
+## 八、API 数据
 
 有了令牌以后，就可以向 API 请求数据了。
 
@@ -176,5 +177,5 @@ ctx.response.redirect(`/welcome.html?name=${name}`);
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQzMzk2MDk1LC01MjE5MzU1NjhdfQ==
+eyJoaXN0b3J5IjpbLTE1OTIwMjIxNjksLTUyMTkzNTU2OF19
 -->
