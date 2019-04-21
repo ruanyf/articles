@@ -81,11 +81,13 @@ https://github.com/login/oauth/authorize?
 
 这个 URL 指向 GitHub 的 OAuth 授权网址，带有两个参数：`client_id`告诉 GitHub 谁在请求，`redirect_uri`是稍后跳转回来的网址。
 
-用户点击到了 GitHub，GitHub 会要求用户登录，确保是本人在操作。登录后，GitHub 询问用户，该应用正在请求数据，你是否同意授权。
-
-![](https://www.wangbase.com/blogimg/asset/201904/bg2019042104.png)
+用户点击到了 GitHub，GitHub 会要求用户登录，确保是本人在操作。
 
 ## 五、授权码
+
+登录后，GitHub 询问用户，该应用正在请求数据，你是否同意授权。
+
+![](https://www.wangbase.com/blogimg/asset/201904/bg2019042104.png)
 
 用户同意授权， GitHub 就会跳转到`redirect_uri`指定的跳转网址，并且带上授权码，跳转回来的 URL 就是下面的样子。
 
@@ -94,7 +96,10 @@ http://localhost:8080/oauth/redirect?
   code=859310e7cecc9196f4af
 ```
 
-后端收到这个请求以后，就拿到了授权码（`code`参数）。示例的[后端](https://github.com/ruanyf/node-oauth-demo/blob/master/index.js)采用 Koa 框架编写，具体用法请看[教程](http://www.ruanyifeng.com/blog/2017/08/koa.html)。
+后端收到这个请求以后，就拿到了授权码（`code`参数）。
+
+
+示例的[后端](https://github.com/ruanyf/node-oauth-demo/blob/master/index.js)采用 Koa 框架编写，具体用法请看[教程](http://www.ruanyifeng.com/blog/2017/08/koa.html)。
 
 这里的关键是针对`/oauth/redirect`的请求，编写一个[路由](https://github.com/ruanyf/node-oauth-demo/blob/master/index.js#L16)，完成 OAuth 认证。
 
@@ -171,5 +176,5 @@ ctx.response.redirect(`/welcome.html?name=${name}`);
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODg3NzA3MzgxLC01MjE5MzU1NjhdfQ==
+eyJoaXN0b3J5IjpbLTQzMzk2MDk1LC01MjE5MzU1NjhdfQ==
 -->
