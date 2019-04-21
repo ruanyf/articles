@@ -35,7 +35,7 @@
 
 应用的名称随便填，主页 URL 填写`http://localhost:8080`，跳转网址填写 `http://localhost:8080/oauth/redirect`。
 
-提交表单以后，GitHub 应该会返回客户端 ID（client ID）和客户端密钥（client secret），这就是身份识别码。
+提交表单以后，GitHub 应该会返回客户端 ID（client ID）和客户端密钥（client secret），这就是应用的身份识别码。
 
 ## 三、示例仓库
 
@@ -173,5 +173,5 @@ ctx.response.redirect(`/welcome.html?name=${name}`);
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAzMzc5MDQ5MCwtNTIxOTM1NTY4XX0=
+eyJoaXN0b3J5IjpbLTEyNjU3NzcxNjgsLTUyMTkzNTU2OF19
 -->
