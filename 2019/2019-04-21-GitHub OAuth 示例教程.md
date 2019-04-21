@@ -21,7 +21,7 @@
 > 5. GitHub 返回令牌.
 > 6. A 网站使用令牌，向 GitHub 请求用户数据。
 
-下面就是这个流程的演示。
+下面就是这个流程的代码实现。
 
 ## 二、应用登记
 
@@ -173,5 +173,5 @@ ctx.response.redirect(`/welcome.html?name=${name}`);
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTUyMTkzNTU2OF19
+eyJoaXN0b3J5IjpbMTAzMzc5MDQ5MCwtNTIxOTM1NTY4XX0=
 -->
