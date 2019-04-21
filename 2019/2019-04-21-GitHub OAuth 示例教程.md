@@ -39,7 +39,7 @@
 
 ## 三、示例仓库
 
-我写了一个[代码仓库](https://github.com/ruanyf/node-oauth-demo)，请将其克隆到本地。
+我写了一个[代码仓库](https://github.com/ruanyf/node-oauth-demo)，请将它克隆到本地。
 
 ```bash
 $ git clone git@github.com:ruanyf/node-oauth-demo.git
@@ -81,9 +81,7 @@ https://github.com/login/oauth/authorize?
 
 这个 URL 指向 GitHub 的 OAuth 授权网址，带有两个参数：`client_id`告诉 GitHub 谁在请求，`redirect_uri`是稍后跳转回来的网址。
 
-用户点击以后，跳转到 GitHub。GitHub 会要求用户登录，确保是本人在操作。
-
-登录后，GitHub 询问用户，该应用正在请求数据，你是否同意授权。
+用户点击到了 GitHub，GitHub 会要求用户登录，确保是本人在操作。登录后，GitHub 询问用户，该应用正在请求数据，你是否同意授权。
 
 ![](https://www.wangbase.com/blogimg/asset/201904/bg2019042104.png)
 
@@ -173,5 +171,5 @@ ctx.response.redirect(`/welcome.html?name=${name}`);
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyNjU3NzcxNjgsLTUyMTkzNTU2OF19
+eyJoaXN0b3J5IjpbODg3NzA3MzgxLC01MjE5MzU1NjhdfQ==
 -->
