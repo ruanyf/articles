@@ -143,4 +143,16 @@ Referrer-Policy: origin
 <a href="..." referrerpolicy="origin" target="_blank">xxx</a>
 ```
 
+## 七、退出页面重定向
+
+还有一种比较老式的[技巧](https://geekthis.net/post/hide-http-referer-headers/#exit-page-redirect)，但是非常有效，可以隐藏掉原始网址，谷歌和 Facebook 都在使用这种方法。
+
+链接的时候，不要直接跳转，而是通过一个重定向网址，就像下面这样。
+
+```html
+<a  href="/exit.php?url=http%3A%2F%2Fexample.com">Example.com</a>
+```
+
+上面网址中，先跳转到`/exit.php`，然后再跳转到目标网址。这时，`Referer`字段就不会显示原始网址。
+
 （完）
