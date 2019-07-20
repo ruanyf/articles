@@ -1,5 +1,17 @@
 # Vim的配置
 
+使用下面的命令，在命令模式下，查看启动时加载的文件。
+
+```http
+:scriptnames
+```
+
+可以打印成日志文件查看。
+
+```http
+$ vim --startuptime start.log name-of-your-file
+```
+
 - `:hlsearch` 打开高亮搜索
 - `:syntax on` 打开语法高亮
 - `:set hlsearch` 查找结果高亮
