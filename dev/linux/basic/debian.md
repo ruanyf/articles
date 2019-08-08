@@ -8,34 +8,35 @@ Debian 是完全的自由软件。在开发哲学上，它比较保守，注重�
 
 Debian 总是同时至少维护三个版本：stable，testing和unstable。
 
-- stable是最新的官方发行版，也是推荐安装的版本。目前是version 8，代码名jessie。该分支有backports服务，提供某些软件当前版本。
-- testing是正在测试、将要成为stable的版本，会包含更新的软件。目前的testing版是sid。
-- unstable是当前正在积极开发的，包含有最新的软件，但可能不稳定、并且有错误。
+- stable：最新的官方发行版，也是推荐安装的版本。目前是version 8，代码名jessie。该分支有backports服务，提供某些软件当前版本。
+- testing：正在测试、将要成为 stable 的版本，会包含更新的软件。
+- unstable：当前正在积极开发的，包含有最新的软件，但可能不稳定、并且有错误。unstable 版的代码总是 sid。
 
 其他分支还有：
 
-- Oldstable是比Stable更老的版本，stable发布一年之内都会支持这个更老的版本。
-- Experimental是暂保存实验性软件的分支。
+- Oldstable：是比Stable更老的版本，stable发布一年之内都会支持这个更老的版本。
+- Oldoldstable：Oldstable 的过期存档版本。
+- Experimental：暂保存实验性软件的分支。
 
 ## 版本名称
 
 Debian 每个版本的名字是以《玩具总动员》的人物命名的。
 
-- 1.1：Buzz
-- 1.2：Rex
-- 1.3：Bo
-- 2.0：Hamm
-- 2.1：Slink
-- 2.2：Potato
-- 3.0：Woody
-- 3.1：Sarge
-- 4.0：Etch
-- 5.0：Lenny
-- 6.0：Squeeze
-- 7.0：Wheezy
-- 8.0：Jessie
-- 9.0：Stretch
-- 10.0：Buster
+- 1.1：Buzz，1996年6月17日发布。
+- 1.2：Rex，1996年12月12日发布。
+- 1.3：Bo，1997年6月5日发布。
+- 2.0：Hamm，1998年7月24日发布。
+- 2.1：Slink，1999年3月9日发布。
+- 2.2：Potato，2000年8月14日。
+- 3.0：Woody，2002年7月19日发布。
+- 3.1：Sarge，2005年6月6日发布。
+- 4.0：Etch，2007年4月8日发布。
+- 5.0：Lenny，2009年2月14日发布。
+- 6.0：Squeeze，2011年2月6日发布。
+- 7.0：Wheezy，2013年5月4日发布。
+- 8.0：Jessie，2015年4月25日发布。
+- 9.0：Stretch，2017年6月17日发布。
+- 10.0：Buster，2019年7月6日发布。
 - 11.0：Bullseye
 - 12.0：Bookworm
 
