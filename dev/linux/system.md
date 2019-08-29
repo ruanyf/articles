@@ -351,3 +351,15 @@ $ date
 # 显示世界时
 $ date -u
 ```
+
+## 启动服务
+
+```bash
+$ sudo service mysql start
+# or
+$ sudo /etc/init.d/mysql start
+
+$ sudo systemctl start mysql.service
+# or
+$ sudo systemctl start mysql
+```
