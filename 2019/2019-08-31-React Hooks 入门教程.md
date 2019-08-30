@@ -249,11 +249,11 @@ useEffect(()  =>  {
 
 ```javascript
 const Person = ({ personId }) => {
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(true);
   const [person, setPerson] = useState({});
 
   useEffect(() => {
-    setLoading(true);
+    setLoading(true); 
     fetch(`https://swapi.co/api/people/${personId}/`)
       .then(response => response.json())
       .then(data => {
@@ -281,6 +281,51 @@ const Person = ({ personId }) => {
 <iframe src="https://codesandbox.io/embed/react-useeffect-redux-9t3bg?fontsize=14" title="react-useEffect-redux" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 ## 八、创建自己的 Hooks
+
+上例的 Hooks 代码还可以封装起来，变成一个自定义的 Hook，便于共享。
+
+```javascript
+const usePerson = (personId) => {
+  const [loading, setLoading] = useState(true);
+  const [person, setPerson] = useState({});
+  useEffect(() => {
+    setLoading(true);
+    fetch(`https://swapi.co/api/people/${personId}/`)
+      .then(response => response.json())
+      .then(data => {
+        setPerson(data);
+        setLoading(false);
+      });
+  }, [personId]);  
+  return [loading, person];
+};
+```  
+
+上面代码中，`usePerson()`就是一个自定义的 Hook。
+
+Person 组件就变成了下面的样子。
+
+```javascript
+const Person = ({ personId }) => {
+  const [loading, person] = usePerson(personId);
+
+  if (loading === true) {
+    return <p>Loading ...</p>;
+  }
+
+  return (
+    <div>
+      <p>You're viewing: {person.name}</p>
+      <p>Height: {person.height}</p>
+      <p>Mass: {person.mass}</p>
+    </div>
+  );
+};
+```
+
+（点击查看[运行结果](https://codesandbox.io/s/react-useeffect-redux-ghl7c)）
+
+<iframe src="https://codesandbox.io/embed/react-useeffect-redux-ghl7c?fontsize=14" title="react-useEffect-redux" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 ## 九、参考链接
 
