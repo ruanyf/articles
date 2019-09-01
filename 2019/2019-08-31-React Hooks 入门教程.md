@@ -37,7 +37,7 @@ export default class Button extends Component {
 
 <iframe src="https://codesandbox.io/embed/funny-forest-ncv8b?fontsize=14" title="funny-forest-ncv8b" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
-这个组件类仅仅是一个按钮，但可以看到，它的代码已经很“重”了，只有了解类的结构，才能读懂它的含义。真实的 React 应用由多个类按照层级，一层层构成，复杂度成倍增长。要是再加入 Redux，更变得非常复杂。
+这个组件类仅仅是一个按钮，但可以看到，它的代码已经很“重”了。真实的 React App 由多个类按照层级，一层层构成，复杂度成倍增长。再加入 Redux，就变得更复杂。
 
 Redux 的作者 Dan Abramov [总结](https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889)了组件类的几个缺点。
 
@@ -47,7 +47,7 @@ Redux 的作者 Dan Abramov [总结](https://medium.com/@dan_abramov/making-sens
 
 ## 二、函数组件
 
-React 团队希望，组件不要变成复杂的容器，最好只是数据流的管道。开发者根据需要，组合管道即可。组件的最佳写法应该是函数，而不是类。
+React 团队希望，组件不要变成复杂的容器，最好只是数据流的管道。开发者根据需要，组合管道即可。 **组件的最佳写法应该是函数，而不是类。**
 
 React 早就支持[函数组件](https://reactjs.org/docs/components-and-props.html)，下面就是一个例子。
 
@@ -82,7 +82,7 @@ Hook 这个单词的意思是“钩子”。
 
 `useState()`用于为函数组件引入状态（state）。纯函数不能有状态，所以把状态放在钩子里面。
 
-本文前面那个组件类，用户点击按钮，会导致按钮的文字改变，这就是状态。使用`useState()`重写如下。
+本文前面那个组件类，用户点击按钮，会导致按钮的文字改变，文字取决于用户是否点击，这就是状态。使用`useState()`重写如下。
 
 ```javascript
 import React, { useState } from "react";
@@ -226,6 +226,8 @@ function App() {
 
 <iframe src="https://codesandbox.io/embed/react-usereducer-redux-xqlet?fontsize=14" title="react-useReducer-redux" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
+由于 Hooks 可以提供共享状态和 Reducer 函数，所以它在这些方面可以取代 Redux。但是，它没法提供中间件（middleware）和时间旅行（time travel），如果你需要这两个功能，还是要用 Redux。
+
 ## 七、useEffect()：副作用钩子
 
 `useEffect()`用来引入具有副作用的操作，最常见的就是向服务器请求数据。以前，放在`componentDidMount`里面的代码，现在可以放在`useEffect()`。
@@ -238,9 +240,7 @@ useEffect(()  =>  {
 }, [dependencies])
 ```
 
-`useEffect()`可以接受两个参数。第一个参数是一个函数，异步操作的代码放在里面。第二个参数是一个数组，用于给出 Effect 的依赖项，只要这个数组发生变化，`useEffect()`就会执行。
-
-第二个参数可以省略，这时每次组件渲染时，就会执行`useEffect()`。
+上面用法中，`useEffect()`接受两个参数。第一个参数是一个函数，异步操作的代码放在里面。第二个参数是一个数组，用于给出 Effect 的依赖项，只要这个数组发生变化，`useEffect()`就会执行。第二个参数可以省略，这时每次组件渲染时，就会执行`useEffect()`。
 
 下面看一个例子。
 
