@@ -203,7 +203,7 @@ $ curl -I https://www.example.com
 `--head`参数等同于`-I`。
 
 ```bash
-$ curl -head https://www.example.com
+$ curl --head https://www.example.com
 ```
 
 ## **-k**
