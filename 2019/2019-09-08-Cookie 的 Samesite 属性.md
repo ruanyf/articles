@@ -69,7 +69,7 @@ Set-Cookie: CookieName=CookieValue; SameSite=Strict;
 Set-Cookie: CookieName=CookieValue; SameSite=Lax;
 ```
 
-也就是说，当前请求会导致网页跳转，才会带有第三方 Cookie，其他情况都不带有。比如`<ifram>`、`<img>`、`<script>`这一类的跨站点请求，都不会带有 Cookie。详细情况可以参见下表。
+也就是说，如果当前请求可能导致恶意结果，就都不会带有 Cookie，比如`<ifram>`、`<img>`、`<script>`这一类的跨站点请求。除非这是会导致网页跳转的 GET 请求，详见下表。
 
 | 请求类型  |                 示例                 |    正常情况 | Lax         |
 |-----------|:------------------------------------:|------------:|-------------|
