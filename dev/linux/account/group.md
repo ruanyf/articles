@@ -1,13 +1,65 @@
 # Group
 
-一个用户可以属于多个组（group）。组的最大作用就是，同组的成员可以共享组权限。
+## 基本概念
 
-Linux 的组分成两类。
+多个用户可以组成一个组（group）。同组的用户共享相同的组权限，可以读取、写入或执行该组拥有的文件。
 
-- 主要组（primary group）。用户创建文件的时候，文件所在的组就是用户的主要组。大多数情况下，用户的主要组跟用户名相同。用户的主要组保存在`/etc/passwd`文件。
-- 次要组（secondary group 或称supplementary group）。如果希望把某些权限分配给一组用户，最好的方法就是建立一个组，把用户都加到这个组，这样的组就称为次要组。
+每个组都有一个唯一编号，称为 GID。
 
-每个用户只能属于一个主要组，可以属于零个或多个次要组。
+一个用户可以属于多个组，其中只能有一个主要组，但可以属于零个或多个次要组。
+
+（1）主要组（primary group）
+
+用户创建文件的时候，用户的主要组就是文件所属的组。大多数情况下，用户的主要组跟用户名相同。用户的主要组保存在`/etc/passwd`文件。
+
+（2）次要组（secondary group 或 supplementary group）
+
+除了主要组，用户所属的其他组都是次要组。如果希望几个用户共享权限，最好的方法就是建立一个组，这样的组就是次要组。
+
+## groups 命令
+
+查看当前用户所属的组。
+
+```bash
+$ groups
+abhishek adm cdrom sudo dip plugdev lpadmin sambashare kvm
+```
+
+查看用户所属的所有组。
+
+```bash
+$ groups [user_name]
+abhi : abhi sudo
+```
+
+查看多个用户所属的组。
+
+```bash
+$ groups user_1 user_2 user_3
+```
+
+## `/etc/group`文件
+
+`/etc/group`文件保存所有组的信息，内容包含多行。
+
+```bash
+adm:x:4:syslog,abhishek
+```
+
+每一行各字段的含义如下。
+
+- adm是组名
+- x表示密码字段（当然，您不会在明文中看到密码）
+- 4是Group ID aka GID
+- syslog和abhishek是属于组adm的用户
+
+## getent 命令
+
+查看某个组的所有成员。
+
+```bash
+$ getent group [group_name]
+```
 
 ## usermod 命令
 
