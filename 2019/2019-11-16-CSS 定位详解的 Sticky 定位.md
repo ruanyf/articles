@@ -1,10 +1,16 @@
-# CSS 定位详解：sticky 
+# CSS 定位详解：sticky 定位的用法
 
-CSS 有两个最重要的基本属性，一定要掌握：布局的`display`属性和定位的`position`属性。
+CSS 有两个最重要的基本属性，前端开发必须掌握：布局的`display`和定位的`position`。
 
-`display`属性很复杂，跟据标准有20几个值。我介绍过其中两个比较重要的布局：弹性布局`flex`和网格布局`grid`。
+`display`属性比较复杂，两个重要的布局，我已经介绍过了：[弹性布局`flex`](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)和[网格布局`grid`](http://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)。
 
-今天就要介绍相对简单、但同样威力无比的`position`布局。这个属性一般可以取五个值。
+下面介绍相对简单的`position`属性。它非常有用，我希望通过10分钟的阅读，帮助大家掌握网页定位，说清楚浏览器怎么计算网页元素的位置，尤其是新引进的`sticky`定位。
+
+![](https://www.wangbase.com/blogimg/asset/201911/bg2019111718.jpg)
+
+## 一、position 属性的作用
+
+`position`属性用来指定一个元素在网页上的位置。它一般可以取五个值。
 
 > - `static`
 > -  `relative`
@@ -12,25 +18,33 @@ CSS 有两个最重要的基本属性，一定要掌握：布局的`display`属�
 > -  `absolute`
 > -  `sticky`
 
-本文的重点是2017年新进入标准的第五个值`sticky`。我希望通过这篇文章，帮助大家理解，浏览器如何计算网页元素的位置。
+其中，第五个值`sticky`是2017年浏览器才支持的，本文将重点介绍。
 
-## 一、position 属性的作用，`static`属性值
+## 二、static 属性值
 
-`position`属性用来指定一个元素在网页上的位置。
+`static`是`position`属性的默认值。如果省略`position`属性，浏览器就认为该元素是`static`定位。
 
-最简单的情况就是不使用这个属性，让浏览器按照从上到下的顺序，决定每个元素的位置。这称为“正常的页面流”（normal flow），每个元素的位置就是自己的默认位置，元素与元素之间不产生重叠。
+这时，浏览器会按照源码的顺序，决定每个元素的位置，这称为“正常的页面流”（normal flow）。每个元素占据自己的默认位置，元素与元素之间不产生重叠。
 
-`static`属性值就对应这种情况，它是`position`属性的默认值。所以，`position: static`这个命令，等同于不使用`position`属性。
+![](https://www.wangbase.com/blogimg/asset/201911/bg2019111720.jpg)
 
-## 二、relative，absolute，fixed
+## 三、relative，absolute，fixed
 
-除了`static`，其他三个`position`属性的值——`relative`、`absolute`、`fixed`--都很容易理解。它们都是相对于不同的基点，对元素进行定位。
+`relative`、`absolute`、`fixed`这三个属性值有一个共同点：都是相对于某个基点的定位。不同之处仅仅在于基点不同。所以，只要理解了它们各自的基点是什么，就很容易掌握这三个属性值。
 
-它们都不会对其他元素的位置产生影响，因此元素之间可能产生重叠。
+另外，这三个属性都不会对其他元素的位置产生影响，因此元素之间可能产生重叠。
 
-**（1）`relative`**
+### 3.1 relative 属性值
 
-`relative`属性值表示，相对于默认位置（即`static`时的位置）进行偏移。它必须搭配`top`、`bottom`、`left`、`right`这四个属性一起使用，用来指定偏移的方向和距离。
+`relative`表示，相对于默认位置（即`static`时的位置）进行偏移，即定位基点是元素的默认位置。
+
+![](https://www.wangbase.com/blogimg/asset/201911/bg2019111721.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/201911/bg2019111722.jpg)
+
+它必须搭配`top`（顶部）、`bottom`（底部）、`left`（左边）、`right`（右边）这四个属性一起使用，用来指定偏移的方向和距离。
+
+![](https://www.wangbase.com/blogimg/asset/201911/bg2019111723.jpg)
 
 ```css
 div {
@@ -39,9 +53,9 @@ div {
 }
 ```
 
-上面代码中，`div`元素是`relative`定位，距离默认位置的顶部向下偏移`20px`，
+上面代码中，`div`元素从默认位置向下偏移`20px`（即距离顶部`20px`）。
 
-**（2）`absolute`**
+### 3.2 absolute 属性值
 
 `absolute`属性值表示，相对于上级元素进行偏移。但是，它有一个限制条件，上级元素不能是`static`定位，否则就会相对于网页根元素`html`进行定位。
 
