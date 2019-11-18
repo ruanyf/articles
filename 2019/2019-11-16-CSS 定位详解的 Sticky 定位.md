@@ -1,18 +1,18 @@
 # CSS 定位详解：sticky 定位的用法
 
-CSS 有两个最重要的基本属性，前端开发必须掌握：布局的`display`和定位的`position`。
+CSS 有两个最重要的基本属性，前端开发必须掌握：`display` 和 `position`。
 
-`display`属性比较复杂，两个重要的布局，我已经介绍过了：[弹性布局`flex`](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)和[网格布局`grid`](http://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)。
+`display`属性指定网页的布局。两个重要的布局，我已经介绍过了：[弹性布局`flex`](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)和[网格布局`grid`](http://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)。
 
-今天介绍相对简单的`position`属性。它非常有用，我希望通过10分钟的阅读，帮助大家掌握网页定位，说清楚浏览器怎么计算网页元素的位置，尤其是新引进的`sticky`定位。
+本文介绍非常有用的`position`属性。我希望通过10分钟的阅读，帮助大家轻松掌握网页定位，说清楚浏览器如何计算网页元素的位置，尤其是新引进的`sticky`定位。
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111718.jpg)
 
-本文由国内最大的在线平台之一[“腾讯课堂”](https://ke.qq.com/?utm=ruanyifeng)特别赞助。他们现在启动了[“腾讯课堂101计划”](https://edu.qq.com/a/20190119/005414.htm)，推广平台上的课程资源，有不少优质内容。希望提高前端技术水平的朋友，可以留意一下本文结尾的免费课程信息。
+> 本文由国内最大的在线教育平台之一[“腾讯课堂”](https://ke.qq.com/?utm=ruanyifeng)赞助。他们现在启动了[“腾讯课堂101计划”](https://edu.qq.com/a/20190119/005414.htm)，推广平台上的课程资源，有不少优质内容。希望提高前端技术水平的同学，可以留意一下本文结尾的免费课程信息。
 
 ## 一、position 属性的作用
 
-`position`属性用来指定一个元素在网页上的位置。它一般可以取五个值。
+`position`属性用来指定一个元素在网页上的位置。CSS 提供5种定位方式，即`position`属性可以取五个值。
 
 > - `static`
 > -  `relative`
@@ -20,21 +20,23 @@ CSS 有两个最重要的基本属性，前端开发必须掌握：布局的`dis
 > -  `absolute`
 > -  `sticky`
 
-其中，第五个值`sticky`是2017年浏览器才支持的，本文将重点介绍。
+下面就依次介绍这五个值。其中，最后一个值`sticky`是2017年浏览器才支持的，本文将重点介绍。
 
 ## 二、static 属性值
 
 `static`是`position`属性的默认值。如果省略`position`属性，浏览器就认为该元素是`static`定位。
 
-这时，浏览器会按照源码的顺序，决定每个元素的位置，这称为“正常的页面流”（normal flow）。每个元素占据自己的默认位置，元素与元素之间不产生重叠。
+这时，浏览器会按照源码的顺序，决定每个元素的位置，这称为“正常的页面流”（normal flow）。每个块级元素占据自己的区块（block），元素与元素之间不产生重叠，这个位置就是元素的默认位置。
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111720.jpg)
 
+注意，`static`定位所导致的元素位置，是浏览器自主决定的，所以这时`top`、`bottom`、`left`、`right`这四个属性无效。
+
 ## 三、relative，absolute，fixed
 
-`relative`、`absolute`、`fixed`这三个属性值有一个共同点：都是相对于某个基点的定位。不同之处仅仅在于基点不同。所以，只要理解了它们各自的基点是什么，就很容易掌握这三个属性值。
+`relative`、`absolute`、`fixed`这三个属性值有一个共同点，都是相对于某个基点的定位，不同之处仅仅在于基点不同。所以，只要理解了它们的基点是什么，就很容易掌握这三个属性值。
 
-另外，这三个属性都不会对其他元素的位置产生影响，因此元素之间可能产生重叠。
+另外，这三个属性值都不会对其他元素的位置产生影响，因此元素之间可能产生重叠。
 
 ### 3.1 relative 属性值
 
@@ -44,7 +46,7 @@ CSS 有两个最重要的基本属性，前端开发必须掌握：布局的`dis
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111722.jpg)
 
-它必须搭配`top`（顶部）、`bottom`（底部）、`left`（左边）、`right`（右边）这四个属性一起使用，用来指定偏移的方向和距离。
+它必须搭配`top`、`bottom`、`left`、`right`这四个属性一起使用，用来指定偏移的方向和距离。
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111723.jpg)
 
@@ -61,7 +63,7 @@ div {
 
 `absolute`表示，相对于上级元素（一般是父元素）进行偏移，即定位基点是父元素。
 
-它有一个重要的限制条件：父元素不能是`static`定位，否则定位基点就会变成整个网页的根元素`html`。另外，`absolute`定位也必须搭配`top`、`bottom`、`left`、`right`这四个属性一起使用。
+它有一个重要的限制条件：父元素不能是`static`定位，否则定位基点就会变成整个网页的根元素`html`，即网页的左上角。另外，`absolute`定位也必须搭配`top`、`bottom`、`left`、`right`这四个属性一起使用。
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111801.jpg)
 
@@ -82,15 +84,13 @@ div {
 }
 ```
 
-上面代码中，父元素是`relative`定位，子元素是`absolute`定位，所以子元素的定位基点是父元素，相对于父元素的顶部向下偏移`20px`。
-
-如果父元素是`static`定位，上例的子元素就是距离网页的顶部向下偏移`20px`。
+上面代码中，父元素是`relative`定位，子元素是`absolute`定位，所以子元素的定位基点是父元素，相对于父元素的顶部向下偏移`20px`。如果父元素是`static`定位，上例的子元素就是距离网页的顶部向下偏移`20px`。
 
 注意，`absolute`定位的元素会被“正常页面流”忽略，即在“正常页面流”中，该元素所占空间为零，周边元素不受影响。
 
 ### 3.3 fixed 属性值
 
-`fixed`表示，相对于视口（viewport，浏览器窗口）进行偏移，即定位基点是浏览器窗口的左上角。这会导致元素的位置不随页面滚动而变化，好像在固定在网页上一样。
+`fixed`表示，相对于视口（viewport，浏览器窗口）进行偏移，即定位基点是浏览器窗口的左上角。这会导致元素的位置不随页面滚动而变化，好像固定在网页上一样。
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111802.jpg)
 
@@ -109,21 +109,21 @@ div {
 
 `sticky`属性值跟前面四个属性值都不一样，它会产生动态效果，很像`relative`和`fixed`的结合：一些时候是`relative`定位（定位基点是自身默认位置），另一些时候自动变成`fixed`定位（定位基点是视口左上角）。
 
-因此，它能够形成“局部固定”的效果。比如，搜索网页的工具栏，初始加载时在页面的中上部（`relative`定位）。
+因此，它能够形成“局部固定”的效果。比如，搜索网页的工具栏，初始加载时在自己的默认位置（`relative`定位）。
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111604.jpg)
 
-页面向下滚动时，工具栏会始终停留在页面头部（`sticky`定位）。
+页面向下滚动时，工具栏会始终停留在页面头部（`fixed`定位）。
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111605.jpg)
 
-等到页面向上滚动回到原位，工具栏也会回到原位。
+等到页面重新向上滚动回到原位，工具栏也会回到默认位置。
 
-`sticky`生效的前提是，必须搭配`top`、`bottom`、`left`、`right`这四个属性一起使用，不能省略，否则无效，等同于`relative`定位。原因是这四个属性可以定义“偏移距离”，浏览器用来当作`sticky`的生效门槛。
+`sticky`生效的前提是，必须搭配`top`、`bottom`、`left`、`right`这四个属性一起使用，不能省略，否则等同于`relative`定位，不会产生“局部固定”的效果。原因是这四个属性用来定义“偏移距离”，浏览器把它当作`sticky`的生效门槛。
 
-具体规则是，当页面滚动，视口进入父元素范围时，只要与`sticky`元素的距离达到生效门槛，`relative`定位自动切换为`fixed`定位；视口离开父元素范围时，`fixed`定位自动切换回`relative`定位。
+它的具体规则是，当页面滚动，父元素开始脱离视口时（即部分不可见），只要与`sticky`元素的距离达到生效门槛，`relative`定位自动切换为`fixed`定位；等到父元素完全脱离视口时（即完全不可见），`fixed`定位自动切换回`relative`定位。
 
-请看下面的示例代码。注意，除了已被淘汰的 IE 以外，其他浏览器目前都支持`sticky`。但是，Safari 浏览器需要加上浏览器前缀`-webkit-`。
+请看下面的示例代码。（注意，除了已被淘汰的 IE 以外，其他浏览器目前都支持`sticky`。但是，Safari 浏览器需要加上浏览器前缀`-webkit-`。）
 
 ```css
 #toolbar {
@@ -133,7 +133,7 @@ div {
 }
 ```
 
-上面代码中，页面向下滚动时，视口进入`#toolbar`的父元素，一旦视口的顶部与元素的距离小于`20px`（门槛值），`#toolbar`就自动变为`fixed`定位，保持与视口顶部`20px`的距离。页面继续向下滚动，父元素的底部离开视口（即整个父元素不可见），`toolbar`恢复成`relative`定位，从视口消失。
+上面代码中，页面向下滚动时，`#toolbar`的父元素开始脱离视口，一旦视口的顶部与`#toolbar`的距离小于`20px`（门槛值），`#toolbar`就自动变为`fixed`定位，保持与视口顶部`20px`的距离。页面继续向下滚动，父元素彻底离开视口（即整个父元素完全不可见），`#toolbar`恢复成`relative`定位。
 
 ## 四、 sticky 的应用
 
@@ -141,7 +141,9 @@ div {
 
 ## 4.1 堆叠效果
 
-堆叠效果（stacking）指的是页面滚动时，下方的元素覆盖上方的元素。下面是一个图片堆叠的例子，下方的图片会随着页面推动，覆盖上方的图片（[demo](https://jsbin.com/fegiqoquki/edit?html,css,output)）。
+堆叠效果（stacking）指的是页面滚动时，下方的元素覆盖上方的元素。下面是一个图片堆叠的例子，下方的图片会随着页面滚动，覆盖上方的图片（查看 [demo](https://jsbin.com/fegiqoquki/edit?html,css,output)）。
+
+![](https://www.wangbase.com/blogimg/asset/201911/bg2019111609.jpg)
 
 HTML 代码就是几张图片。
 
@@ -160,13 +162,11 @@ div {
 }
 ```
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111609.jpg)
-
-详细解释可以看[这篇教程]( https://dev.to/vinceumo/slide-stacking-effect-using-position-sticky-91f)。
+它的原理是页面向下滚动时，每张图片都会变成`fixed`定位，导致后一张图片重叠在前一张图片上面。详细解释可以看[这里]( https://dev.to/vinceumo/slide-stacking-effect-using-position-sticky-91f)。
 
 ### 4.2 表格的表头锁定
 
-大型表格滚动的时候，表头始终固定，可以用`sticky`实现（[demo](https://jsbin.com/decemanohe/edit?html,css,output)）。
+大型表格滚动的时候，表头始终固定，也可以用`sticky`实现（查看 [demo](https://jsbin.com/decemanohe/edit?html,css,output)）。
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111610.jpg)
 
@@ -179,7 +179,7 @@ th {
 }
 ```
 
-需要注意的是，`sticky`必须设在`<th>`元素上面，不能设在`<thead>`和`<tr>`元素，原因可以看[这篇文章](https://css-tricks.com/position-sticky-and-table-headers/)。
+需要注意的是，`sticky`必须设在`<th>`元素上面，不能设在`<thead>`和`<tr>`元素，因为这两个元素没有`relative`定位，所以无法`sticky`定位。详细解释可以看[这里](https://css-tricks.com/position-sticky-and-table-headers/)。
 
 （正文完）
 
@@ -187,33 +187,33 @@ th {
 
 初学者刚接触前端，往往会被一大堆技术名词、框架和工具，搞得眼花缭乱。
 
-到底哪些技术是目前的主流技术栈，既能在公司的开发实务得到广泛应用，又可以为自己的简历增添亮点？
+到底哪些技术是目前的主流技术栈，既能用于公司的开发实务，又能为自己的简历增添亮点？
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111505.jpg)
 
-下面就是一些目前主流的前端技术。
+下面就是一套目前主流的前端技术栈。
 
-（1）Node.js：服务器端的 JavaScript 运行环境，不管哪种前端开发，这都是必不可少的底层环境。
+（1）Node.js：服务器端的 JavaScript 运行环境，不管哪种前端开发，都必不可少的底层环境。
 
-（2）Webpack：语法转换工具，让你把 ES6/TypeScript/JSX 语法转成浏览器可以运行的代码。
+（2）Webpack：语法转换工具，把 ES6/TypeScript/JSX 语法转成浏览器可以运行的代码。
 
 （3）Koa2：一个非常流行、简洁强大的 Node.js 后端的 Web 开发框架。
 
-（4）MongoDB：目前应用最广泛的非关系数据库之一，功能丰富，用法简单。
+（4）MongoDB：目前应用最广泛的非关系数据库之一，功能丰富，用法较简单。
 
 （5）Vue 全家桶：
 
 > - Vue：前端基础框架
-> - Vuex：配套的状态管理库。
+> - Vuex：配套的前端状态管理库。
 > - Vue Router：官方的路由插件，构建单页面应用必不可少。
-> - Vue CLI：项目脚手架工具，帮你快速上手 Vue 开发，无需再花多余时间去实现项目架构。
-> - Vant：有赞前端团队开发的轻量级移动端 Vue 组件库，让你使用已经封装好的各种页面组件。
+> - Vue CLI：脚手架工具，帮你快速上手 Vue 开发，无需再花多余时间去实现项目架构。
+> - Vant：有赞前端团队开发的轻量级移动端 Vue 组件库，让你快速使用已经封装好的各种页面组件。
 
 看到这个名单，你是不是感到有点头大，全部掌握它们需要多少时间啊？
 
-现在，腾讯课堂就有一门这样的课程，内容包含了所有这些工具，教你怎么用这些工具完成一个全栈项目，亲手做出一个手机端的移动商城，是由 **慕课网的精英讲师--谢成老师讲授** 。
+现在，腾讯课堂就有一门这样的课程，内容包含了所有这些工具，教你怎么用它们从头完成一个全栈项目，亲手做出一个手机端的移动商城，是由 **慕课网的精英讲师--谢成老师讲授** 。
 
-这个课程售价98元， **活动期间，只要1块钱哦！** 只要微信扫描下面的二维码，就可以领取优惠券，享受1元听课的福利。
+这个课程原价98元， **活动期间，只要1块钱哦！** 微信扫描下面的二维码，就可以领取优惠券，享受1元听课的福利。
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019111803.jpg)
 
