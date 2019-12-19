@@ -15,6 +15,22 @@ Host remoteserver
 
 上面代码中，`Host *`表示对所有主机生效，后面单个主机的设置可以覆盖它。
 
+单个主机的配置格式如下。
+
+```bash
+Host dev
+    HostName dev.foo.com
+    User mike
+    Port 4422
+```
+
+上面的内容写入配置文件，以后只需要执行`ssh dev`命令，就能登陆远程主机。
+
+```bash
+$ ssh dev
+# 等同于
+$ ssh -p 4422 mike@dev.foo.com
+```
 
 修改配置文件以后，可以使用下面的命令验证，配置文件是否有错误。
 

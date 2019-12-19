@@ -121,6 +121,54 @@ $ sudo apt install openssh-client
 $ sudo dnf install openssh-clients
 ```
 
+SSH 客户端的默认命令形式如下。
+
+```bash
+$ ssh [OPTIONS] [USER@]:HOST
+```
+
+最简单的用法就是直接连接远程主机。这时会使用本地的当前用户名，默认登陆远程主机的22端口。
+
+```bash
+$ ssh foo.com
+```
+
+如果是首先连接远程主义，客户端会在命令行显示一段文字，表示不认识这台服务器，是否确认需要连接。
+
+```bash
+The authenticity of host 'ssh.linuxize.com (192.168.121.111)' can't be established.
+ECDSA key fingerprint is SHA256:Vybt22mVXuNuB5unE++yowF7lgA/9/2bLSiO3qmYWBY.
+Are you sure you want to continue connecting (yes/no)?
+```
+
+每个主机都有一个唯一的指纹，储存在`~/.ssh/known_hosts`文件中。输入`yes`可以将当前服务器的指纹储存在本机，以后再连接的时候，就不会提示这段文字了。
+
+然后，客户端会要求输入远程服务器的密码。输入以后，就登陆远程服务器的 Shell 了。
+
+默认是以客户端的当前用户名，登录远程服务器。要以其他用户身份登录，用以下格式指定用户名和主机。
+
+```bash
+$ ssh username@hostname
+```
+
+还可以使用`-l`参数指定用户名。
+
+```bash
+$ ssh -l username hostname
+```
+
+默认端口是22，`-p`参数可以指定端口。
+
+```bash
+$ ssh -p 5522 username@hostname
+```
+
+`-v`参数用来显示详细信息，可以在遇到问题时使用。如果想查看更详细的信息，可以使用`-vv`或`-vvv`参数。
+
+```bash
+$ ssh -v username@hostname
+```
+
 - ssh-keygen
 - ssh-agent
 - ssh-add
@@ -133,6 +181,8 @@ $ sudo dnf install openssh-clients
 
 ```bash
 $ ssh-keygen -t rsa
+# 或者
+$ ssh-keygen -t rsa -b 4096 -C "your_email@domain.com"
 ```
 
 密钥会在`~/.ssh`目录生成。
@@ -154,6 +204,10 @@ $ service ssh restart
 ```bash
 $ ssh-copy-id username@host
 ```
+
+上面命令会将公钥添加到远程用户的`authorized_keys`文件中。密钥上传后，就可以直接登录到远程服务器，而无需提示输入密码。
+
+通过设置基于密钥的身份验证，可以简化登录过程并提高整体服务器安全性。
 
 ### 命令行参数
 
