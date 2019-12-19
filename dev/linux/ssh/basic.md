@@ -109,6 +109,18 @@ Handshake protocol: ServerHello
 
 ## OpenSSH
 
+OpenSSH 是目前最流行的 SSH 协议客户端，可以创建远程计算机到 SSH 服务器的安全连接。
+
+可以使用下面的命令，安装 OpenSSH。
+
+```bash
+# Ubuntu 和 Debian
+$ sudo apt install openssh-client
+
+# CentOS 和 Fedora
+$ sudo dnf install openssh-clients
+```
+
 - ssh-keygen
 - ssh-agent
 - ssh-add
