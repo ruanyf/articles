@@ -49,7 +49,7 @@ $ curl -b 'foo=bar' https://google.com
 上面命令会生成一个标头`Cookie: foo=bar`，向服务器发送一个名为`foo`、值为`bar`的 Cookie。
 
 ```bash
-$ curl -b 'foo1=bar' -b 'foo2=baz' https://google.com
+$ curl -b 'foo1=bar;foo2=bar2' https://google.com
 ```
 
 上面命令发送两个 Cookie。

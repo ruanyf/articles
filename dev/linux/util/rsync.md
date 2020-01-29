@@ -1,8 +1,6 @@
 # rsync
 
-rsync 用来在两台计算机或者两个路径之间同步文件。它名称里面的`r`就是指 remote。
-
-与其他文件传输工具（如 FTP 或 SCP）不同，rsync 检查发送方和接收方上的文件，仅传输同步它们所需的文件。
+rsync 用来在两台计算机或者两个路径之间同步文件。它名称里面的`r`就是指 remote，所以 rsync 其实是“远程同步”（remote sync）的意思。与其他文件传输工具（如 FTP 或 SCP）不同，rsync 先检查发送方和接收方上的文件，仅传输同步它们所需的文件。
 
 ```bash
 $ rsync -a /source/path /target/path
