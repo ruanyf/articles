@@ -1,5 +1,21 @@
 # 一句话消息
 
+> - [Instagram](https://www.bloomberg.com/news/articles/2020-02-04/instagram-generates-more-than-a-quarter-of-facebook-s-sales) 2019年的销售收入是200亿美元。相比之下，Youtube 的销售收入是150亿美元，并且其中很大一部分还必须分给视频创作者。
+
+> - [日本](https://www.nytimes.com/2020/02/03/climate/japan-coal-fukushima.html)将在未来五年内，新建多达22个燃煤发电厂。这是近十年前福岛核灾难迫使日本关闭几乎所有核电计划的后果。
+
+> -  [统计发现](https://marginalrevolution.com/marginalrevolution/2020/01/ceo-ages-at-hire.html)，在过去的14年中，标准普尔500强公司 CEO 的上任年龄增长了14岁。这表明，美国大公司最近喜欢任命年龄大的 CEO。
+
+![](https://www.wangbase.com/blogimg/asset/202001/bg2020020101.jpg)
+
+> - [Facebook](https://www.nytimes.com/2020/01/29/technology/facebook-privacy-lawsuit-earnings.html) 同意支付5.5亿美元，赔偿伊利诺伊州用户。原因是 Facebook 未经该州数百万用户的许可，从他们的照片中收集面部数据。
+
+> - [美国餐饮业](https://news.ycombinator.com/item?id=22152680)2019年的总收入是8630亿美元，相比之下，全球软件业的总收入是4670亿美元。
+
+> - [盖洛普公司](https://lithub.com/in-2019-more-americans-went-to-the-library-than-to-the-movies-yes-really/)（Gallup）一项调查表明，美国人去图书馆的次数多于去电影院。2019年，每个美国成年人平均去图书馆10.5次。
+
+![](https://www.wangbase.com/blogimg/asset/202001/bg2020012606.jpg)
+
 > - [考古学家](https://www.archaeology-world.com/scientists-find-that-tin-found-in-israel-from-3000-years-ago-comes-from-cornwall/)在以色列发现的3000年前的铝锭，现在确定产自英国。这说明早在古希腊文明之前，英国的产品就能运到中东，这是非常惊人的。
 
 ![](https://www.wangbase.com/blogimg/asset/202001/bg2020012409.jpg)
@@ -34,8 +50,20 @@
 
 > - [英国一项研究](https://www.bloombergquint.com/global-economics/middle-age-misery-peaks-at-age-of-47-2-economist-says)发现，中年人最不幸福的年龄是47.2岁，所以这个年龄可能就是中年危机的最高潮。
 
-> - [欧洲议会](https://www.europarl.europa.eu/news/en/agenda/briefing/2020-01-13/13/call-to-introduce-common-charger-for-all-mobile-phones)通过决议，要求为了减少浪费，所有手机都要使用通用充电器。这明显针对苹果手机。
+> - [数码相机](https://finance.technews.tw/2019/12/30/digital-camera-shipments/)在2019年的全球出货量只有1,500万台左右，比2018年减少20%，是2001年（1,475万台）以来的最低点。相比巅峰时期的2010年（1亿2,146万台），销量只剩下八分之一。
 
-![](https://www.wangbase.com/blogimg/asset/202001/bg2020011306.jpg)
+![](https://www.wangbase.com/blogimg/asset/202001/bg2020010305.jpg)
+
+> - [德国大众汽车公司](https://www.thedrive.com/news/31162/volkswagen-axes-all-non-electric-racing-programs-worldwide)宣布，不再参与电动汽车以外的赛车活动。汽车公司参与赛车，主要是为了推销汽车，大众公司将逐步停止内燃机汽车的生产，也就不需要参与汽油车的赛车了。
+
+![](https://www.wangbase.com/blogimg/asset/201911/bg2019112304.jpg)
+
+> - [日本科学家](http://www.k2.t.u-tokyo.ac.jp/vision/DPM/)2016年发明了第一代动态投影机，在投射表面涂一层红外线涂料，就可以使得弯曲表面也获得清晰不变形的投影效果（下图）。目前[第二代](http://www.k2.t.u-tokyo.ac.jp/vision/MIDAS/index-e.html)问世了，已经不需要涂料，可以直接投影在弯曲表面。
+
+![](https://www.wangbase.com/blogimg/asset/201911/bg2019112203.jpg)
+
+> - [德国科学家](https://www.theguardian.com/science/2019/oct/16/fastest-ants-in-world-northern-sahara)在撒哈拉沙漠发现，世界上速度最快的蚂蚁，每秒可以前进近1米，相当于体长的108倍。
+
+![](https://www.wangbase.com/blogimg/asset/201910/bg2019101906.jpg)
 
 
