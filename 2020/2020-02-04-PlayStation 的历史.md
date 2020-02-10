@@ -210,15 +210,23 @@ Nintendo 64 销量并不好，甚至没有超过 Sega Saturn，任天堂深受�
 
 ## 九、微软的加入
 
-## 128 位游戏机
+PlayStation 第一代在美国大卖以后，微软公司创始人比尔·盖茨非常担心，游戏机会抢走用户对于桌面 PC 的兴趣，进而影响 PC 的销量。而且，游戏机的底层架构与 PC 其实是一样的，CPU 也是通用的，万一索尼在游戏机上推出一些通用程序，就会跟 Windows 形成直接竞争。
 
-第六代平台包括来自四个公司的游戏机：Sega Dreamcast（DC），Sony PlayStation 2（PS2），Nintendo GameCube（GC）和Microsoft Xbox。这个时代始于1998年11月27日，日本发行了Dreamcast，2000年3月4日加入了PlayStation 2，2001年11月15日加入了GameCube和Xbox。2001年4月，Dreamcast是第一个停产。接下来是2007年的GameCube，2009年3月2日的Xbox和2013年1月4日的PlayStation2。
+微软联系了索尼公司，希望索尼能推出 Windows 平台的开发程序，让开发者在 Windows 上为 PlayStation 开发游戏，被索尼一口回绝。
 
-支持 128 位计算。要么是 128位的 SIMD 预算，要么是128位宽的DMA总线。字长还是32位。
+于是，微软的 DirectX 开发小组就提出一个设想，能否基于 DirectX 开发一台自己的游戏机。DirectX 是 Windows 系统多媒体编程接口的统称，完全适合游戏编程，而且有助于扩展 Windows 支持影音多媒体的能力。比尔·盖茨批准了这个计划，开发团队就把这个项目称为 DirectX Box，后来简称为 Xbox。
 
-在索尼的PlayStation 2 [6] [7] [8] 实现销售的主导地位在我们这一代，成为最畅销的控制台在历史上，
+第一代的 Xbox 在2001年底上市，借助于热门游戏《Halo》，在美国市场卖得不错，但是在日本市场表现不好，总体销量不如 PlayStation 第一代和第二代。
 
-手持游戏机是 Game Boy advance 和 北美市场上推出了Nintendo DS。
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020021006.jpg)
+
+图27：第一代 Xbox，2001。
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020021007.jpg)
+
+图28：Xbox 独占的热门游戏《Halo》，2001。
+
+由于同期上市的 PlayStation 2 售价299美元，微软被迫把第一代 Xbox 的售价也定在299美元。但是，制造成本为425美元，微软每卖出一台，就要亏损125美元。第二年，PlayStation 2 降价到199美元，微软只好跟进，也降到这个价格。Xbox 第一代卖出了2400万台，微软累计亏损了40亿美元，直到2004年才扭亏为盈。好在这些钱对微软不算太大的压力，能在游戏机市场站稳脚跟才是最重要的。
 
 ## 第七代视频游戏机
 
