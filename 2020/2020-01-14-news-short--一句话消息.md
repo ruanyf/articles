@@ -1,5 +1,7 @@
 # 一句话消息
 
+> [域名管理机构 ICANN](https://www.namecheap.com/blog/icann-allows-com-price-increases-gets-more-money/) 同意给 Verisign 授权，对`.com`域名在今后四年中，每年涨价7%。
+
 > - [Instagram](https://www.bloomberg.com/news/articles/2020-02-04/instagram-generates-more-than-a-quarter-of-facebook-s-sales) 2019年的销售收入是200亿美元。相比之下，Youtube 的销售收入是150亿美元，并且其中很大一部分还必须分给视频创作者。
 
 > - [日本](https://www.nytimes.com/2020/02/03/climate/japan-coal-fukushima.html)将在未来五年内，新建多达22个燃煤发电厂。这是近十年前福岛核灾难迫使日本关闭几乎所有核电计划的后果。
