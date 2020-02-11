@@ -1,6 +1,10 @@
 # 一句话消息
 
-> [域名管理机构 ICANN](https://www.namecheap.com/blog/icann-allows-com-price-increases-gets-more-money/) 同意给 Verisign 授权，对`.com`域名在今后四年中，每年涨价7%。
+> - [空中客车公司](https://www.reuters.com/article/us-singapore-airshow-airbus-design/airbus-unveils-blended-wing-body-plane-design-after-secret-flight-tests-idUSKBN20509H)在新加坡航空展上，放出了连体翼飞机模型，表示他们正在研发机身和机翼一体化的飞机。这种飞机较为复杂，但是空气阻力小，飞行效率高。
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020021117.jpg)
+
+> - [域名管理机构 ICANN](https://www.namecheap.com/blog/icann-allows-com-price-increases-gets-more-money/) 同意给 Verisign 授权，对`.com`域名在今后四年中，每年涨价7%。
 
 > - [Instagram](https://www.bloomberg.com/news/articles/2020-02-04/instagram-generates-more-than-a-quarter-of-facebook-s-sales) 2019年的销售收入是200亿美元。相比之下，Youtube 的销售收入是150亿美元，并且其中很大一部分还必须分给视频创作者。
 
