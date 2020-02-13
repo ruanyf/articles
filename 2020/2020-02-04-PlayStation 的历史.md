@@ -158,7 +158,7 @@ Atari 2600、SG-1000、Famicom 这些游戏机的共同特点，就是它们的 
 
 ![](https://www.wangbase.com/blogimg/asset/202002/bg2020021302.jpg)
 
-图20：胎死腹中的任天堂 PlayStation 配件。
+图20：胎死腹中的任天堂 PlayStation 配件，1992。
 
 最后，索尼决定赌一把，把 PlayStation 做成一个独立的光驱游戏机发布。第一代 PlayStaion 是1994年12月在日本上市，次年在北美上市。第二代 PlayStation 2 是2000年上市。这两款游戏机极其成功，PS1 售出了1.02亿台，PS2 售出了1.46亿台，至今无人打破这个记录。索尼公司成了家用游戏机的新霸主。
 
