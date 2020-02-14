@@ -1,5 +1,9 @@
 # 一句话消息
 
+> - [美国国税局](https://www.cnn.com/2020/02/13/tech/fortnite-taxes/)原先考虑，对游戏玩家在游戏中挣到的游戏币征税，后来在一片反对声中放弃了这个计划。
+
+> - [Youtube](https://finance.sina.com.cn/roll/2020-02-14/doc-iimxyqvz2753575.shtml) 宣布，3月开始不再接受 iOS 用户在应用内付款订阅，用户只能通过浏览器订阅。因为苹果对应用内购买要提成30%，谷歌不愿意让苹果挣这个钱。
+
 > - [空中客车公司](https://www.reuters.com/article/us-singapore-airshow-airbus-design/airbus-unveils-blended-wing-body-plane-design-after-secret-flight-tests-idUSKBN20509H)在新加坡航空展上，放出了连体翼飞机模型，表示他们正在研发机身和机翼一体化的飞机。这种飞机较为复杂，但是空气阻力小，飞行效率高。
 
 ![](https://www.wangbase.com/blogimg/asset/202002/bg2020021117.jpg)
