@@ -1,5 +1,11 @@
 # 一句话消息
 
+> - [澳大利亚研究人员](https://www.distractify.com/omg/2017/08/28/13BnNP/babylonian-stone-tablet)发现一块巴比伦3700年前石碑上，镌刻的主题是三角函数！这使得巴比伦人研究三角函数的历史，比古希腊人早了1500年。 
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020021402.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020021401.jpg)
+
 > - [美国国税局](https://www.cnn.com/2020/02/13/tech/fortnite-taxes/)原先考虑，对游戏玩家在游戏中挣到的游戏币征税，后来在一片反对声中放弃了这个计划。
 
 > - [Youtube](https://finance.sina.com.cn/roll/2020-02-14/doc-iimxyqvz2753575.shtml) 宣布，3月开始不再接受 iOS 用户在应用内付款订阅，用户只能通过浏览器订阅。因为苹果对应用内购买要提成30%，谷歌不愿意让苹果挣这个钱。
