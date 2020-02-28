@@ -1,5 +1,26 @@
 # 一句话消息
 
+> - [两位美国华裔学者](https://arstechnica.com/science/2020/02/georgia-tech-physicists-unlock-the-secret-to-perfect-wok-tossed-fried-rice/)研究中国烧饭的物理过程，拍摄了五位厨师炒米饭。经过统计，炒一次米饭平均需要2分钟，翻炒276次，每次持续大约三分之一秒。
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020022802.jpg)
+
+> - [美国科学家](https://directorsblog.nih.gov/2020/02/25/early-riser-or-night-owl-new-study-may-help-to-explain-the-difference/)提出，有些人习惯早起，是出于生理原因。他们的生物钟周期是每天20小时，导致一天比别人早开始。
+
+> - [澳大利亚](https://phys.org/news/2020-02-bushfires-australia-forest.html)过去半年的森林大火，烧掉了该国五分之一的森林。
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020022512.jpg)
+
+> - [谷歌](https://www.businessinsider.com/google-cloud-vision-api-wont-tag-images-by-gender-2020-2)表示，它的 API 照片进行 AI 识别时，将不再返回人像的性别，理由是“无法通过外貌来推断一个人的性别”。
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020022009.jpg)
+
+> - [加州大学洛杉矶分校](https://medium.com/@fightfortheftr/backlash-forces-ucla-to-abandon-plans-for-facial-recognition-surveillance-on-campus-ebe005e3f715)原计划在校园内使用面部识别，成为美国第一个引入脸部识别的大学。但在师生的强烈反对下，表示已经放弃了该计划。
+
+
+> - [谷歌地图](https://www.washingtonpost.com/technology/2020/02/14/google-maps-political-borders/)会根据访问者的位置，显示不同的国界，以避免领土争议。比如，巴基斯坦用户看到的克什米尔国界线，与印度用户看到的是不一样的。
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020021603.jpg)
+
 > - [澳大利亚研究人员](https://www.distractify.com/omg/2017/08/28/13BnNP/babylonian-stone-tablet)发现一块巴比伦3700年前石碑上，镌刻的主题是三角函数！这使得巴比伦人研究三角函数的历史，比古希腊人早了1500年。 
 
 ![](https://www.wangbase.com/blogimg/asset/202002/bg2020021402.jpg)
@@ -9,10 +30,6 @@
 > - [美国国税局](https://www.cnn.com/2020/02/13/tech/fortnite-taxes/)原先考虑，对游戏玩家在游戏中挣到的游戏币征税，后来在一片反对声中放弃了这个计划。
 
 > - [Youtube](https://finance.sina.com.cn/roll/2020-02-14/doc-iimxyqvz2753575.shtml) 宣布，3月开始不再接受 iOS 用户在应用内付款订阅，用户只能通过浏览器订阅。因为苹果对应用内购买要提成30%，谷歌不愿意让苹果挣这个钱。
-
-> - [空中客车公司](https://www.reuters.com/article/us-singapore-airshow-airbus-design/airbus-unveils-blended-wing-body-plane-design-after-secret-flight-tests-idUSKBN20509H)在新加坡航空展上，放出了连体翼飞机模型，表示他们正在研发机身和机翼一体化的飞机。这种飞机较为复杂，但是空气阻力小，飞行效率高。
-
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021117.jpg)
 
 > - [域名管理机构 ICANN](https://www.namecheap.com/blog/icann-allows-com-price-increases-gets-more-money/) 同意给 Verisign 授权，对`.com`域名在今后四年中，每年涨价7%。
 
@@ -78,8 +95,26 @@
 
 ![](https://www.wangbase.com/blogimg/asset/201911/bg2019112203.jpg)
 
+## 第 96 期
+
+> - [非洲蝗灾](https://tech.sina.com.cn/d/a/2020-02-15/doc-iimxxstf1670769.shtml)蔓延到了巴基斯坦，该国政府表示蝗虫目前每天破坏约为3.5万人的口粮，如任其发展，国家将会无粮可收。巴基斯坦已经宣布进入了紧急状态，动用了数百架飞机进行喷洒农药和驱赶。
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020021703.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020021704.jpg)
+
 > - [德国科学家](https://www.theguardian.com/science/2019/oct/16/fastest-ants-in-world-northern-sahara)在撒哈拉沙漠发现，世界上速度最快的蚂蚁，每秒可以前进近1米，相当于体长的108倍。
 
 ![](https://www.wangbase.com/blogimg/asset/201910/bg2019101906.jpg)
 
+> - [美国](https://nypost.com/2020/02/22/flying-coronavirus-class-photos-of-americans-flight-from-hell/)2月17日派出两架货运飞机，将钻石公主号的329名美国乘客接回，有一个乘客拍摄了货机的内部照片。14名受感染的乘客，全部装在一个隔离箱里面。
 
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020022403.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020022402.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020022401.jpg)
+
+- [德国经济](https://www.ccn.com/tesla-is-slowly-pushing-germany-into-recession/)在上个季度增长放缓至零之后，正处于衰退的边缘。据说原因是，特斯拉公司使得德国汽车业创下22年新低。
+
+![](https://www.wangbase.com/blogimg/asset/202002/bg2020022404.jpg)
