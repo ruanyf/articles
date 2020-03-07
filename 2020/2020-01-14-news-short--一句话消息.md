@@ -1,5 +1,35 @@
 # 一句话消息
 
+> - [美国龙虾](https://www.yahoo.com/finance/news/virus-makes-lobsters-cheap-sellers-120000170.html)价格大降，原因是中美之间的航班减少，以及需求减少。1月下旬以来，香港的订单从每周约1,000箱减少到120箱，美国龙虾业者面临破产。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030702.jpg)
+
+> - [马斯克](https://www.cnbc.com/2020/03/06/what-elon-musks-early-morning-spacex-all-hands-meeting-says-about-him.html)在2月23日星期天凌晨一点，突然在 SpaceX 工厂召开全体员工大会，要求解释工厂为什么没有每周七天、每天24小时开工。高管说没有足够人手，于是接下来48个小时内，SpaceX 雇用了252名工人，劳动力增加了一倍。 
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030701.jpg)
+
+> - [国内公司](https://www.chinanews.com/it/shipin/cns-d/2020/03-03/news849814.shtml)推出“发热头盔”，可以红外摄像头查看前方5米范围内的人员，自动找出体温超过37.3摄氏度的发热人员。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030605.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030604.jpg)
+
+> - [西雅图](https://inrix.com/blog/2020/03/coronavirus-seattle/)是微软和亚马逊总部所在地，随着科技公司为了防止疫情扩散，要求员工在家办公，市区交通大大改善。早晨的上班高峰时间，平均车速提高了6～8公里/小时。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030603.jpg)
+
+> - [阿根廷国家气象局](https://earthobservatory.nasa.gov/images/146322/antarctica-melts-under-its-hottest-days-on-record)报告，2020年2月6日在南极半岛北端测到了18.4°C，这是有记录以来的南极最高温，超过了2015年3月24日的17.5°C的纪录。这个温度使得该地附近的冰川大量融化。
+
+> - [美国宇航局](https://www.theguardian.com/environment/2020/mar/01/dramatic-fall-in-china-pollution-levels-partly-related-to-coronavirus)卫星照片发现，中国的环境污染（二氧化氮超标）最近大幅下降。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030201.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030202.jpg)
+
+> - [中国学者发现](https://padiracinnovation.org/News/2020/02/two-epigenetic-regulators-interfere-with-healthy-aging)，两种特定的蛋白质似乎可以降低蠕虫和小鼠的健康水平，通过抑制蛋白质就可以改善它们的健康。由于随着年龄的增长，蠕虫，小鼠和人类都会产生越来越多的这两种蛋白质，所以学者认为人类也可能抑制蛋白质而改善健康。
+
+> - [美国国会](https://gizmodo.com/congress-approves-1-billion-for-rural-telecom-provider-1841965908)通过提案，拨款10亿美元，帮助美国农村地区替换华为和中兴的电信设备。
+
 > - [两位美国华裔学者](https://arstechnica.com/science/2020/02/georgia-tech-physicists-unlock-the-secret-to-perfect-wok-tossed-fried-rice/)研究中国烧饭的物理过程，拍摄了五位厨师炒米饭。经过统计，炒一次米饭平均需要2分钟，翻炒276次，每次持续大约三分之一秒。
 
 ![](https://www.wangbase.com/blogimg/asset/202002/bg2020022802.jpg)
@@ -81,9 +111,11 @@
 
 ![](https://www.wangbase.com/blogimg/asset/202001/bg2020011402.jpg)
 
+## 第 97 期
+
 > - [英国一项研究](https://www.bloombergquint.com/global-economics/middle-age-misery-peaks-at-age-of-47-2-economist-says)发现，中年人最不幸福的年龄是47.2岁，所以这个年龄可能就是中年危机的最高潮。
 
-> - [数码相机](https://finance.technews.tw/2019/12/30/digital-camera-shipments/)在2019年的全球出货量只有1,500万台左右，比2018年减少20%，是2001年（1,475万台）以来的最低点。相比巅峰时期的2010年（1亿2,146万台），销量只剩下八分之一。
+> - [数码相机](https://finance.technews.tw/2019/12/30/digital-camera-shipments/) 2019年的全球出货量只有1,500万台左右，比2018年减少20%，是2001年（1,475万台）以来的最低点。相比巅峰时期的2010年（1亿2,146万台），销量只剩下八分之一。
 
 ![](https://www.wangbase.com/blogimg/asset/202001/bg2020010305.jpg)
 
