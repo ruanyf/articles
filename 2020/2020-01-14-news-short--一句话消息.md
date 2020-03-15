@@ -1,10 +1,28 @@
 # 一句话消息
 
-> - [美国龙虾](https://www.yahoo.com/finance/news/virus-makes-lobsters-cheap-sellers-120000170.html)价格大降，原因是中美之间的航班减少，以及需求减少。1月下旬以来，香港的订单从每周约1,000箱减少到120箱，美国龙虾业者面临破产。
+> - [德国大众汽车](https://www.reuters.com/article/us-volkswagen-electric-energy-idUSKBN20Z2D5)宣布将开展储能业务，该公司的电动汽车可以在风能和太阳能电力不足时，将电池里面的电能输回电网。该公司认为，随着电动汽车数量增多，完全可以充当流动的储能设置，这对车主也是一种财务补贴。
 
-![](https://www.wangbase.com/blogimg/asset/202003/bg2020030702.jpg)
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020031502.jpg)
 
-> - [马斯克](https://www.cnbc.com/2020/03/06/what-elon-musks-early-morning-spacex-all-hands-meeting-says-about-him.html)在2月23日星期天凌晨一点，突然在 SpaceX 工厂召开全体员工大会，要求解释工厂为什么没有每周七天、每天24小时开工。高管说没有足够人手，于是接下来48个小时内，SpaceX 雇用了252名工人，劳动力增加了一倍。 
+> - [英国科学家](https://www.bbc.com/news/science-environment-51846468)声称，从1992年到2017年，格陵兰岛和南极洲之间消失了6.4万亿吨冰，导致海平面升高17.8毫米。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020031203.jpg)
+
+> - [美军](https://www.defensenews.com/smr/nuclear-arsenal/2020/03/09/pentagon-to-award-mobile-nuclear-reactor-contracts-this-week/)外包设计可移动的小型核反应堆，将来计划使用可拆卸的核反应堆对国内外的美军基地供电。
+
+> - [马斯克](https://www.msn.com/en-us/news/technology/elon-musk-worries-spacex-won-e2-80-99t-get-to-mars-before-he-dies/ar-BB10XMVm)表示，他不确定自己的火箭公司 SpaceX 能否在他去世之前，完成到达火星的目标。马斯克生于1971年，今年49岁。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020031001.jpg)
+
+> - [气候科学家](https://phys.org/news/2020-03-accurate-climate-reveals-bleaker-outlook.html)预测，2030年全球气温可能会上升1.5 C，不考虑其他因素的情况下，用电量将增加12％，用水增加4％。如果上升2.0 C，用电量增加20％，用水增加6％。这意味着，未来城市的用水用电，都会变得紧张。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030903.jpg)
+
+> - [研究](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3531171)发现，自从美国星巴克允许不购买任何商品就能坐在店里，生意平均比附近咖啡店减少了7.3％。
+
+> - [欧洲的今年冬天](https://www.euronews.com/2020/03/06/europe-sees-warmest-winter-since-records-began)是有气象记录以来，最热的一个冬天，平均温度比1981-2010年的正常温度高3.4摄氏度。
+
+> - [马斯克](https://www.cnbc.com/2020/03/06/what-elon-musks-early-morning-spacex-all-hands-meeting-says-about-him.html)在2月23日星期天凌晨一点，突然在 SpaceX 工厂召开全体员工大会，质问工厂为什么没有每周七天、每天24小时开工。高管说没有足够人手，于是接下来48个小时内，SpaceX 雇用了252名工人，劳动力增加了一倍。 
 
 ![](https://www.wangbase.com/blogimg/asset/202003/bg2020030701.jpg)
 
@@ -93,6 +111,8 @@
 
 > - [科学家](https://www.vice.com/en_us/article/zmj7pw/theres-growing-evidence-that-the-universe-is-connected-by-giant-structures)发现，相隔几千万光年的星系会同步旋转，因此猜想宇宙存在某些巨型结构，将遥远的星系连在一起。
 
+## 第 98 期
+
 > -  [一项调查](https://twitter.com/remotetools/status/1218167761525829634)发现，331个远程工作的程序员，82%表示不想再回到办公室上班，并且每个人都表示会向其他程序员推荐远程的工作方式。
 
 > - [国际田联](https://www.thestreet.com/investing/nike-rivals-gain-amid-reports-vaporfly-shoes-face-iaaf-ban)打算禁止耐克公司的 Vaporfly Next % 跑鞋。肯尼亚选手就是穿这种鞋，马拉松成绩跑进了二小时。据说，该鞋可以提供更好的弹力。
@@ -104,6 +124,10 @@
 ![](https://www.wangbase.com/blogimg/asset/202001/bg2020011701.jpg)
 
 ![](https://www.wangbase.com/blogimg/asset/202001/bg2020011702.jpg)
+
+> - [谷歌公司](https://summerofcode.withgoogle.com/)的 Summer of Code 活动，3月17日向全世界的学生开放报名，在指定的开源软件项目上提交代码，进行比赛。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020031002.jpg)
 
 > - [欧盟](https://www.reuters.com/article/us-eu-ai/eu-mulls-five-year-ban-on-facial-recognition-tech-in-public-areas-idUSKBN1ZF2QL)正在考虑公共场所禁止面部识别技术，暂时定为五年。这段时间用来研究如何防止滥用面部识别技术。
 
