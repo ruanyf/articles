@@ -1,5 +1,15 @@
 # 一句话消息
 
+> - [山西省](https://www.sohu.com/a/379182687_120003965)发现迄今最大的东周时代墓葬，地面面积相当于一个半篮球场，距今2000多年。考古学家判断，这是一个晋国王后的墓。值得指出的是，这个墓也是因为被盗而发现的。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020031512.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020031513.jpg)
+
+> - [Nvidia 公司](https://www.gamesradar.com/nvidias-calling-on-gaming-pc-owners-to-put-their-systems-to-work-fighting-covid-19/)呼吁，游戏 PC 的玩家下载 [Folding @ home](https://foldingathome.org/start-folding/) 程序，利用 GPU 多余的计算能力，为各种研究项目进行计算，为抗击疫情做出贡献。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020031508.jpg)
+
 > - [德国大众汽车](https://www.reuters.com/article/us-volkswagen-electric-energy-idUSKBN20Z2D5)宣布将开展储能业务，该公司的电动汽车可以在风能和太阳能电力不足时，将电池里面的电能输回电网。该公司认为，随着电动汽车数量增多，完全可以充当流动的储能设置，这对车主也是一种财务补贴。
 
 ![](https://www.wangbase.com/blogimg/asset/202003/bg2020031502.jpg)
@@ -174,3 +184,5 @@
 - [德国经济](https://www.ccn.com/tesla-is-slowly-pushing-germany-into-recession/)在上个季度增长放缓至零之后，正处于衰退的边缘。据说原因是，特斯拉公司使得德国汽车业创下22年新低。
 
 ![](https://www.wangbase.com/blogimg/asset/202002/bg2020022404.jpg)
+
+
