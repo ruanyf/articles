@@ -2,7 +2,9 @@
 
 对于多分支的代码库，将代码从一个分支转移到另一个分支是常见需求。
 
-这时有两种情况。一种情况是，你需要另一个分支的所有代码变动，那么就采用合并（`git merge`）。另一种情况是，你只需要部分代码变动（某几个提交），这时可以采用 Cherry pick。
+这时分两种情况。一种情况是，你需要另一个分支的所有代码变动，那么就采用合并（`git merge`）。另一种情况是，你只需要部分代码变动（某几个提交），这时可以采用 Cherry pick。
+
+![](https://www.wangbase.com/blogimg/asset/202004/bg2020042723.jpg)
 
 ## 一、基本用法
 
@@ -12,7 +14,7 @@
 $ git cherry-pick <commitHash>
 ```
 
-上面命令就会将指定的提交`commitHash`，应用于当前分支。这会在当前分支产生一个新的提交，当然哈希会不一样。
+上面命令就会将指定的提交`commitHash`，应用于当前分支。这会在当前分支产生一个新的提交，当然它们的哈希值会不一样。
 
 举例来说，代码仓库有`master`和`feature`两个分支。
 
@@ -42,7 +44,7 @@ $ git cherry-pick f
 
 从上面可以看到，`master`分支的末尾增加了一个提交`f`。
 
-`git cherry-pick`命令跟分支名也是可以的，表示转移该分支的最新提交。
+`git cherry-pick`命令的参数，不一定是提交的哈希值，分支名也是可以的，表示转移该分支的最新提交。
 
 ```bash
 $ git cherry-pick feature
@@ -60,21 +62,23 @@ $ git cherry-pick <HashA> <HashB>
 
 上面的命令将 A 和 B 两个提交应用到当前分支。这会在当前分支生成两个对应的新提交。
 
-如果想要包含一系列的连续提交，可以使用下面的语法。
+如果想要转移一系列的连续提交，可以使用下面的简便语法。
 
 ```bash
 $ git cherry-pick A..B 
 ```
 
-上面的命令中，提交必须按照正确的顺序放置：提交 A 必须早于提交 B，否则命令将失败，但不会报错。
+上面的命令可以转移从 A 到 B 的所有提交。它们必须按照正确的顺序放置：提交 A 必须早于提交 B，否则命令将失败，但不会报错。
 
-注意，使用上面的命令，提交 A 将不会包含在 Cherry-pick 中。如果要包含提交 A，可以使用下面的语法。
+注意，使用上面的命令，提交 A 将不会包含在 Cherry pick 中。如果要包含提交 A，可以使用下面的语法。
 
 ```bash
 $ git cherry-pick A^..B 
 ```
 
 ## 三、配置项
+
+`git cherry-pick`命令的常用配置项如下。
 
 **（1）`-e`，`--edit`**
 
@@ -102,6 +106,10 @@ $ git cherry-pick A^..B
 $ git cherry-pick -m 1 <commitHash>
 ```
 
+上面命令表示，Cherry pick 采用提交`commitHash`来自编号1的父分支的变动。
+
+一般来说，1号父分支是接受变动的分支（the branch being merged into），2号父分支是作为变动来源的分支（the branch being merged from）。 
+
 ## 四、代码冲突
 
 如果操作过程中发生代码冲突，Cherry pick 会停下来，让用户决定如何继续操作。
@@ -124,11 +132,13 @@ $ git cherry-pick --continue
 
 ## 五、转移到另一个代码库
 
-Cherry pick 也支持应用另一个代码库的提交，方法是先将该库加为远程仓库。
+Cherry pick 也支持转移另一个代码库的提交，方法是先将该库加为远程仓库。
 
 ```bash
 $ git remote add target git://gitUrl
 ```
+
+上面命令添加了一个远程仓库`target`。
 
 然后，将远程代码抓取到本地。
 
@@ -136,7 +146,9 @@ $ git remote add target git://gitUrl
 $ git fetch target
 ```
 
-检查一下要从远程仓库转移的提交，获取它的哈希。
+上面命令将远程代码仓库抓取到本地。
+
+接着，检查一下要从远程仓库转移的提交，获取它的哈希值。
 
 ```bash
 $ git log target/master
