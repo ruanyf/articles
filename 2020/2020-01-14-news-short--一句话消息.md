@@ -1,6 +1,14 @@
 # 一句话消息
 
-> - [山西省](https://www.sohu.com/a/379182687_120003965)发现迄今最大的东周时代墓葬，地面面积相当于一个半篮球场，距今2000多年。考古学家判断，这是一个晋国王后的墓。值得指出的是，这个墓也是因为被盗而发现的。
+> - [美国政府](https://news.bloomberglaw.com/environment-and-energy/epa-grants-first-permit-to-test-genetically-modified-mosquitoes)批准在佛罗里达和休斯顿，释放基因工程改造过的蚊子，希望减少蚊子传播的疾病。
+
+> - [耶鲁大学的科学家](http://forgetoday.com/2020/05/03/scientists-find-life-in-dead-brain-cells/)发现，屠宰场的猪死了10个小时后，脑细胞依然可以激活，即大脑可以正常运作。
+
+> - [一个美国开发者](http://nautil.us/issue/83/intelligence/why-i-built-a-dumb-cell-phone-with-a-rotary-dial)制作了一个带有拨号盘的手机，理由是有些人不喜欢使用触摸屏，拨号打电话更直观。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020032102.jpg)
+
+> - [山西省](https://www.sohu.com/a/379182687_120003965)发现迄今最大的东周时代墓葬，地面面积相当于一个半的篮球场，距今2000多年。考古学家判断，这是一个晋国王后的墓。值得指出的是，这个墓也是因为被盗而发现的。
 
 ![](https://www.wangbase.com/blogimg/asset/202003/bg2020031512.jpg)
 
@@ -36,23 +44,10 @@
 
 ![](https://www.wangbase.com/blogimg/asset/202003/bg2020030701.jpg)
 
-> - [国内公司](https://www.chinanews.com/it/shipin/cns-d/2020/03-03/news849814.shtml)推出“发热头盔”，可以红外摄像头查看前方5米范围内的人员，自动找出体温超过37.3摄氏度的发热人员。
-
-![](https://www.wangbase.com/blogimg/asset/202003/bg2020030605.jpg)
-
-![](https://www.wangbase.com/blogimg/asset/202003/bg2020030604.jpg)
-
-> - [西雅图](https://inrix.com/blog/2020/03/coronavirus-seattle/)是微软和亚马逊总部所在地，随着科技公司为了防止疫情扩散，要求员工在家办公，市区交通大大改善。早晨的上班高峰时间，平均车速提高了6～8公里/小时。
-
-![](https://www.wangbase.com/blogimg/asset/202003/bg2020030603.jpg)
-
 > - [阿根廷国家气象局](https://earthobservatory.nasa.gov/images/146322/antarctica-melts-under-its-hottest-days-on-record)报告，2020年2月6日在南极半岛北端测到了18.4°C，这是有记录以来的南极最高温，超过了2015年3月24日的17.5°C的纪录。这个温度使得该地附近的冰川大量融化。
 
-> - [美国宇航局](https://www.theguardian.com/environment/2020/mar/01/dramatic-fall-in-china-pollution-levels-partly-related-to-coronavirus)卫星照片发现，中国的环境污染（二氧化氮超标）最近大幅下降。
 
-![](https://www.wangbase.com/blogimg/asset/202003/bg2020030201.jpg)
 
-![](https://www.wangbase.com/blogimg/asset/202003/bg2020030202.jpg)
 
 > - [中国学者发现](https://padiracinnovation.org/News/2020/02/two-epigenetic-regulators-interfere-with-healthy-aging)，两种特定的蛋白质似乎可以降低蠕虫和小鼠的健康水平，通过抑制蛋白质就可以改善它们的健康。由于随着年龄的增长，蠕虫，小鼠和人类都会产生越来越多的这两种蛋白质，所以学者认为人类也可能抑制蛋白质而改善健康。
 
@@ -72,8 +67,13 @@
 
 ![](https://www.wangbase.com/blogimg/asset/202002/bg2020022009.jpg)
 
-> - [加州大学洛杉矶分校](https://medium.com/@fightfortheftr/backlash-forces-ucla-to-abandon-plans-for-facial-recognition-surveillance-on-campus-ebe005e3f715)原计划在校园内使用面部识别，成为美国第一个引入脸部识别的大学。但在师生的强烈反对下，表示已经放弃了该计划。
+> - [美国太空部队](https://www.spaceforce.mil/News/Article/2178366/united-states-space-force-recruitment-video)刚成立不久，本周发布了第一支30秒的[招聘视频](https://v.qq.com/x/page/f09664mxgom.html)。
 
+<iframe frameborder="0" src="https://v.qq.com/txp/iframe/player.html?vid=f09664mxgom" allowFullScreen="true" width="600px" height="400px"></iframe>
+
+## 第 107 期
+
+> - [加州大学洛杉矶分校](https://medium.com/@fightfortheftr/backlash-forces-ucla-to-abandon-plans-for-facial-recognition-surveillance-on-campus-ebe005e3f715)原计划在校园内使用面部识别，成为美国第一个引入脸部识别的大学。但在师生的强烈反对下，表示已经放弃了该计划。
 
 > - [谷歌地图](https://www.washingtonpost.com/technology/2020/02/14/google-maps-political-borders/)会根据访问者的位置，显示不同的国界，以避免领土争议。比如，巴基斯坦用户看到的克什米尔国界线，与印度用户看到的是不一样的。
 
@@ -87,9 +87,13 @@
 
 > - [美国国税局](https://www.cnn.com/2020/02/13/tech/fortnite-taxes/)原先考虑，对游戏玩家在游戏中挣到的游戏币征税，后来在一片反对声中放弃了这个计划。
 
+## 第 104 期
+
 > - [Youtube](https://finance.sina.com.cn/roll/2020-02-14/doc-iimxyqvz2753575.shtml) 宣布，3月开始不再接受 iOS 用户在应用内付款订阅，用户只能通过浏览器订阅。因为苹果对应用内购买要提成30%，谷歌不愿意让苹果挣这个钱。
 
 > - [域名管理机构 ICANN](https://www.namecheap.com/blog/icann-allows-com-price-increases-gets-more-money/) 同意给 Verisign 授权，对`.com`域名在今后四年中，每年涨价7%。
+
+## 第 103 期
 
 > - [Instagram](https://www.bloomberg.com/news/articles/2020-02-04/instagram-generates-more-than-a-quarter-of-facebook-s-sales) 2019年的销售收入是200亿美元。相比之下，Youtube 的销售收入是150亿美元，并且其中很大一部分还必须分给视频创作者。
 
@@ -99,9 +103,13 @@
 
 ![](https://www.wangbase.com/blogimg/asset/202001/bg2020020101.jpg)
 
+## 第 102 期
+
 > - [Facebook](https://www.nytimes.com/2020/01/29/technology/facebook-privacy-lawsuit-earnings.html) 同意支付5.5亿美元，赔偿伊利诺伊州用户。原因是 Facebook 未经该州数百万用户的许可，从他们的照片中收集面部数据。
 
 > - [美国餐饮业](https://news.ycombinator.com/item?id=22152680)2019年的总收入是8630亿美元，相比之下，全球软件业的总收入是4670亿美元。
+
+## 第 101 期
 
 > - [盖洛普公司](https://lithub.com/in-2019-more-americans-went-to-the-library-than-to-the-movies-yes-really/)（Gallup）一项调查表明，美国人去图书馆的次数多于去电影院。2019年，每个美国成年人平均去图书馆10.5次。
 
@@ -111,11 +119,33 @@
 
 ![](https://www.wangbase.com/blogimg/asset/202001/bg2020012409.jpg)
 
+## 第 100 期
+
+> - [国内公司](https://www.chinanews.com/it/shipin/cns-d/2020/03-03/news849814.shtml)推出“发热头盔”，可以红外摄像头查看前方5米范围内的人员，自动找出体温超过37.3摄氏度的发热人员。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030605.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030604.jpg)
+
+> - [美国宇航局](https://www.theguardian.com/environment/2020/mar/01/dramatic-fall-in-china-pollution-levels-partly-related-to-coronavirus)卫星照片发现，中国的环境污染（二氧化氮超标）最近大幅下降。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030201.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020030202.jpg)
+
+> - [武汉大学](http://m.yunnan.cn/system/2020/03/17/030619215.shtml)的樱花很有名，但是今年不对外开放。学校使用5G直播车，开启“云赏樱”，每天上午10时至下午16时，通过网络直播校园樱花实景。
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020031921.jpg)
+
+![](https://www.wangbase.com/blogimg/asset/202003/bg2020031922.jpg)
+
+## 第 99 期
+
 > - [维基百科](https://en.wikipedia.org/wiki/User:Emijrp/All_Human_Knowledge#Human_geography) 说，覆盖所有人类知识需要1.04亿篇文章，目前该网站共有0.277亿篇文章（含所有语种）。估计到2040年代，所有人类知识就可以全部收入了。
 
 ![](https://www.wangbase.com/blogimg/asset/202001/bg2020012401.jpg)
 
-> - [马斯克](https://www.extremetech.com/extreme/305021-elon-musk-starship-will-last-20-30-years-aiming-for-fleet-of-1000)说，SpaceX 公司的目标是拥有1,000艘宇宙飞船，每年生产100艘，每艘使用寿命为20～30年。有了那么多船，SpaceX 每年将向火星运送多达1亿吨货物，相当于10万个乘客，2050年时火星人口可以达到100万。 
+> - [马斯克](https://www.extremetech.com/extreme/305021-elon-musk-starship-will-last-20-30-years-aiming-for-fleet-of-1000)说，SpaceX 公司的目标是拥有1,000艘宇宙飞船，每年生产100艘，每艘使用寿命为20～30年。有了那么多船，SpaceX 每年将向火星运送多达1亿吨货物，以及10万个乘客，2050年时火星人口可以达到100万。 
 
 ![](https://www.wangbase.com/blogimg/asset/202001/bg2020012001.jpg)
 
