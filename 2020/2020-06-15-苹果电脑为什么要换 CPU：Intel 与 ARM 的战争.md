@@ -18,21 +18,23 @@
 
 ## 一、CPU 架构是什么
 
-CPU 的全称是“中央处理单元”，它是计算机的核心，计算都是由它来完成。它只是一个概念，每家公司都有自己的设计。
+CPU 的全称是“中央处理单元”，它是计算机的核心，计算都由它来完成。但是，CPU 本身只是一个概念，每家芯片公司都有自己的具体实现。
 
-**不同的 CPU 设计实现，就称为” CPU 架构“（CPU architecture）。** 每一个 CPU 架构都有自己的指令集，彼此不通用，这导致运行在上面的软件也不通用，必须重新编译。如果没有专门做适配，一个架构下的软件就无法移植到另一个架构。
+**不同的 CPU 设计实现，就称为” CPU 架构“（CPU architecture）。** 不同的 CPU 架构有不同的指令集，彼此不通用，这导致运行在上面的软件也不兼容，必须重新编译。如果没有做适配，一个架构下的软件就无法移植到另一个架构。
 
 ![](https://www.wangbase.com/blogimg/asset/202006/bg2020061503.jpg)
 
-历史上，有过[多种](https://www.quora.com/What-are-the-types-of-computer-architectures-in-a-CPU/answer/Gyanu-Kumar-27) CPU 架构，目前最常见的架构有两种：x86 架构和 ARM 架构。
+历史上，有过[多种](https://www.quora.com/What-are-the-types-of-computer-architectures-in-a-CPU/answer/Gyanu-Kumar-27) CPU 架构。目前最常见的架构只剩下两种：x86 架构和 ARM 架构。
 
 ![](https://www.wangbase.com/blogimg/asset/202006/bg2020061504.jpg)
 
-x86 架构的优点是性能好，缺点是耗电多、电压高，主要用于桌面电脑，生产厂商为 Intel 公司和 AMD 公司。ARM 架构的优点是耗电小、电压低，缺点是单核性能不如 x86 芯片，主要用于移动设备。
+x86 架构性能好，但是耗电多、电压高，主要用于桌面电脑，生产厂商为 Intel 公司和 AMD 公司。ARM 架构耗电小、电压低，但是单核性能不如 x86，主要用于移动设备。
 
-[ARM 架构的生产模式](http://www.ruanyifeng.com/blog/2011/01/brief_history_of_arm.html)是授权制，ARM 公司出售指令集的设计授权，购买的公司可以采用公版设计，也可以自己进行再开发。高通、三星、华为、苹果等公司，都采用这个模式，设计自己的芯片。
+ARM 芯片的生产商有许多家，这是因为它的[商业模式](http://www.ruanyifeng.com/blog/2011/01/brief_history_of_arm.html)是授权制。英国的 ARM 公司出售指令集的授权，购买授权的公司可以基于公版的设计，开发自己的 ARM 芯片。高通、三星、华为、苹果等公司的芯片，都属于这个模式。
 
-近几年，x86 架构发展迟缓，ARM 架构进步显著，已经从移动设备向桌面电脑和服务器进军了。苹果公司这一次更换 CPU，就是准备从 x86 架构改为 ARM 架构。
+苹果公司同时使用这两种架构的芯片，iPhone 和 iPad 的芯片是 ARM 架构，Mac 电脑的芯片是 x86 架构，这导致 iPhone 的 App 无法在 Mac 电脑运行。
+
+近几年，x86 架构发展迟缓，ARM 架构则进步显著，已经从移动设备向桌面电脑和服务器进军了。Mac 电脑这一次更换 CPU，就是准备从 x86 架构改为 ARM 架构。
 
 ## 二、Mac 电脑的 CPU 历史
 
