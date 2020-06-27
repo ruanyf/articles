@@ -2,7 +2,81 @@
 
 SSH（Secure Shell 的缩写）是一种加密网络协议，用于客户端和服务器之间的安全连接，并支持各种身份验证机制。
 
-两种最流行的机制是基于密码的身份验证和基于公钥的身份验证。后者比传统的密码验证更安全，更方便。
+这个协议有多种用途，常用于远程登录和执行命令，但是任何网络服务都可以用这个协议来加密，比如`scp`（加密远程拷贝文件）和`sftp`（加密 FTP）。
+
+## SSH 是什么
+
+SSH 加密两台计算机之间的对话。
+
+## 历史
+
+1995年，芬兰赫尔辛基工业大学的研究员 Tatu Ylönen 设计了 SSH 协议的第一个版本（现称为 SSH-1），同时写出了第一个实现（称为 SSH1）。当时，他所在的大学网络一直发生密码嗅探攻击，他不得不为服务器设计一个更安全的登录方式。写完以后，他就把这个工具公开了，允许其他人免费使用。
+
+SSH 可以替换 rlogin、TELNET、FTP 和 rsh 这些不安全的协议，所以大受欢迎，用户快速增长，1995年底已经发展到五十个国家的20,000个用户。SSH-1 协议也变成 IETF 的标准化文档。
+
+1995年12月，由于客服需求越来越大，Tatu Ylönen 就成立了一家公司 SCS，专门销售和开发 SSH。这个软件的后续版本，逐渐从免费软件变成了专有软件。
+
+SSH-1 协议存在一些安全漏洞，所以1996年就提出了 SSH-2（或者称为 SSH 2.0）协议。这个协议与1.0版不兼容，在1997年进行了标准化，1998年推出了软件实现 SSH2。但是，官方的 SSH2 软件是一个专有软件，不能免费使用，而且 SSH1 的有些功能也没有提供。
+
+1999年，OpenBSD 的开发人员决定写一个 SSH-2 协议的开源实现，这就是 OpenSSH 项目。该项目最初是基于 SSH 1.2.12 版本，那是当时 SSH-1 协议最新的免费版本。但是，它很快就完全摆脱了官方代码，在许多开发者的参与下，按照自己的路线发展。OpenSSH 随 OpenBSD 2.6 版本一起提供，以后又移植到其他操作系统，成为最流行的 SSH 实现。目前，Linux 的所有发行版几乎都自带 OpenSSH。
+
+现在，SSH-2 有多种实现，既有免费的，也有收费的。本书的内容主要是针对 OpenSSH。
+
+## 登录远程服务器
+
+SSH 登录服务器的命令如下。
+
+```bash
+$ ssh username@host
+```
+
+执行上面的命令，本地计算机通过 SSH 客户端，就能登录远程服务器。上面这种格式，用户名和主机名写在一起了，之间使用`@`分隔。
+
+`-l`参数可以用来指定用户名，这样的话，用户名和主机名就不用写在一起了。
+
+```bash
+$ ssh -l username host
+```
+
+执行登录命令以后，SSH 客户端就会与远程服务器建立加密连接。如果是第一次连接某个主机，SSH 会跳出一段警告信息。
+
+```bash
+$ ssh -l pat shell.isp.com
+
+The authenticity of host 'shell.isp.com (192.168.0.2)' can't be established.
+RSA key fingerprint is 77:a5:69:81:9b:eb:40:76:7b:13:04:a9:6c:f4:9c:5d.
+Are you sure you want to continue connecting (yes/no)?
+```
+
+上面这段警告信息的意思是，`shell.isp.com`这台主机的公钥指纹是陌生的，你是否确定要继续连接？回答`yes`以后，SSH 就会继续连接，并将远程主机的公钥指纹保存下来，列为可信的主机，以后再次连接就不会跳出这段警告了。公钥指纹可以防止有人恶意冒充远程主机。
+
+```bash
+Warning: Permanently added 'shell.isp.com,192.168.0.2' (RSA) to the list of known hosts
+```
+
+确认为可信主机以后，客户端会要求用户输入远程服务器的密码。密码会通过加密连接发给服务器，服务器检验正确以后，就会准许客户端登录。
+
+## 公钥指纹变更
+
+公钥指纹可以防止有人恶意冒充远程主机。如果遇到已知主机的指纹变更，SSH 连接时会显示一段警告信息。
+
+```bash
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that the RSA host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+77:a5:69:81:9b:eb:40:76:7b:13:04:a9:6c:f4:9c:5d.
+Please contact your system administrator.
+Add correct host key in /home/smith/.ssh/known_hosts to get rid of this message.
+Offending key in /home/smith/.ssh/known_hosts:36
+```
+
+这时，你需要确认到底是什么原因，使得公钥指纹发生变更。除了恶意劫持，也有可能是管理员变更了公钥。
+
+如果确认信任新的公钥，继续执行连接，就需要手工更改`known_hosts`文件，将新的公钥指纹加入该文件。
 
 ## 密钥
 
