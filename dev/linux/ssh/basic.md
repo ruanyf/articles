@@ -78,44 +78,6 @@ Offending key in /home/smith/.ssh/known_hosts:36
 
 如果确认信任新的公钥，继续执行连接，就需要手工更改`known_hosts`文件，将新的公钥指纹加入该文件。
 
-## 密钥
-
-用户的密钥一般都放在主目录的`.ssh`目录里面。
-
-下面的命令列出用户所有的公钥。
-
-```bash
-$ ls -l ~/.ssh/id_*.pub
-```
-
-如果不存在任何密钥，可以手动生成一个。下面命令生成一个新的4096位 SSH 密钥对，并将指定的电子邮件地址作为注释。
-
-```bash
-$ ssh-keygen -t rsa -b 4096 -C "your_email@domain.com"
-```
-
-这时，系统会提示输入密钥的位置和文件名，用户可以选择接受默认设置。另外，还会提示是否对密钥设置口令保护（passphrase）。
-
-## ssh-copy-id 命令
-
-为了登录远程服务器，需要把用户的个人密钥拷贝到服务器。`ssh-copy-id`就用于把本地密钥复制到远程服务器。
-
-```bash
-$ ssh-copy-id remoteusername@server_ip_address
-```
-
-这时，系统会提示输入远程服务器的密码。
-
-用户通过身份验证后，公钥`~/.ssh/id_rsa.pub`将复制到远程用户的`~/.ssh/authorized_keys`文件，并将关闭连接。
-
-如果没有安装`ssh-copy-id`命令，可以用下面的命令代替。
-
-```bash
-$ cat ~/.ssh/id_rsa.pub | ssh remoteusername@server_ip_address "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
-```
-
-上面命令的作用就是将本地用户的公钥，写入远程的`~/.ssh/authorized_keys`文件。
-
 ## SSL/TLS 协议
 
 客户端要向服务端提供一些加密参数，这叫做“加密集”（cipher suite）。
