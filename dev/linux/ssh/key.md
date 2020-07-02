@@ -138,3 +138,51 @@ $ ssh-copy-id -i id_rsa user@host
 
 注意，`ssh-copy-id`是直接将公钥添加到`authorized_keys`文件的末尾。如果`authorized_keys`文件的末尾不是一个换行符，会导致新的公钥添加到前一个公钥的末尾，两个公钥连在一起，使得它们都无法生效。所以，如果`authorized_keys`文件已经存在，使用`ssh-copy-id`命令之前，务必保证`authorized_keys`文件的末尾是换行符（假设该文件已经存在）。
 
+## ssh-agent 命令，ssh-add 命令
+
+私钥设置了密码以后，每次使用都必须输入密码，有时让人感觉非常麻烦，尤其是连续使用`scp`命令远程拷贝文件的情况。`ssh-agent`命令就是为了解决这个问题而设计的，它让用户在整个 Bash 对话（session）之中，只在第一次使用 SSH 命令时输入密码，后面都不需要再输入了。
+
+首先，使用下面的命令新建一次命令行对话。
+
+```bash
+$ ssh-agent bash
+```
+
+上面命令中，如果你使用的命令行环境不是 Bash，可以用其他的 Shell 命令代替。比如`zsh`和`fish`。
+
+然后，在新建的对话里面，使用`ssh-add`命令添加默认的私钥（`~/.ssh/id_rsa`，`~/.ssh/id_dsa`，`~/.ssh/id_ecdsa`，`~/.ssh/id_ed25519`）。
+
+```bash
+$ ssh-add
+Enter passphrase for /home/you/.ssh/id_dsa: ********
+Identity added: /home/you/.ssh/id_dsa (/home/you/.ssh/id_dsa)
+```
+
+上面例子中，添加私钥时，会要求输入密码。以后，再用到私钥时，就不用输入密码了。
+
+`ssh-add`命令也可以用来将指定的私钥，加入`ssh-agent`。
+
+```bash
+$ ssh-add my-other-key-file
+```
+
+上面的命令中，`my-other-key-file`就是用户指定的私钥文件。
+
+`-d`参数从内存中删除指定的私钥。
+
+```bash
+$ ssh-add -d name-of-key-file
+```
+
+`-l`参数列出所有已经添加的私钥。
+
+```bash
+$ ssh-add -l
+```
+
+`-D`参数从内存中删除已经添加的私钥。
+
+```bash
+$ ssh-add -D
+```
+
