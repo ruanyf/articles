@@ -40,8 +40,6 @@ SSH 处理证书登录的流程如下。
 
 ## 生成 CA 的密钥
 
-下面介绍证书登录的实现方法。
-
 证书登录的前提是，必须有一个 CA，而 CA 本质上就是一对密钥，跟其他密钥没有不同，CA 就用这对密钥去签发证书。
 
 虽然 CA 可以用同一对密码签发用户证书和服务器证书，但是出于安全性和灵活性，最好用不同的密钥分别签发。所以，CA 至少需要两对密钥，一对是签发用户证书的密钥，假设叫做`user_ca`，另一对是签发服务器证书的密钥，假设叫做`host_ca`。
@@ -49,7 +47,7 @@ SSH 处理证书登录的流程如下。
 使用下面的命令，生成`user_ca`。
 
 ```bash
-# CA 签发客户端证书的密钥
+# CA 签发用户证书的密钥
 $ ssh-keygen -t rsa -b 4096 -f ~/.ssh/user_ca -C user_ca
 ```
 
@@ -58,7 +56,7 @@ $ ssh-keygen -t rsa -b 4096 -f ~/.ssh/user_ca -C user_ca
 这个命令的各个参数含义如下。
 
 - `-t rsa`：指定密钥算法 RSA。
-- `-b 4096`：指定密钥的位数是4096位。
+- `-b 4096`：指定密钥的位数是4096位。安全性要求不高的场合，这个值也可以小一点，但是不应小于1024。
 - `-f ~/.ssh/user_ca`：指定生成密钥的位置和文件名。
 - `-C user_ca`：指定密钥的识别字符串，相当于注释，可以随意设置。
 
@@ -90,32 +88,78 @@ $ sudo ssh-keygen -f /etc/ssh/ssh_host_rsa_key -b 4096 -t rsa
 
 上面命令会在`/etc/ssh`目录，生成`ssh_host_rsa_key`（私钥）和`ssh_host_rsa_key.pub`（公钥）。
 
-然后，需要把服务器公钥`ssh_host_rsa_key.pub`，复制或上传到 CA 所在的服务器。接下来，就可以使用 CA 的密钥`host_ca`为服务器的公钥`ssh_host_rsa_key.pub`签发证书。
+然后，需要把服务器公钥`ssh_host_rsa_key.pub`，复制或上传到 CA 所在的服务器。接下来，就可以使用 CA 的密钥`host_ca`为服务器的公钥`ssh_host_rsa_key.pub`签发服务器证书。
 
 ```bash
 $ ssh-keygen -s host_ca -I host.example.com -h -n host.example.com -V +52w ssh_host_rsa_key.pub
 ```
 
-上面的命令会生成服务器证书`ssh_host_rsa_key-cert.pub`（服务器公钥名字加后缀`-cert`）。命令各个参数的含义如下。
+上面的命令会生成服务器证书`ssh_host_rsa_key-cert.pub`（服务器公钥名字加后缀`-cert`）。这个命令各个参数的含义如下。
 
-- `-s`：指定 CA 签署证书的密钥。
-- `-I`：身份字符串，可以随便设置，方便区分证书，将来可以使用这个字符吊销证书。
+- `-s`：指定 CA 签发证书的密钥。
+- `-I`：身份字符串，可以随便设置，相当于注释，方便区分证书，将来可以使用这个字符串撤销证书。
 - `-h`：指定该证书是服务器证书，而不是用户证书。
-- `-n host.example.com`：指定服务器的域名，如果有多个域名，则使用逗号分隔。用户通过该域名登录服务器时，SSH 通过证书的这个值，分辨应该使用哪张证书。
+- `-n host.example.com`：指定服务器的域名，表示证书仅对该域名有效。如果有多个域名，则使用逗号分隔。用户登录该域名服务器时，SSH 通过证书的这个值，分辨应该使用哪张证书，证明服务器的可信性，发给用户。
 - `-V +52w`：指定证书的有效期，这里为52周（一年）。默认情况下，证书是永远有效的。建议必须使用该参数指定有效期，并且有效期最好短一点，最长不超过52周。
 - `ssh_host_rsa_key.pub`：服务器公钥。
 
-## 服务器安装 CA 公钥
-
-为了让服务器信任 CA，必须将 CA 签发用户证书的公钥`user_ca`，拷贝到服务器。
+生成证书以后，可以使用下面的命令，查看证书的细节。
 
 ```bash
-$ scp ~/.ssh/user_ca.pub root@host.example.com:/etc/ssh/
+$ ssh-keygen -L -f ssh_host_rsa_key-cert.pub
 ```
 
-上面的命令，将 CA 签发用户证书的公钥`user_ca`，拷贝到 SSH 服务器的`/etc/ssh`目录。
+最后，为证书设置权限。
 
-然后，将下面一行添加到`/etc/ssh/sshd_config`文件。
+```bash
+$ chmod 600 ssh_host_rsa_key-cert.pub
+```
+
+## CA 签发用户证书
+
+下面，再用 CA 签发用户证书。这时需要用户的公钥，如果没有的话，客户端可以用下面的命令生成一对密钥。
+
+```bash
+$ ssh-keygen -f ~/.ssh/user_key -b 4096 -t rsa
+```
+
+上面命令会在`~/.ssh`目录，生成`user_key`（私钥）和`user_key.pub`（公钥）。
+
+然后，将用户公钥`user_key.pub`，上传或复制到 CA 服务器。接下来，就可以使用 CA 的密钥`user_ca`为用户公钥`user_key.pub`签发用户证书。
+
+```bash
+$ ssh-keygen -s user_ca -I user@example.com -n user -V +30d user_key.pub
+```
+
+上面的命令会生成用户证书`user_key-cert.pub`（用户公钥名字加后缀`-cert`）。这个命令各个参数的含义如下。
+
+- `-s`：指定 CA 签发证书的密钥
+- `-I`：身份字符串，可以随便设置，相当于注释，方便区分证书，将来可以使用这个字符串撤销证书。
+- `-n user`：指定用户名，表示证书仅对该用户名有效。如果有多个用户名，使用逗号分隔。用户以该用户名登录服务器时，SSH 通过这个值，分辨应该使用哪张证书，证明自己的身份，发给服务器。
+- `-V +30d`：指定证书的有效期，这里为30天。默认情况下，证书是永远有效的。
+- `user_key.pub`：用户公钥。
+
+生成证书以后，可以使用下面的命令，查看证书的细节。
+
+```bash
+$ ssh-keygen -L -f user_key-cert.pub
+```
+
+最后，为证书设置权限。
+
+```bash
+$ chmod 600 user_key-cert.pub
+```
+
+## 服务器安装证书
+
+CA 生成服务器证书`ssh_host_rsa_key-cert.pub`以后，需要将该证书发回服务器，可以使用下面的`scp`命令，将证书拷贝过去。
+
+```bash
+$ scp ~/.ssh/ssh_host_rsa_key-cert.pub root@host.example.com:/etc/ssh/
+```
+
+然后，将下面一行添加到服务器配置文件`/etc/ssh/sshd_config`。
 
 ```bash
 HostCertificate /etc/ssh/ssh_host_rsa_key-cert.pub
@@ -125,229 +169,65 @@ HostCertificate /etc/ssh/ssh_host_rsa_key-cert.pub
 
 ```bash
 $ sudo systemctl restart sshd
+# 或者
+$ sudo service sshd restart
 ```
 
-### 客户端信任 CA 服务器公钥
+## 服务器安装 CA 公钥
 
-CA 的公钥需要添加到 known_hosts 文件中。
-
-先获取`host_ca.pub`文件的内容，将其添加`@cert-authority *.example.com`到开头，然后将内容附加到`~/.ssh/known_hosts`：
+为了让服务器信任用户证书，必须将 CA 签发用户证书的公钥`user_ca.pub`，拷贝到服务器。
 
 ```bash
-@cert-authority *.example.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDwiOso0Q4W+KKQ4OrZZ1o1X7g3yWcmAJtySILZSwo1GXBKgurV4jmmBN5RsHetl98QiJq64e8oKX1vGR251afalWu0w/iW9jL0isZrPrmDg/p6Cb6yKnreFEaDFocDhoiIcbUiImIWcp9PJXFOK1Lu8afdeKWJA2f6cC4lnAEq4sA/Phg4xfKMQZUFG5sQ/Gj1StjIXi2RYCQBHFDzzNm0Q5uB4hUsAYNqbnaiTI/pRtuknsgl97xK9P+rQiNfBfPQhsGeyJzT6Tup/KKlxarjkMOlFX2MUMaAj/cDrBSzvSrfOwzkqyzYGHzQhST/lWQZr4OddRszGPO4W5bRQzddUG8iC7M6U4llUxrb/H5QOkVyvnx4Dw76MA97tiZItSGzRPblU4S6HMmCVpZTwva4LLmMEEIk1lW5HcbB6AWAc0dFE0KBuusgJp9MlFkt7mZkSqnim8wdQApal+E3p13d0QZSH3b6eB3cbBcbpNmYqnmBFrNSKkEpQ8OwBnFvjjdYB7AXqQqrcqHUqfwkX8B27chDn2dwyWb3AdPMg1+j3wtVrwVqO9caeeQ1310CNHIFhIRTqnp2ECFGCCy+EDSFNZM+JStQoNO5rMOvZmecbp35XH/UJ5IHOkh9wE5TBYIeFRUYoc2jHNAuP2FM4LbEagGtP8L5gSCTXNRM1EX2gQ== host_ca
+$ scp ~/.ssh/user_ca.pub root@host.example.com:/etc/ssh/
 ```
 
-该值`*.example.com`是模式匹配，表示该证书应可信任，以标识您连接到的任何具有*.example.com- 域的主机（例如host.example.com上述主机）。表示连接到这些域名的服务器，只要有该 CA 签发的证书，就可以信任。
+上面的命令，将 CA 签发用户证书的公钥`user_ca.pub`，拷贝到 SSH 服务器的`/etc/ssh`目录。
 
-这是证书的适用主机名的逗号分隔列表，因此，如果您在此处使用IP地址或SSH配置条目，则可以将其更改为类似host1,host2,host3或1.2.3.4,1.2.3.5适当的名称。
-
-然后，就可以使用证书，登录远程服务器了。
-
-### CA 签发客户端证书
-
-生成客户端密钥。
-
-```bash
-$ ssh-keygen -f user-key -b 4096 -t rsa
-```
-
-上面命令会生成`user-key`（私钥）和`user-key.pub`（公钥）。
-
-签发客户端证书。
-
-```bash
-$ ssh-keygen -s user_ca -I gus@gravitational.com -n ec2-user,gus -V +1d user-key.pub
-```
-
-`-n`表示该证书只对登录用户`ec2-user`和`gus`生效。
-
-上面命令会生成客户端证书`user-key-cert.pub`。
-
-- `-s user_ca`：指定用于签名的CA私钥
-- `-I gus@gravitational.com`：身份字符串，可以随意指定，将来可以使用该值撤销这个证书。
-- `-n ec2-user,gus`：指定以逗号分隔的委托人列表，该证书将对身份验证有效，即* nix用户应被允许以此证书登录。在我们的示例中，我们为该证书提供对ec2-user和的访问权限gus。
-- `-V +1d`：指定证书的有效期，在这种情况下+1d为1天，默认为永远有效。
-
-查看证书的细节。
-
-```bash
-$ ssh-keygen -L -f user-key-cert.pub
-```
-
-### 服务器信任 CA 的客户端公钥
-
-签署证书后，还需要告诉服务器它应该信任用户CA签署的证书。为此，请将 CA 的`user_ca.pub`文件复制到服务器并存储在`/etc/ssh`。修复与目录中其他公钥文件匹配的权限，然后将下面的行添加到`/etc/ssh/sshd_config`：
+然后，将下面一行添加到服务器配置文件`/etc/ssh/sshd_config`。
 
 ```bash
 TrustedUserCAKeys /etc/ssh/user_ca.pub
 ```
 
-然后，重新启动 sshd。
+`user_ca.pub`加到`/etc/ssh/sshd_config`以后，就会变成全局信任用户证书。另一个选择是将`user_ca.pub`加到服务器某个账户的`~/.ssh/authorized_keys`，只让该账户信任用户证书。具体方法是打开文件`~/.ssh/authorized_keys`，追加一行，开头是`@cert-authority principals="..."`，然后后面加上`user_ca.pub`的内容，大概是下面这个样子。
 
 ```bash
-$ systemctl restart sshd
+@cert-authority principals="user" ssh-rsa AAAAB3Nz...XNRM1EX2gQ==
 ```
 
-现在，服务器已配置为信任在连接时出示由用户CA颁发的证书的任何人。如果您的证书与私钥在同一目录中（-i例如`ssh -i /home/gus/user-key ec2-user@host.example.com`，用`-i`标志指定），则在连接服务器时将自动使用该证书。
+上面代码中，`principals="user"`用来指定用户登录的服务器账户名，一般就是`authorized_keys`文件所在的账户。
 
-### 创建证书
-
-```bash
-$ ssh-keygen -s sk-user-ca -I test-key -n ubuntu -V -5m:+5m emergency
-```
-
-`-n`：添加用户名，上面例子中，用户名是`ubuntu`。如果添加多个用户名，需要用逗号分隔 `-n ubuntu,carl,ec2-user`
-
-下面是创建客户端证书。
+重新启动 sshd。
 
 ```bash
-$ ssh-keygen -s ca_user_key -I certificate_ID id_rsa.pub
-```
-
-上面命令中，`-s`表示用于签署证书的 CA 私钥，`-I`表示一个身份字符串`certificate_ID`，可以是任何字母数字值，它以零终止字符串存储在证书中。所述certificate_ID每当证书用于识别记录和废止证书时，它也被使用。较长的值会使日志难以阅读，因此将主机名用作主机证书，将用户名用作用户证书是安全的选择。
-
-下面是创建服务器证书。
-
-```bash
-$ ssh-keygen -s ca_host_key -I certificate_ID -h ssh_host_rsa_key.pub
-```
-
-上面命令中，`-s`是 CA 签署服务器证书的公钥。`-I`是主机名，用来区别不同的证书，可以是任意字符串。`-h`指定生成的主机证书`ssh_host_rsa_key.pub`。
-
-为证书加上权限。
-
-```bash
-$ chmod 600 emergency-cert.pub
-```
-
-查看刚刚生成的公钥。
-
-```bash
-# ls -l /etc/ssh/ssh_host*
--rw-------. 1 root root  668 Jul  9  2014 /etc/ssh/ssh_host_dsa_key
--rw-r--r--. 1 root root  590 Jul  9  2014 /etc/ssh/ssh_host_dsa_key.pub
--rw-------. 1 root root  963 Jul  9  2014 /etc/ssh/ssh_host_key
--rw-r--r--. 1 root root  627 Jul  9  2014 /etc/ssh/ssh_host_key.pub
--rw-------. 1 root root 1671 Jul  9  2014 /etc/ssh/ssh_host_rsa_key
--rw-r--r--. 1 root root  382 Jul  9  2014 /etc/ssh/ssh_host_rsa_key.pub
-```
-
-检查刚刚制作好的证书。
-
-```bash
-$ step ssh inspect emergency-cert.pub
-
-emergency-cert.pub
-        Type: ecdsa-sha2-nistp256-cert-v01@openssh.com user certificate
-        Public key: ECDSA-CERT SHA256:EJSfzfQv1UK44/LOKhBbuh5oRMqxXGBSr+UAzA7cork
-        Signing CA: SK-ECDSA SHA256:kLJ7xfTTPQN0G/IF2cq5TB3EitaV4k3XczcBZcLPQ0E
-        Key ID: "test-key"
-        Serial: 0
-        Valid: from 2020-06-24T16:53:03 to 2020-06-24T16:03:03
-        Principals:
-                ubuntu
-        Critical Options: (none)
-        Extensions:
-                permit-X11-forwarding
-                permit-agent-forwarding
-                permit-port-forwarding
-                permit-pty
-                permit-user-rc
-```
-
-上面例子中，公钥是emergencey您创建的密钥，签名CA是`sk-user-ca`。
-
-创建客户端公钥。
-
-```bash
-$ ssh-keygen -s ca_user_key -I user_name -Z user_name -V -start:+end id_rsa.pub
-```
-
-生成的证书是`id_rsa-cert.pub`。`-Z`参数用于将用户名添加到证书中。下面是它的使用格式。
-
-```bash
--Z "name1[,name2,...]"
-```
-
-客户端的`~/.ssh/authorized_keys`文件添加 CA 的公钥。
-
-```bash
-# vi ~/.ssh/authorized_keys
-# A CA key, accepted for any host in *.example.com
-@cert-authority principals="name1,name2" *.example.com ssh-rsa AAAAB5Wm.
-```
-
-现在尝试登录。
-
-```bash
-$ ssh -i emergency ubuntu@my-hostname
-ubuntu@my-hostname:~$
-```
-
-### 服务器添加证书
-
-将 CA 的用户证书签署公钥，发到服务器。
-
-```bash
-$ scp ~/.ssh/ca_user_key.pub root@host_name.example.com:/etc/ssh/
-```
-
-服务器 SSHD 的配置文件`/etc/ssh/sshd_config`加上 CA 证书的公钥，表示信任这个 CA。
-
-```bash
-TrustedUserCAKeys /etc/ssh/ca_user_key.pub
-```
-
-然后将生成的证书公钥`sk-user-ca.pub`，加到`/etc/ssh/sshd_config`文件里面。
-
-在每个主机上，编辑`/etc/ssh/sshd_config`，指定用于验证用户证书的 CA 公钥，主机的私钥和主机的证书：
-
-```bash
-# Path to the CA public key for verifying user certificates
-TrustedUserCAKeys /etc/ssh/ssh_user_key.pub
-
-# Path to this host's private key and certificate
-HostKey /etc/ssh/ssh_host_ecdsa_key
-HostCertificate /etc/ssh/ssh_host_ecdsa_key-cert.pub
-```
-
-重新启动 SSHD 服务器。
-
-```bash
-$ sudo systemctl sshd restart
+$ sudo systemctl restart sshd
 # 或者
 $ sudo service sshd restart
 ```
 
-CA 服务器证书的公钥内容。
+至此，SSH 服务器已配置为信任`user_ca`颁发的证书。
+
+## 客户端安装 CA 公钥
+
+为了让客户端信任服务器证书，必须将 CA 签发服务器证书的公钥`host_ca.pub`，加到客户端的`/etc/ssh/ssh_known_hosts`文件（全局级别）或者`~/.ssh/known_hosts`文件（用户级别）。
+
+具体做法是打开`ssh_known_hosts`或`known_hosts`文件，追加一行，开头为`@cert-authority *.example.com`，然后将`host_ca.pub`文件的内容（即公钥）粘贴在后面，大概是下面这个样子。
 
 ```bash
-$ cat ~/.ssh/ca_host_key.pub
-ssh-rsa  AAAAB5Wm.== root@ca-server.example.com
+@cert-authority *.example.com ssh-rsa AAAAB3Nz...XNRM1EX2gQ==
 ```
 
-在每个客户端的`~/.ssh/known_hosts`，添加一行以指定用于验证主机证书的 CA 公钥。CA 签署服务器证书的公钥`ca_host_key.pub`
+上面代码中，`*.example.com`是域名的模式匹配，表示只要服务器是符合该模式的域名，且签发服务器证书的 CA 匹配后面给出的公钥，就都可以信任。如果没有域名限制，这里可以写成`*`。如果有多个域名模式，可以使用逗号分隔；如果服务器没有域名，可以用主机名（比如`host1,host2,host3`）或者 IP 地址（比如`11.12.13.14,21.22.23.24`）。
+
+然后，就可以使用证书，登录远程服务器了。
 
 ```bash
-@cert-authority *.example.com ecdsa-sha2-nistp256 AAAAE...=
+$ ssh -i ~/.ssh/user_key user@host.example.com
 ```
 
-```bash
-# vi /etc/ssh/ssh_known_hosts
-# A CA key, accepted for any host in *.example.com
-@cert-authority *.example.com ssh-rsa AAAAB5Wm.
-```
+上面命令的`-i`参数用来指定用户的密钥。如果证书与密钥在同一个目录，则连接服务器时将自动使用该证书。
 
-`ssh-rsa AAAAB5Wm.`是`ca_host_key.pub`文件的内容。
-
-生成本机的密钥
-
-```bash
-$ ssh-keygen -t ecdsa -f emergency
-```
-
-对于远程用户认证，CA密钥可以每用户为可信的被标记~/.ssh/authorized_keys使用文件cert-authority指令或全球使用由所述的装置TrustedUserCAKeys中指令/etc/ssh/sshd_config的文件。对于远程主机身份验证，CA密钥可以在/etc/ssh/known_hosts文件中全局标记为受信任，也可以在文件中按用户标识~/.ssh/ssh_known_hosts。
-
+## 吊销证书
 
 ## 参考链接
 
