@@ -44,6 +44,12 @@ $ sudo systemctl start sshd.service
 $ sudo systemctl stop sshd.service
 ```
 
+重启 sshd。
+
+```bash
+$ sudo systemctl restart sshd
+```
+
 让 sshd 在计算机启动时自动运行。
 
 ```bash
@@ -52,11 +58,21 @@ $ sudo systemctl enable sshd.service
 
 ## 服务器配置项
 
-以下是 sshd 服务器的配置项。
+修改配置文件以后，可以使用下面的命令验证，配置文件是否有错误。
 
-- `PasswordAuthentication no`：禁止密码登录。
+```bash
+$ sshd -t
+```
 
+以下是`/etc/ssh/sshd_config`文件里面的配置项。
 
+- `AllowUsers user1 user2`：允许登录的用户，用户名之间使用空格分隔。
+- `ClientAliveInterval 180`：允许客户端发呆的时间，单位为秒。如果这段时间里面，客户端没有发送任何信号，SSH 连接将关闭。
+- `MaxAuthTries 3`：允许 SSH 登录的最大尝试次数，如果一直输入错误，SSH 连接将关闭。
+- `PasswordAuthentication yes`：允许密码登录，建议改成`no`（禁止密码登录，只允许密钥登录）。
+- `PermitEmptyPasswords yes`：允许无密码登录，即用户的密码为空，建议改成`no`（禁止无密码登录）。
+- `PermitRootLogin yes`：允许根用户登录，建议改成`no`（禁止根用户登录）。
+- `Protocol 1`：使用 SSH-1 协议，建议改成`2`（SSH-2 协议）。
 
 ## 原始材料
 
@@ -90,12 +106,6 @@ Host dev
 $ ssh dev
 # 等同于
 $ ssh -p 4422 mike@dev.foo.com
-```
-
-修改配置文件以后，可以使用下面的命令验证，配置文件是否有错误。
-
-```bash
-$ sshd -t
 ```
 
 修改配置文件之后，必须重启 SSH 服务。
