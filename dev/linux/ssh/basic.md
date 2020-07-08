@@ -32,62 +32,6 @@ SSH 软件分成两个部分。接收客户端发出的请求的部分，称为�
 
 此外，SSH 还包括一些辅助工具，用来帮助实现加密功能，比如`ssh-keygen`、`ssh-agent`等。
 
-## 登录远程服务器
-
-SSH 登录服务器的命令如下。
-
-```bash
-$ ssh username@host
-```
-
-执行上面的命令，本地计算机通过 SSH 客户端，就能登录远程服务器。上面这种格式，用户名和主机名写在一起了，之间使用`@`分隔。
-
-`-l`参数可以用来指定用户名，这样的话，用户名和主机名就不用写在一起了。
-
-```bash
-$ ssh -l username host
-```
-
-执行登录命令以后，SSH 客户端就会与远程服务器建立加密连接。如果是第一次连接某个主机，SSH 会跳出一段警告信息。
-
-```bash
-$ ssh -l pat shell.isp.com
-
-The authenticity of host 'shell.isp.com (192.168.0.2)' can't be established.
-RSA key fingerprint is 77:a5:69:81:9b:eb:40:76:7b:13:04:a9:6c:f4:9c:5d.
-Are you sure you want to continue connecting (yes/no)?
-```
-
-上面这段警告信息的意思是，`shell.isp.com`这台主机的公钥指纹是陌生的，你是否确定要继续连接？回答`yes`以后，SSH 就会继续连接，并将远程主机的公钥指纹保存下来，列为可信的主机，以后再次连接就不会跳出这段警告了。公钥指纹可以防止有人恶意冒充远程主机。
-
-```bash
-Warning: Permanently added 'shell.isp.com,192.168.0.2' (RSA) to the list of known hosts
-```
-
-确认为可信主机以后，客户端会要求用户输入远程服务器的密码。密码会通过加密连接发给服务器，服务器检验正确以后，就会准许客户端登录。
-
-## 公钥指纹变更
-
-公钥指纹可以防止有人恶意冒充远程主机。如果遇到已知主机的指纹变更，SSH 连接时会显示一段警告信息。
-
-```bash
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
-Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-It is also possible that the RSA host key has just been changed.
-The fingerprint for the RSA key sent by the remote host is
-77:a5:69:81:9b:eb:40:76:7b:13:04:a9:6c:f4:9c:5d.
-Please contact your system administrator.
-Add correct host key in /home/smith/.ssh/known_hosts to get rid of this message.
-Offending key in /home/smith/.ssh/known_hosts:36
-```
-
-这时，你需要确认到底是什么原因，使得公钥指纹发生变更。除了恶意劫持，也有可能是管理员变更了公钥。
-
-如果确认信任新的公钥，继续执行连接，就需要手工更改`known_hosts`文件，将新的公钥指纹加入该文件。
-
 ## SSL/TLS 协议
 
 客户端要向服务端提供一些加密参数，这叫做“加密集”（cipher suite）。
