@@ -59,7 +59,7 @@ $ ssh -L local-port:target-host:target-port  tunnel-host -N
 举例来说，在本地`2121`端口建立 ssh 隧道，访问`www.example.com`，可以写成下面这样。
 
 ```bash
-$ ssh -L 8080:www.example.com:80 tunnel-host -N
+$ ssh -L 2121:www.example.com:80 tunnel-host -N
 ```
 
 然后，访问本机的`2121`端口，就是访问`www.example.com`。
@@ -69,6 +69,24 @@ $ curl http://localhost:2121
 ```
 
 注意，本地端口转发采用 HTTP 协议，不用转成 SOCKS5 协议。
+
+另一个例子是加密访问邮件获取协议 POP3。
+
+```bash
+$ ssh -L 1100:mail.example.com:110 mail.example.com
+```
+
+上面命令将本机的1100端口，绑定邮件服务器`mail.example.com`的110端口（POP3 协议的默认端口）。端口转发建立以后，POP3 邮件客户端只需要访问本机的1100端口，请求就会自动转发到`mail.example.com`的110端口。
+
+上面这种情况有一个前提条件，就是`mail.example.com`必须运行 SSH 服务器。否则，就必须通过另一台服务器中介，执行的命令要改成下面这样。
+
+```bash
+$ ssh -L 1100:mail.example.com:110 other.example.com
+```
+
+上面命令中，本机的1100端口还是绑定`mail.example.com`的110端口，但是由于`mail.example.com`没有运行 SSH 服务器，所以必须通过`other.example.com`中介。本机的 POP3 请求通过1100端口，先发给`other.example.com`的22端口（sshd 默认端口），再由后者转给`mail.example.com`，得到数据以后再原路返回。
+
+注意，采用上面的中介方式，只有本机到`other.example.com`的这一段是加密的，`other.example.com`到`mail.example.com`的这一段并不加密。
 
 ### 远程转发
 

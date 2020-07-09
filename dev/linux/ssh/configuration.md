@@ -67,6 +67,7 @@ $ sshd -t
 以下是`/etc/ssh/sshd_config`文件里面的配置项。
 
 - `AllowUsers user1 user2`：允许登录的用户，用户名之间使用空格分隔。
+- `AllowTcpForwarding yes`：允许端口转发。
 - `ClientAliveInterval 180`：允许客户端发呆的时间，单位为秒。如果这段时间里面，客户端没有发送任何信号，SSH 连接将关闭。
 - `MaxAuthTries 3`：允许 SSH 登录的最大尝试次数，如果一直输入错误，SSH 连接将关闭。
 - `PasswordAuthentication yes`：允许密码登录，建议改成`no`（禁止密码登录，只允许密钥登录）。
