@@ -17,44 +17,7 @@ SSH 客户端的全局配置文件放在`/etc/ssh/`目录，用户个人的配�
 - `~/.ssh/identity.pub`：用于 SSH 协议版本1 的RSA公钥。
 - `~/.ssh/known_hosts`：包含用户访问的SSH服务器的主机密钥。该文件对于确保SSH客户端连接到正确的SSH服务器非常重要。
 
-## 服务器配置文件
 
-SSH 服务器的配置文件在`/etc/ssh`目录。
-
-- `/etc/ssh/sshd_config`：配置文件
-- `/etc/ssh/ssh_host_ecdsa_key`：ECDSA 私钥。
-- `/etc/ssh/ssh_host_ecdsa_key.pub`：ECDSA 公钥。
-- `/etc/ssh/ssh_host_key`：用于SSH协议版本1 的RSA私钥。
-- `/etc/ssh/ssh_host_key.pub`：用于SSH协议版本1 的RSA公钥。
-- `/etc/ssh/ssh_host_rsa_key`：用于SSH协议版本2 的RSA私钥。
-- `/etc/ssh/ssh_host_rsa_key.pub`：用于SSH协议版本2 的RSA公钥。
-- `/etc/pam.d/sshd`：PAM 配置文件。
-
-注意，如果重装 sshd，这些密钥都会重新生成，导致客户端重新 SSH 连接服务器，会跳出警告，拒绝连接。为了避免这种情况，可以在重装 sshd，先备份`/etc/ssh`目录，重装后再恢复这个目录。
-
-启动 sshd。
-
-```bash
-$ sudo systemctl start sshd.service
-```
-
-停止 sshd。
-
-```bash
-$ sudo systemctl stop sshd.service
-```
-
-重启 sshd。
-
-```bash
-$ sudo systemctl restart sshd
-```
-
-让 sshd 在计算机启动时自动运行。
-
-```bash
-$ sudo systemctl enable sshd.service
-```
 
 ## 服务器配置项
 
@@ -68,12 +31,23 @@ $ sshd -t
 
 - `AllowUsers user1 user2`：允许登录的用户，用户名之间使用空格分隔。
 - `AllowTcpForwarding yes`：允许端口转发。
+- `Ciphers 3des-cbc`：sshd 可以接受的加密算法，多个算法之间使用逗号分隔。
+- `ClientAliveCountMax 8`：客户端没有响应时，服务器尝试连接的次数。
 - `ClientAliveInterval 180`：允许客户端发呆的时间，单位为秒。如果这段时间里面，客户端没有发送任何信号，SSH 连接将关闭。
-- `MaxAuthTries 3`：允许 SSH 登录的最大尝试次数，如果一直输入错误，SSH 连接将关闭。
+- `Compression yes`：客户端与服务器之间的数据传输是否压缩。
+- `ListenAddress 0.0.0.0`：sshd 启用的网址，默认在本机所有网络接口启用，可以指定只在某个网络接口启用（比如`ListenAddress 192.168.10.23`），也可以指定某个域名启用（比如`ListenAddress server.example.com`）。
+- `LoginGraceTime 60`：允许客户端登录时发呆的最长时间，比如迟迟不输入密码，单位为秒。如果设为`0`，就表示没有限制。
+- `MACs hmac-sha1`：sshd 可以接受的数据校验算法，多个算法之间使用逗号分隔。
+- `MaxAuthTries 3`：允许 SSH 登录的最大尝试次数，如果密码输入错误达到指定次数，SSH 连接将关闭。
+- `MaxStartups 32`：允许同时并发的 SSH 连接数量。如果设为`0`，就表示没有限制。这个属性也可以设为`A:B:C`的形式，比如`MaxStartups 10:50:20`，表示如果达到10个并发连接，后面的连接将有50%的概率被拒绝；如果达到20个并发连接，则后面的连接将100%被拒绝。
 - `PasswordAuthentication yes`：允许密码登录，建议改成`no`（禁止密码登录，只允许密钥登录）。
 - `PermitEmptyPasswords yes`：允许无密码登录，即用户的密码为空，建议改成`no`（禁止无密码登录）。
 - `PermitRootLogin yes`：允许根用户登录，建议改成`no`（禁止根用户登录）。
-- `Protocol 1`：使用 SSH-1 协议，建议改成`2`（SSH-2 协议）。
+- `Protocol 1`：使用 SSH-1 协议，建议改成`2`（SSH-2 协议）。可以同时支持两个协议，比如`Protocol 2,1`。
+- `Port 9876`：sshd 的连接端口。
+- `StrictModes yes`：sshd 是否检查用户的一些重要文件和目录的权限。对于用户的 SSH 配置文件、密钥文件和所在目录，SSH 要求拥有者必须是根用户或用户本人，用户组和其他人的写权限必须关闭。
+- `TCPKeepAlive yes`：打开 sshd 跟客户端 TCP 连接的 keepalive 参数。
+- `UseDNS yes`：用户 SSH 登录一个域名时，服务器是否使用 DNS，确认该域名对应的 IP 地址包含本机。打开该选项意义不大，而且如果 DNS 更新不及时，还有可能误判，建议关闭。
 
 ## 原始材料
 
