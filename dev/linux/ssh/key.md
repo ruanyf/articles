@@ -82,9 +82,27 @@ $ ls -l ~/.ssh/id_*.pub
 $ ssh-keygen -t rsa -b 4096 -C "your_email@domain.com"
 ```
 
-**（3）`-p`**
+**（3）`-N`**
+
+`-N`参数用于指定私钥的密钥（passphrase）。
+
+```bash
+$ ssh-keygen -t dsa -N secretword
+```
+
+**（4）`-p`**
 
 `-p`参数用于重新指定私钥的密码（passphrase）。
+
+**（5）`-f`**
+
+`-f`参数指定生成的私钥文件。
+
+```bash
+$ ssh-keygen -t dsa -f mykey
+```
+
+上面命令会在当前目录生成私钥文件`mykey`和公钥文件`mykey.pub`。
 
 ## 手动上传公钥
 
