@@ -158,7 +158,9 @@ $ ssh-copy-id -i id_rsa user@host
 
 ## ssh-agent 命令，ssh-add 命令
 
-私钥设置了密码以后，每次使用都必须输入密码，有时让人感觉非常麻烦，尤其是连续使用`scp`命令远程拷贝文件的情况。`ssh-agent`命令就是为了解决这个问题而设计的，它让用户在整个 Bash 对话（session）之中，只在第一次使用 SSH 命令时输入密码，后面都不需要再输入了。
+### 基本用法
+
+私钥设置了密码以后，每次使用都必须输入密码，有时让人感觉非常麻烦，尤其是连续使用`scp`命令远程拷贝文件的情况。`ssh-agent`命令就是为了解决这个问题而设计的，它让用户在整个 Bash 对话（session）之中，只在第一次使用 SSH 命令时输入密码，然后将私钥保存在内存中，后面都不需要再输入私钥的密码了。
 
 首先，使用下面的命令新建一次命令行对话。
 
@@ -168,6 +170,23 @@ $ ssh-agent bash
 
 上面命令中，如果你使用的命令行环境不是 Bash，可以用其他的 Shell 命令代替。比如`zsh`和`fish`。
 
+如果想在当前对话启用`ssh-agent`，可以使用下面的命令。
+
+```bash
+$ eval `ssh-agent`
+```
+
+上面命令中，`ssh-agent`会自动在后台运行，并将需要设置的环境变量输出在屏幕上，类似下面这样。
+
+```bash
+$ ssh-agent
+SSH_AUTH_SOCK=/tmp/ssh-barrett/ssh-22841-agent; export SSH_AUTH_SOCK;
+SSH_AGENT_PID=22842; export SSH_AGENT_PID;
+echo Agent pid 22842;
+```
+
+`eval`命令的作用，就是运行`ssh-agent`命令的输出，设置环境变量。
+
 然后，在新建的对话里面，使用`ssh-add`命令添加默认的私钥（`~/.ssh/id_rsa`，`~/.ssh/id_dsa`，`~/.ssh/id_ecdsa`，`~/.ssh/id_ed25519`）。
 
 ```bash
@@ -176,7 +195,15 @@ Enter passphrase for /home/you/.ssh/id_dsa: ********
 Identity added: /home/you/.ssh/id_dsa (/home/you/.ssh/id_dsa)
 ```
 
-上面例子中，添加私钥时，会要求输入密码。以后，再用到私钥时，就不用输入密码了。
+上面例子中，添加私钥时，会要求输入密码。以后，在这个对话里面再使用密钥时，就不需要输入私钥的密码了。
+
+如果`ssh-agent`命令要退出，可以直接退出子 Shell，也可以使用下面的命令。
+
+```bash
+$ ssh-agent -k
+```
+
+### `ssh-add`命令
 
 `ssh-add`命令也可以用来将指定的私钥，加入`ssh-agent`。
 
@@ -186,17 +213,25 @@ $ ssh-add my-other-key-file
 
 上面的命令中，`my-other-key-file`就是用户指定的私钥文件。
 
+`ssh-add`命令有如下的参数。
+
+（1）`-d`
+
 `-d`参数从内存中删除指定的私钥。
 
 ```bash
 $ ssh-add -d name-of-key-file
 ```
 
+（2）`-l`
+
 `-l`参数列出所有已经添加的私钥。
 
 ```bash
 $ ssh-add -l
 ```
+
+（3）`-D`
 
 `-D`参数从内存中删除已经添加的私钥。
 
