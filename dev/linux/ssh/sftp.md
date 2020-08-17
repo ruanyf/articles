@@ -25,4 +25,7 @@ FTP 的提示符下面，就可以输入各种 FTP 命令了，这部分完全�
 - `rmdir path`：删除一个远程目录。
 - `put localfile [remotefile]`：本地文件传输到远程主机。
 - `get remotefile [localfile]`：远程文件传输到本地。
-
+- `help`：显示帮助信息。
+- `bye`：退出 sftp。
+- `quit`：退出 sftp。
+- `exit`：退出 sftp。

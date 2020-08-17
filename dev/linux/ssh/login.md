@@ -111,3 +111,16 @@ $ ssh USER@penguin.example.com cat /etc/hosts
 
 上面的命令会在登录成功后，立即远程执行命令`cat /etc/hosts`。
 
+采用这种格式执行命令时，ssh 客户端不会提供互动式的 Shell 环境。但是，有些命令需要这个环境，这时就要使用`-t`参数。
+
+```bash
+# 报错
+$ ssh remote.server.com emacs
+emacs: standard input is not a tty
+
+# 不报错
+$ ssh -t server.example.com emacs
+```
+
+上面代码中，`emacs`命令需要一个互动式 Shell，只有加上`-t`参数，ssh 才会分配一个互动式 Shell。
+
