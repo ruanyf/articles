@@ -20,6 +20,8 @@ $ ssh -C server.example.com
 $ ssh -D1080 server
 ```
 
+`-f`参数表示 SSH 连接在后台运行。
+
 `-F`参数指定配置文件。
 
 ```bash
@@ -43,6 +45,8 @@ $ ssh -i my-key server.example.com
 ```bash
 $ ssh -l sally server.example.com
 ```
+
+`-L`参数设置本地端口转发。
 
 `-m`参数指定数据校验算法（message authentication code，简称 MAC）。
 
@@ -93,6 +97,12 @@ $ ssh -v server.example.com
 $ ssh -v -v -v server.example.com
 ```
 
+`-X`参数表示打开 X 窗口转发。
+
+```bash
+$ ssh -X server.example.com
+```
+
 `-1`参数指定使用 SSH 1 协议。
 
 `-2`参数指定使用 SSH 2 协议。
@@ -112,8 +122,6 @@ $ ssh -4 server.example.com
 ```bash
 $ ssh -6 server.example.com
 ```
-
-`-t`
 
 `-t`参数在 ssh 直接运行远端命令时，提供一个互动式 Shell。
 
@@ -223,6 +231,7 @@ Compression = yes
 - `HostKeyAlgorithms ssh-dss,ssh-rsa`：指定密钥算法，优先级从高到低排列。
 - `HostName myserver.example.com`：在`Host`命令使用昵称的情况下，`HostName`指定域名或 IP 地址。
 - `IdentityFile keyfile`：指定私钥文件。
+- `LocalForward 2001 localhost:143`：指定本地端口转发。
 - `LogLevel QUIET`：指定日志详细程度。
 - `MACs hmac-sha1,hmac-md5`：指定数据校验算法。
 - `NumberOfPasswordPrompts 2`：密码登录时，用户输错密码的最大尝试次数。
@@ -231,6 +240,7 @@ Compression = yes
 - `PreferredAuthentications publickey,hostbased,password`：指定各种登录方法的优先级。
 - `Protocol 2`：支持的 SSH 协议版本，多个版本之间使用逗号分隔。
 - `PubKeyAuthentication yes`：是否支持密钥登录，该方法能否登录成功由服务器决定。
+- `RemoteForward 2001 S:143`：指定远程端口转发。
 - `SendEnv COLOR`：SSH 客户端向服务器发送的环境变量名，多个环境变量之间使用空格分隔。环境变量的值从客户端当前环境中拷贝。
 - `ServerAliveInterval 300`：客户端建立连接后，如果在给定秒数内，没有收到服务器发来的消息，客户端向服务器发送`server-alive`消息。如果不希望客户端发送，这一项设为`0`。
 - `ServerAliveCountMax 8`：客户端发送`server-alive`消息的最大尝试次数。如果服务器还是没有回应，则中断连接。
