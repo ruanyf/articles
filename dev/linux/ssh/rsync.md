@@ -1,26 +1,45 @@
 # rsync
 
-rsync 用来在两台计算机或者两个路径之间同步文件。它名称里面的`r`就是指 remote，所以 rsync 其实是“远程同步”（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 先检查发送方和接收方上的文件，仅传输同步它们所需的文件。
+rsync 是一个常用的 Linux 应用程序，用来在本地与远程计算机之间或者两个本地目录之间（但不支持两台远程计算机之间）同步文件，所以也可以当作复制工具。
 
-## 基本用法
+它名称里面的`r`指的是 remote，rsync 其实就是“远程同步”（remote sync）的意思。与其他文件传输工具（如 FTP 或 scp）不同，rsync 的最大特点是会检查发送方和接收方已有的文件，仅传输新增的或者文件大小和修改时间有变动的部分。
 
-如果本机没有安装 rsync，可以用下面的命令安装。
+虽然 rsync 不是 SSH 工具集的一部分，但因为也涉及到远程同步，所以放在这里一起介绍。
+
+## 安装
+
+如果本机或者远程计算机没有安装 rsync，可以用下面的命令安装。
 
 ```bash
 # Debian
 $ sudo apt-get install rsync
 
+# Red Hat
+$ sudo yum install rsync
+
 # Arch Linux
 $ sudo pacman -S rsync
 ```
 
-使用下面的命令，将源目录同步到目标目录。
+注意，传输的双方都必须安装 rsync。
+
+## 基本用法
+
+本机使用`rsync`命令时，可以作为`cp`和`mv`的替代方法，将源目录同步到目标目录。
 
 ```bash
 $ rsync -r source destination
 ```
 
 上面命令中，`-r`表示递归，即包含子目录。注意，`-r`是必须的，否则`rsync`运行不会成功。`source`目录表示源目录，`destination`表示目标目录。
+
+如果有多个文件或目录需要同步，可以写成下面这样。
+
+```bash
+$ rsync -r source1 source2 destination
+```
+
+上面命令中，`source1`、`source2`都会被同步到`destination`目录。
 
 `-a`参数可以替代`-r`，除了表示递归以外，还表示同步元信息，比如修改时间、权限等。它比`-r`更常用，所以上面的命令也可以使用下面的形式。
 
@@ -102,19 +121,35 @@ $ rsync -av --include="*.txt" --exclude='*' source/ destination
 
 ## 远程同步
 
-`rsync`除了支持本地两个目录之间的同步，也支持远程同步。可以将本地内容，同步到远程服务器。
+`rsync`除了支持本地两个目录之间的同步，也支持远程同步。它可以将本地内容，同步到远程服务器。
 
 ```bash
-$ rsync -a ~/dir1 username@remote_host:destination_directory
+$ rsync -av source/ username@remote_host:destination
 ```
 
-
+也可以将远程内容，同步到本地。
 
 ```bash
-$ rsync -avze ssh /home/user/directory/ user@remote.host.net:/home/user/directory/
+$ rsync -av username@remote_host:source/ destination
 ```
 
-上面命令中，`-e`参数表示使用 SSH 进行远程登录。
+rsync 默认使用 SSH 进行远程登录和数据传输。
+
+由于早期`rsync`不使用 SSH 协议，需要用`-e`参数指定协议，后来才改的。所以，下面使用`-e`参数的写法等同于默认行为。
+
+```bash
+$ rsync -av -e ssh source/ user@remote_host:/destination
+```
+
+上面命令使用`-e`参数，指定 SSH 作为数据传输协议。
+
+`-e`参数也可以指定所要执行的 SSH 命令。
+
+```bash
+$ rsync -av -e 'ssh -p 2234' source/ user@remote_host:/destination
+```
+
+上面命令中，`-e`参数指定 SSH 使用2234端口。
 
 除了使用 SSH，如果另一台服务器安装并运行了 rsync 守护程序，则可以直接拷贝。rsync 默认会尝试`rsync://`协议（默认端口873），服务器地址与目标目录之间使用双冒号分隔`::`。
 
@@ -197,6 +232,8 @@ ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 rsync -a --delete --backup --backup-dir=/path/to/backups source/ destination
 ```
 
+`--bwlimit`参数指定带宽限制，默认单位是 KB/s，比如`--bwlimit=100`。
+
 `-c`、`--checksum`参数改变`rsync`的校验方式。默认情况下，`rsync`只检查文件的大小和最后修改日期是否发生变化，如果发生变化，就重新传输；使用这个参数以后，则通过判断文件内容的校验和，决定是否重新传输。
 
 `--delete`参数删除只存在于目标目录、不存在于源目标的文件，即保证目标目录是源目标的镜像。
@@ -205,7 +242,7 @@ rsync -a --delete --backup --backup-dir=/path/to/backups source/ destination
 $ rsync -avH --delete /etc username@192.168.0.1:backup
 ```
 
-`-e`参数指定使用 SSH 登录远程服务器。
+`-e`参数指定使用 SSH 协议传输数据。
 
 ```bash
 $ rsync -av -e ssh /mnt/data/source/ username@192.168.122.32:/home/username/destination
@@ -215,11 +252,23 @@ $ rsync -av -e ssh /mnt/data/source/ username@192.168.122.32:/home/username/dest
 
 `--exclude-from`参数指定一个本地文件，里面是需要排除的文件模式，每个模式一行。
 
+`--existing`、`--ignore-non-existing`参数表示不同步目标目录中不存在的文件和目录。
+
 `-h`参数表示以人类可读的格式输出。
+
+`-h`、`--help`参数返回帮助信息。
+
+`-i`参数表示输出源目录与目标目录之间文件差异的详细情况。
+
+`--ignore-existing`参数表示只要该文件在目标目录中已经存在，就跳过去，不再同步这些文件。
 
 `--include`参数指定同步时要包括的文件，一般与`--exclude`结合使用。
 
 `-m`参数指定不同步空目录。
+
+`--max-size`参数设置传输的最大文件的大小限制，比如不超过200KB（`--max-size='200k'`）。
+
+`--min-size`参数设置传输的最小文件的大小限制，比如不小于10KB（`--min-size=10k`）。
 
 `-n`参数或`--dry-run`参数模拟将要执行的操作，而并不真的执行。配合`-v`参数使用，可以看到哪些内容会被同步过去。
 
@@ -233,9 +282,17 @@ $ rsync -av -e ssh /mnt/data/source/ username@192.168.122.32:/home/username/dest
 
 `-r`参数表示递归，即包含子目录。
 
+`--remove-source-files`参数表示传输成功后，删除发送方的文件。
+
+`--size-only`参数表示只同步大小有变化的文件，不考虑文件修改时间的差异。
+
 `--suffix`参数指定文件名备份时，对文件名添加的后缀，默认是`~`。
 
+`-u`、`--update`参数表示同步时跳过目标目录中修改时间更新的文件，即不同步这些有更新的时间戳的文件。
+
 `-v`参数表示输出细节。`-vv`表示输出更详细的信息，`-vvv`表示输出最详细的信息。
+
+`--version`参数返回 rsync 的版本。
 
 `-z`参数指定同步时压缩数据。
 
