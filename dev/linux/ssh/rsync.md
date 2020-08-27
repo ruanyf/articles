@@ -55,7 +55,7 @@ $ rsync -r source1 source2 destination
 $ rsync -a source destination
 ```
 
-目标目录`destination`如果不存在，rsyce 会自动创建。执行上面的命令后，源目录`source`被完整地复制到了目标目录`destination`下面，即形成了`destination/source`的目录结构。
+目标目录`destination`如果不存在，rsync 会自动创建。执行上面的命令后，源目录`source`被完整地复制到了目标目录`destination`下面，即形成了`destination/source`的目录结构。
 
 如果只想同步源目录`source`里面的内容到目标目录`destination`，则需要在源目录后面加上斜杠。
 
