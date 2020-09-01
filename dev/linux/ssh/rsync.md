@@ -234,7 +234,7 @@ rm -rf "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 ```
 
-上面脚本中，上一次备份的目录`${BACKUP_DIR}/${DATETIME}`是基准目录，每一次同步都会生成一个新目录，然后将`${BACKUP_DIR}/latest`指向这个新目录，作为下一次的基准目录，再删除上一次的基准目录。由于`--link-dest`对于那些没有变动的文件，生成的是硬链接，而不是软链接，所以即使删除基准目录，那些文件依然可以访问。
+上面脚本中，每一次同步都会生成一个新目录`${BACKUP_DIR}/${DATETIME}`，并将软链接`${BACKUP_DIR}/latest`指向这个目录。下一次备份时，就将`${BACKUP_DIR}/latest`作为基准目录，生成新的备份目录。最后，再将软链接`${BACKUP_DIR}/latest`指向新的备份目录。
 
 ## 配置项
 
