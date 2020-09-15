@@ -14,6 +14,8 @@
 
 下面就来谈谈，怎样正确理解钩子，并且深入剖析最重要的钩子之一的`useEffect()`。内容会尽量通俗，让不熟悉 React 的朋友也能看懂。欢迎大家参考我以前写的[《React 框架入门》](http://www.ruanyifeng.com/blog/2015/03/react.html)和[《React 最常用的四个钩子》](http://www.ruanyifeng.com/blog/2019/09/react-hooks.html)。
 
+> 本文得到了 **开课吧** 的支持，结尾有 React 视频学习资料。希望通过视频来系统学习 React 的同学，可以关注。
+
 ## 一、React 的两套 API
 
 以前，React API 只有一套，现在有两套：类（class）API 和基于函数的钩子（hooks） API。
@@ -200,7 +202,7 @@ useEffect(() => {
 
 上面例子中，`useEffect()`在组件加载时订阅了一个事件，并且返回一个清理函数，在组件卸载时取消订阅。
 
-实际使用中，由于副效应函数默认是每次渲染都会执行，所以清理函数不仅会在组件卸载时执行一次，组件每次重新渲染之前，也会执行一次，用来清理上一次渲染的副效应。
+实际使用中，由于副效应函数默认是每次渲染都会执行，所以清理函数不仅会在组件卸载时执行一次，每次副效应函数重新执行之前，也会执行一次，用来清理上一次渲染的副效应。
 
 ## 九、useEffect() 的注意点
 
@@ -252,4 +254,22 @@ function App() {
 - [Using the Effect Hook](https://reactjs.org/docs/hooks-effect.html), React
 - [How to fetch data with React Hooks?](https://www.robinwieruch.de/react-hooks-fetch-data), Robin Wieruch
  
+（正文完）
+
+## React 系统视频
+
+对于每个想进大厂的前端开发者来说，React 是绕不过的坎，面试肯定会问到，业务也很可能会用。不懂一点 React 技术栈，大大降低了个人竞争力。
+
+退一步说，即使你用不到 React，但是它的很多思想已经影响到了整个业界，比如虚拟 DOM、JSX、函数式编程、immutable 的状态、单向数据流等等。懂了 React，面对其他轮子时，你也能得心应手。
+
+但是，大家都知道 React 学习曲线比较陡峭，不少人抱怨：苦苦学了1个多月却进展缓慢怎么办？
+
+别着急，这里有一份开课吧的 **《React 原理剖析 + 组件化》** 系统视频。不仅讲解了原理，还包括了综合性的实战项目，里面用到了 react-router、redux、react-redux、antd 等 React 全家桶。
+
+![](https://www.wangbase.com/blogimg/asset/202009/bg2020090302.jpg)
+
+访问[这个链接](https://wx.kaikeba.com/vip_course/afzg70hmbg/i5ct6cht4p?tenant=wx5046bc7413796142)，或者微信扫描下面的二维码，就可以免费领取。
+
+![](https://www.wangbase.com/blogimg/asset/202009/bg2020091412.jpg)
+
 （完）
