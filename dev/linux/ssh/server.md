@@ -49,9 +49,9 @@ sshd 的配置文件在`/etc/ssh`目录，主配置文件是`sshd_config`，此�
 - `/etc/ssh/ssh_host_rsa_key.pub`：用于 SSH 2 协议版本的 RSA 公钥。
 - `/etc/pam.d/sshd`：PAM 配置文件。
 
-注意，如果重装 sshd，上面这些密钥都会重新生成，导致客户端重新 SSH 连接服务器，会跳出警告，拒绝连接。为了避免这种情况，可以在重装 sshd 时，先备份`/etc/ssh`目录，重装后再恢复这个目录。
+注意，如果重装 sshd，上面这些密钥都会重新生成，导致客户端重新 ssh 连接服务器时，会跳出警告，拒绝连接。为了避免这种情况，可以在重装 sshd 时，先备份`/etc/ssh`目录，重装后再恢复这个目录。
 
-配置文件的命令格式是，每个命令占据一行。每行都是关键字加上值，关键字大小写不敏感。
+配置文件`sshd_config`的格式是，每个命令占据一行。每行都是关键字和对应的值，关键字的大小写不敏感。关键字与值之间使用空格分隔。
 
 ```bash
 Port 2034
@@ -77,6 +77,8 @@ Port = 2034
 Port 2034   #  此处不允许注释
 ```
 
+上面的写法是错误的。
+
 另外，空行等同于注释。
 
 sshd 启动时会自动读取默认的配置文件。如果希望使用其他的配置文件，可以用 sshd 命令的`-f`参数指定。
@@ -84,6 +86,8 @@ sshd 启动时会自动读取默认的配置文件。如果希望使用其他的
 ```bash
 $ sshd -f /usr/local/ssh/my_config
 ```
+
+上面的命令指定 sshd 使用另一个配置文件`my_config`。
 
 修改配置文件以后，可以用 sshd 命令的`-t`（test）检查有没有语法错误。
 
@@ -103,7 +107,19 @@ sshd 需要密钥表明自己的身份。所有密钥都是公钥和私钥成对
 
 DSA 格式的密钥文件默认为`/etc/ssh/ssh_host_dsa_key`（公钥为`ssh_host_dsa_key.pub`），RSA 格式的密钥为`/etc/ssh/ssh_host_rsa_key`（公钥为`ssh_host_rsa_key.pub`）。如果需要支持 SSH 1 协议，则必须有密钥`/etc/ssh/ssh_host_key`。
 
-密钥也可以通过配置文件的`HostKey`命令指定，多个密钥可以使用多个`HostKey`命令。
+密钥也可以通过配置文件`sshd_config`的`HostKey`命令指定.。默认密钥的`HostKey`设置如下。
+
+```bash
+# HostKey for protocol version 1
+# HostKey /etc/ssh/ssh_host_key
+# HostKeys for protocol version 2
+# HostKey /etc/ssh/ssh_host_rsa_key
+# HostKey /etc/ssh/ssh_host_dsa_ke
+```
+
+上面命令前面的`#`表示这些行都是注释，因为这是默认值，写不写都一样。
+
+如果要修改密钥，就要去掉行首的`#`，指定其他密钥。
 
 ```bash
 HostKey /usr/local/ssh/my_dsa_key
@@ -126,9 +142,36 @@ HostKey /usr/local/ssh/my_old_ssh1_key
 - `Compression yes`：客户端与服务器之间的数据传输是否压缩。
 - `DenyGroups groupName`：不允许登录的用户组。
 - `DenyUsers user1`：不允许登录的用户，用户名之间使用空格分隔，也可以使用多个`DenyUsers`命令指定。
-- `ListenAddress 0.0.0.0`：sshd 启用的网址，默认在本机所有网络接口启用，可以指定只在某个网络接口启用（比如`ListenAddress 192.168.10.23`），也可以指定某个域名启用（比如`ListenAddress server.example.com`）。
+
+**FascistLogging**
+
+SSH 1 版本专用，指定日志输出全部 Debug 信息（`FascistLogging yes`）。
+
+**HostKey**
+
+`HostKey`指定 sshd 服务器的密钥，详见前文。
+
+**KeyRegenerationInterval**
+
+`KeyRegenerationInterval`指定 SSH 1 版本的密钥重新生成时间间隔，单位为秒，默认是3600秒（`KeyRegenerationInterval 3600`）。
+
+**ListenAddress**
+
+`ListenAddress`指定 sshd 监听的本机 IP 地址，即 sshd 启用的 IP 地址，默认是 0.0.0.0（`ListenAddress 0.0.0.0`）表示在本机所有网络接口启用。可以改成只在某个网络接口启用（比如`ListenAddress 192.168.10.23`），也可以指定某个域名启用（比如`ListenAddress server.example.com`）。
+
+如果要监听多个指定的 IP 地址，可以使用多行`ListenAddress`命令。
+
+```bash
+ListenAddress 172.16.1.1
+ListenAddress 192.168.0.1
+```
+
 - `LoginGraceTime 60`：允许客户端登录时发呆的最长时间，比如迟迟不输入密码，单位为秒。如果设为`0`，就表示没有限制。
-- `LogLevel VERBOSE`：日志的详细程度，可能的值为`QUIET`、`FATAL`、`ERROR`、`INFO`、`VERBOSE`、`DEBUG`、`DEBUG1`、`DEBUG2`、`DEBUG3`。
+
+**LogLevel**
+
+`LogLevel`指定日志的详细程度，可能的值依次为`QUIET`、`FATAL`、`ERROR`、`INFO`、`VERBOSE`、`DEBUG`、`DEBUG1`、`DEBUG2`、`DEBUG3`，默认为`INFO`（`LogLevel INFO`）。
+
 - `MACs hmac-sha1`：sshd 可以接受的数据校验算法，多个算法之间使用逗号分隔。
 - `MaxAuthTries 3`：允许 SSH 登录的最大尝试次数，如果密码输入错误达到指定次数，SSH 连接将关闭。
 - `MaxStartups 32`：允许同时并发的 SSH 连接数量。如果设为`0`，就表示没有限制。这个属性也可以设为`A:B:C`的形式，比如`MaxStartups 10:50:20`，表示如果达到10个并发连接，后面的连接将有50%的概率被拒绝；如果达到20个并发连接，则后面的连接将100%被拒绝。
@@ -136,13 +179,50 @@ HostKey /usr/local/ssh/my_old_ssh1_key
 - `PermitEmptyPasswords yes`：是否允许无密码登录，即用户的密码是否可以为空，建议改成`no`（禁止无密码登录）。
 - `PermitRootLogin yes`：是否允许根用户登录，建议改成`no`（禁止根用户登录）。
 - `PermitUserEnvironment no`：是否允许 sshd 运行客户端的`~/.ssh/environment`文件和`~/.ssh/authorized_keys`文件里面的`environment= options`设置。出于安全考虑，建议不要打开。
-- `Protocol 1`：使用 SSH-1 协议，建议改成`2`（SSH-2 协议）。可以同时支持两个协议，比如`Protocol 2,1`。
-- `Port 9876`：sshd 的连接端口。
+
+**Port**
+
+`Port`指定 sshd 监听的端口，即客户端连接的端口，默认是22（`Port 22`）。出于安全考虑，可以改掉这个端口（比如`Port 8822`）。
+
+配置文件可以使用多个`Port`命令，同时监听多个端口。
+
+```bash
+Port 22
+Port 80
+Port 443
+Port 8080
+```
+
+上面的示例表示同时监听4个端口。
+
+**Protocol**
+
+`Protocol`指定 sshd 使用的协议。`Protocol 1`表示使用 SSH 1 协议，建议改成`Protocol 2`（使用 SSH 2 协议）。`Protocol 2,1`表示同时支持两个版本的协议。
+
 - `PrintMotd no`：用户登录后，是否向其展示系统的 motd 信息（`/etc/motd`）。由于 Shell 一般会展示这个信息，所以这里建议关闭。
 - `PubKeyAuthentication yes`：是否允许密钥登录。
+
+**QuietMode**
+
+SSH 1 版本专用，指定日志只输出致命的错误信息（`QuietMode yes`）。
+
+**ServerKeyBits**
+
+`ServerKeyBits`指定 SSH 1 版本的密钥重新生成时的位数，默认是768（`ServerKeyBits 768`）。
+
 - `StrictModes yes`：sshd 是否检查用户的一些重要文件和目录的权限。对于用户的 SSH 配置文件、密钥文件和所在目录，SSH 要求拥有者必须是根用户或用户本人，用户组和其他人的写权限必须关闭。
+
+**SyslogFacility**
+
+`SyslogFacility`指定 Syslog 如何处理 sshd 的日志，默认是 Auth（`SyslogFacility AUTH`）。
+
 - `TCPKeepAlive yes`：打开 sshd 跟客户端 TCP 连接的 keepalive 参数。
 - `UseDNS yes`：用户 SSH 登录一个域名时，服务器是否使用 DNS，确认该域名对应的 IP 地址包含本机。打开该选项意义不大，而且如果 DNS 更新不及时，还有可能误判，建议关闭。
+
+**VerboseMode**
+
+SSH 2 版本专用，指定日志输出详细的 Debug 信息（`VerboseMode yes`）。
+
 - `X11Forwarding no`：是否打开 X window 的转发。
 
 修改配置文件以后，可以使用下面的命令验证，配置文件是否有语法错误。
