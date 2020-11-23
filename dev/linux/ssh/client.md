@@ -1,12 +1,102 @@
-# SSH 客户端的配置
+# SSH 客户端
 
-## 配置项
+## 简介
+
+OpenSSH 的客户端是二进制程序 ssh。它在 Linux / Unix 系统的位置是`/usr/local/bin/ssh`，Windows 系统的位置是`\Program Files\OpenSSH\bin\ssh.exe`。
+
+Linux 系统一般都自带 ssh，如果没有就需要安装。
+
+```bash
+# Ubuntu 和 Debian
+$ sudo apt install openssh-client
+
+# CentOS 和 Fedora
+$ sudo dnf install openssh-clients
+```
+
+安装以后，可以使用`-h`参数，查看一下是否安装成功。
+
+```bash
+$ ssh -h
+```
+
+## 基本用法
+
+ssh 最常见的用途就是连接 SSH 服务器。
+
+```bash
+$ ssh foo.com
+```
+
+上面命令登录服务器`foo.com`，这要求`foo.com`必须安装并正在运行 SSH 服务器。
+
+ssh 默认连接服务器的22端口，`-p`参数可以指定其他端口。
+
+```bash
+$ ssh -p 8821 foo.com
+```
+
+上面命令连接服务器`foo.com`的8821端口。
+
+ssh 默认使用本地的当前用户名，登录服务器的同名账户。如果需要登录服务器的其他账户，可以使用`-l`参数指定。
+
+```bash
+$ ssh -l bar foo.com
+```
+
+上面命令登录服务器`foo.com`的用户`bar`的账户。
+
+如果是首先连接远程主义，客户端会在命令行显示一段文字，表示不认识这台服务器，是否确认需要连接。
+
+```bash
+The authenticity of host 'ssh.linuxize.com (192.168.121.111)' can't be established.
+ECDSA key fingerprint is SHA256:Vybt22mVXuNuB5unE++yowF7lgA/9/2bLSiO3qmYWBY.
+Are you sure you want to continue connecting (yes/no)?
+```
+
+每个主机都有一个唯一的指纹，储存在`~/.ssh/known_hosts`文件中。输入`yes`可以将当前服务器的指纹储存在本机，以后再连接的时候，就不会提示这段文字了。
+
+然后，客户端会要求输入远程服务器的密码。输入以后，就登陆远程服务器的 Shell 了。
+
+默认是以客户端的当前用户名，登录远程服务器。要以其他用户身份登录，用以下格式指定用户名和主机。
+
+```bash
+$ ssh username@hostname
+```
+
+还可以使用`-l`参数指定用户名。
+
+```bash
+$ ssh -l username hostname
+```
+
+默认端口是22，`-p`参数可以指定端口。
+
+```bash
+$ ssh -p 5522 username@hostname
+```
+
+`-v`参数用来显示详细信息，可以在遇到问题时使用。如果想查看更详细的信息，可以使用`-vv`或`-vvv`参数。
+
+```bash
+$ ssh -v username@hostname
+```
+
+## ssh 命令行配置项
+
+**-c**
 
 `-c`参数指定加密算法。
 
 ```bash
 $ ssh -c blowfish,3des server.example.com
+# 或者
+$ ssh -c blowfish -c 3des server.example.com
 ```
+
+上面命令指定使用加密算法`blowfish`或`3des`。
+
+**-C**
 
 `-C`参数表示压缩数据传输。
 
@@ -14,13 +104,27 @@ $ ssh -c blowfish,3des server.example.com
 $ ssh -C server.example.com
 ```
 
+**-d**
+
+`-d`参数设置打印的 debug 信息级别，数值最高，输出的内容越详细。
+
+```bash
+$ ssh –d 1 foo.com
+```
+
+**-D**
+
 `-D`参数表示动态端口转发。
 
 ```bash
-$ ssh -D1080 server
+$ ssh -D 1080 server
 ```
 
+**-f**
+
 `-f`参数表示 SSH 连接在后台运行。
+
+**-F**
 
 `-F`参数指定配置文件。
 
@@ -28,31 +132,47 @@ $ ssh -D1080 server
 $ ssh -F /usr/local/ssh/other_config
 ```
 
-`--help`参数显示帮助信息。
+上面命令指定使用配置文件`other_config`。
+
+**-h，--help**
+
+`-h`、`--help`参数显示帮助信息。
 
 ```bash
 $ ssh --help
 ```
 
-`-i`参数用于指定私钥。
+**-i**
+
+`-i`参数用于指定私钥。注意，服务器必须存有对应的公钥。
 
 ```bash
 $ ssh -i my-key server.example.com
 ```
 
-`-l`参数指定远程账户名。
+**-l**
+
+`-l`参数指定远程登录的账户名。
 
 ```bash
 $ ssh -l sally server.example.com
 ```
 
-`-L`参数设置本地端口转发。
+**-L**
 
-`-m`参数指定数据校验算法（message authentication code，简称 MAC）。
+`-L`参数设置本地端口转发，详见《端口转发》一章。
+
+**-m**
+
+`-m`参数指定校验数据完整性的算法（message authentication code，简称 MAC）。
 
 ```bash
 $ ssh -m hmac-sha1,hmac-md5 server.example.com
 ```
+
+上面命令指定数据校验算法为`hmac-sha1`或`hmac-md5`。
+
+**-o**
 
 `-o`参数用来指定一个配置命令。
 
@@ -79,11 +199,40 @@ $ ssh -o "User sally" -o "Port 220" server.example.com
 $ ssh -o User=sally -o Port=220 server.example.com
 ```
 
+**-p**
+
 `-p`参数指定 SSH 客户端连接的服务器端口。
 
 ```bash
 $ ssh -p 2035 server.example.com
 ```
+
+上面命令连接服务器的2035端口。
+
+**-q**
+
+`-q`参数表示安静模式（quiet），不向用户输出任何警告信息。
+
+```bash
+$ ssh –q foo.com
+root’s password:
+```
+
+上面命令使用`-q`参数，只输出要求用户输入密码的提示。
+
+**-R**
+
+`-R`参数指定远程端口转发，详见《端口转发》一章。
+
+**-t**
+
+`-t`参数在 ssh 直接运行远端命令时，提供一个互动式 Shell。
+
+```bash
+$ ssh -t server.example.com emacs
+```
+
+**-v**
 
 `-v`参数显示详细信息。
 
@@ -97,11 +246,26 @@ $ ssh -v server.example.com
 $ ssh -v -v -v server.example.com
 ```
 
+**-V**
+
+`-V`参数输出远程服务器的版本。
+
+```bash
+$ ssh foo.com –V
+ssh: SSH Secure Shell 3.2.3 (non-commercial version) on i686-pc-linux-gnu
+```
+
+上面命令输出`foo.com`的 SSH 服务器版本是`SSH Secure Shell 3.2.3`。
+
+**-X**
+
 `-X`参数表示打开 X 窗口转发。
 
 ```bash
 $ ssh -X server.example.com
 ```
+
+**-1，-2**
 
 `-1`参数指定使用 SSH 1 协议。
 
@@ -111,7 +275,9 @@ $ ssh -X server.example.com
 $ ssh -2 server.example.com
 ```
 
-`-4`指定使用 IPv4 协议。
+**-4，-6**
+
+`-4`指定使用 IPv4 协议，这是默认值。
 
 ```bash
 $ ssh -4 server.example.com
@@ -121,12 +287,6 @@ $ ssh -4 server.example.com
 
 ```bash
 $ ssh -6 server.example.com
-```
-
-`-t`参数在 ssh 直接运行远端命令时，提供一个互动式 Shell。
-
-```bash
-$ ssh -t server.example.com emacs
 ```
 
 ## 客户端配置文件
