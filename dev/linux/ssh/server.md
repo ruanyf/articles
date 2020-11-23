@@ -131,17 +131,59 @@ HostKey /usr/local/ssh/my_old_ssh1_key
 
 以下是`/etc/ssh/sshd_config`文件里面的配置项。
 
-- `AcceptEnv PATH TERM`：允许接受哪些客户端通过`SendEnv`命令发来的变量，即允许客户端设置那些服务器的环境变量，变量名之间使用空格分隔。
-- `AllowGroups groupName`：允许登录的用户组，多个组之间用空格分隔。如果不使用该项，则允许所有用户组登录。
-- `AllowUsers user1 user2`：允许登录的用户，用户名之间使用空格分隔，也可以使用多个`AllowUsers`命令指定，用户名支持使用通配符。如果不使用该项，则允许所有用户登录。该项也可以指定域名，比如`AllowUsers jones@example.com`。
-- `AllowTcpForwarding yes`：是否允许端口转发。
-- `Banner /usr/local/etc/warning.txt`：用户登录后，sshd 向其展示的定制信息，默认不展示任何内容。
-- `Ciphers 3des-cbc`：sshd 可以接受的加密算法，多个算法之间使用逗号分隔。
-- `ClientAliveCountMax 8`：客户端没有响应时，服务器尝试连接的次数。
-- `ClientAliveInterval 180`：允许客户端发呆的时间，单位为秒。如果这段时间里面，客户端没有发送任何信号，SSH 连接将关闭。
-- `Compression yes`：客户端与服务器之间的数据传输是否压缩。
-- `DenyGroups groupName`：不允许登录的用户组。
-- `DenyUsers user1`：不允许登录的用户，用户名之间使用空格分隔，也可以使用多个`DenyUsers`命令指定。
+**AcceptEnv**
+
+`AcceptEnv`指定允许接受客户端通过`SendEnv`命令发来的哪些环境变量，即允许客户端设置服务器的环境变量清单，变量名之间使用空格分隔（`AcceptEnv PATH TERM`）。
+
+**AllowGroups**
+
+`AllowGroups`指定允许登录的用户组（`AllowGroups groupName`，多个组之间用空格分隔。如果不使用该项，则允许所有用户组登录。
+
+**AllowUsers**
+
+`AllowUsers`指定允许登录的用户，用户名之间使用空格分隔（`AllowUsers user1 user2`），也可以使用多行`AllowUsers`命令指定，用户名支持使用通配符。如果不使用该项，则允许所有用户登录。该项也可以指定域名，比如`AllowUsers jones@example.com`。
+
+**AllowTcpForwarding**
+
+`AllowTcpForwarding`指定是否允许端口转发，默认值为`yes`（`AllowTcpForwarding yes`）。
+
+**AuthorizedKeysFile**
+
+`AuthorizedKeysFile`指定储存用户公钥的目录，默认是用户主目录的`ssh/authorized_keys`目录（`AuthorizedKeysFile .ssh/authorized_keys`）。
+
+**Banner**
+
+`Banner`指定用户登录后，sshd 向其展示的信息文件（`Banner /usr/local/etc/warning.txt`），默认不展示任何内容。
+
+**ChallengeResponseAuthentication**
+
+`ChallengeResponseAuthentication`指定是否使用“键盘交互”身份验证方案，默认值为`yes`（`ChallengeResponseAuthentication yes`）。
+
+从理论上讲，“键盘交互”身份验证方案可以向用户询问多重问题，但是实践中，通常仅询问用户密码。如果要完全禁用基于密码的身份验证，请将`PasswordAuthentication`和`ChallengeResponseAuthentication`都设置为`no`。
+
+**Ciphers**
+
+`Ciphers`指定 sshd 可以接受的加密算法（`Ciphers 3des-cbc`），多个算法之间使用逗号分隔。
+
+**ClientAliveCountMax**
+
+`ClientAliveCountMax`指定建立连接后，客户端失去响应时，服务器尝试连接的次数（`ClientAliveCountMax 8`）。
+
+**ClientAliveInterval**
+
+`ClientAliveInterval`指定允许客户端发呆的时间，单位为秒（`ClientAliveInterval 180`）。如果这段时间里面，客户端没有发送任何信号，SSH 连接将关闭。
+
+**Compression**
+
+`Compression`指定客户端与服务器之间的数据传输是否压缩。默认值为`yes`（`Compression yes`）
+
+**DenyGroups**
+
+`DenyGroups`指定不允许登录的用户组（`DenyGroups groupName`）。
+
+**DenyUsers**
+
+`DenyUsers`指定不允许登录的用户（`DenyUsers user1`），用户名之间使用空格分隔，也可以使用多行`DenyUsers`命令指定。
 
 **FascistLogging**
 
@@ -166,19 +208,43 @@ ListenAddress 172.16.1.1
 ListenAddress 192.168.0.1
 ```
 
-- `LoginGraceTime 60`：允许客户端登录时发呆的最长时间，比如迟迟不输入密码，单位为秒。如果设为`0`，就表示没有限制。
+**LoginGraceTime**
+
+`LoginGraceTime`指定允许客户端登录时发呆的最长时间，比如用户迟迟不输入密码，连接就会自动断开，单位为秒（`LoginGraceTime 60`）。如果设为`0`，就表示没有限制。
 
 **LogLevel**
 
 `LogLevel`指定日志的详细程度，可能的值依次为`QUIET`、`FATAL`、`ERROR`、`INFO`、`VERBOSE`、`DEBUG`、`DEBUG1`、`DEBUG2`、`DEBUG3`，默认为`INFO`（`LogLevel INFO`）。
 
-- `MACs hmac-sha1`：sshd 可以接受的数据校验算法，多个算法之间使用逗号分隔。
-- `MaxAuthTries 3`：允许 SSH 登录的最大尝试次数，如果密码输入错误达到指定次数，SSH 连接将关闭。
-- `MaxStartups 32`：允许同时并发的 SSH 连接数量。如果设为`0`，就表示没有限制。这个属性也可以设为`A:B:C`的形式，比如`MaxStartups 10:50:20`，表示如果达到10个并发连接，后面的连接将有50%的概率被拒绝；如果达到20个并发连接，则后面的连接将100%被拒绝。
-- `PasswordAuthentication yes`：是否允许密码登录，建议改成`no`（禁止密码登录，只允许密钥登录）。
-- `PermitEmptyPasswords yes`：是否允许无密码登录，即用户的密码是否可以为空，建议改成`no`（禁止无密码登录）。
-- `PermitRootLogin yes`：是否允许根用户登录，建议改成`no`（禁止根用户登录）。
-- `PermitUserEnvironment no`：是否允许 sshd 运行客户端的`~/.ssh/environment`文件和`~/.ssh/authorized_keys`文件里面的`environment= options`设置。出于安全考虑，建议不要打开。
+**MACs**
+
+`MACs`指定sshd 可以接受的数据校验算法（`MACs hmac-sha1`），多个算法之间使用逗号分隔。
+
+**MaxAuthTries**
+
+`MaxAuthTries`指定允许 SSH 登录的最大尝试次数（`MaxAuthTries 3`），如果密码输入错误达到指定次数，SSH 连接将关闭。
+
+**MaxStartups**
+
+`MaxStartups`指定允许同时并发的 SSH 连接数量（MaxStartups）。如果设为`0`，就表示没有限制。
+
+这个属性也可以设为`A:B:C`的形式，比如`MaxStartups 10:50:20`，表示如果达到10个并发连接，后面的连接将有50%的概率被拒绝；如果达到20个并发连接，则后面的连接将100%被拒绝。
+
+**PasswordAuthentication**
+
+`PasswordAuthentication`指定是否允许密码登录，默认值为`yes`（`PasswordAuthentication yes`），建议改成`no`（禁止密码登录，只允许密钥登录）。
+
+**PermitEmptyPasswords**
+
+`PermitEmptyPasswords`指定是否允许空密码登录，即用户的密码是否可以为空，默认为`yes`（`PermitEmptyPasswords yes`），建议改成`no`（禁止无密码登录）。
+
+**PermitRootLogin**
+
+`PermitRootLogin`指定是否允许根用户登录，默认为`yes`（`PermitRootLogin yes`），建议改成`no`（禁止根用户登录）。
+
+**PermitUserEnvironment**
+
+`PermitUserEnvironment`指定是否允许 sshd 加载客户端的`~/.ssh/environment`文件和`~/.ssh/authorized_keys`文件里面的`environment= options`环境变量设置。默认值为`no`（`PermitUserEnvironment no`）。
 
 **Port**
 
@@ -195,35 +261,65 @@ Port 8080
 
 上面的示例表示同时监听4个端口。
 
+**PrintMotd**
+
+`PrintMotd`指定用户登录后，是否向其展示系统的 motd（Message of the the day）的信息文件`/etc/motd`。该文件用于通知所有用户一些重要事项，比如系统维护时间、安全问题等等。默认值为`yes`（`PrintMotd yes`），由于 Shell 一般会展示这个信息文件，所以这里可以改为`no`。
+
+**PrintLastLog**
+
+`PrintLastLog`指定是否打印上一次用户登录时间，默认值为`yes`（`PrintLastLog yes`）。
+
 **Protocol**
 
 `Protocol`指定 sshd 使用的协议。`Protocol 1`表示使用 SSH 1 协议，建议改成`Protocol 2`（使用 SSH 2 协议）。`Protocol 2,1`表示同时支持两个版本的协议。
 
-- `PrintMotd no`：用户登录后，是否向其展示系统的 motd 信息（`/etc/motd`）。由于 Shell 一般会展示这个信息，所以这里建议关闭。
-- `PubKeyAuthentication yes`：是否允许密钥登录。
+**PubKeyAuthentication**
+
+`PubKeyAuthentication`指定是否允许公钥登录，默认值为`yes`（`PubKeyAuthentication yes`）。
 
 **QuietMode**
 
 SSH 1 版本专用，指定日志只输出致命的错误信息（`QuietMode yes`）。
 
+**RSAAuthentication**
+
+`RSAAuthentication`指定允许 RSA 认证，默认值为`yes`（`RSAAuthentication yes`）。
+
 **ServerKeyBits**
 
 `ServerKeyBits`指定 SSH 1 版本的密钥重新生成时的位数，默认是768（`ServerKeyBits 768`）。
 
-- `StrictModes yes`：sshd 是否检查用户的一些重要文件和目录的权限。对于用户的 SSH 配置文件、密钥文件和所在目录，SSH 要求拥有者必须是根用户或用户本人，用户组和其他人的写权限必须关闭。
+**StrictModes**
+
+`StrictModes`指定 sshd 是否检查用户的一些重要文件和目录的权限。默认为`yes`（`StrictModes yes`），即对于用户的 SSH 配置文件、密钥文件和所在目录，SSH 要求拥有者必须是根用户或用户本人，用户组和其他人的写权限必须关闭。
 
 **SyslogFacility**
 
 `SyslogFacility`指定 Syslog 如何处理 sshd 的日志，默认是 Auth（`SyslogFacility AUTH`）。
 
-- `TCPKeepAlive yes`：打开 sshd 跟客户端 TCP 连接的 keepalive 参数。
-- `UseDNS yes`：用户 SSH 登录一个域名时，服务器是否使用 DNS，确认该域名对应的 IP 地址包含本机。打开该选项意义不大，而且如果 DNS 更新不及时，还有可能误判，建议关闭。
+**TCPKeepAlive**
+
+`TCPKeepAlive`指定打开 sshd 跟客户端 TCP 连接的 keepalive 参数（`TCPKeepAlive yes`）。
+
+**UseDNS**
+
+`UseDNS`指定用户 SSH 登录一个域名时，服务器是否使用 DNS，确认该域名对应的 IP 地址包含本机（`UseDNS yes`）。打开该选项意义不大，而且如果 DNS 更新不及时，还有可能误判，建议关闭。
+
+**UseLogin**
+
+`UseLogin`指定用户认证内部是否使用`/usr/bin/login`替代 SSH 工具，默认为`no`（`UseLogin no`）。
+
+**UserPrivilegeSeparation**
+
+`UserPrivilegeSeparation`指定用户认证通过以后，使用另一个子线程处理用户权限相关的操作，这样有利于提高安全性。默认值为`yes`（`UsePrivilegeSeparation yes`）。
 
 **VerboseMode**
 
 SSH 2 版本专用，指定日志输出详细的 Debug 信息（`VerboseMode yes`）。
 
-- `X11Forwarding no`：是否打开 X window 的转发。
+**X11Forwarding**
+
+`X11Forwarding`指定是否打开 X window 的转发，默认值为 no（`X11Forwarding no`）。
 
 修改配置文件以后，可以使用下面的命令验证，配置文件是否有语法错误。
 
