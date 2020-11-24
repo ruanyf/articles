@@ -46,43 +46,112 @@ $ ssh -l bar foo.com
 
 上面命令登录服务器`foo.com`的用户`bar`的账户。
 
-如果是首先连接远程主义，客户端会在命令行显示一段文字，表示不认识这台服务器，是否确认需要连接。
+不过，更常见的写法是使用`@`，将用户名与服务器写在一起。
 
 ```bash
-The authenticity of host 'ssh.linuxize.com (192.168.121.111)' can't be established.
+$ ssh bar@foo.com
+```
+
+上面命令也是登录服务器`foo.com`的用户`bar`的账户。
+
+## 连接流程
+
+ssh 连接远程服务器后，首先会识别这台服务器是否可靠。
+
+如果是第一次连接这台服务器，命令行会显示一段文字，表示不认识这台机器，提醒用户确认是否需要连接。
+
+```bash
+The authenticity of host 'foo.com (192.168.121.111)' can't be established.
 ECDSA key fingerprint is SHA256:Vybt22mVXuNuB5unE++yowF7lgA/9/2bLSiO3qmYWBY.
 Are you sure you want to continue connecting (yes/no)?
 ```
 
-每个主机都有一个唯一的指纹，储存在`~/.ssh/known_hosts`文件中。输入`yes`可以将当前服务器的指纹储存在本机，以后再连接的时候，就不会提示这段文字了。
+上面这段文字告诉用户，`foo.com`这台服务器的指纹是陌生的，让用户选择是否要继续连接。
 
-然后，客户端会要求输入远程服务器的密码。输入以后，就登陆远程服务器的 Shell 了。
+所谓“服务器指纹”，指的是 SSH 服务器的公钥指纹。每台 SSH 服务器都有唯一一对密钥，用于跟客户端通信，其中公钥的指纹就可以用来识别服务器。
 
-默认是以客户端的当前用户名，登录远程服务器。要以其他用户身份登录，用以下格式指定用户名和主机。
+ssh 会将本机连接过的所有服务器公钥的指纹，都储存在本机的`~/.ssh/known_hosts`文件中。
 
-```bash
-$ ssh username@hostname
-```
+在上面这段文字后面，输入`yes`，就可以将当前服务器的指纹也储存在本机`~/.ssh/known_hosts`文件中，以后再连接的时候，就不会提示这段文字了。
 
-还可以使用`-l`参数指定用户名。
+然后，客户端就会跟服务器建立连接。接着，ssh 就会要求用户输入所要登录账户的密码。用户输入并验证以后，就能登陆远程服务器的 Shell 了。
 
-```bash
-$ ssh -l username hostname
-```
+## 加密参数
 
-默认端口是22，`-p`参数可以指定端口。
+SSH 连接的握手阶段，客户端必须跟服务端约定一些加密参数（cipher suite）。
+
+这些参数使用下划线连接在一起，下面是一个例子。
 
 ```bash
-$ ssh -p 5522 username@hostname
+TLS_RSA_WITH_AES_128_CBC_SHA
 ```
 
-`-v`参数用来显示详细信息，可以在遇到问题时使用。如果想查看更详细的信息，可以使用`-vv`或`-vvv`参数。
+含义如下。
 
-```bash
-$ ssh -v username@hostname
+- TLS：协议
+- RSA：密钥交换算法
+- AES：加密算法
+- 128：加密强度
+- CBC：加密模式
+- SHA：数字签名的Hash函数
+
+下面是一个例子，客户端向服务器发出的握手信息。
+
+```http
+Handshake protocol: ClientHello
+    Version: TLS 1.2
+    Random
+        Client time: May 22, 2030 02:43:46 GMT
+        Random bytes: b76b0e61829557eb4c611adfd2d36eb232dc1332fe29802e321ee871
+    Session ID: (empty)
+    Cipher Suites
+        Suite: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256”
+        Suite: TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+        Suite: TLS_RSA_WITH_AES_128_GCM_SHA256
+        Suite: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+        Suite: TLS_DHE_RSA_WITH_AES_128_CBC_SHA
+        Suite: TLS_RSA_WITH_AES_128_CBC_SHA
+        Suite: TLS_RSA_WITH_3DES_EDE_CBC_SHA
+        Suite: TLS_RSA_WITH_RC4_128_SHA
+    Compression methods
+        Method: null
+    Extensions
+        Extension: server_name
+            Hostname: www.feistyduck.com
+        Extension: renegotiation_info
+        Extension: elliptic_curves
+            Named curve: secp256r1
+            Named curve: secp384r1
+        Extension: signature_algorithms
+            Algorithm: sha1/rsa
+            Algorithm: sha256/rsa
+            Algorithm: sha1/ecdsa
+            Algorithm: sha256/ecdsa”
 ```
+
+上面的握手信息（ClientHello）之中，`Cipher Suites`字段就是客户端列出的加密参数，服务器在其中选择一个自己支持的组合。
+
+服务器选择完毕之后，向客户端做出回应。
+
+```http
+Handshake protocol: ServerHello
+    Version: TLS 1.2
+    Random
+        Server time: Mar 10, 2059 02:35:57 GMT”
+        Random bytes: 8469b09b480c1978182ce1b59290487609f41132312ca22aacaf5012
+    Session ID: 4cae75c91cf5adf55f93c9fb5dd36d19903b1182029af3d527b7a42ef1c32c80
+    Cipher Suite: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    Compression method: null
+    Extensions
+        Extension: server_name
+        Extension: renegotiation_info”
+```
+
+上面的回应信息（ServerHello）中，`Cipher Suite`字段就是服务器最终选定的加密参数。
 
 ## ssh 命令行配置项
+
+ssh 命令有很多配置项，修改它的默认行为。
 
 **-c**
 
@@ -114,11 +183,13 @@ $ ssh –d 1 foo.com
 
 **-D**
 
-`-D`参数表示动态端口转发。
+`-D`参数指定本机的 Socks 监听端口，该端口收到的请求，都将转发到远程的 SSH 主机，又称动态端口转发，详见《端口转发》一章。
 
 ```bash
 $ ssh -D 1080 server
 ```
+
+上面命令将本机 1080 端口收到的请求，都转发到服务器`server`。
 
 **-f**
 
@@ -144,7 +215,7 @@ $ ssh --help
 
 **-i**
 
-`-i`参数用于指定私钥。注意，服务器必须存有对应的公钥。
+`-i`参数用于指定私钥，意为“identity_file”，默认为`~/.ssh/id_dsa`。注意，服务器必须存有对应的公钥。
 
 ```bash
 $ ssh -i my-key server.example.com
@@ -156,11 +227,19 @@ $ ssh -i my-key server.example.com
 
 ```bash
 $ ssh -l sally server.example.com
+# 等同于
+$ ssh sally@server.example.com
 ```
 
 **-L**
 
 `-L`参数设置本地端口转发，详见《端口转发》一章。
+
+```bash
+$ ssh  -L 9999:targetServer:80 user@remoteserver
+```
+
+上面命令中，所有发向本地`9999`端口的请求，都会经过`remoteserver`发往 targetServer 的 80 端口，这就相当于直接连上了 targetServer 的 80 端口。
 
 **-m**
 
@@ -224,6 +303,12 @@ root’s password:
 
 `-R`参数指定远程端口转发，详见《端口转发》一章。
 
+```bash
+$ ssh -R 9999:targetServer:902 local
+```
+
+上面命令需在跳板服务器执行，指定本地计算机`local`监听自己的 9999 端口，所有发向这个端口的请求，都会转向 targetServer 的 902 端口。
+
 **-t**
 
 `-t`参数在 ssh 直接运行远端命令时，提供一个互动式 Shell。
@@ -240,11 +325,15 @@ $ ssh -t server.example.com emacs
 $ ssh -v server.example.com
 ```
 
-`-v`可以重复多次，表示信息的详细程度。
+`-v`可以重复多次，表示信息的详细程度，比如`-vv`和`-vvv`。
 
 ```bash
+$ ssh -vvv server.example.com
+# 或者
 $ ssh -v -v -v server.example.com
 ```
+
+上面命令会输出最详细的连接信息。
 
 **-V**
 

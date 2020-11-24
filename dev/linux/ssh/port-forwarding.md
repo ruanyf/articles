@@ -106,6 +106,8 @@ $ ssh -R 2121:www.example.com:80 local -N
 $ curl http://localhost:2121
 ```
 
+执行上面的命令以后，命令就会输出服务器`www.example.com`的80端口返回的内容。
+
 这种端口转发会远程绑定另一台机器的端口，所以叫做“远程端口转发”，也是采用 HTTP 协议。
 
 ## 实例：Email 加密下载
