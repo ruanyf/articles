@@ -22,13 +22,29 @@ $ ssh -h
 
 ## 基本用法
 
-ssh 最常见的用途就是连接 SSH 服务器。
+ssh 最常见的用途就是登录服务器，这要求服务器安装并正在运行 SSH 服务器软件。
+
+ssh 登录服务器的命令如下。
 
 ```bash
-$ ssh foo.com
+$ ssh hostname
 ```
 
-上面命令登录服务器`foo.com`，这要求`foo.com`必须安装并正在运行 SSH 服务器。
+上面命令中，`hostname`是主机名，它可以是域名，也可能是 IP 地址，局域网内部的主机名。
+
+不指定用户名的情况下，将使用客户端的当前用户名，作为远程服务器的登录用户名。如果希望使用另一个用户名登录服务器，可以采用下面的语法。
+
+```bash
+$ ssh user@hostname
+```
+
+上面的命令中，用户名和主机名写在一起了，之间使用`@`分隔。
+
+`ssh`的`-l`参数可以用来指定用户名，这样的话，用户名和主机名就不用写在一起了。
+
+```bash
+$ ssh -l username host
+```
 
 ssh 默认连接服务器的22端口，`-p`参数可以指定其他端口。
 
@@ -37,22 +53,6 @@ $ ssh -p 8821 foo.com
 ```
 
 上面命令连接服务器`foo.com`的8821端口。
-
-ssh 默认使用本地的当前用户名，登录服务器的同名账户。如果需要登录服务器的其他账户，可以使用`-l`参数指定。
-
-```bash
-$ ssh -l bar foo.com
-```
-
-上面命令登录服务器`foo.com`的用户`bar`的账户。
-
-不过，更常见的写法是使用`@`，将用户名与服务器写在一起。
-
-```bash
-$ ssh bar@foo.com
-```
-
-上面命令也是登录服务器`foo.com`的用户`bar`的账户。
 
 ## 连接流程
 
@@ -68,13 +68,89 @@ Are you sure you want to continue connecting (yes/no)?
 
 上面这段文字告诉用户，`foo.com`这台服务器的指纹是陌生的，让用户选择是否要继续连接。
 
-所谓“服务器指纹”，指的是 SSH 服务器的公钥指纹。每台 SSH 服务器都有唯一一对密钥，用于跟客户端通信，其中公钥的指纹就可以用来识别服务器。
+所谓“服务器指纹”，指的是 SSH 服务器公钥的哈希值。每台 SSH 服务器都有唯一一对密钥，用于跟客户端通信，其中公钥的哈希值就可以用来识别服务器。
+
+下面的命令可以查看某个公钥的指纹。
+
+```bash
+$ ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key.pub
+256 da:24:43:0b:2e:c1:3f:a1:84:13:92:01:52:b4:84:ff   (ECDSA)
+```
+
+上面的例子中，`ssh-keygen -l -f`命令会输出公钥`/etc/ssh/ssh_host_ecdsa_key.pub`的指纹。
 
 ssh 会将本机连接过的所有服务器公钥的指纹，都储存在本机的`~/.ssh/known_hosts`文件中。
 
-在上面这段文字后面，输入`yes`，就可以将当前服务器的指纹也储存在本机`~/.ssh/known_hosts`文件中，以后再连接的时候，就不会提示这段文字了。
+在上面这段文字后面，输入`yes`，就可以将当前服务器的指纹也储存在本机`~/.ssh/known_hosts`文件中，并显示下面的提示。以后再连接的时候，就不会再出现警告了。
+
+```bash
+Warning: Permanently added 'foo.com (192.168.121.111)' (RSA) to the list of known hosts
+```
 
 然后，客户端就会跟服务器建立连接。接着，ssh 就会要求用户输入所要登录账户的密码。用户输入并验证以后，就能登陆远程服务器的 Shell 了。
+
+## 服务器密钥变更
+
+服务器指纹可以防止有人恶意冒充远程主机。如果服务器的密钥发生变更（比如重装了 SSH 服务器），客户端再次连接时，就会发生公钥指纹不吻合的情况。这时，客户端就会中断连接，并显示一段警告信息。
+
+```bash
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that the RSA host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+77:a5:69:81:9b:eb:40:76:7b:13:04:a9:6c:f4:9c:5d.
+Please contact your system administrator.
+Add correct host key in /home/me/.ssh/known_hosts to get rid of this message.
+Offending key in /home/me/.ssh/known_hosts:36
+```
+
+这时，你需要确认到底是什么原因，使得公钥指纹发生变更，到底是恶意劫持，还是管理员变更了 SSH 服务器公钥。
+
+如果新的公钥确认可以信任，需要继续执行连接，你可以执行下面的命令，将原来的公钥指纹从`~/.ssh/known_hosts`文件删除。
+
+```bash
+$ ssh-keygen -R hostname
+```
+
+上面命令中，`hostname`是发生公钥变更的主机名。
+
+除了使用上面的命令，你也可以手工修改`known_hosts`文件，将公钥指纹删除。
+
+## 执行远程命令
+
+SSH 登录成功后，用户就进入了远程主机的命令行环境，所看到的提示符，就是远程主机的提示符。这时，你就可以输入想要在远程主机执行的命令。
+
+另一种执行远程命令的方法，是将命令直接写在`ssh`命令的后面。
+
+```bash
+$ ssh username@hostname command
+```
+
+上面的命令会使得 SSH 在登录成功后，立刻在远程主机上执行命令`command`。
+
+下面是一个例子。
+
+```bash
+$ ssh foo@server.example.com cat /etc/hosts
+```
+
+上面的命令会在登录成功后，立即远程执行命令`cat /etc/hosts`。
+
+采用这种格式执行命令时，ssh 客户端不会提供互动式的 Shell 环境。但是，有些命令需要互动式的 Shell 环境，这时就要使用`-t`参数。
+
+```bash
+# 报错
+$ ssh remote.server.com emacs
+emacs: standard input is not a tty
+
+# 不报错
+$ ssh -t server.example.com emacs
+```
+
+上面代码中，`emacs`命令需要一个互动式 Shell，只有加上`-t`参数，ssh 才会分配一个互动式 Shell。
 
 ## 加密参数
 
