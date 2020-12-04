@@ -163,13 +163,15 @@ shell.isp.com>
 
 ## ssh-copy-id 命令：自动上传公钥
 
-OpenSSH 自带一个`ssh-copy-id`命令，可以自动将公钥拷贝到远程服务器的`~/.ssh/authorized_keys`文件。如果`~/.ssh/authorized_keys`文件不存在，`ssh-copy-id`会自动创建该文件。
+OpenSSH 自带一个`ssh-copy-id`命令，可以自动将公钥拷贝到远程服务器的`~/.ssh/authorized_keys`文件。如果`~/.ssh/authorized_keys`文件不存在，`ssh-copy-id`命令会自动创建该文件。
+
+用户在本地计算机执行下面的命令，就可以把本地的公钥拷贝到服务器。
 
 ```bash
 $ ssh-copy-id -i key_file user@host
 ```
 
-上面命令中，`-i`参数用来指定公钥文件。如果省略用户名，默认为当前的本机用户名。执行完以后，公钥就会拷贝到服务器。
+上面命令中，`-i`参数用来指定公钥文件，`user`是所要登录的账户名，`host`是服务器地址。如果省略用户名，默认为当前的本机用户名。执行完该命令，公钥就会拷贝到服务器。
 
 注意，公钥文件可以不指定路径和`.pub`后缀名，`ssh-copy-id`会自动在`~/.ssh`目录里面寻找。
 
@@ -187,11 +189,11 @@ $ ssh-copy-id -i id_rsa user@host
 
 ### 基本用法
 
-私钥设置了密码以后，每次使用都必须输入密码，有时让人感觉非常麻烦，比如连续使用`scp`命令远程拷贝文件，每次都要求输入密码。
+私钥设置了密码以后，每次使用都必须输入密码，有时让人感觉非常麻烦。比如，连续使用`scp`命令远程拷贝文件时，每次都要求输入密码。
 
 `ssh-agent`命令就是为了解决这个问题而设计的，它让用户在整个 Bash 对话（session）之中，只在第一次使用 SSH 命令时输入密码，然后将私钥保存在内存中，后面都不需要再输入私钥的密码了。
 
-首先，使用下面的命令新建一次命令行对话。
+第一步，使用下面的命令新建一次命令行对话。
 
 ```bash
 $ ssh-agent bash
@@ -205,7 +207,7 @@ $ ssh-agent bash
 $ eval `ssh-agent`
 ```
 
-上面命令中，`ssh-agent`会自动在后台运行，并将需要设置的环境变量输出在屏幕上，类似下面这样。
+上面命令中，`ssh-agent`会先自动在后台运行，并将需要设置的环境变量输出在屏幕上，类似下面这样。
 
 ```bash
 $ ssh-agent
@@ -214,9 +216,9 @@ SSH_AGENT_PID=22842; export SSH_AGENT_PID;
 echo Agent pid 22842;
 ```
 
-`eval`命令的作用，就是运行`ssh-agent`命令的输出，设置环境变量。
+`eval`命令的作用，就是运行上面的`ssh-agent`命令的输出，设置环境变量。
 
-然后，在新建的对话里面，使用`ssh-add`命令添加默认的私钥（`~/.ssh/id_rsa`，`~/.ssh/id_dsa`，`~/.ssh/id_ecdsa`，`~/.ssh/id_ed25519`）。
+第二步，在新建的 Shell 对话里面，使用`ssh-add`命令添加默认的私钥（比如`~/.ssh/id_rsa`，或`~/.ssh/id_dsa`，或`~/.ssh/id_ecdsa`，或`~/.ssh/id_ed25519`）。
 
 ```bash
 $ ssh-add
@@ -226,15 +228,7 @@ Identity added: /home/you/.ssh/id_dsa (/home/you/.ssh/id_dsa)
 
 上面例子中，添加私钥时，会要求输入密码。以后，在这个对话里面再使用密钥时，就不需要输入私钥的密码了。
 
-如果`ssh-agent`命令要退出，可以直接退出子 Shell，也可以使用下面的命令。
-
-```bash
-$ ssh-agent -k
-```
-
-### `ssh-add`命令
-
-`ssh-add`命令也可以用来将指定的私钥，加入`ssh-agent`。
+如果添加的不是默认私钥，`ssh-add`命令需要显式指定私钥文件。
 
 ```bash
 $ ssh-add my-other-key-file
@@ -242,9 +236,31 @@ $ ssh-add my-other-key-file
 
 上面的命令中，`my-other-key-file`就是用户指定的私钥文件。
 
-`ssh-add`命令有如下的参数。
+第三步，使用 ssh 命令正常登录远程服务器。
 
-（1）`-d`
+```bash
+$ ssh remoteHost
+```
+
+上面命令中，`remoteHost`是远程服务器的地址，ssh 使用的是默认的私钥。
+
+如果要使用其他私钥登录服务器，需要使用 ssh 命令的`-i`参数指定私钥文件。
+
+```bash
+$ ssh –i OpenSSHPrivateKey remoteHost
+```
+
+最后，如果要退出`ssh-agent`，可以直接退出子 Shell（按下 Ctrl + d），也可以使用下面的命令。
+
+```bash
+$ ssh-agent -k
+```
+
+### `ssh-add`命令
+
+`ssh-add`命令用来将私钥加入`ssh-agent`，它有如下的参数。
+
+**（1）`-d`**
 
 `-d`参数从内存中删除指定的私钥。
 
@@ -252,20 +268,20 @@ $ ssh-add my-other-key-file
 $ ssh-add -d name-of-key-file
 ```
 
-（2）`-l`
+**（2）`-D`**
+
+`-D`参数从内存中删除所有已经添加的私钥。
+
+```bash
+$ ssh-add -D
+```
+
+**（3）`-l`**
 
 `-l`参数列出所有已经添加的私钥。
 
 ```bash
 $ ssh-add -l
-```
-
-（3）`-D`
-
-`-D`参数从内存中删除已经添加的私钥。
-
-```bash
-$ ssh-add -D
 ```
 
 ## 关闭密码登录
