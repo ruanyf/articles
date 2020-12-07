@@ -145,7 +145,7 @@ HostKey /usr/local/ssh/my_old_ssh1_key
 
 **AllowTcpForwarding**
 
-`AllowTcpForwarding`指定是否允许端口转发，默认值为`yes`（`AllowTcpForwarding yes`）。
+`AllowTcpForwarding`指定是否允许端口转发，默认值为`yes`（`AllowTcpForwarding yes`），`local`表示只允许本地端口转发，`remote`表示只允许远程端口转发。
 
 **AuthorizedKeysFile**
 

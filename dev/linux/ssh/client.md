@@ -543,6 +543,8 @@ Compression = yes
 
 `#`开头的行表示注释，会被忽略。空行等同于注释。
 
+下面是 ssh 客户端的一些主要配置命令。
+
 - `AddressFamily inet`：表示只使用 IPv4 协议。如果设为`inet6`，表示只使用 IPv6 协议。
 - `BindAddress 192.168.10.235`：指定本机的 IP 地址（如果本机有多个 IP 地址）。
 - `CheckHostIP yes`：检查 SSH 服务器的 IP 地址是否跟公钥数据库吻合。

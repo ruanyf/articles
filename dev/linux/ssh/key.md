@@ -30,6 +30,14 @@ SSH 密钥登录分为以下的步骤，整个流程是自动的。
 
 密钥登录时，首先需要生成公钥和私钥。ssh 提供了一个工具程序`ssh-keygen`命令，用来生成密钥。
 
+直接输入`ssh-keygen`，程序会询问一系列问题，然后生成密钥。
+
+```bash
+$ ssh-keygen
+```
+
+通常做法是使用`-t`参数，指定密钥的加密算法。
+
 ```bash
 $ ssh-keygen -t dsa
 ```
@@ -113,7 +121,15 @@ $ ssh-keygen -t dsa -f mykey
 
 上面命令会在当前目录生成私钥文件`mykey`和公钥文件`mykey.pub`。
 
-**（4）`-N`**
+**（4）`-F`**
+
+`-F`参数检查某个主机名是否在`known_hosts`文件里面。
+
+```bash
+$ ssh-keygen -F example.com
+```
+
+**（5）`-N`**
 
 `-N`参数用于指定私钥的密码（passphrase）。
 
@@ -121,11 +137,19 @@ $ ssh-keygen -t dsa -f mykey
 $ ssh-keygen -t dsa -N secretword
 ```
 
-**（5）`-p`**
+**（6）`-p`**
 
 `-p`参数用于重新指定私钥的密码（passphrase）。它与`-N`的不同之处在于，新密码不在命令中指定，而是执行后再输入。ssh 先要求输入旧密码，然后要求输入两遍新密码。
 
-**（6）`-t`**
+**（7）`-R`**
+
+`-R`参数将指定的主机公钥指纹移出`known_hosts`文件。
+
+```bash
+$ ssh-keygen -R example.com
+```
+
+**（8）`-t`**
 
 `-t`参数用于指定生成密钥的加密算法，一般为`dsa`或`rsa`
 
