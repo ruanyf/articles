@@ -242,6 +242,12 @@ ListenAddress 192.168.0.1
 
 `PermitRootLogin`指定是否允许根用户登录，默认为`yes`（`PermitRootLogin yes`），建议改成`no`（禁止根用户登录）。
 
+还有一种写法是写成`prohibit-password`，表示 root 用户不能用密码登录，但是可以用密钥登录。
+
+```bash
+PermitRootLogin prohibit-password
+```
+
 **PermitUserEnvironment**
 
 `PermitUserEnvironment`指定是否允许 sshd 加载客户端的`~/.ssh/environment`文件和`~/.ssh/authorized_keys`文件里面的`environment= options`环境变量设置。默认值为`no`（`PermitUserEnvironment no`）。

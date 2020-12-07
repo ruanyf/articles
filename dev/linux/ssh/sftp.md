@@ -29,3 +29,4 @@ FTP 的提示符下面，就可以输入各种 FTP 命令了，这部分完全�
 - `bye`：退出 sftp。
 - `quit`：退出 sftp。
 - `exit`：退出 sftp。
+
