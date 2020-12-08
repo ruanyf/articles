@@ -2,7 +2,17 @@
 
 ## 简介
 
-SSH 的架构是服务器/客户端模式，两端运行的软件是不一样的。OpenSSH 的服务器软件叫做 sshd。
+SSH 的架构是服务器/客户端模式，两端运行的软件是不一样的。OpenSSH 的客户端软件是 ssh，服务器软件是 sshd。
+
+如果没有安装 sshd，可以用下面的命令安装。
+
+```bash
+# Debian
+$ sudo aptitude install openssh-server
+
+# Red Hat
+$ sudo yum install openssh-server
+```
 
 一般来说，sshd 安装后会跟着系统一起启动。如果当前 sshd 没有启动，可以用下面的命令启动。
 
@@ -12,22 +22,17 @@ $ sshd
 
 上面的命令运行以后，sshd 自动进入后台，所以命令后面不需要加上`&`。
 
-除了直接运行可执行文件，也可以通过 SystemD 启动 sshd 服务。
+除了直接运行可执行文件，也可以通过 Systemd 操作 sshd 服务。
 
 ```bash
+# 启动
 $ sudo systemctl start sshd.service
-```
 
-下面的命令停止 sshd 服务。
-
-```bash
+# 停止
 $ sudo systemctl stop sshd.service
-```
 
-下面的命令重启 sshd 服务。
-
-```bash
-$ sudo systemctl restart sshd
+# 重启
+$ sudo systemctl restart sshd.service
 ```
 
 下面的命令让 sshd 在计算机启动时自动运行。

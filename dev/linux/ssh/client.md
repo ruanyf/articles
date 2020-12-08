@@ -30,9 +30,7 @@ ssh 登录服务器的命令如下。
 $ ssh hostname
 ```
 
-上面命令中，`hostname`是主机名，它可以是域名，也可能是 IP 地址，局域网内部的主机名。
-
-不指定用户名的情况下，将使用客户端的当前用户名，作为远程服务器的登录用户名。如果希望使用另一个用户名登录服务器，可以采用下面的语法。
+上面命令中，`hostname`是主机名，它可以是域名，也可能是 IP 地址或局域网内部的主机名。不指定用户名的情况下，将使用客户端的当前用户名，作为远程服务器的登录用户名。如果要指定用户名，可以采用下面的语法。
 
 ```bash
 $ ssh user@hostname
@@ -40,7 +38,7 @@ $ ssh user@hostname
 
 上面的命令中，用户名和主机名写在一起了，之间使用`@`分隔。
 
-`ssh`的`-l`参数可以用来指定用户名，这样的话，用户名和主机名就不用写在一起了。
+用户名也可以使用`ssh`的`-l`参数指定，这样的话，用户名和主机名就不用写在一起了。
 
 ```bash
 $ ssh -l username host
@@ -56,9 +54,9 @@ $ ssh -p 8821 foo.com
 
 ## 连接流程
 
-ssh 连接远程服务器后，首先会识别这台服务器是否可靠。
+ssh 连接远程服务器后，首先有一个验证过程，验证远程服务器是否为陌生地址。
 
-如果是第一次连接这台服务器，命令行会显示一段文字，表示不认识这台机器，提醒用户确认是否需要连接。
+如果是第一次连接某一台服务器，命令行会显示一段文字，表示不认识这台机器，提醒用户确认是否需要连接。
 
 ```bash
 The authenticity of host 'foo.com (192.168.121.111)' can't be established.
@@ -66,7 +64,7 @@ ECDSA key fingerprint is SHA256:Vybt22mVXuNuB5unE++yowF7lgA/9/2bLSiO3qmYWBY.
 Are you sure you want to continue connecting (yes/no)?
 ```
 
-上面这段文字告诉用户，`foo.com`这台服务器的指纹是陌生的，让用户选择是否要继续连接。
+上面这段文字告诉用户，`foo.com`这台服务器的指纹是陌生的，让用户选择是否要继续连接（输入 yes 或 no）。
 
 所谓“服务器指纹”，指的是 SSH 服务器公钥的哈希值。每台 SSH 服务器都有唯一一对密钥，用于跟客户端通信，其中公钥的哈希值就可以用来识别服务器。
 
@@ -79,7 +77,7 @@ $ ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key.pub
 
 上面的例子中，`ssh-keygen -l -f`命令会输出公钥`/etc/ssh/ssh_host_ecdsa_key.pub`的指纹。
 
-ssh 会将本机连接过的所有服务器公钥的指纹，都储存在本机的`~/.ssh/known_hosts`文件中。
+ssh 会将本机连接过的所有服务器公钥的指纹，都储存在本机的`~/.ssh/known_hosts`文件中。每次连接服务器时，通过该文件判断是否为陌生主机（陌生公钥）。
 
 在上面这段文字后面，输入`yes`，就可以将当前服务器的指纹也储存在本机`~/.ssh/known_hosts`文件中，并显示下面的提示。以后再连接的时候，就不会再出现警告了。
 
@@ -87,7 +85,7 @@ ssh 会将本机连接过的所有服务器公钥的指纹，都储存在本机�
 Warning: Permanently added 'foo.com (192.168.121.111)' (RSA) to the list of known hosts
 ```
 
-然后，客户端就会跟服务器建立连接。接着，ssh 就会要求用户输入所要登录账户的密码。用户输入并验证以后，就能登陆远程服务器的 Shell 了。
+然后，客户端就会跟服务器建立连接。接着，ssh 就会要求用户输入所要登录账户的密码。用户输入并验证密码正确以后，就能登陆远程服务器的 Shell 了。
 
 ## 服务器密钥变更
 
@@ -107,7 +105,7 @@ Add correct host key in /home/me/.ssh/known_hosts to get rid of this message.
 Offending key in /home/me/.ssh/known_hosts:36
 ```
 
-这时，你需要确认到底是什么原因，使得公钥指纹发生变更，到底是恶意劫持，还是管理员变更了 SSH 服务器公钥。
+上面这段文字的意思是，该主机的公钥指纹跟`~/.ssh/known_hosts`文件储存的不一样，必须处理以后才能连接。这时，你需要确认是什么原因，使得公钥指纹发生变更，到底是恶意劫持，还是管理员变更了 SSH 服务器公钥。
 
 如果新的公钥确认可以信任，需要继续执行连接，你可以执行下面的命令，将原来的公钥指纹从`~/.ssh/known_hosts`文件删除。
 
@@ -118,6 +116,8 @@ $ ssh-keygen -R hostname
 上面命令中，`hostname`是发生公钥变更的主机名。
 
 除了使用上面的命令，你也可以手工修改`known_hosts`文件，将公钥指纹删除。
+
+删除了原来的公钥指纹以后，重新执行 ssh 命令连接远程服务器，将新的指纹加入`known_hosts`文件，就可以顺利连接了。
 
 ## 执行远程命令
 
@@ -139,7 +139,7 @@ $ ssh foo@server.example.com cat /etc/hosts
 
 上面的命令会在登录成功后，立即远程执行命令`cat /etc/hosts`。
 
-采用这种格式执行命令时，ssh 客户端不会提供互动式的 Shell 环境。但是，有些命令需要互动式的 Shell 环境，这时就要使用`-t`参数。
+采用这种语法执行命令时，ssh 客户端不会提供互动式的 Shell 环境，而是直接远程命令的执行结果输出在命令行。但是，有些命令需要互动式的 Shell 环境，这时就要使用`-t`参数。
 
 ```bash
 # 报错
@@ -150,26 +150,26 @@ emacs: standard input is not a tty
 $ ssh -t server.example.com emacs
 ```
 
-上面代码中，`emacs`命令需要一个互动式 Shell，只有加上`-t`参数，ssh 才会分配一个互动式 Shell。
+上面代码中，`emacs`命令需要一个互动式 Shell，所以报错。只有加上`-t`参数，ssh 才会分配一个互动式 Shell。
 
 ## 加密参数
 
-SSH 连接的握手阶段，客户端必须跟服务端约定一些加密参数（cipher suite）。
+SSH 连接的握手阶段，客户端必须跟服务端约定加密参数集（cipher suite）。
 
-这些参数使用下划线连接在一起，下面是一个例子。
+加密参数集包含了若干不同的加密参数，它们之间使用下划线连接在一起，下面是一个例子。
 
 ```bash
 TLS_RSA_WITH_AES_128_CBC_SHA
 ```
 
-含义如下。
+它的含义如下。
 
 - TLS：协议
 - RSA：密钥交换算法
 - AES：加密算法
 - 128：加密强度
 - CBC：加密模式
-- SHA：数字签名的Hash函数
+- SHA：数字签名的 Hash 函数
 
 下面是一个例子，客户端向服务器发出的握手信息。
 
@@ -205,9 +205,9 @@ Handshake protocol: ClientHello
             Algorithm: sha256/ecdsa”
 ```
 
-上面的握手信息（ClientHello）之中，`Cipher Suites`字段就是客户端列出的加密参数，服务器在其中选择一个自己支持的组合。
+上面的握手信息（ClientHello）之中，`Cipher Suites`字段就是客户端列出可选的加密参数集，服务器在其中选择一个自己支持的参数集。
 
-服务器选择完毕之后，向客户端做出回应。
+服务器选择完毕之后，向客户端发出回应。
 
 ```http
 Handshake protocol: ServerHello
@@ -291,7 +291,7 @@ $ ssh --help
 
 **-i**
 
-`-i`参数用于指定私钥，意为“identity_file”，默认为`~/.ssh/id_dsa`。注意，服务器必须存有对应的公钥。
+`-i`参数用于指定私钥，意为“identity_file”，默认值为`~/.ssh/id_dsa`。注意，服务器必须存有对应的公钥，详见《密钥登录》一章。
 
 ```bash
 $ ssh -i my-key server.example.com
@@ -456,82 +456,50 @@ $ ssh -6 server.example.com
 
 ## 客户端配置文件
 
-SSH 客户端的全局配置文件是`/etc/ssh/ssh_config`，用户个人的配置文件在`~/.ssh/config`，如果存在的话，将覆盖全局配置文件。
+### 位置
 
-除了配置文件，用户个人有一些密钥文件和其他文件。
+SSH 客户端的全局配置文件是`/etc/ssh/ssh_config`，用户个人的配置文件在`~/.ssh/config`，优先级高于全局配置文件。
 
-- `~/.ssh/authorized_keys`：包含服务器的授权公共密钥列表。当客户端连接到服务器时，服务器通过检查存储在此文件中的已签名公钥来对客户端进行身份验证。
+除了配置文件，`~/.ssh`目录还有一些用户个人的密钥文件和其他文件。下面是其中一些常见的文件。
+
 - `~/.ssh/id_ecdsa`：用户的 ECDSA 私钥。
 - `~/.ssh/id_ecdsa.pub`：用户的 ECDSA 公钥。
-- `~/.ssh/id_rsa`：用于 SSH 协议版本2 的RSA私钥。
-- `~/.ssh/id_rsa.pub`：用于SSH 协议版本2 的RSA公钥。
-- `~/.ssh/identity`：用于 SSH 协议版本1 的RSA私钥。
-- `~/.ssh/identity.pub`：用于 SSH 协议版本1 的RSA公钥。
-- `~/.ssh/known_hosts`：包含用户访问的SSH服务器的主机密钥。该文件对于确保SSH客户端连接到正确的SSH服务器非常重要。
+- `~/.ssh/id_rsa`：用于 SSH 协议版本2 的 RSA 私钥。
+- `~/.ssh/id_rsa.pub`：用于SSH 协议版本2 的 RSA 公钥。
+- `~/.ssh/identity`：用于 SSH 协议版本1 的 RSA 私钥。
+- `~/.ssh/identity.pub`：用于 SSH 协议版本1 的 RSA 公钥。
+- `~/.ssh/known_hosts`：包含 SSH 服务器的公钥指纹。
 
-下面是用户个人配置文件的一个例子。
+### 主机设置
+
+用户个人的配置文件`~/.ssh/config`，可以按照不同服务器，列出各自的连接参数，从而不必每一次登录都输入重复的参数。下面是一个例子。
 
 ```bash
 Host *
      Port 2222
 
 Host remoteserver
-     HostName remoteserver.thematrix.io
+     HostName remote.example.com
      User neo
      Port 2112
-     IdentityFile /home/test/.ssh/remoteserver.private_key
 ```
 
-上面代码中，`Host *`表示对所有主机生效，后面单个主机的设置可以覆盖它。
+上面代码中，`Host *`表示对所有主机生效，后面的`Port 2222`表示所有主机的默认连接端口都是2222，这样就不用在登录时特别指定端口了。这里的缩进并不是必需的，只是为了视觉上，易于识别针对不同主机的设置。
 
+后面的`Host remoteserver`表示，下面的设置只对主机`remoteserver`生效。`remoteserver`只是一个别名，具体的主机由`HostName`命令指定，`User`和`Port`这两项分别表示用户名和端口。这里的`Port`会覆盖上面`Host *`部分的`Port`设置。
+
+以后，登录`remote.example.com`时，只要执行`ssh remoteserver`命令，就会自动套用 config 文件里面指定的参数。
 单个主机的配置格式如下。
 
 ```bash
-Host dev
-    HostName dev.foo.com
-    User mike
-    Port 4422
-```
-
-上面的内容写入配置文件，以后只需要执行`ssh dev`命令，就能登陆远程主机。
-
-```bash
-$ ssh dev
+$ ssh remoteserver
 # 等同于
-$ ssh -p 4422 mike@dev.foo.com
+$ ssh -p 2112 neo@remote.example.com
 ```
 
-```bash
-Host *.edu
- Compression yes
- PasswordAuthentication yes
-```
+`Host`命令的值可以使用通配符，比如`Host *`表示对所有主机都有效的设置，`Host *.edu`表示只对一级域名为`.edu`的主机有效的设置。它们的设置都可以被单个主机的设置覆盖。
 
-对所有主机都有效的配置，可以写在`Host *`。
-
-```bash
-Host *
- Compression yes
-```
-
-后面单个主机的配置可以覆盖通用配置。
-
-`Host`也可以用来指定昵称。
-
-```bash
-Host simple
-HostName myserver.example.com
-```
-
-连接是，直接连接`myserver`即可。
-
-```bash
-$ ssh simple
-```
-
-上面命令中，`ssh`会自动连接`myserver.example.com`。
-
-## 配置文件的命令
+###  配置命令的语法
 
 ssh 客户端配置文件的每一行，就是一个配置命令。配置命令与对应的值之间，可以使用空格，也可以使用等号。
 
@@ -543,7 +511,9 @@ Compression = yes
 
 `#`开头的行表示注释，会被忽略。空行等同于注释。
 
-下面是 ssh 客户端的一些主要配置命令。
+### 主要配置命令
+
+下面是 ssh 客户端的一些主要配置命令，以及它们的范例值。
 
 - `AddressFamily inet`：表示只使用 IPv4 协议。如果设为`inet6`，表示只使用 IPv6 协议。
 - `BindAddress 192.168.10.235`：指定本机的 IP 地址（如果本机有多个 IP 地址）。
@@ -554,26 +524,26 @@ Compression = yes
 - `ConnectTimeout 60`：客户端进行连接时，服务器在指定秒数内没有回复，则中断连接尝试。
 - `DynamicForward 1080`：指定动态转发端口。
 - `GlobalKnownHostsFile /users/smith/.ssh/my_global_hosts_file`：指定全局的公钥数据库文件的位置。
-- `Host server.example.com`：指定连接的域名或 IP 地址，也可以是昵称，支持通配符。`Host`命令后面的所有配置，都是针对该主机的，直到下一个`Host`命令为止。
+- `Host server.example.com`：指定连接的域名或 IP 地址，也可以是别名，支持通配符。`Host`命令后面的所有配置，都是针对该主机的，直到下一个`Host`命令为止。
 - `HostKeyAlgorithms ssh-dss,ssh-rsa`：指定密钥算法，优先级从高到低排列。
-- `HostName myserver.example.com`：在`Host`命令使用昵称的情况下，`HostName`指定域名或 IP 地址。
+- `HostName myserver.example.com`：在`Host`命令使用别名的情况下，`HostName`指定域名或 IP 地址。
 - `IdentityFile keyfile`：指定私钥文件。
 - `LocalForward 2001 localhost:143`：指定本地端口转发。
-- `LogLevel QUIET`：指定日志详细程度。
+- `LogLevel QUIET`：指定日志详细程度。如果设为`QUIET`，将不输出大部分的警告和提示。
 - `MACs hmac-sha1,hmac-md5`：指定数据校验算法。
 - `NumberOfPasswordPrompts 2`：密码登录时，用户输错密码的最大尝试次数。
-- `PasswordAuthentication no`：是否支持密码登录，该方法能否登录成功由服务器决定。
+- `PasswordAuthentication no`：指定是否支持密码登录。不过，这里只是客户端禁止，真正的禁止需要在 SSH 服务器设置。
 - `Port 2035`：指定客户端连接的 SSH 服务器端口。
 - `PreferredAuthentications publickey,hostbased,password`：指定各种登录方法的优先级。
 - `Protocol 2`：支持的 SSH 协议版本，多个版本之间使用逗号分隔。
-- `PubKeyAuthentication yes`：是否支持密钥登录，该方法能否登录成功由服务器决定。
-- `RemoteForward 2001 S:143`：指定远程端口转发。
+- `PubKeyAuthentication yes`：是否支持密钥登录。这里只是客户端设置，还需要在 SSH 服务器进行相应设置。
+- `RemoteForward 2001 server:143`：指定远程端口转发。
 - `SendEnv COLOR`：SSH 客户端向服务器发送的环境变量名，多个环境变量之间使用空格分隔。环境变量的值从客户端当前环境中拷贝。
 - `ServerAliveCountMax 3`：如果没有收到服务器的回应，客户端连续发送多少次`keepalive`信号，才断开连接。该项默认值为3。
 - `ServerAliveInterval 300`：客户端建立连接后，如果在给定秒数内，没有收到服务器发来的消息，客户端向服务器发送`keepalive`消息。如果不希望客户端发送，这一项设为`0`。
 - `StrictHostKeyChecking yes`：`yes`表示严格检查，服务器公钥为未知或发生变化，则拒绝连接。`no`表示如果服务器公钥未知，则加入客户端公钥数据库，如果公钥发生变化，不改变客户端公钥数据库，输出一条警告，依然允许连接继续进行。`ask`（默认值）表示询问用户是否继续进行。
 - `TCPKeepAlive yes`：客户端是否定期向服务器发送`keepalive`信息。
-- `User userName`：指定远程账户名。
-- `UserKnownHostsFile /users/smith/.ssh/my_local_hosts_file`：指定当前用户的公钥数据库文件的位置。
-- `VerifyHostKeyDNS yes`：是否检查 SSH 服务器的 DNS 记录，有没有公钥里保存的一致。
+- `User userName`：指定远程登录的账户名。
+- `UserKnownHostsFile /users/smith/.ssh/my_local_hosts_file`：指定当前用户的`known_hosts`文件（服务器公钥指纹列表）的位置。
+- `VerifyHostKeyDNS yes`：是否通过检查 SSH 服务器的 DNS 记录，确认公钥指纹是否与`known_hosts`文件保存的一致。
 
