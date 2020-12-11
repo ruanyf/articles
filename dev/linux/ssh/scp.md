@@ -107,13 +107,13 @@ $ scp user@host1:directory/SourceFile user@host2:directory/SourceFile
 $ scp user1@host1.com:/files/file.txt user2@host2.com:/files
 ```
 
-系统将提示您输入两个远程帐户的密码。数据将直接从一个远程主机传输到另一个远程主机。
+系统将提示你输入两个远程帐户的密码。数据将直接从一个远程主机传输到另一个远程主机。
 
 ## 配置项
 
-**（4）`-c`**
+**（1）`-c`**
 
-`-c`参数用来指定加密算法。
+`-c`参数用来指定文件拷贝数据传输的加密算法。
 
 ```bash
 $ scp -c blowfish some_file your_username@remotehost.edu:~
@@ -121,7 +121,7 @@ $ scp -c blowfish some_file your_username@remotehost.edu:~
 
 上面代码指定加密算法为`blowfish`。
 
-**（5）`-C`**
+**（2）`-C`**
 
 `-C`参数表示是否在传输时压缩文件。
 
@@ -129,15 +129,15 @@ $ scp -c blowfish some_file your_username@remotehost.edu:~
 $ scp -c blowfish -C local_file your_username@remotehost.edu:~
 ```
 
-**（7）`-F`**
+**（3）`-F`**
 
-`-F`参数用来指定 ssh_config 文件。
+`-F`参数用来指定 ssh_config 文件，供 ssh 使用。
 
 ```bash
-$ scp -F /home/pungki/proxy_ssh_config Label.pdf
+$ scp -F /home/pungki/proxy_ssh_config Label.pdf root@172.20.10.8:/root
 ```
 
-**（9）`-i`**
+**（4）`-i`**
 
 `-i`参数用来指定密钥。
 
@@ -145,7 +145,7 @@ $ scp -F /home/pungki/proxy_ssh_config Label.pdf
 $ scp -vCq -i private_key.pem ~/test.txt root@192.168.1.3:/some/path/test.txt
 ```
 
-**（3）`-l`**
+**（5）`-l`**
 
 `-l`参数用来限制传输数据的带宽速率，单位是 Kbit/sec。对于多人分享的带宽，这个参数可以留出一部分带宽供其他人使用。
 
@@ -155,7 +155,7 @@ $ scp -l 80 yourusername@yourserver:/home/yourusername/* .
 
 上面代码中，`scp`命令占用的带宽限制为每秒 80K 比特位，即每秒 10K 字节。
 
-**（2）`-p`**
+**（6）`-p`**
 
 `-p`参数用来保留修改时间（modification time）、访问时间（access time）、文件状态（mode）等原始文件的信息。
 
@@ -163,7 +163,7 @@ $ scp -l 80 yourusername@yourserver:/home/yourusername/* .
 $ scp -p ~/test.txt root@192.168.1.3:/some/path/test.txt
 ```
 
-**（1）`-P`**
+**（7）`-P`**
 
 `-P`参数用来指定远程主机的 SSH 端口。如果远程主机使用默认端口22，可以不用指定，否则需要用`-P`参数在命令中指定。
 
@@ -171,7 +171,7 @@ $ scp -p ~/test.txt root@192.168.1.3:/some/path/test.txt
 $ scp -P 2222 user@host:directory/SourceFile TargetFile
 ```
 
-**（6）`-q`**
+**（8）`-q`**
 
 `-q`参数用来关闭显示拷贝的进度条。
 
@@ -179,11 +179,11 @@ $ scp -P 2222 user@host:directory/SourceFile TargetFile
 $ scp -q Label.pdf mrarianto@202.x.x.x:.
 ```
 
-**（10）`-r`**
+**（9）`-r`**
 
 `-r`参数表示是否以递归方式复制目录。
 
-**（8）`-v`**
+**（10）`-v`**
 
 `-v`参数用来显示详细的输出。
 

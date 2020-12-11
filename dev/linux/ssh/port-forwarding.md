@@ -24,13 +24,13 @@ $ ssh -D local-port tunnel-host -N
 
 上面命令中，`-D`表示动态转发，`local-port`是本地端口，`tunnel-host`是 SSH 服务器，`-N`表示只进行端口转发，不登录远程 Shell。
 
-举例来说，如果本地端口是`2121`，那么实际命令就是下面这样。
+举例来说，如果本地端口是`2121`，那么动态转发的命令就是下面这样。
 
 ```bash
 $ ssh -D 2121 tunnel-host -N
 ```
 
-注意，这种转发采用了 SOCKS5 协议。访问外部网站时，需要把 HTTP 请求转成 SOCKS5 协议，才能把本地端口的请求转发出去。
+注意，这种转发采用了 SOCKS5 协议。访问外部网站时，需要把 HTTP 请求转成 SOCKS5 协议，才能把本地端口的请求转发出去。`-N`参数表示，这个 SSH 连接不能执行远程命令，只能充当隧道。
 
 下面是 ssh 隧道建立后的一个使用实例。
 
@@ -40,7 +40,7 @@ $ curl -x socks5://localhost:2121 http://www.example.com
 
 上面命令中，curl 的`-x`参数指定代理服务器，即通过 SOCKS5 协议的本地`2121`端口，访问`http://www.example.com`。
 
-如果经常使用动态转发，可以将设置写入客户端的 config 文件。
+如果经常使用动态转发，可以将设置写入 SSH 客户端的用户个人配置文件。
 
 ```bash
 DynamicForward tunnel-host:local-port
@@ -64,7 +64,7 @@ $ ssh -L local-port:target-host:target-port tunnel-host
 $ ssh -L 2121:www.example.com:80 tunnel-host -N
 ```
 
-然后，访问本机的`2121`端口，就是访问`www.example.com`。
+然后，访问本机的`2121`端口，就是访问`www.example.com`的80端口。
 
 ```bash
 $ curl http://localhost:2121
@@ -78,9 +78,9 @@ $ curl http://localhost:2121
 $ ssh -L 1100:mail.example.com:110 mail.example.com
 ```
 
-上面命令将本机的1100端口，绑定邮件服务器`mail.example.com`的110端口（POP3 协议的默认端口）。端口转发建立以后，POP3 邮件客户端只需要访问本机的1100端口，请求就会自动转发到`mail.example.com`的110端口。
+上面命令将本机的1100端口，绑定邮件服务器`mail.example.com`的110端口（POP3 协议的默认端口）。端口转发建立以后，POP3 邮件客户端只需要访问本机的1100端口，请求就会通过 SSH 跳板机（这里是`mail.example.com`），自动转发到`mail.example.com`的110端口。
 
-上面这种情况有一个前提条件，就是`mail.example.com`必须运行 SSH 服务器。否则，就必须通过另一台服务器中介，执行的命令要改成下面这样。
+上面这种情况有一个前提条件，就是`mail.example.com`必须运行 SSH 服务器。否则，就必须通过另一台 SSH 服务器中介，执行的命令要改成下面这样。
 
 ```bash
 $ ssh -L 1100:mail.example.com:110 other.example.com
@@ -92,7 +92,7 @@ $ ssh -L 1100:mail.example.com:110 other.example.com
 
 这个命令最好加上`-N`参数，表示不在 SSH 跳板机执行远程命令，让 SSH 只充当隧道。另外还有一个`-f`参数表示 SSH 连接在后台运行。
 
-如果经常使用本地转发，可以将设置写入客户端的 config 文件。
+如果经常使用本地转发，可以将设置写入 SSH 客户端的用户个人配置文件。
 
 ```bash
 Host test.example.com
@@ -101,19 +101,19 @@ LocalForward client-IP:client-port server-IP:server-port
 
 ## 远程转发
 
-远程端口转发与本地端口转发相反。它将远程服务器的某个端口收到的请求，转发到本地计算机。远程转发是在远程 SSH 服务器建立的转发规则。
+远程端口指的是在远程 SSH 服务器建立的转发规则。
 
 这种场景比较特殊，主要针对内网的情况。本地计算机在外网，SSH 跳板机和目标服务器都在内网，而且本地计算机无法访问内网之中的 SSH 跳板机，但是 SSH 跳板机可以访问本机计算机。
 
-由于本机无法访问内网 SSH 跳板机，就无法从外网发起 SSH 隧道，必须反过来，从 SSH 跳板机发起隧道，这时就会用到远程端口转发。
+由于本机无法访问内网 SSH 跳板机，就无法从外网发起 SSH 隧道，建立端口转发。必须反过来，从 SSH 跳板机发起隧道，建立端口转发，这时就形成了远程端口转发。
 
 ```bash
 $ ssh -R local-port:target-host:target-port -N local
 ```
 
-上面的命令，首先需要注意，不是在本机执行的，而是在 SSH 跳板机执行的，从跳板机去连接本地计算机。`-R`参数表示远程端口转发，`local-port`是本地计算机的端口，`target-host`和`target-port`是目标服务器及其端口。
+上面的命令，首先需要注意，不是在本机执行的，而是在 SSH 跳板机执行的，从跳板机去连接本地计算机。`-R`参数表示远程端口转发，`local-port`是本地计算机的端口，`target-host`和`target-port`是目标服务器及其端口，`local`是本地计算机。
 
-显然，远程端口转发要求，本地计算机也安装了 SSH 服务器，这样才能接受 SSH 跳板机的远程登录。
+显然，远程端口转发要求本地计算机也安装了 SSH 服务器，这样才能接受 SSH 跳板机的远程登录。
 
 比如，跳板机执行下面的命令，绑定本地计算机的`2121`端口，去访问`www.example.com:80`。
 
@@ -129,7 +129,7 @@ $ curl http://localhost:2121
 
 执行上面的命令以后，命令就会输出服务器`www.example.com`的80端口返回的内容。
 
-如果经常执行远程端口转发，可以将设置写入 SSH 客户端的 config 文件。
+如果经常执行远程端口转发，可以将设置写入 SSH 客户端的用户个人配置文件。
 
 ```bash
 Host test.example.com
@@ -138,17 +138,7 @@ RemoteForward local-IP:local-port target-ip:target-port
 
 ## 实例
 
-### Email 加密下载
-
-上面介绍了 ssh 端口转发的三种用法，下面就来看几个具体的实例。
-
-公共场合的 WiFi，如果使用非加密的通信，是非常不安全的。假定我们在咖啡馆里面，需要从邮件服务器明文下载邮件，怎么办？一种解决方法就是，采用本地端口转发，在本地电脑与邮件服务器之间，建立 SSH 隧道。
-
-```bash
-$ ssh -L 2121:mail-server:143 tunnel-host -N
-```
-
-上面命令指定本地`2121`端口绑定 ssh 跳板机`tunnel-host`，跳板机连向邮件服务器的`143`端口。这样下载邮件，本地到 ssh 跳板机这一段，是完全加密的。当然，跳板机到邮件服务器的这一段，依然是明文的。
+下面看两个端口转发的实例。
 
 ### 简易 VPN
 
@@ -159,14 +149,6 @@ $ ssh -L 2080:corp-server:80 -L 2443:corp-server:443 tunnel-host -N
 ```
 
 上面命令通过 ssh 跳板机，将本机的`2080`端口绑定内网服务器的`80`端口，本机的`2443`端口绑定内网服务器的`443`端口。
-
-不过，这个例子只能访问`corp-server`这一个远程服务，如果要做一个通用的 VPN，可以使用下面的命令。
-
-```bash
-$ ssh -fNL 2222:localhost:22 tunnel-host &
-```
-
-上面示例中，本地的2222端口通过 SSH 跳板机`tunnel-host`，连接到跳板机的22端口（即上面的`localhost`是针对跳板机而言）。22端口是 SSH 的默认端口，所以等于把发往本机2222端口的请求，都通过跳板机的22端口发出去。ssh 的`-N`参数指定 SSH 不运行任何远程命令，只进行端口转发；`-f`参数指定客户端在后台运行，命令末尾的`&`也是把这个命令放在后台运行。
 
 ### 两级跳板
 

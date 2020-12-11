@@ -1,8 +1,8 @@
-# SSH 服务器端
+# SSH 服务器
 
 ## 简介
 
-SSH 的架构是服务器/客户端模式，两端运行的软件是不一样的。OpenSSH 的客户端软件是 ssh，服务器软件是 sshd。
+SSH 的架构是服务器/客户端模式，两端运行的软件是不一样的。OpenSSH 的客户端软件是 ssh，服务器软件是 sshd。本章介绍 sshd 的各种知识。
 
 如果没有安装 sshd，可以用下面的命令安装。
 
@@ -22,7 +22,7 @@ $ sshd
 
 上面的命令运行以后，sshd 自动进入后台，所以命令后面不需要加上`&`。
 
-除了直接运行可执行文件，也可以通过 Systemd 操作 sshd 服务。
+除了直接运行可执行文件，也可以通过 Systemd 启动 sshd。
 
 ```bash
 # 启动
@@ -35,18 +35,18 @@ $ sudo systemctl stop sshd.service
 $ sudo systemctl restart sshd.service
 ```
 
-下面的命令让 sshd 在计算机启动时自动运行。
+下面的命令让 sshd 在计算机下次启动时自动运行。
 
 ```bash
 $ sudo systemctl enable sshd.service
 ```
 
-## 服务器配置文件
+## sshd 配置文件
 
 sshd 的配置文件在`/etc/ssh`目录，主配置文件是`sshd_config`，此外还有一些安装时生成的密钥。
 
 - `/etc/ssh/sshd_config`：配置文件
-- `/etc/ssh/ssh_h ost_ecdsa_key`：ECDSA 私钥。
+- `/etc/ssh/ssh_host_ecdsa_key`：ECDSA 私钥。
 - `/etc/ssh/ssh_host_ecdsa_key.pub`：ECDSA 公钥。
 - `/etc/ssh/ssh_host_key`：用于 SSH 1 协议版本的 RSA 私钥。
 - `/etc/ssh/ssh_host_key.pub`：用于 SSH 1 协议版本的 RSA 公钥。
@@ -56,21 +56,21 @@ sshd 的配置文件在`/etc/ssh`目录，主配置文件是`sshd_config`，此�
 
 注意，如果重装 sshd，上面这些密钥都会重新生成，导致客户端重新 ssh 连接服务器时，会跳出警告，拒绝连接。为了避免这种情况，可以在重装 sshd 时，先备份`/etc/ssh`目录，重装后再恢复这个目录。
 
-配置文件`sshd_config`的格式是，每个命令占据一行。每行都是关键字和对应的值，关键字的大小写不敏感。关键字与值之间使用空格分隔。
+配置文件`sshd_config`的格式是，每个命令占据一行。每行都是配置项和对应的值，配置项的大小写不敏感，与值之间使用空格分隔。
 
 ```bash
 Port 2034
 ```
 
-上面的配置命令指定，关键字`Port`的值是`2034`。`Port`写成`port`也可。
+上面的配置命令指定，配置项`Port`的值是`2034`。`Port`写成`port`也可。
 
-另一种格式是关键字与值之间有一个等号，等号前后的空格可选。
+配置文件还有另一种格式，就是配置项与值之间有一个等号，等号前后的空格可选。
 
 ```bash
 Port = 2034
 ```
 
-`#`开头的行表示注释。
+配置文件里面，`#`开头的行表示注释。
 
 ```bash
 # 这是一行注释
@@ -79,7 +79,7 @@ Port = 2034
 注意，注释只能放在一行的开头，不能放在一行的结尾。
 
 ```bash
-Port 2034   #  此处不允许注释
+Port 2034 # 此处不允许注释
 ```
 
 上面的写法是错误的。
@@ -103,26 +103,27 @@ $ sshd -t
 配置文件修改以后，并不会自动生效，必须重新启动 sshd。
 
 ```bash
-$ sudo systemctl restart sshd
+$ sudo systemctl restart sshd.service
 ```
 
 ## sshd 密钥
 
-sshd 需要密钥表明自己的身份。所有密钥都是公钥和私钥成对出现，公钥的文件名以后缀`.pub`表示。
+sshd 有自己的一对或多对密钥。它使用密钥向客户端证明自己的身份。所有密钥都是公钥和私钥成对出现，公钥的文件名一般是私钥文件名加上后缀`.pub`。
 
 DSA 格式的密钥文件默认为`/etc/ssh/ssh_host_dsa_key`（公钥为`ssh_host_dsa_key.pub`），RSA 格式的密钥为`/etc/ssh/ssh_host_rsa_key`（公钥为`ssh_host_rsa_key.pub`）。如果需要支持 SSH 1 协议，则必须有密钥`/etc/ssh/ssh_host_key`。
 
-密钥也可以通过配置文件`sshd_config`的`HostKey`命令指定.。默认密钥的`HostKey`设置如下。
+如果密钥不是默认文件，那么可以通过配置文件`sshd_config`的`HostKey`配置项指定。默认密钥的`HostKey`设置如下。
 
 ```bash
 # HostKey for protocol version 1
 # HostKey /etc/ssh/ssh_host_key
+
 # HostKeys for protocol version 2
 # HostKey /etc/ssh/ssh_host_rsa_key
 # HostKey /etc/ssh/ssh_host_dsa_ke
 ```
 
-上面命令前面的`#`表示这些行都是注释，因为这是默认值，写不写都一样。
+上面命令前面的`#`表示这些行都是注释，因为这是默认值，有没有这几行都一样。
 
 如果要修改密钥，就要去掉行首的`#`，指定其他密钥。
 
@@ -146,7 +147,7 @@ HostKey /usr/local/ssh/my_old_ssh1_key
 
 **AllowUsers**
 
-`AllowUsers`指定允许登录的用户，用户名之间使用空格分隔（`AllowUsers user1 user2`），也可以使用多行`AllowUsers`命令指定，用户名支持使用通配符。如果不使用该项，则允许所有用户登录。该项也可以指定域名，比如`AllowUsers jones@example.com`。
+`AllowUsers`指定允许登录的用户，用户名之间使用空格分隔（`AllowUsers user1 user2`），也可以使用多行`AllowUsers`命令指定，用户名支持使用通配符。如果不使用该项，则允许所有用户登录。该项也可以使用`用户名@域名`的格式（比如`AllowUsers jones@example.com`）。
 
 **AllowTcpForwarding**
 
@@ -348,7 +349,61 @@ $ sudo systemctl restart sshd
 
 sshd 命令有一些配置项。这些配置项在调用时指定，可以覆盖配置文件的设置。
 
-（1）`-p`
+（1）`-d`
+
+`-d`参数用于显示 debug 信息。
+
+```bash
+$ sshd -d
+```
+
+（2）`-D`
+
+`-D`参数指定 sshd 不作为后台守护进程运行。
+
+```bash
+$ sshd -D
+```
+
+（3）`-e`
+
+`-e`参数将 sshd 写入系统日志 syslog 的内容导向标准错误（standard error）。
+
+（4）`-f`
+
+`-f`参数指定配置文件的位置。
+
+（5）`-h`
+
+`-h`参数用于指定密钥。
+
+```bash
+$ sshd -h /usr/local/ssh/my_rsa_key
+```
+
+（6）`-o`
+
+`-o`参数指定配置文件的一个配置项和对应的值。
+
+```bash
+$ sshd -o "Port 2034"
+```
+
+配置项和对应值之间，可以使用等号。
+
+```bash
+$ sshd -o "Port = 2034"
+```
+
+如果省略等号前后的空格，也可以不使用引号。
+
+```bash
+$ sshd -o Port=2034
+```
+
+`-o`参数可以多个一起使用，用来指定多个配置关键字。
+
+（7）`-p`
 
 `-p`参数指定 sshd 的服务端口。
 
@@ -364,62 +419,7 @@ $ sshd -p 2034
 $ sshd -p 2222 -p 3333
 ```
 
-（2）`-o`
-
-`-o`参数指定配置文件的一个配置关键字和对应的值。
-
-```bash
-$ sshd -o "Port 2034"
-```
-
-关键字和对应值之间，可以使用等号。
-
-```bash
-$ sshd -o "Port = 2034"
-```
-
-如果省略等号前后的空格，也可以不使用引号。
-
-```bash
-$ sshd -o Port=2034
-```
-
-`-o`参数可以多个一些使用，用来指定多个配置关键字。
-
-（3）`-h`
-
-`-h`参数用于指定密钥。
-
-```bash
-$ sshd -h /usr/local/ssh/my_rsa_key
-```
-
-（4）`-d`
-
-`-d`参数用于显示 debug 信息。
-
-```bash
-$ sshd -d
-```
-
-（5）`-f`
-
-`-f`参数指定配置文件的位置。
-
-（6）`-t`
+（8）`-t`
 
 `-t`参数检查配置文件的语法是否正确。
-
-
-（7）`-D`
-
-sshd 不作为后台守护进程运行。
-
-```bash
-$ sshd -D
-```
-
-（8）`-e`
-
-`-e`参数将 sshd 写入系统日志 syslog 的内容导向标准错误（standard error）。
 
