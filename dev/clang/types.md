@@ -142,3 +142,46 @@ score = ((double)score / 20) * 100;
 /* 写法二 */
 score = (score / 20.0) * 100;
 ```
+
+## struct 命令
+
+`struct`命令用于自定义复杂的数据类型。
+
+```clang
+struct fraction {
+  int numerator;
+  int denominator;
+};
+```
+
+上面示例定义了一个分数`fraction`的数据类型，其中包含两个属性`numerator`和`denominator`。
+
+注意，`struct`语句结尾的分号不能省略，否则很容易产生错误。
+
+定义好了类型以后，就可以声明变量了。
+
+```clang
+struct fraction f1;
+
+f1.numerator = 22;
+f1.denominator = 7;
+```
+
+声明变量时，自定义的类型名前面，不要忘记加上`struct`关键字。变量的属性通过点（`.`）来表示。
+
+## typedef 命令
+
+`typedef`命令用来为某个类型起别名。
+
+```c
+typedef type name;
+```
+
+上面代码中，`type`代表某个类型，`name`代表别名。
+
+```c
+typedef struct treenode* Tree;
+```
+
+上面示例中，`Tree`为`struct treenode*`的别名。
+
