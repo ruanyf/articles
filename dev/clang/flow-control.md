@@ -1,8 +1,6 @@
-# 语句
+# 流程控制
 
-语句（statement）用来执行某个命令，通常没有返回值。
-
-C 语言使用大括号`{}`，将多个语句组成一个语法块。
+C 语言的程序是顺序执行的，即先执行前面的语句，再执行后面的语句。有一些特殊的语法结构提供了流程控制的功能，比如条件执行和循环执行。
 
 ## if 语句
 
@@ -68,13 +66,33 @@ C 语言有一个三元表达式`?:`，可以用作`if...else`的简写形式。
 
 这个操作符的含义是，表达式`expression1`如果为`true`（非0值），就执行`expression2`，否则执行`expression3`。
 
+条件表达式是`if`语句的简写，允许根据条件的值，执行两个操作之中的一个。
+
+```c
+expression1 ? expression2 : expression3
+```
+
+下面是一个例子。
+
+```c
+i > j ? i : j;
+```
+
+上面的代码等同于下面的`if`语句。
+
+```c
+if (i > j)
+  return i;
+else
+  return j;
+```
 
 下面是求较小值的例子。
 
 ```c
 min = (x < y) ? x : y;
 
-# 等同于
+// 等同于
 
 if (x < y) {
   min = x;
@@ -86,7 +104,32 @@ else {
 
 ## switch 语句
 
-switch 语句是一种特殊形式的 if 结构，用于多个分支的情况，if 判断只能支持两个分支。
+switch 语句是一种特殊形式的 if...else 结构，用于多个判断结果的情况，if 判断只能支持两个分支，更加易读。
+
+```c
+switch (expression) {
+  case expression: statement
+  case expression: statement
+  default: statement
+}
+```
+
+下面是一个例子。
+
+```c
+switch (grade) {
+  case 0:
+    printf("False");
+    break;
+  case 1:
+    printf("True");
+    break;
+  default:
+    printf("Illegal");
+}
+```
+
+`break`语句用来跳出`switch`，继续执行`switch`后面的语句。
 
 如果一个表达式可能有多个整数值，那么就可以使用 switch 语句，不同的返回值跳到不同的代码块。
 

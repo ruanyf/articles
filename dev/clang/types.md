@@ -185,3 +185,24 @@ typedef struct treenode* Tree;
 
 上面示例中，`Tree`为`struct treenode*`的别名。
 
+## sizeof 运算符
+
+`sizeof`运算符接受一个变量名作为参数，返回该变量占用的字节数量。
+
+除了`char`类型的变量始终为一个字节，其他类型的变量在不同的系统上，占用的字节数量可能会有所不同。
+
+```c
+int a = 999;
+
+
+sizeof a; // 4
+sizeof(2 + 7); // 4
+sizeof 3.14; // 8
+```
+
+也可以直接对各种类型名使用`sizeof`运算符，这时类型名必须放在括号里面。
+
+```c
+sizeof(int); // 4
+sizeof(char); // 1
+```
