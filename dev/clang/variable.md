@@ -18,6 +18,10 @@ int height;
 
 ```c
 int height, width;
+
+// 等同于
+int height;
+int width;
 ```
 
 注意，声明变量的语句必须以分号结尾。
