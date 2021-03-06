@@ -1,5 +1,7 @@
 # 字符串
 
+## 简介
+
 C 语言没有单独的字符串类型，字符串被视为字符数组，在字符串结尾 C 语言会自动添加`\0`字符（即这个内存位置的值全部为0），表示字符串结束。
 
 ```c
@@ -8,22 +10,130 @@ char localString[10];
 
 上面示例声明了一个10个成员的字符数组，即长度为10的字符串。由于最后一个字符为`\0`，所以最多只能容纳长度为9的字符串。
 
-C 语言提供了字符串拷贝函数`strcpy(char dest[], char source[])`。
+
+
+C 语言约定，字符串必须放在双引号里面。
 
 ```c
-strcpy(localString, "binky");
+"This is a test."
 ```
 
-上面示例将字符串`binky`拷贝到字符数组`localString`。`binky`的长度为`5`，所以会占据`localString`的前五个位置，第六个位置是自动添加的结束标志`\0`，剩余的四个位置都为随机值。
+即使在双引号里面只有一个字符（比如`"a"`），也依然被处理成字符串（长度为2），而不是字符（长度为1）。
 
-如果复制的字符串长度超过9，会覆盖内存里面`localString`后面的值。
+如果字符串内部包含双引号，则该双引号需要使用反斜线转义。
 
-函数`strlen(char[])`返回字符串的长度。
+```c
+"She replied, \"It does.\""
+```
+
+字符串内部允许包含特殊字符，比如表示换行的`\n`。
+
+```c
+"Hello, world!\n"
+```
+
+使用双引号，声明字符串变量也可以写成下面这样。
+
+```c
+char* s = "Hello, world!";
+// 等同于
+char s[14] = "Hello, world!";
+char s[] = "Hello, world!";
+```
+
+上面示例中，变量`s`其实是指向第一个字符`H`的指针。
+
+这两种字符串变量的声明方法（指针和数组），有一个细微的差异。指针指向的字符串，在 C 语言内部被当作常量，不能修改字符串本身。
+
+```c
+char *s = "Hello, world!";
+s[0] = 'z';
+```
+
+上面代码使用指针，声明了一个字符串变量，然后修改了字符串的第一个字符。这种写法是错的，会导致难以预测的后果，执行时很可能会报错。
+
+如果使用数组声明字符串变量，就没有这个问题，可以修改数组的任意成员。
+
+```c
+char s[] = "Hello, world!";
+s[0] = 'z';
+```
+
+## 字符串长度
+
+C 语言提供了一个`strlen()`函数，计算字符串的长度。
 
 ```c
 int len;
 len = strlen(string);
 ```
+
+它的原型在标准库的`string.h`文件中定义，下面是一个真实的例子。
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+  char *s = "Hello, world!";
+  printf("The string is %zu characters long.\n", strlen(s));
+}
+```
+
+`strlen()`函数返回`type size_t`，它是整数类型。
+
+也可以通过判断字符串末尾的`\0`，来手动计算字符串长度。
+
+```c
+int my_strlen(char *s) {
+  int count = 0;
+  while (s[count] != '\0')
+    count++;
+  return count;
+}
+```
+
+## 字符串拷贝
+
+如果使用赋值运算符（`=`）复制字符串，得到的是两个指向同一字符串的指针。
+
+```c
+char s[] = "Hello, world!";
+char *t;
+
+t = s;
+
+t[0] = 'z';
+printf("%s\n", s);  // "zello, world!"
+```
+
+上面示例中，变量`s`和`t`指向同一个字符串，修改其中任何一个，就会影响到另一个。
+
+如果要复制字符串，则必须一次复制一个字节。由于这是一个常见操作，C 语言提供了字符串拷贝函数`strcpy()`，原型在标准库的`string.h`文件中定义。
+
+```c
+strcpy(char dest[], char source[])
+```
+
+`strcpy()`接受两个参数，第一个参数是接受拷贝的字符串变量，第二个参数是源字符串。复制字符串之前，必须要保证第一个参数的长度不小于第二个参数。
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+  char s[] = "Hello, world!";
+  char t[100];
+
+  strcpy(t, s);
+
+  t[0] = 'z';
+  printf("%s\n", s);  // "Hello, world!"
+  printf("%s\n", t);  // "zello, world!"
+}
+```
+
+上面示例将变量`s`的值，拷贝一份放到变量`t`，变成两个不同的字符串，修改一个不会影响到另一个。另外，变量`t`的长度大于`s`，复制后多余的位置（结束标志`\0`后面的位置）都为随机值。
 
 ## 转义序列
 
