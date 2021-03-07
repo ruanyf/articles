@@ -87,3 +87,87 @@ int* p;
 
 因此要记住，如果对指针变量所指向的内存地址赋值，一定要先对指针变量赋值，使得指针变量指向那个地址，然后再对那个地址赋值。
 
+## void 指针
+
+void 指针指的是不限定指针指向什么类型的数据。某些函数的返回值就是 void 指针，比如`memcpy()`函数。
+
+```c
+void* memcpy(void* s1, void* s2, size_t n);
+```
+
+上面代码中，`s1`和`s2`之所以是`void*`，指的是各种类型的指针都可以。
+
+因为`memcpy()`只是将一段内存的值，复制到另一段内存，所以不需要知道内存里面的数据是什么类型。下面是复制字符串的例子。
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    char s[] = "Goats!";
+    char t[100];
+
+    memcpy(t, s, 7);  // Copy 7 bytes--including the NUL terminator!
+
+    printf("%s\n", t);  // "Goats!"
+}
+```
+
+下面是复制数值的例子。
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    int a[] = {11, 22, 33};
+    int b[3];
+
+    memcpy(b, a, 3 * sizeof(int));  // Copy 3 ints of data
+
+    printf("%d\n", b[1]);  // 22
+}
+```
+
+复制自定义 Struct 数据结构的例子。
+
+```c
+struct antelope my_antelope;
+struct antelopy my_clone_antelope;
+
+// ...
+
+memcpy(&my_clone, &my_antelope, sizeof my_antelope);
+```
+
+注意，由于不知道 void 指针指向什么类型的值，所以不能用`*`运算符取出它指向的值。
+
+```c
+char a = 'X';
+void* p = &a;
+
+printf("%c\n", *p); // 报错
+```
+
+上面示例中，`p`是一个 void 指针，所以这时无法用`*p`取出指针指向的值。
+
+使用 void 指针，我们也可以自己定义一个复制内存的函数。
+
+```c
+void* my_memcpy(void* dest, void* src, int byte_count) {
+  char* s = src;
+  char* d = dest;
+
+  while (byte_count--) {
+    *d++ = *s++;
+  }
+
+  return dest;
+
+}
+```
+
+上面示例中，不管传入的`dest`和`src`是什么类型的指针，将它们重新定义成一字节的 Char 指针，这样就可以逐字节进行复制。最后，返回复制后的`dest`指针，便于后续使用。
+

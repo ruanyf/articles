@@ -46,7 +46,7 @@ char s[] = "Hello, world!";
 这两种字符串变量的声明方法（指针和数组），有一个细微的差异。指针指向的字符串，在 C 语言内部被当作常量，不能修改字符串本身。
 
 ```c
-char *s = "Hello, world!";
+char* s = "Hello, world!";
 s[0] = 'z';
 ```
 

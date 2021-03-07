@@ -143,24 +143,6 @@ score = ((double)score / 20) * 100;
 score = (score / 20.0) * 100;
 ```
 
-
-
-## typedef 命令
-
-`typedef`命令用来为某个类型起别名。
-
-```c
-typedef type name;
-```
-
-上面代码中，`type`代表某个类型，`name`代表别名。
-
-```c
-typedef struct treenode* Tree;
-```
-
-上面示例中，`Tree`为`struct treenode*`的别名。
-
 ## sizeof 运算符
 
 `sizeof`运算符接受一个变量名作为参数，返回该变量占用的字节数量。
