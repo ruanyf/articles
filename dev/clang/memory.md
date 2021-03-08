@@ -1,44 +1,145 @@
-# 内存管理
+# C 语言的内存管理
+
+## 简介
+
+C 语言的内存管理，分成两部分。一部分是系统管理的，另一部分是用户手动管理的。
+
+系统管理的内存，主要是函数内部的变量（local 的变量）。这部分变量在函数运行时进入内存，函数运行结束后自动从内存卸载。这些变量存放的区域称为”栈“（stack），”栈“所在的内存是系统自动管理的。
+
+用户手动管理的内存，主要是程序运行的整个过程中都存在的变量（全局变量），这些变量需要用户手动从内存释放。如果使用后忘记释放，它就一直占用内存，直到程序退出，这种情况称为”内存泄漏“（memory leak）。这些变量所在的内存称为”堆“（heap），”堆“所在的内存是用户手动管理的。
+
+## 内存管理函数
 
 C 语言内存管理的函数原型，都是在`<stdlib.h>`定义，使用这些函数之前，需要先加载这个头文件。
 
-`void* malloc(size_t size)`：要求在 heap 里面分配连续的内存块，返回指向开始地址的指针。如果请求没有成功，返回 NULL。类型`size_t`是一个无符号长整数（`unsigned long`），表示所要求的内存块的字节长度。`malloc()`返回类型是`void*`，即一个指针，但是没有给出指向的数据类型。
+### malloc()
 
-`void free(void* block)`：释放`malloc()`所分配的内存代码块，将这块内存还给 Heap 以便重新使用。分配的内存块一旦释放，就不应该再次读取以前分配的这个内存块，也不应该释放第二次。
+`malloc()`函数用于分配内存，可以在 heap 里面分配连续的内存块。它接受一个整数作为参数，表示所要分配的内存大小，返回一个 void 指针，指向分配好的内存块。如果分配没有成功，返回 NULL。
 
-`void* realloc(void* block, size_t size)`：对一个给定的内存块，重新指定大小，可能更大或更小，返回一个指向新的内存块的指针。如果分配不成功，返回 NULL。
+```c
+void* malloc(size_t size)
+```
+
+参数类型`size_t`是一个无符号长整数（`unsigned long`），表示所要求的内存块的字节长度。
+
+由于返回的是 void 指针，所以可以使用`malloc()`为任何类型的数据分配内存。常见的做法是先使用`sizeof()`函数，算出数据类型的字节长度，然后再将这个长度传给`malloc()`。
+
+```c
+int* p = malloc(sizeof(int));
+
+*p = 12;
+
+printf("%d\n", *p); // 12
+```
+
+上面示例为一个整数指针分配内存。这个例子其实不需要使用`malloc()`，因为 C 语言会自动为整数（本例是`12`）提供内存。
+
+`sizeof()`的参数可以是类型关键字，也可以是变量，所以上面的例子也可以写成下面这样。
+
+```c
+int *p = malloc(sizeof *p);
+```
+
+`malloc()`最常用的场合就是，为数组和自定义数据结构分配内存。
+
+```c
+int* p = malloc(sizeof(int) * 10);
+
+for (int i = 0; i < 10; i++)
+  p[i] = i * 5;
+```
+
+上面示例中，`p`只是一个整数指针，由于分配了足够的内存（可以放置10个整数），就可以用作数组。
+
+由于`malloc()`可能由于内存不足而分配失败，所以最好检查一下是否分配成功。
+
+```c
+int* x;
+
+x = malloc(sizeof(int) * 10);
+
+if (x == NULL) {
+  printf("Error allocating 10 ints\n");
+}
+```
+
+### free()
+
+`free()`用于手动释放占用的内存。它的参数是`malloc()`分配的内存指针或者指针的拷贝，将这块内存还给 Heap 以便重新使用。
+
+```c
+void free(void* block)
+```
+
+下面是一个例子。
+
+```c
+int *p = malloc(sizeof(int));
+
+*p = 12;
+
+free(p);
+```
 
 程序结束运行时，会自动释放占用的所有内存。所以，只有程序长时间运行或者占用太多内存时，才需要使用`free()`手动释放内存。
 
-下面手动分配一个数组的内存块的写法。
+注意，分配的内存块一旦释放，就不应该再次使用这个内存块，也不应该再次使用`free()`释放第二次。
+
+## calloc()
+
+`calloc()`的作用与`malloc()`相似，也是分配内存块。两者的区别主要有两点：
+
+（1）`calloc()`接受两个参数，第一个是单位数据类型的字节长度，第二个是该数据类型的数量。
+
+（2）`calloc()`会将所分配的内存全部初始化为`0`。`malloc()`不会对内存进行初始化，必须额外调用`memset()`函数。
+
+```c
+int *p = calloc(sizeof(int), 10);
+// 等同于
+int *q = malloc(sizeof(int) * 10);
+memset(q, 0, sizeof(int) * 10);
+```
+
+`calloc()`分配的内存块，也可以使用`free()`释放。
+
+### realloc()
+
+`realloc()`函数用于修改已经分配的内存块的大小，可以放大也可以缩小，返回一个指向新的内存块的指针。如果分配不成功，返回 NULL。
+
+```c
+void* realloc(void* block, size_t size)
+```
+
+它接受两个参数，第一个是指向已经分配好的内存块的指针（由`malloc()`或`calloc()`产生），第二个该内存块的新大小，单位为字节数量，而不是成员的数量。它可能返回一个全新的指针（数据也会自动复制过去），也可能返回跟原来一样的指针。
+
+下面是一个例子，`b`是数组指针，`realloc()`动态调整它的大小。
 
 ```c
 int* b;
-b = (int*) malloc(sizeof(int) * 1000);
-assert(b != NULL);
 
-b[123] = 13;
+b = malloc(sizeof(int) * 10);
 
-free(b);
-```
-
-手动建立数组的好处是，可以在运行时调整数组的长度。
-
-```c
 b = realloc(b, sizeof(int) * 2000);
 ```
 
-下面是手动为字符串分配内存的例子。
+上面示例中，指针`b`原来指向10个成员的整数数组，使用`realloc()`调整为2000个成员的数组。这就是手动分配数组内存的好处，可以在运行时随时调整数组的长度。
+
+`realloc()`的第一个参数可以是 NULL，这时就相当于新建一个指针。
 
 ```c
-#include <string.h>
+char* p = realloc(NULL, 3490);
+// 等同于
+char *p = malloc(3490);
+```
 
-char* MakeStringInHeap(const char* source) {
-  char* newString;
-  newString = (char*) malloc(strlen(source) + 1); // +1 for the '\0'
-  assert(newString != NULL);
-  strcpy(newString, source);
-  return(newString);
+由于有分配失败的可能，所以调用`realloc()`以后，最好检查一下它的返回值是否为 NULL。
+
+```c
+float *new_p = realloc(p, sizeof *p * 40);
+
+if (new_p == NULL) {
+  printf("Error reallocing\n");
+  return 1;
 }
 ```
 
