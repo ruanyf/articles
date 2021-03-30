@@ -46,7 +46,41 @@ struct car saturn = {.speed=172, .name="Saturn SL/2"};
 
 上面示例中，初始化的属性少于声明时的属性，这时剩下的那些属性都会初始化为`0`。
 
-## Struct 结构
+## 自我引用
+
+Struct 结构可以自我引用，即数据内部再次使用当前结构。比如，链条节点的结构就是自我引用。
+
+```c
+struct node {
+  int data;
+  struct node *next;
+};
+```
+
+下面使用上面的结构，生成一个三个节点的链表。
+
+```c
+struct node *head;
+
+// Hackishly set up a linked list (11)->(22)->(33)
+head = malloc(sizeof(struct node));
+
+head->data = 11;
+head->next = malloc(sizeof(struct node));
+
+head->next->data = 22;
+head->next->next = malloc(sizeof(struct node));
+
+head->next->next->data = 33;
+head->next->next->next = NULL;
+
+// Traverse it
+for (struct node *cur = head; cur != NULL; cur = cur->next) {
+  printf("%d\n", cur->data);
+}
+```
+
+## 函数传參
 
 Struct 结构传入函数时，一般会传入指针。
 
@@ -69,7 +103,45 @@ void set_price(struct car *c, float new_price) {
 }
 ```
 
-总结一下，Struct 变量使用点运算符获取属性，Struct 指针使用箭头运算符获取属性。
+总结一下，Struct 变量使用点运算符（`.`）获取属性，Struct 指针使用箭头运算符（`->`）获取属性。
+
+## 匿名 Struct
+
+Struct 允许定义匿名结构，即省略结构名。
+
+```c
+struct {
+  char *name;
+  int leg_count, speed;
+};
+```
+
+上面的数据结构，`struct`命令后面没有结构名，所以无法引用。
+
+为了引用匿名结构，必须在定义的同时，声明对应的变量。
+
+```c
+struct {
+  char *name;
+  int leg_count, speed;
+} a, b, c;
+
+a.name = "antelope";
+c.leg_count = 4;
+```
+
+上面示例的`a`、`b`、`c`就是变量名，它们的类型就是前面自定义的数据结构。
+
+更常见的用法，是为匿名 Struct 结构指定一个别名。
+
+```c
+typedef struct {
+  char* name;
+  int leg_count, speed;
+} animal;
+
+animal a, b, c;
+```
 
 ## Struct 的复制
 
