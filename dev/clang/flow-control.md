@@ -308,7 +308,32 @@ for (;;) {
 
 `break`语句用于在循环体内部跳出循环，也可以用于`switch`语句。
 
+```c
+while(feeling_hungry) {
+  eat_cake();
+  if (feeling_sick) {
+    break;
+  }
+  drink_coffee();
+}
+```
+
+上面示例中，`break`命令可以跳出`while`循环。
+
+注意，`break`命令只能跳出循环体和`switch`结构，不能跳出`if`结构。
+
 ## continue 语句
 
 `continue`语句用于在循环体内部终止本次循环，进入下一轮循环。
+
+```c
+while(feeling_hungry) {
+  if (not_lunch_yet) {
+    continue;
+  }
+  eat_cake();
+}
+```
+
+上面示例中，`continue`命令的作用是立即结束本次循环，不再执行后面的命令（`eat_cake()`），进入下一轮循环。
 
