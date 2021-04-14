@@ -170,8 +170,12 @@ printf("%s says it is %i o'clock", "Ben", 21);
 - `%d`：十进制整数
 - `%i`：整数
 - `%f`：小数
+- `%hd`：十进制 short 类型（类似的有`%ho`八进制 short 类型，`%hx`八进制 short 类型）
+- `%ld`：十进制 long 类型（类似的有`%lo`八进制 long 类型，`%lx`十六进制 long 类型）
+- `%lld`：十进制 long long 类型
 - `%o`：八进制整数
 - `%s`：字符串
+- `%u`：unsigned int 类型（类似的有`%lu`表示 unsigned long 类型，`%llu`表示 unsigned long long 类型）
 - `%x`：十六进制整数
 
 ### 输出格式
