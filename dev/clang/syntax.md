@@ -167,12 +167,16 @@ printf("%s says it is %i o'clock", "Ben", 21);
 
 常用的占位符的类型有以下几种。
 
+- `%c`：字符类型
 - `%d`：十进制整数
+- `%e`：使用科学计数法的浮点数
 - `%i`：整数
-- `%f`：小数
-- `%hd`：十进制 short 类型（类似的有`%ho`八进制 short 类型，`%hx`八进制 short 类型）
-- `%ld`：十进制 long 类型（类似的有`%lo`八进制 long 类型，`%lx`十六进制 long 类型）
-- `%lld`：十进制 long long 类型
+- `%f`：小数（`float`类型和`double`类型）
+- `%hd`：十进制 short int 类型（类似的有`%ho`八进制 short 类型，`%hx`八进制 short 类型）
+- `%ld`：十进制 long int 类型（类似的有`%lo`八进制 long 类型，`%lx`十六进制 long 类型）
+- `%lld`：十进制 long long int 类型
+- `%Le`：科学计数法表示的 long double 类型浮点数
+- `%Lf`：long double 类型浮点数
 - `%o`：八进制整数
 - `%s`：字符串
 - `%u`：unsigned int 类型（类似的有`%lu`表示 unsigned long 类型，`%llu`表示 unsigned long long 类型）
