@@ -180,3 +180,14 @@ void* my_memcpy(void* dest, void* src, int byte_count) {
 
 上面示例中，不管传入的`dest`和`src`是什么类型的指针，将它们重新定义成一字节的 Char 指针，这样就可以逐字节进行复制。最后，返回复制后的`dest`指针，便于后续使用。
 
+### void* 指针
+
+其他所有类型指针都可以转为`void*`指针，而`void*`指针也可以转为其他类型的指针。
+
+```c
+int x = 10;
+
+void* p = &x; // &x 是 int 指针，转为 void* 指针
+
+int *q = p; // p 是 void* 指针，转为 int 指针
+```
