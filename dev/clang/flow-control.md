@@ -181,7 +181,9 @@ while (expression)
   statement
 ```
 
-上面的代码中，如果表达式`expression`为`true`，就会执行`statement`语句，否则就不执行。
+上面的代码中，如果表达式`expression`为非零值（表示`true`），就会执行`statement`语句；如果`expression`为`0`（表示`false`）就不执行循环体。
+
+`statement`部分可以是以分号结尾的一个语句，也可以是大括号括起来的复合语句。
 
 下面是一个例子。
 
@@ -196,7 +198,8 @@ while (i < n)
 
 ```c
 while (expression) {
-  statements;
+  statement;
+  statement;
 }
 ```
 
@@ -231,10 +234,10 @@ while (1) {
 
 ```c
 do statement
-while (表达式);
+while (expression);
 ```
 
-注意，不管条件是否成立，循环体至少会执行一次。
+注意，不管条件`expression`是否成立，循环体`statement`至少会执行一次。
 
 ```c
 i = 10;
@@ -243,7 +246,7 @@ do --i;
 while (i > 0);
 ```
 
-上面的示例是`i`先减去1，再判断是否大于0。
+上面的示例是`i`先减去1，再判断是否大于0。如果大于0，就继续减去1，直到`i`等于`0`为止。
 
 如果循环部分有多条语句，就需要放在大括号里面。
 
@@ -266,8 +269,10 @@ printf("All done!\n");
 
 ```c
 for (initialization; continuation; action)
-  语句
+  statement;
 ```
+
+上面代码中，`statement`可以是一条语句，也可以是放在大括号里面的复合语句。
 
 `for`语句的条件部分有三个表达式。
 
@@ -282,7 +287,7 @@ for (int i = 10; i > 0; i--)
   printf("i is %d\n", i);
 ```
 
-上面示例中，循环变量在`for`的第一个表达式里面声明，表明该变量只用于本次循环。
+上面示例中，循环变量`i`在`for`的第一个表达式里面声明，该变量只用于本次循环。离开循环体之后，就会失效。
 
 条件部分的三个表达式，每一个都可以有多个语句，语句与语句之间使用逗号分隔。
 

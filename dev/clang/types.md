@@ -206,7 +206,15 @@ while (i - 10) {
 
 上面代码中，只要`i - 10`不等于`0`，C 语言就认为判断为真，从而执行循环体。
 
-C99 标准添加了`_Bool`类型，表示布尔值`true`和`false`。内部使用`0`表示`false`，`1`表示`true`。理论上这个类型只需要一个二进制位的储存空间。
+C99 标准添加了`_Bool`类型，表示布尔值`true`和`false`。内部使用`0`表示`false`，`1`表示`true`。理论上这个类型只需要一个二进制位的储存空间。下面是一个示例。
+
+```c
+_Bool isNormal;
+
+isNormal = 1;
+if (isNormal)
+  printf("Everything is OK.\n");
+```
 
 ## 可移植类型
 
