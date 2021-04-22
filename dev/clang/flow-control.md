@@ -1,29 +1,29 @@
 # 流程控制
 
-C 语言的程序是顺序执行的，即先执行前面的语句，再执行后面的语句。有一些特殊的语法结构提供了流程控制的功能，比如条件执行和循环执行。
+C 语言的程序是顺序执行的，即先执行前面的语句，再执行后面的语句。有一些特殊的语法结构提供了流程控制的功能，比如条件执行和循环执行，让开发者可以控制程序执行的流程。
 
 ## if 语句
 
-`if`语句用于条件判断，当满足条件时，执行指定的语句。
+`if`语句用于条件判断，当满足条件时（表达式`expression`的值不为`0`），就执行指定的语句。
 
 ```c
 if (expression) statement
 ```
 
-`if`后面的判断条件`expression`外面必须有圆括号，否则会报错。语句体部分如果只有一个语句，可以省略大括号，下面是一个例子。
+`if`后面的判断条件`expression`外面必须有圆括号，否则会报错。语句体部分`statement`可以是一个语句，也可以是放在大括号里面的复合语句。下面是一个例子。
 
 ```c
 if (x == 10) printf("x is 10");
 ```
 
-语句部分也可以写在单独一行。
+上面示例中，当变量`x`为`10`时，就会输出一行文字。对于只有一个语句的语句体，语句部分通常另起一行。
 
 ```c
 if (x == 10)
   printf("x is 10\n");
 ```
 
-如果有多条语句，就需要把它们放在大括号里面，组成一个语句块。
+如果有多条语句，就需要把它们放在大括号里面，组成一个复合语句。
 
 ```c
 if (line_num == MAX_LINES) {
@@ -32,15 +32,7 @@ if (line_num == MAX_LINES) {
 }
 ```
 
-为了保持一致的代码风格，有时一条语句也会放在大括号里面，这样也便于以后添加语句。
-
-```c
-if (x == 10) {
-  printf("x is 10\n");
-}
-```
-
-`if`语句可以带有`else`分支，指定条件不成立时，所要执行的代码。
+`if`语句可以带有`else`分支，指定条件不成立时（表达式`expression`的值为`0`），所要执行的代码。
 
 ```c
 if (expression) statement
@@ -56,9 +48,9 @@ else
   max = j;
 ```
 
-如果语句部分多余一行，同样可以把它们放在大括号里面。
+如果`else`的语句部分多于一行，同样可以把它们放在大括号里面。
 
-`else`可以与另一个`if`语句连用。
+`else`可以与另一个`if`语句连用，构成多重判断。
 
 ```c
 if (expression)
@@ -72,6 +64,32 @@ else
   statement
 ```
 
+如果有多个`if`和`else`，可以记住这样一条规则，`else`总是跟最接近的`if`匹配。
+
+```c
+if (number > 6)
+  if (number < 12)
+    printf("The number is more than 6, less than 12.\n");
+else
+  printf("It is wrong number.\n");
+```
+
+上面示例中，`else`部分匹配最近的`if`（即`number < 12`），所以如果`number`等于6，就不会执行`else`的部分。
+
+这样很容易出错，为了提供代码的可读性，建议使用大括号，明确`else`匹配哪一个`if`。
+
+```c
+if (number > 6) {
+  if (number < 12) {
+    printf("The number is more than 6, less than 12.\n");
+  }
+} else {
+  printf("It is wrong number.\n");
+}
+```
+
+上面示例中，使用了大括号，就可以清晰地看出`else`匹配外层的`if`。
+
 ## 三元运算符 ?:
 
 C 语言有一个三元表达式`?:`，可以用作`if...else`的简写形式。
@@ -80,18 +98,12 @@ C 语言有一个三元表达式`?:`，可以用作`if...else`的简写形式。
 <expression1> ? <expression2> : <expression3>
 ```
 
-这个操作符的含义是，表达式`expression1`如果为`true`（非0值），就执行`expression2`，否则执行`expression3`。
+这个操作符的含义是，表达式`expression1`如果为`true`（非0值），就执行`expression2`，否则执行`expression3`，即执行两个操作之中的一个。
 
-条件表达式是`if`语句的简写，允许根据条件的值，执行两个操作之中的一个。
-
-```c
-expression1 ? expression2 : expression3
-```
-
-下面是一个例子。
+下面是一个例子，返回两个值之中的较大值。
 
 ```c
-i > j ? i : j;
+(i > j) ? i : j;
 ```
 
 上面的代码等同于下面的`if`语句。
@@ -103,32 +115,19 @@ else
   return j;
 ```
 
-下面是求较小值的例子。
-
-```c
-min = (x < y) ? x : y;
-
-// 等同于
-
-if (x < y) {
-  min = x;
-}
-else {
-  min = y;
-}
-```
-
 ## switch 语句
 
-switch 语句是一种特殊形式的 if...else 结构，用于判断条件有多个结果的情况。相比之下，if 结构只支持两个分支，而 switch 支持多个分支，比多重 if 的结构更加易读。
+switch 语句是一种特殊形式的 if...else 结构，用于判断条件有多个结果的情况。它把多重的`else if`改成更易用、可读性更好的形式。
 
 ```c
 switch (expression) {
-  case expression: statement
-  case expression: statement
+  case value1: statement
+  case value2: statement
   default: statement
 }
 ```
+
+上面代码中，根据表达式`expression`不同的值，执行相应的`case`分支。如果找不到对应的值，就执行`default`分支。
 
 下面是一个例子。
 
@@ -147,30 +146,55 @@ switch (grade) {
 
 上面示例中，根据变量`grade`不同的值，会执行不同的`case`分支。如果等于`0`，执行`case 0`的部分；如果等于`1`，执行`case 1`的部分；否则，执行`default`的部分。`default`表示处理以上所有`case`都不匹配的情况。
 
-每个`case`部分的结尾，都应该有一个`break`语句，作用是跳出整个`switch`结构，不再往下执行。如果缺少`break`，就导致继续执行下一个`case`或`default`分支。
-
-如果一个表达式可能有多个整数值，那么就可以使用 switch 语句，不同的返回值跳到不同的代码块。
+每个`case`语句体的结尾，都应该有一个`break`语句，作用是跳出整个`switch`结构，不再往下执行。如果缺少`break`，就会导致继续执行下一个`case`或`default`分支。
 
 ```c
-switch (<expression>) {
-  case <value1>:
-    <statement>
+switch (grade) {
+  case 0:
+    printf("False");
+  case 1:
+    printf("True");
     break;
-  case <value2>:
-    <statement>
-    break;
-  case <value3>:
-  case <value4>:
-    <statement>
-    break;
-  default: // optional
-    <statement>
+  default:
+    printf("Illegal");
 }
 ```
 
-switch 语句后面的表达式`expression`，要放在圆括号里面，否则会报错。case 语句用来对应表达式`expression`的不同整数值，后面用冒号指定要执行的代码。default 语句用来指定前面的 case 都不匹配的情况，必须放在所有 case 的后面，否则后面的 case 都不会执行到。default 的部分是可选的，如果没有这部分的话，遇到所有的 case 都不匹配表达式的值的情况，就会直接跳出整个 switch 代码块。
+上面示例中，`case 0`的部分没有`break`语句，导致这个分支执行完以后，不会跳出`switch`结构，导致继续执行`case 1`分支。
 
-这里需要注意的是 break 语句，它只能放在 case 代码分支里面，用来跳出整个 switch 代码块。这个语句非常重要，如果没有的话，就会接着执行下一个 case。上面的例子里面，`value3`的 case 后面没有任何语句，直接连着下一个 case，这时这两个 case 可以看成是一体的，如果`expression`的返回值是`value3`，就会接着执行`value4`的 case。
+利用这个特点，如果多个`case`分支对应同样的语句体，可以写成下面这样。
+
+```c
+switch (grade) {
+  case 0:
+  case 1:
+    printf("True");
+    break;
+  default:
+    printf("Illegal");
+}
+```
+
+上面示例中，`case 0`分支没有任何语句，导致`case 0`和`case 1`都会执行同样的语句体。
+
+`default`分支用来处理前面的 case 都不匹配的情况，必须放在所有 case 的后面。否则，它后面的 case 都不会执行到。
+
+```c
+switch (grade) {
+  default:
+    printf("Illegal");
+  case 0:
+    printf("False");
+    break;
+  case 1:
+    printf("True");
+    break;
+}
+```
+
+上面示例中，`default`分支放在最前面，导致后面的`case`分支全部无效，因为`default`匹配变量`grade`的任何值。
+
+`default`分支是可选的，如果没有该分支，遇到所有的 case 都不匹配的情况，就会直接跳出整个 switch 代码块。
 
 ## while 语句
 
@@ -311,34 +335,46 @@ for (;;) {
 
 ## break 语句
 
-`break`语句用于在循环体内部跳出循环，也可以用于`switch`语句。
+`break`语句有两种用法。一种是与`switch`语句配套使用，用来中断某个分支的执行，这种用法前面已经介绍过了。
+
+另一种用法是在循环体内部跳出循环，不再进行后面的循环了。
 
 ```c
-while(feeling_hungry) {
-  eat_cake();
-  if (feeling_sick) {
-    break;
-  }
-  drink_coffee();
+while ((ch = getchar()) != EOF) {
+  if (ch == '\n') break;
+  putchar(ch);
 }
 ```
 
-上面示例中，`break`命令可以跳出`while`循环。
+上面示例中，一旦读到换行符（`\n`），`break`命令就跳出整个`while`循环，不再继续读取了。
 
 注意，`break`命令只能跳出循环体和`switch`结构，不能跳出`if`结构。
 
 ## continue 语句
 
-`continue`语句用于在循环体内部终止本次循环，进入下一轮循环。
+`continue`语句用于在循环体内部终止本次循环，进入下一轮循环。只要遇到`continue`语句，后面的语句就不执行了，回到循环体的头部，开始执行下一轮循环。
 
 ```c
-while(feeling_hungry) {
-  if (not_lunch_yet) {
-    continue;
-  }
-  eat_cake();
+while ((ch = getchar()) != '\n') {
+  if (ch == '\t') continue;
+  putchar(ch);
 }
 ```
 
-上面示例中，`continue`命令的作用是立即结束本次循环，不再执行后面的命令（`eat_cake()`），进入下一轮循环。
+上面示例中，只要读到的字符是制表符（`\t`），就用`continue`语句跳过该字符，读取下一个字符。
+
+## goto 语句
+
+goto 语句用于跳到指定的标签名。这会破坏结构化编程，不建议使用，这里为了语法的完整，介绍一下它的用法。
+
+```c
+char ch;
+
+top: ch = getchar();
+
+if (ch == 'q')
+  goto top;
+```
+
+上面示例中，`top`是一个标签名，可以放在正常语句的前面，相当于为这行语句做了一个标记。程序执行到`goto`语句，就会跳转到它指定的标签名。
 
