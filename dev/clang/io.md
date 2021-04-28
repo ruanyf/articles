@@ -38,19 +38,22 @@ scanf("%d%d%f%f", &i, &j, &x, &y);
 
 ## getchar()
 
-`getchar()`函数不带有任何参数，返回输入队列的下一个字符。
+`getchar()`函数返回用户从键盘输入的一个字符，使用时不带有任何参数。它等同于使用`scanf()`方法读取一个字符。
 
 ```c
 char ch;
-
 ch = getchar();
+
 // 等同于
+char ch;
 scanf("%c", &ch);
 ```
 
+该方法的原型在`stdio.h`头文件里面定义。
+
 ## putchar()
 
-`putchar()`函数用来打印它的参数字符。
+`putchar()`函数将它的一个参数字符，输出到屏幕，等同于使用`printf()`输出一个字符。
 
 ```c
 scanf("%c", &ch);
