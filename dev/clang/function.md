@@ -45,6 +45,19 @@ void myFunc(void) {
 
 上面的`myFunc()`函数，既没有返回值，调用时也不需要参数。
 
+函数可以调用自身，这就叫做递归（recursion）。下面是斐波那契数列的例子。
+
+```c
+unsigned long Fibonacci(unsigned n) {
+  if (n > 2)
+    return Fibonacci(n - 1) + Fibonacci(n - 2);
+  else
+    return 1;
+}
+```
+
+上面示例中，函数`Fibonacci()`调用了自身。
+
 下面是两个变量交换值的例子。
 
 ```c
