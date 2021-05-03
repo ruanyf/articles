@@ -591,32 +591,6 @@ volatile int *p;
 }
 ```
 
-### static
-
-`static`修饰词在块作用域里面，表示该变量只需要初始化一次，不需要在每次调用时都进行初始化。也就是说，它的值在两次调用之间保持不变。
-
-```c
-#include <stdio.h>
-
-void counter(void)
-{
-    static int count = 1;  // This is initialized one time
-
-    printf("This has been called %d time(s)\n", count);
-
-    count++;
-}
-
-int main(void)
-{
-    counter();  // "This has been called 1 time(s)"
-    counter();  // "This has been called 2 time(s)"
-    counter();  // "This has been called 3 time(s)"
-    counter();  // "This has been called 4 time(s)"
-}
-```
-
-`static`用在块作用域之外时，就属于文件作用域。它的含义有所变化，意味着该变量只在当前文件内可见，在其他文件都不可见。
 
 ### extern
 
