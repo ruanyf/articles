@@ -198,3 +198,15 @@ fprintf(stdout, "Hello, world!\n");
 
 `printf()`是直接写入`stdout`，而`fprint`是指定写入文件`stdout`。
 
+## 其他 I/O 函数
+
+int ungetc(int c, FILE *fp)
+
+int ungetc()函数把c指定的字符放回输入流中。如果把一个字符放回输入流，下次调用标准输入函数时将读取该字符。
+
+ANSI C标准保证每次只会放回一个字符。如果实现允许把一行中的多个字符放回输入流，那么下一次输入函数读入的字符顺序与放回时的顺序相反。
+
+int fflush(FILE *fp);
+
+调用fflush()函数引起输出缓冲区中所有的未写入数据被发送到fp指定的输出文件。这个过程称为刷新缓冲区。如果 fp是空指针，所有输出缓冲区都被刷新。
+
