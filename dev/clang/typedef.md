@@ -9,16 +9,30 @@ typedef type name;
 上面代码中，`type`代表类型名，`name`代表别名。
 
 ```c
-typedef int antelope;  // Make "antelope" an alias for "int"
+typedef unsigned char BYTE;
 
-antelope x = 10;
+BYTE c = 'z';
 ```
+
+上面示例中，`typedef`命令为类型`unsign char`起别名`BYTE`。
+
+`typedef`的主要好处，是更好的代码可读性。
+
+```c
+typedef char* STRING;
+
+STRING name;
+```
+
+上面示例为字符指针起别名为`STRING`，以后使用`STRING`声明变量时，就可以轻易辨别该变量是字符串。
 
 typedef 可以一次指定多个别名。
 
 ```c
 typedef int antelope, bagel, mushroom;
 ```
+
+`typedef`的另一个用处，是为 struct、union、enum 等命令定义的复杂数据结构创建别名，从而便于引用。
 
 ```c
 typedef struct treenode* Tree;
@@ -48,7 +62,7 @@ typedef struct {
 
 上面示例相当于为一个匿名的数据类型起了别名`animal`。
 
-typedef 别名的一个作用，就是方便以后为变量改类型。
+typedef 别名的另一个作用，就是方便以后为变量改类型，这有利于代码适配不同架构的计算机。
 
 ```c
 typedef float app_float;

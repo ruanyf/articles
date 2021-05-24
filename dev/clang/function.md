@@ -138,6 +138,26 @@ find(&myFunction)
 
 当然，为了简洁易读，函数名前面一般情况都不加`*`和`&`。
 
+由于这种矛盾，下面两种写法都能从函数指针运行一个函数。
+
+```c
+void ToUpper(char*);
+void ToLower(char*);
+void (*pf)(char*);
+
+char str[] = "hello";
+
+// 写法一
+pf = ToUpper;
+(*pf)(str);
+
+// 写法二
+pf = ToLower;
+pf(str);
+```
+
+上面代码中，`pf`是一个函数指针，不管前面加不加`*`，都能通过指针运行一个函数。
+
 ## main() 函数
 
 C 语言规定，`main()`是程序的入口函数，即程序总是先执行`main()`函数。因此，每个程序至少应该有一个`main()`函数，如果没有该函数，程序就无法启动。

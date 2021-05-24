@@ -18,11 +18,11 @@ struct fraction {
 };
 ```
 
-上面示例定义了一个分数的数据类型`fraction`，包含两个属性`numerator`和`denominator`。
+上面示例定义了一个分数的数据类型`struct fraction`，包含两个属性`numerator`和`denominator`。注意，作为一个自定义的数据类型，它的类型名是`struct fraction`，而不是单独的`fraction`。
 
-注意，`struct`语句结尾的分号不能省略，否则很容易产生错误。
+另外，`struct`语句结尾的分号不能省略，否则很容易产生错误。
 
-定义好了类型以后，就可以声明变量了。
+`struct`命令的作用有两个，一个是声明了新的数据类型，二是告诉编译器这个数据类型的内存占用情况，但是并没有为该类型分配内存。只有创建一个该类型的变量时，编译器才会为这个变量分配内存，请看下面的例子。
 
 ```clang
 struct fraction f1;
@@ -74,6 +74,26 @@ phone p = {5551234, 5};
 ```
 
 上面示例中，`phone`就是`struct cell_phone`的别名。
+
+Struct 的数据类型声明语句与变量的声明语句，可以合并为一个语句。
+
+```c
+struct book {
+  char title[500];
+  char author[100];
+  float value
+} library;
+```
+
+上面的语句同时声明了数据类型`book`和该类型的变量`library`。如果后面不再需要用到`book`，可以将类型名省略。
+
+```c
+struct {
+  char title[500];
+  char author[100];
+  float value
+} library;
+```
 
 ## Struct 的复制
 
@@ -139,6 +159,8 @@ void happy(struct turtle* t) {
 happy(&myTurtle);
 ```
 
+上面代码中，Struct 类型跟数组不一样，类型名并不是指针，所以指针必须写成`&myTurtle`。
+
 函数内部也必须使用`(*t).age`的写法，从指针拿到 Struct 结构本身。
 
 ```c
@@ -147,7 +169,9 @@ void happy(struct turtle* t) {
 }
 ```
 
-上面示例中，`(*t).age`不能写成`*t.age`，后者假设`t.age`是一个指针，然后取`t.age`对应的值，会出现无法预料的结果。现在，重新编译执行整个示例，`happy()`内部对 Struct 结构的操作，就会反映到函数外部。
+上面示例中，`(*t).age`不能写成`*t.age`，因为点运算符`.`的优先级高于`*`。`*t.age`这种写法会将`t.age`看成一个指针，然后取它对应的值，会出现无法预料的结果。
+
+现在，重新编译执行上面的整个示例，`happy()`内部对 Struct 结构的操作，就会反映到函数外部。
 
 可以看到，`(*t).age`这样的写法很麻烦。C 语言就引入了一个新的箭头运算符（`->`），可以从 Struct 指针上直接获取属性，大大增强了代码的可读性。
 
@@ -158,6 +182,13 @@ void happy(struct turtle* t) {
 ```
 
 总结如下，对于 Struct 变量名，使用点运算符（`.`）获取属性；对于 Struct 变量指针，使用箭头运算符（`->`）获取属性。
+
+对于数据类型变量`myStruct`来说，假设`ptr`是它的指针。那么下面三种写法是同一回事。
+
+```c
+// ptr == &myStruct
+myStruct.prop == (*ptr).prop == ptr->prop
+```
 
 ## Struct 的嵌套
 
