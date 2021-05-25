@@ -294,15 +294,35 @@ animal a, b, c;
 
 ## 位字段
 
-Struct 可以用来定义二进制位组成的数据结构，对于操作底层的二进制数据非常有用。
+Struct 还可以用来定义二进制位组成的数据结构，称为“位字段”（bit field），这对于操作底层的二进制数据非常有用。
 
 ```c
 typedef struct {
-  unsigned int low_pass_vcf:1;
-  unsigned int filter_coupler:1;
-  unsigned int reverb:1;
-  unsigned int sequential:1;
+  unsigned int ab:1;
+  unsigned int cd:1;
+  unsigned int ef:1;
+  unsigned int gh:1;
 } synth;
+
+synth.ab = 0;
+synth.cd = 1;
 ```
 
-上面代码中，每个属性后面的`:1`，表示指定这些属性只占用一个二进制位。
+上面示例中，每个属性后面的`:1`，表示指定这些属性只占用一个二进制位，所以这个数据结构一共是4个二进制位。
+
+注意，定义二进制位时，结构内部的各个属性只能是整数类型。
+
+实际储存的时候，C 语言会按照`unsigned int`占用的字节数，储存一个位字段结构。可以使用未命名的属性，填满不需要的位。也可以使用宽度为0的属性，迫使下一个属性储存在下一个`unsigned int`。
+
+```c
+struct {
+  unsigned int field1 : 1;
+  unsigned int        : 2;
+  unsigned int field2 : 1;
+  unsigned int        : 0;
+  unsigned int field3 : 1;
+} stuff;
+```
+
+上面示例中，`stuff.field1`与`stuff.field2`之间，有一个宽度为两个二进制的未命名属性。`stuff.field3`将储存在下一个字节。
+
