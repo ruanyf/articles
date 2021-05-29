@@ -55,6 +55,8 @@ exit(EXIT_SUCCESS);
 exit(EXIT_FAILURE);
 ```
 
+`main()`中使用`exit()`函数等价于使用关键字`return`。`main()`以外的函数中使用`exit()`，则是终止整个程序。
+
 ## rand()
 
 `rand()`函数用来生成 0～RAND_MAX 之间的随机数。`RAND_MAX`也定义在`stdlib.h`里面，通常等于 INT_MAX。
@@ -94,3 +96,46 @@ srand((unsigned int) time(0));
 
 上面代码中，`time()`的原型定义在头文件`time.h`里面，返回的类型名是`time_t`，具体的类型与系统有关，所以要强制转换一下类型。`time()`的参数是一个指针，指向一个具体的 time_t 类型的时间值，这里传入空指针`0`作为参数。
 
+## atexit()
+
+`atexit()`用来注册函数退出时，要执行的其他函数。它的参数是要执行的函数地址，即函数名。
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+void sign_off(void);
+void too_bad(void);
+
+int main(void) {
+
+int n;
+
+atexit(sign_off);　　 /* 注册 sign_off()函数 */
+puts("Enter an integer:");
+
+if (scanf("%d", &n) != 1) {
+  puts("That's no integer!");
+  atexit(too_bad);　/* 注册 too_bad()函数 */
+  exit(EXIT_FAILURE);
+}
+
+  printf("%d is %s.\n", n, (n % 2 == 0) ? "even" : "odd");
+  return 0;
+}
+
+void sign_off(void) {
+  puts("Thus terminates another magnificent program from");
+  puts("SeeSaw Software!");
+}
+
+void too_bad(void) {
+  puts("SeeSaw Software extends its heartfelt condolences");
+  puts("to you upon the failure of your program.");
+}
+```
+
+注意，输入失败时，会调用sign_off()和too_bad()函数；但是输入成功时只会调用sign_off()。因为只有输入失败时，才会进入if语句中注册too_bad()。另外还要注意，最先调用的是最后一个被注册的函数。
+
+`atexit()`注册的函数，当调用`exit()`时就会执行这些函数。注意，即使没有显式调用`exit()`，还是会调用`sign_off()`，因为`main()`结束时会隐式调用`exit()`。
+
+`atexit()`注册的函数（如`sign_off()`和`too_bad()`）应该不带任何参数且返回类型为`void`。通常，这些函数会执行一些清理任务，例如更新监视程序的文件或重置环境变量。

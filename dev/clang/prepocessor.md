@@ -176,35 +176,58 @@ X(5, 4, 3.14, "Hi!", 12)
 printf("%s\n", X(1,2,3));  // Prints "1, 2, 3"
 ```
 
-## #include
+## #undef
 
-`#include`命令用于编译时插入其他源码文件，常用于包含头文件（后缀名为`.h`的文件），即包含函数原型的文件。
+`#undef`指令用来取消已经定义的`#define`指令。
 
 ```c
-#include "foo.h" // 包含用户提供的头文件
-
-#include <foo.h> // 包含系统提供的头文件
+#define LIMIT 400
+#undef LIMIT
 ```
+
+上面示例的`undef`指令取消已经定义的宏`LIMIT`，后面就可以重新用 LIMIT 定义一个宏。
+
+有时候想新定义一个宏，但不确定是否以前定义过，就可以先用`#undef`取消，然后再定义。
+
+## #include
+
+`#include`指令用于编译时将其他源码文件，插入当前文件。它有两种形式。
+
+```c
+// 形式一
+#include <foo.h> // 包含系统提供的文件
+
+// 形式二
+#include "foo.h" // 包含用户提供的文件
+```
+
+形式一，文件名写在尖括号里面，表示该文件是系统提供的，通常是标准库的库文件，不需要写路径。形式二，文件名写在双引号里面，表示该文件由用户提供，具体的路径取决于编译器的设置，可能是当前目录，也可能是项目的工作目录。如果所要包含的文件在特殊位置，可以指定路径。
+
+```c
+#include "/usr/local/lib/foo.h"
+```
+
+`#include`最常见的用途，就是用来包含记录函数原型的头文件（后缀名为`.h`），参见《多文件编译》一章。
 
 ## #if...#else
 
-`#if...#else`命令用于控制哪些行可以被编译，常常与`#define`配合使用。
+`#if...#else`指令用于条件判断，指定满足条件时，哪些行可以被编译，哪些行不被编译。它常常与`#define`配合使用。
+
+`#if`后面的判断条件，通常是一个表达式。如果表达式的值不等于`0`，就为真，编译`#if`到`#else`之间的部分；如果等于0，就为伪，编译`#else`到`#endif`之间的部分。
 
 ```c
 #define FOO 1
 
 #if FOO
-  aaa
-  aaa
+  printf("defined\n");
 #else
-  bbb
-  bbb
+  printf("not defined\n");
 #endif
 ```
 
-上面示例中，由于`FOO`等于1，所以`aaa`会进入编译，`bbb`会被省略。如果`FOO`等于0，结果就会正好倒过来。
+上面示例中，宏`FOO`如果定义过，会被替换成`1`，从而输出`defined`，否则输出`not defined`。
 
-`#if`命令的一个应用，就是将代码块注释掉。
+`#if`的一个应用，就是注释掉代码块。
 
 ```c
 #if 0
@@ -213,51 +236,77 @@ printf("%s\n", X(1,2,3));  // Prints "1, 2, 3"
 #endif
 ```
 
+上面示例中，`#if 0`表示编译时跳过内部的代码，相当于把它们全部注释掉。
+
 如果有多个判断条件，可以加入`#elif`命令。
 
 ```c
 #if HAPPY_FACTOR == 0
-    printf("I'm not happy!\n");
+  printf("I'm not happy!\n");
 #elif HAPPY_FACTOR == 1
-    printf("I'm just regular\n");
+  printf("I'm just regular\n");
 #else
-    printf("I'm extra happy!\n");
+  printf("I'm extra happy!\n");
 #endif
 ```
 
 ## #ifdef...#endif
 
-在大型项目中，检查某个文件是否被包含过，是常见的需求。解决方案是，在头文件里面定义一个空的替换模式，然后使用专用命令`#ifdef...#endif`，检查这个变量是否包含过。
+如果引用第三方库，可能会有宏的冲突，即当前文件与库文件定义了同名的宏。解决方案是，库文件里使用`#define`定义一个空的宏，通过这个宏，就可以判断库文件是否被加载了。
 
 ```c
 #define EXTRA_HAPPY
+```
 
+上面示例中，`EXTRA_HAPPY`就是一个空的宏。
+
+然后，使用`#ifdef...#endif`检查这个宏是否定义过。
+
+```c
 #ifdef EXTRA_HAPPY
   printf("I'm extra happy!\n");
 #endif
 ```
 
-上面示例定义了一个空的替换模式`EXTRA_HAPPY`，`#ifdef`检查这个模式是否被定义过。如果是的，就会将`#ifdef...#endif`内部的代码一起编译，否则就会忽略它们。
+上面示例中，`#ifdef`检查宏`EXTRA_HAPPY`是否定义过。如果已经存在，就会打印一行提示。
 
-`#ifdef`也支持`#else`命令。
+`#ifdef`可以与`#else`指令配合使用。
 
 ```c
 #ifdef EXTRA_HAPPY
-    printf("I'm extra happy!\n");
+  printf("I'm extra happy!\n");
 #else
-    printf("I'm just regular\n");
+  printf("I'm just regular\n");
 #endif
 ```
+
+上面示例中，如果宏`EXTRA_HAPPY`没有定义过，就会执行`#else`的部分。
+
+`#ifdef...#else...#endif`可以用来实现条件加载。
+
+```c
+#ifdef MAVIS
+  #include "foo.h"
+  #define STABLES 1
+#else
+  #include "bar.h"
+  #define STABLES 2
+#endif
+```
+
+上面示例中，通过判断宏`MAVIS`是否定义过，实现加载不同的头文件。
 
 `#ifdef`等同于`#if defined`。
 
 ```c
 #ifdef FOO
 // 等同于
-if defined FOO
+#if defined FOO
 ```
 
-使用这种语法，可以完成多成替换条件的判断。
+上面示例中，`defined`是一个预处理运算符，如果它的参数是一个定义过的宏，就会返回1，否则返回0。
+
+使用这种语法，可以完成多重判断。
 
 ```c
 #if defined FOO
@@ -267,30 +316,46 @@ if defined FOO
 #endif
 ```
 
-相应地，还有一个`#ifndef...#endif`命令，如果某个模式没有定义过，就会编译内部代码。
+它的一个应用，就是对于不同架构的系统，加载不同的头文件。
+
+```c
+#if defined IBMPC
+  #include "ibmpc.h"
+#elif defined MAC
+  #include "mac.h"
+#else
+  #include "general.h"
+#endif
+```
+
+上面示例中，不同架构的系统需要定义对应的宏。代码根据不同的宏，加载对应的头文件。
+
+## #ifndef...#endif
+
+`#ifndef...#endif`指令用来判断，如果某个宏没有被定义过，则执行指定的代码。它可以与`#ifdef`配合使用。
 
 ```c
 #ifdef EXTRA_HAPPY
-    printf("I'm extra happy!\n");
+  printf("I'm extra happy!\n");
 #endif
 
 #ifndef EXTRA_HAPPY
-    printf("I'm just regular\n");
+  printf("I'm just regular\n");
 #endif
 ```
 
-上面示例检查一个模式是否定义过，指定了两种结果各自需要编译的代码。
+上面示例中，针对宏`EXTRA_HAPPY`是否被定义过，`#ifdef`和`#ifndef`分别指定了两种情况各自需要编译的代码。
 
-另一种常见的用法，是在`#ifndef`内部指定需要替换的模式。
+`#ifndef`的另一种常见用法，是用来防止重复加载。举例来说，为了防止头文件`myheader.h`被重复加载，可以把它的所有代码都放在`#ifndef...#endif`里面。
 
 ```c
-#ifndef MYHEADER_H  // First line of myheader.h
-
-#define MYHEADER_H
-int x = 12;
-
+#ifndef MYHEADER_H
+  #define MYHEADER_H
+  int x = 12;
 #endif
 ```
+
+上面示例中，宏`MYHEADER_H`对应文件名`myheader.h`的大写。只要`#ifndef`发现这个宏没有被定义过，就说明该头文件没有加载过，从而加载内部的代码。其中就会定义宏`MYHEADER_H`，防止被再次加载。
 
 `#ifndef`等同于`#if !defined`。
 
@@ -300,43 +365,30 @@ int x = 12;
 #if !defined FOO
 ```
 
-## #undef
+## 预定义宏
 
-`#undef`命令用来取消定义过的宏。
+C 语言提供一些预定义的宏，可以直接使用。
 
-```c
-#define GOATS
+- `__DATE__`：当前日期，格式为“Mmm dd yyyy”的字符串（比如 Nov 23 2021）。
+- `__TIME__`：当前时间，格式为“hh:mm:ss”。
+- `__FILE__`：当前文件名。
+- `__LINE__`：当前行号。
+- `__func__`：当前正在执行的函数名。该预定义宏必须在函数作用域使用。
+- `__STDC__`：如果被设为1，表示当前编译器遵循 C 标准。
+- `__STDC_HOSTED__`：如果被设为1，表示当前编译器可以提供完整的标准库；否则被设为0。
+- `__STDC_VERSION__`：当前使用 C 版本，为一个格式为`yyyymmL`的长整数，C99 为“199901L”，C11 为“201112L”，C17 为“201710L”。
 
-#undef GOATS  // Make GOATS no longer defined
-```
-
-## #pragma once
-
-`#pragma once`用来解决一个头文件被包含多次的问题。
-
-## 内置宏
-
-C 语言提供一些内置的宏，可以直接使用。
-
-- `__DATE__`	The date of compilation—like when you’re compiling this file—in Mmm dd yyyy format
-- `__TIME__`	The time of compilation in hh:mm:ss format
-- `__FILE__`	A string containing this file’s name
-- `__LINE__`	The line number of the file this macro appears on
-- `__func__`	The name of the function this appears in, as a string107
-- `__STDC__`	Defined with 1 if this is a standard C compiler
-- `__STDC_HOSTED__`	This will be 1 if the compiler is a hosted implementation108, otherwise 0
-- `__STDC_VERSION__`	This version of C, a constant long int in the form yyyymmL, e.g. 201710L
+下面示例打印这些预定义宏的值。
 
 ```c
 #include <stdio.h>
 
-int main(void)
-{
-    printf("This function: %s\n", __func__);
-    printf("This file: %s\n", __FILE__);
-    printf("This line: %d\n", __LINE__);
-    printf("Compiled on: %s %s\n", __DATE__, __TIME__);
-    printf("C Version: %ld\n", __STDC_VERSION__);
+int main(void) {
+  printf("This function: %s\n", __func__);
+  printf("This file: %s\n", __FILE__);
+  printf("This line: %d\n", __LINE__);
+  printf("Compiled on: %s %s\n", __DATE__, __TIME__);
+  printf("C Version: %ld\n", __STDC_VERSION__);
 }
 
 /* 输出如下
@@ -350,28 +402,48 @@ C Version: 201710
 */
 ```
 
-## #error
-
-`#error`用于终止程序运行，抛出一个错误。
-
-```c
-#ifndef __STDC_IEC_559__
-  #error I really need IEEE-754 floating point to compile. Sorry!
-#endif
-```
-
 ## #line
 
-`#line`命令用于覆盖内置的宏`__LINE__`，将其改为自定义的值。后面的行将从这个值开始计数。
+`#line`指令用于覆盖预定义宏`__LINE__`，将其改为自定义的行号。后面的行将从`__LINE__`的新值开始计数。
 
 ```c
+// 当前行号重置为 1000
 #line 300
 ```
 
-`#line`改掉内置的宏`__FILE__`。
+`#line`还可以改掉预定义宏`__FILE__`，将其改为自定义的文件名。
 
 ```c
 #line 300 "newfilename"
 ```
 
-上面示例中，`__FILE__`被改成`newfilename`。
+上面示例中，当前行号重置为`300`，文件名重置为`newfilename`。
+
+## #error
+
+`#error`指令用于让预处理器抛出一个错误，终止编译。
+
+```c
+#if __STDC_VERSION__ != 201112L
+  #error Not C11
+#endif
+```
+
+上面示例指定，如果编译器不使用 C11 标准，就中止编译。GCC 编译时，如果不使用 C11 标准，就会像下面这样报错。
+
+```bash
+$ gcc -std=c99 newish.c
+newish.c:14:2: error: #error Not C11
+```
+
+上面示例中，GCC 使用 C99 标准编译，就报错了。
+
+## #pragma
+
+`#pragma`指令用来修改编译器属性。
+
+```c
+// 使用 C99 标准
+#pragma c9x on
+```
+
