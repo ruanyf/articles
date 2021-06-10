@@ -49,7 +49,7 @@ const double PI = 3.14159;
 对于数组，`const`表示数组成员不能修改。
 
 ```c
-const int arr = {1, 2, 3, 4};
+const int arr[] = {1, 2, 3, 4};
 ```
 
 上面示例中，`const`使得数组`arr`的成员无法修改。
