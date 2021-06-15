@@ -1,4 +1,4 @@
-# Struct 命令
+# Struct 结构
 
 ## 简介
 
@@ -11,29 +11,31 @@ C 语言内置的数据类型，除了最基本的几种原始类型，只有数
 
 下面是`struct`命令自定义数据类型的一个例子。
 
-```clang
+```c
 struct fraction {
   int numerator;
   int denominator;
 };
 ```
 
-上面示例定义了一个分数的数据类型`struct fraction`，包含两个属性`numerator`和`denominator`。注意，作为一个自定义的数据类型，它的类型名是`struct fraction`，而不是单独的`fraction`。
+上面示例定义了一个分数的数据类型`struct fraction`，包含两个属性`numerator`和`denominator`。
 
-另外，`struct`语句结尾的分号不能省略，否则很容易产生错误。
+注意，作为一个自定义的数据类型，它的类型名要包括`struct`关键字，比如上例是`struct fraction`，单独的`fraction`没有任何意义，甚至脚本还可以拥有名为`fraction`的变量，虽然这样很容易造成混淆。另外，`struct`语句结尾的分号不能省略，否则很容易产生错误。
 
 `struct`命令的作用有两个，一个是声明了新的数据类型，二是告诉编译器这个数据类型的内存占用情况，但是并没有为该类型分配内存。只有创建一个该类型的变量时，编译器才会为这个变量分配内存，请看下面的例子。
 
-```clang
+```c
 struct fraction f1;
 
 f1.numerator = 22;
 f1.denominator = 7;
 ```
 
-声明变量时，类型名前面，不要忘记加上`struct`关键字。也就是说，必须使用`struct fraction`声明变量，不能只用`fraction`。变量的属性通过点（`.`）来表示。
+上面示例先声明了一个`struct fraction`类型的变量`f1`，这时编译器就会为`f1`分配内存，接着就可以为`f1`的不同属性赋值。可以看到，变量的属性通过点（`.`）来表示，比如`numerator`属性要写成`f1.numerator`。
 
-除了逐一对属性赋值，也可以使用大括号，一次性对 Struct 结构赋值。
+再提醒一下，声明自定义类型的变量时，类型名前面，不要忘记加上`struct`关键字。也就是说，必须使用`struct fraction f1`声明变量，不能写成`fraction f1`。
+
+除了逐一对属性赋值，也可以使用大括号，一次性对 Struct 结构的所有属性赋值。
 
 ```c
 struct car {
@@ -44,6 +46,8 @@ struct car {
 
 struct car saturn = {"Saturn SL/2", 16000.99, 175};
 ```
+
+上面示例中，`saturn`是`struct cat`类型的变量，大括号里面同时对它的三个属性赋值。如果大括号里面的值的数量，少于属性的数量，那么缺失的属性自动初始化为`0`。
 
 注意，大括号里面的值的顺序，必须与 Struct 类型声明时的顺序一致。否则，必须为每个值指定属性名。
 
@@ -62,6 +66,41 @@ saturn.speed = 168;
 
 上面示例将`speed`属性的值改成`168`。
 
+Struct 的数据类型声明语句与变量的声明语句，可以合并为一个语句。
+
+```c
+struct book {
+  char title[500];
+  char author[100];
+  float value;
+} b1;
+```
+
+上面的语句同时声明了数据类型`book`和该类型的变量`b1`。如果类型标识符`book`只用在这一个地方，后面不再用到，这里可以将类型名省略。
+
+```c
+struct {
+  char title[500];
+  char author[100];
+  float value;
+} b1;
+```
+
+上面示例中，`struct`声明了一个匿名数据类型，然后又声明了这个类型的变量`b1`。
+
+与其他变量声明语句一样，可以在声明变量的同时，对变量赋值。
+
+```c
+struct {
+  char title[500];
+  char author[100];
+  float value;
+} b1 = {"Harry Potter", "J. K. Rowling", 10.0},
+  b2 = {"Cancer Ward", "Aleksandr Solzhenitsyn", 7.85};
+```
+
+上面示例中，在声明变量`b1`和`b2`的同时，为它们赋值。
+
 `typedef`命令可以为 Struct 结构指定一个别名，这样使用起来更简洁。
 
 ```c
@@ -75,60 +114,56 @@ phone p = {5551234, 5};
 
 上面示例中，`phone`就是`struct cell_phone`的别名。
 
-Struct 的数据类型声明语句与变量的声明语句，可以合并为一个语句。
+指针变量也可以指向`struct`结构。
 
 ```c
 struct book {
   char title[500];
   char author[100];
-  float value
-} library;
+  float value;
+}* b1;
 ```
 
-上面的语句同时声明了数据类型`book`和该类型的变量`library`。如果后面不再需要用到`book`，可以将类型名省略。
+上面示例中，变量`b1`是一个指针，指向的数据是`struct book`类型的实例。
+
+Struct 结构的存储空间，不是各个属性存储空间的总和，而是`int`类型存储空间的倍数。如果`int`类型的存储是4字节，那么 Struct 类型的存储空间就总是4字节、8字节、12字节，以此类推。
 
 ```c
-struct {
-  char title[500];
-  char author[100];
-  float value
-} library;
+struct { char a; int b; } s;
+printf("%d\n", sizeof(s)); // 8
 ```
 
-指针变量也可以指向`struct`结构。
-
-```c
-struct node {
-  int data;
-  struct node* next;
-};
-```
-
-上面示例表示，自定义类型`node`的属性`next`是一个指针，指向的是一个`node`类型的实例。事实上，链表就是这样实现的。
+上面示例中，如果按照属性占据的空间相加，变量`s`的存储空间应该是5个字节。但是，Struct 结构的存储空间是`int`类型的倍数，所以最后的结果是占据8个字节，`a`属性与`b`属性之间有3个字节的“空洞”。
 
 ## Struct 的复制
 
 Struct 变量可以使用赋值运算符（`=`），复制给另一个变量，这时会生成一个全新的副本。系统会分配一块新的内存空间，大小与原来的变量相同，把每个属性都复制过去，即原样生成了一份数据。
 
 ```c
-struct cat a, b;
+struct cat { char name[30]; short age; } a, b;
+
+a.name = "Hula";
+a.age = 3;
 
 b = a;
 ```
 
 上面示例中，变量`b`是变量`a`的副本，两个变量的值是各自独立的。
 
+注意，这一点与数组完全不同，数组使用赋值运算符，不会复制数据，只会共享地址。
+
+这种赋值要求两个变量是同一个类型，不同类型的`struct`变量无法互相赋值。另外，C 语言没有提供比较两个自定义数据结构是否相等的方法，无法用比较运算符（比如`==`和`!=`）比较两个数据结构是否相等或不等。
+
 下面是另一个例子。
 
 ```c
 struct car saturn = {"Saturn SL/2", 16000.99, 175};
-
 struct car brick = saturn;
 ```
 
 上面示例中，变量`saturn`赋值给另一个变量`brick`，这时`brick`就是一个数据副本。注意，Struct 的某个属性如果是字符串（比如上例的`Saturn SL/2`），那么复制的不是字符串本身，而是字符串的指针，因为 Struct 内部保存的是字符串指针。
 
-## 函数传參
+## Struct 指针
 
 如果将 Struct 变量传入函数，函数内部得到的是一个原始值的副本。
 
@@ -153,9 +188,9 @@ int main() {
 }
 ```
 
-上面示例中，函数`happy()`传入的是一个 Struct 变量（`happy(myTurtle)`），函数内部有一个自增操作。但是，执行完`happy()`以后，函数外部的`age`属性值根本没变。原因就是函数内部得到的是 Struct 变量的副本，改变副本影响不到函数外部的原始数据。
+上面示例中，函数`happy()`传入的是一个 Struct 变量`myTurtle`，函数内部有一个自增操作。但是，执行完`happy()`以后，函数外部的`age`属性值根本没变。原因就是函数内部得到的是 Struct 变量的副本，改变副本影响不到函数外部的原始数据。
 
-通常情况下，开发者希望传入函数的是同一份数据，函数内部修改数据以后，会反映在函数外部，这时就需要将 Struct 变量的指针传入函数。通过指针来修改 Struct 属性，就可以影响到函数外部。
+通常情况下，开发者希望传入函数的是同一份数据，函数内部修改数据以后，会反映在函数外部。而且，传入的是同一份数据，也有利于提高程序性能。这时就需要将 Struct 变量的指针传入函数，通过指针来修改 Struct 属性，就可以影响到函数外部。
 
 Struct 指针传入函数的写法如下。
 
@@ -170,7 +205,7 @@ void happy(struct turtle* t) {
 happy(&myTurtle);
 ```
 
-上面代码中，Struct 类型跟数组不一样，类型名并不是指针，所以指针必须写成`&myTurtle`。
+上面代码中，Struct 类型跟数组不一样，类型标识符并不是指针，所以指针必须写成`&myTurtle`。
 
 函数内部也必须使用`(*t).age`的写法，从指针拿到 Struct 结构本身。
 
@@ -194,7 +229,7 @@ void happy(struct turtle* t) {
 
 总结如下，对于 Struct 变量名，使用点运算符（`.`）获取属性；对于 Struct 变量指针，使用箭头运算符（`->`）获取属性。
 
-对于数据类型变量`myStruct`来说，假设`ptr`是它的指针。那么下面三种写法是同一回事。
+对于变量`myStruct`来说，假设`ptr`是它的指针。那么下面三种写法是同一回事。
 
 ```c
 // ptr == &myStruct
@@ -220,7 +255,7 @@ struct fish {
 
 上面示例中，`fish`的属性`breed`是另一个 Struct 结构`species`。
 
-赋值的时候，就要使用双重圆括号。
+赋值的时候，就要使用双重大括号。
 
 ```c
 struct fish shark = {"shark", 9, {"Selachimorpha", 500}};
@@ -233,21 +268,47 @@ printf("Shark's species is %s", shark.breed.name);
 
 上面示例中，引用`breed`属性的内部属性，要使用两次点运算符（`shark.breed.name`）。
 
+下面是另一个嵌套 Struct 的例子。
+
+```c
+struct name {
+  char first[50];
+  char last[50];
+};
+
+struct student {
+  struct name name;
+  short age;
+  char sex;
+} student1;
+
+strcpy(student1.name.first, "Harry");
+strcpy(student1.name.last, "Potter");
+
+// or
+struct name myname = {"Harry", "Potter"};
+student1.name = myname;
+```
+
+上面示例中，自定义类型`student`的`name`属性是另一个自定义类型，如果要引用后者的属性，就必须使用两个`.`运算符，比如`student1.name.first`。另外，对字符数组属性赋值，要使用`strcpy()`函数，不能直接赋值，因为字符数组还没有经过初始化，会指向一个随机地址。
+
 Struct 结构内部不仅可以引用其他结构，还可以自我引用，即结构内部引用当前结构。比如，链表结构的节点就可以写成下面这样。
 
 ```c
 struct node {
   int data;
-  struct node *next;
+  struct node* next;
 };
 ```
+
+上面示例中，`node`结构的`next`属性，就是指向另一个`node`实例的指针。
 
 下面使用上面的结构，生成一个三个节点的链表。
 
 ```c
-struct node *head;
+struct node* head;
 
-// Hackishly set up a linked list (11)->(22)->(33)
+// 生成一个三个节点的列表 (11)->(22)->(33)
 head = malloc(sizeof(struct node));
 
 head->data = 11;
@@ -259,11 +320,13 @@ head->next->next = malloc(sizeof(struct node));
 head->next->next->data = 33;
 head->next->next->next = NULL;
 
-// Traverse it
+// 遍历这个列表
 for (struct node *cur = head; cur != NULL; cur = cur->next) {
   printf("%d\n", cur->data);
 }
 ```
+
+上面示例是链表结构的最简单实现，通过`for`循环可以对其进行遍历。
 
 ## 匿名 Struct
 
@@ -282,15 +345,15 @@ struct {
 
 ```c
 struct {
-  char *name;
+  char* name;
   int leg_count, speed;
-} a, b, c;
+} a, b;
 
 a.name = "antelope";
-c.leg_count = 4;
+b.leg_count = 4;
 ```
 
-上面示例的`a`、`b`、`c`就是变量名，它们的类型就是前面自定义的数据结构。
+上面示例中，变量`a`和`b`是前面定义的匿名 Struct 结构的实例。
 
 更常见的用法，是为匿名 Struct 结构指定一个别名。
 
@@ -300,7 +363,7 @@ typedef struct {
   int leg_count, speed;
 } animal;
 
-animal a, b, c;
+animal a, b;
 ```
 
 ## 位字段
@@ -323,7 +386,7 @@ synth.cd = 1;
 
 注意，定义二进制位时，结构内部的各个属性只能是整数类型。
 
-实际储存的时候，C 语言会按照`unsigned int`占用的字节数，储存一个位字段结构。可以使用未命名的属性，填满不需要的位。也可以使用宽度为0的属性，迫使下一个属性储存在下一个`unsigned int`。
+实际储存的时候，C 语言会按照`int`类型占用的字节数，储存一个位字段结构。如果有剩余的二进制位，可以使用未命名属性，填满那些位。也可以使用宽度为0的属性，表示占满当前字节剩余的二进制位，迫使下一个属性储存在下一个字节。
 
 ```c
 struct {
@@ -335,5 +398,33 @@ struct {
 } stuff;
 ```
 
-上面示例中，`stuff.field1`与`stuff.field2`之间，有一个宽度为两个二进制的未命名属性。`stuff.field3`将储存在下一个字节。
+上面示例中，`stuff.field1`与`stuff.field2`之间，有一个宽度为两个二进制位的未命名属性。`stuff.field3`将储存在下一个字节。
+
+## 弹性数组成员
+
+很多时候，不能事先确定数组到底有多少个成员。如果声明数组的时候，事先给出一个很大的成员数，就会很浪费空间。C 语言提供了一个解决方法，叫做弹性数组成员（flexible array member）。
+
+如果不能事先确定数组成员的数量时，可以定义一个 Struct 结构。
+
+```c
+struct vstring {
+  int len;
+  char chars[];
+};
+```
+
+上面示例中，`struct vstring`结构有两个属性。`len`属性用来记录数组`chars`的长度，`chars`属性是一个数组，但是没有给出成员数量。
+
+`chars`数组到底有多少个成员，可以在为`vstring`分配内存时确定。
+
+```c
+struct vstring* str = malloc(sizeof(struct vstring) + n);
+str->len = n;
+```
+
+上面示例中，假定`chars`数组的成员数量是`n`，只有在运行时才能知道`n`到底是多少。然后，就为`struct vstring`分配多于它需要的内存：它本身占用的内存长度，再加上`n`个数组成员占用的内存长度。最后，`len`属性记录一下`n`是多少。
+
+这样就可以让数组`chars`有`n`个成员，不用事先确定，可以跟运行时的需要保持一致。
+
+弹性数组成员有一些专门的规则。首先，弹性成员的数组，必须是 Struct 结构的最后一个属性。另外，除了弹性数组成员，Struct 结构必须至少还有一个其他属性。
 
