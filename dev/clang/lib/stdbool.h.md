@@ -1,8 +1,11 @@
 # stdbool.h
 
-`stdbool.h`头文件定义了 bool 类型，还提供了`true`和`false`两个宏，分别表示`0`和`1`。
+`stdbool.h`头文件定义了4个宏。
 
-下面是判断一个数是否为质数的程序。
+- `bool`：定义为`_Bool`。
+- `true`：定义为1。
+- `false`：定义为0。
+- `__bool_true_false_are_defined`：定义为1。
 
 ```c
 #include <stdio.h>
