@@ -194,7 +194,7 @@ printf("%s says it is %i o'clock", "Ben", 21);
 - `%c`：字符类型。
 - `%d`：十进制整数。
 - `%e`：使用科学计数法的浮点数。
-- `%i`：整数。
+- `%i`：整数，基本等同于`%d`。
 - `%f`：小数（`float`类型和`double`类型）。
 - `%g`：十进制浮点数。
 - `%hd`：十进制 short int 类型。`h`可以当作前缀，表示`short`类型，比如`%ho`表示八进制 short 类型，`%hx`表示十六进制 short 类型。
@@ -205,7 +205,7 @@ printf("%s says it is %i o'clock", "Ben", 21);
 - `%o`：八进制整数。
 - `%p`：指针。
 - `%s`：字符串。
-- `%u`：unsigned int 类型。`u`可以当作后缀，`%lu`表示 unsigned long 类型，`%llu`表示 unsigned long long 类型。
+- `%u`：无符号整数（unsigned int）。`u`也可以当作后缀，`%lu`表示 unsigned long 类型，`%llu`表示 unsigned long long 类型。
 - `%x`：十六进制整数。
 - `%zd`：`size_t`类型的值。
 - `%%`：输出一个百分号。
