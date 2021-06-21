@@ -2,6 +2,8 @@
 
 `math.h`这个头文件包含了很多数学函数的原型。
 
+## 函数
+
 三角函数
 
 - `double acos(double x)`： Returns the angle (0 to π radians) whose cosine is x
@@ -81,15 +83,78 @@ ldexp(0.5, -1) // 返回 0.25
 - `double fabs(double x)`： Returns the absolute value of x
 - `double floor(double x)`： Returns the largest integral value not greater than x
 
+`pow()`计算第一个参数的幂，幂的次数由第二个参数指定。
 
-
-下面是一个例子。
-
-```h
-#include <math.h>
-
-#define RAD_TO_DEG (180/(4 * atan(1)))
+```c
+pow(3.0, 2.0) // 9.0
+pow(3.0, 0.5) // 1.73205
+pow(3.0, -3.0) // 0.037037
 ```
 
-C 标准专门为 float 类型和 long double 类型提供了标准函数，即在原函数名前加上`f`或`l`后缀。因此，`sqrtf()`是`sqrt()`的 float 版本，`sqrtl()`是`sqrt()`的 long double 版本。
+`sqrt()`计算参数的平方根。
+
+```c
+sqrt(3.0) // 1.73205
+```
+
+`sqrt()`的运行速度要快于`pow()`。
+
+`ceil()`返回不小于其参数的最小整数（double 类型），属于“向上舍入”。
+
+```c
+ceil(7.1) // 8.0
+ceil(7.9) // 8.0
+ceil(-7.1) // -7.0
+ceil(-7.9) // -7.0
+```
+
+`floor()`返回不大于其参数的最大整数，属于“向下舍入”。
+
+```c
+floor(7.1) // 7.0
+floor(7.9) // 7.0
+floor(-7.1) // -8.0
+floor(-7.9) // -8.0
+```
+
+下面的函数可以实现“四舍五入”。
+
+```c
+double round_nearest(double x) {
+  return x < 0.0 ? ceil(x - 0.5) : floor(x + 0.5);
+}
+```
+
+`fab()`计算参数的绝对值。
+
+```c
+fabs(7.1) // 7.1
+fabs(-7.1) // 7.1
+```
+
+`fmod()`返回第一个参数除以第二个参数的余数，就是余值运算符`%`的浮点数版本，因为`%`只能用于整数运算。
+
+```c
+fmod(5.5, 2.2) // 1.1
+```
+
+另外，C 标准专门为 float 类型和 long double 类型提供了专用函数，即在原函数名前加上`f`或`l`后缀。比如，`sqrtf()`是`sqrt()`的 float 版本，`sqrtl()`是`sqrt()`的 long double 版本。
+
+## 类型
+
+math.h 新增了两种数据类型别名。
+
+- `float_t`：最有效执行 float 运算的类型，宽度至少与 float 一样宽。
+- `double_t`：最有效执行 double 运算的类型，宽度至少与 double 一样宽。
+
+这两个类型具体的指向，与宏`FLT_EVAL_METHOD`有关。
+
+- `FLT_EVAL_METHOD`为0：`float_t`指向 float，`double_t`指向 double。
+- `FLT_EVAL_METHOD`为1：`float_t`指向 double，`double_t`指向 double。
+- `FLT_EVAL_METHOD`为2：`float_t`指向 long double，`double_t`指向 long double。
+
+## 宏
+
+- `INFINITY`：表示正无穷，返回一个 float 类型的值。
+- `NAN`：表示非数字，返回一个 float 类型的值。
 

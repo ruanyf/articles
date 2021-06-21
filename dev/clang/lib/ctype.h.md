@@ -22,8 +22,8 @@ int main(void) {
 }
 ```
 
-- `isalnum(ch)`：是否为字母数字
-- `isalpha(ch)`：是否为字母
+- `isalnum()`：是否为字母数字
+- `isalpha()`：是否为字母
 - `isblank()`：是否为标准的空白字符（包含空格、水平制表符或换行符）
 - `iscntrl()`：是否为控制字符，比如 Ctrl+B
 - `isdigit()`：是否为数字

@@ -26,11 +26,22 @@ if (z < 0) {
 Assertion failed: (z >= 0), function main, file /Users/assert.c, line 14.
 ```
 
+上面报错的格式如下。
+
+```c
+Assertion failed: [expression], function [abc], file [xyz], line [nnn].
+```
+
+上面代码中，方括号的部分使用实际数据替换掉。
+
 使用 assert()有几个好处：它不仅能自动标识文件和出问题的行号，还有一种无需更改代码就能开启或关闭 assert()的机制。如果认为已经排除了程序的 bug，就可以把下面的宏定义写在包含assert.h的位置前面：
 
 ```c
 #define NDEBUG
+#include <assert.h>
 ```
 
 并重新编译程序，这样编译器就会禁用文件中的所有 assert()语句。如果程序又出现问题，可以移除这条`#define`指令（或者把它注释掉），然后重新编译程序，这样就重新启用了assert()语句。
+
+assert 的缺点是，因为引入了额外的检查，增加了程序的运行时间。
 
