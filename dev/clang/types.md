@@ -220,21 +220,52 @@ if (isNormal)
 
 ## 可移植类型
 
-由于 C 语言的整数类型在不同计算机上，占用的字节可能是不一样的，为了保证代码更好的可移植性。C99 标准新增了两个头文件`stdint.h`和`inttypes.h`，为现有类型创造了一些可移植性更好的别名。
+由于 C 语言的整数类型（short、int、long）在不同计算机上，占用的字节可能是不一样的，无法提前知道它们到底占用多少个字节。为了保证代码更好的可移植性，让程序员准确控制字节宽度，头文件`stdint.h`创造了一些新的类型别名。
 
-（1）精确宽度类型(exact-width integer type)，保证某个整数类型的宽度是确定的。比如，`int32_t`可以保证该类型为32位有符号整数。某个系统中，如果`int`类型为32位，`int32_t`就会转为`int`；如果`long`类型为32位，`int32_t`就会转为`long`。
+（1）精确宽度类型(exact-width integer type)，保证某个整数类型的宽度是确定的。
+
+- `int8_t`：8位有符号整数。
+- `int16_t`：16位有符号整数。
+- `int32_t`：32位有符号整数。
+- `int64_t`：64位有符号整数。
+- `uint8_t`：8位无符号整数。
+- `uint16_t`：16位无符号整数。
+- `uint32_t`：32位无符号整数。
+- `uint64_t`：64位无符号整数。
+
+上面这些都是类型别名，编译器会指定它们指向的底层类型。比如，某个系统中，如果`int`类型为32位，`int32_t`就会指向`int`；如果`long`类型为32位，`int32_t`则会指向`long`。
 
 （2）最小宽度类型（minimum width type），保证某个整数类型的最小长度。比如，`int_least8_t`表示可以容纳8位有符号整数值的最小宽度的类型。
 
-（3）最快最小宽度类型（fast minimum width type），可以使整数计算达到最快的类型。比如，`int_fast8_t`表示对于8位有符号整数，运算速度最快的类型。
+- int_least8_t
+- int_least16_t
+- int_least32_t
+- int_least64_t
+- uint_least8_t
+- uint_least16_t
+- uint_least32_t
+- uint_least64_t
 
-（4）最大整数类型，用于存放最大的整数。比如，`intmax_t`可以储存任何有效的有符号整数，`uintmax_t`表示最大的无符号整数类型，这些类型比`long long`和`unsigned long`更大。
+（3）最快的最小宽度类型（fast minimum width type），可以使整数计算达到最快的类型。比如，`int_fast8_t`表示对于8位有符号整数，运算速度最快的类型。
+
+- int_fast8_t
+- int_fast16_t
+- int_fast32_t
+- int_fast64_t
+- uint_fast8_t
+- uint_fast16_t
+- uint_fast32_t
+- uint_fast64_t
+
+（4）可以保存指针的整数类型。`intptr_t`类型是可以存储指针（内存地址）的有符号整数，`uintptr_t`类型是无符号整数类型。
+
+（5）最大宽度整数类型，用于存放最大的整数。`intmax_t`可以存储任何有效的有符号整数，`uintmax_t`存放无符号整数，这两个类型的宽度比`long long`和`unsigned long`更大。
 
 下面是一个使用示例。
 
 ```c
 #include <stdio.h>
-#include <inttypes.h>
+#include <stdint.h>
 
 int main(void) {
   int32_t x32;
