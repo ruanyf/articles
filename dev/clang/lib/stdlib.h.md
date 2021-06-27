@@ -123,3 +123,81 @@ void too_bad(void) {
 `atexit()`注册的函数，当调用`exit()`时就会执行这些函数。注意，即使没有显式调用`exit()`，还是会调用`sign_off()`，因为`main()`结束时会隐式调用`exit()`。
 
 `atexit()`注册的函数（如`sign_off()`和`too_bad()`）应该不带任何参数且返回类型为`void`。通常，这些函数会执行一些清理任务，例如更新监视程序的文件或重置环境变量。
+
+## strtod()，strtoul()
+
+`strtod()`用来将一个字符串形式的 float 值转为 double。如果转换不成功，返回`0`。
+
+```c
+double strtod(const char* nPtr, char** endPtr);
+```
+
+它接受两个参数，第一个参数是字符串（`char*`），第二个参数是字符串数组（`char**`）。
+
+它的处理过程如下，首先解析第一个参数（如果起首有空白字符，会被过滤），如果第一个参数可以转换成 double 值，则返回该 double 值，同时将第二个参数指向剩余的不可转换部分的第一个字符；如果第一个参数无法转成 double 值，则返回`0`，同时将第二个参数指向第一个参数。
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+  const char* string = "51.2% are admitted";
+  char* stringPtr;
+  double d = strtod(string, &stringPtr);
+  printf("The string \"%s\" is converted to the\n", string);
+  printf("double value %.2f and the string \"%s\"\n", d, stringPtr);
+}
+```
+
+上面示例中，`strtod()`提取字符串`string`的开头的 double 值`51.2`，然后将不能转换的部分（`% are admitted`）的指针放入`stringPtr`。上面代码的输出结果如下。
+
+```bash
+The string "51.2% are admitted" is converted to the
+double value 51.20 and the string "% are admitted"
+```
+
+## strtol()
+
+`strtol()`用来将字符串形式的整数值，转为 long int。如果转换不成功，返回`0`。
+
+```c
+long strtol(const char* nPtr, char** endPtr, int base);
+```
+
+它接受三个参数，第一个参数是待转换的字符串（起首的空白字符会被忽略），第二个参数是一个指针，指向不能转换部分的第一个字符，第三个参数是待转换整数的进制。
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+  const char* string = "-1234567abc";
+  char* remainderPtr;
+  long x = strtol(string, &remainderPtr, 0);
+  printf("%s\"%s\"\n%s%ld\n%s\"%s\"\n",
+    "The original string is ",
+    string,
+    "The converted value is ",
+    x,
+    "The remainder of the original string is ",
+    remainderPtr
+  );
+}
+```
+
+上面代码的输出结果如下。
+
+```c
+The original string is "-1234567abc"
+The converted value is -1234567
+The remainder of the original string is "abc"
+```
+
+`strtol()`的第二个参数如果是 NULL，会使得字符串无法转换的剩余部分被忽略。第三个参数应该是`2`到`36`之间的整数，代表相应的进制，如果是特殊值`0`，则表示让`strtol()`根据数值的前缀，自己确定进制。
+
+`strtol()`用来将字符串形式的整数值，转为 unsigned long int，用法与`strtol()`一致。
+
+```c
+unsigned long strtoul(const char *nPtr, char **endPtr, int base);
+```
+

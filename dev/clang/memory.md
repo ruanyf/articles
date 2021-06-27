@@ -339,3 +339,14 @@ memmove(&a[0], &a[1], 99 * sizeof(int));
 
 上面示例中，从数组成员`a[1]`开始的99个成员，都向前移动一个位置。
 
+下面是另一个例子。
+
+```c
+char x[] = "Home Sweet Home";
+
+// 输出 Sweet Home Home
+printf("%s\n", (char *) memmove(x, &x[5], 10));
+```
+
+上面示例中，从字符串`x`的5号位置开始的10个字节，就是“Sweet Home”，`memmove()`将其前移到0号位置，所以`x`就变成了“Sweet Home Home”。
+

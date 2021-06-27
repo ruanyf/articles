@@ -391,24 +391,29 @@ int strcmp(const char* s1, const char* s2);
 
 按照字典顺序，如果`s1`小于`s2`，`strcmp()`返回值小于0；如果`s1`大于`s2`，返回值大于0。
 
-下面是一个用法实例。
+下面是一个用法示例。
 
 ```c
-char s1[12] = "hello";
-char s2[6] = "world";
+s1 = Happy New Year
+s2 = Happy New Year
+s3 = Happy Holidays
 
-if (strcmp(s1, s2) != 0) {
-  printf("They are different.\n");
-}
+strcmp(s1, s2) = 0
+strcmp(s1, s3) = 1
+strcmp(s3, s1) = -1
 ```
 
-上面示例中，两个字符串不相等，就会输出一行提示信息。注意，这个例子中两个字符串数组的长度是不一样的，`strcmp()`并不考虑数组长度，只比较字符串内容是否一致。
-
-此外，`strcmp()`只用来比较字符串，不用来比较字符。因为字符就是小整数，直接用相等运算符（`==`）就能比较。所以，不要把字符类型（`char`）的值，放入`strcmp()`当作参数。
+注意，`strcmp()`只用来比较字符串，不用来比较字符。因为字符就是小整数，直接用相等运算符（`==`）就能比较。所以，不要把字符类型（`char`）的值，放入`strcmp()`当作参数。
 
 ## strncmp()
 
 由于`strcmp()`比较的是整个字符串，C 语言又提供了`strncmp()`函数，只比较到指定的位置。该函数增加了第三个参数，指定了比较的字符数。它的原型定义在`string.h`头文件里面。
+
+```c
+int strncmp(const char* s1, const char* s2, size_t n);
+```
+
+下面是一个例子。
 
 ```c
 char s1[12] = "hello world";
