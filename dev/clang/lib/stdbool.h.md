@@ -8,6 +8,16 @@
 - `__bool_true_false_are_defined`：定义为1。
 
 ```c
+bool isEven(int number) {
+  if (number % 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+```
+
+```c
 #include <stdio.h>
 #include <stdbool.h>
 
