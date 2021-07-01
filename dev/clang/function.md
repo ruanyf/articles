@@ -142,45 +142,70 @@ Swap(&a, &b);
 
 上面示例中，通过传入变量`x`和`y`的地址，函数内部就可以直接操作该地址，从而实现交换两个变量的值。
 
-## 函数名是指针
+## 函数指针
 
-C 语言的函数名，本质上是函数体的指针。它很特殊，一方面调用函数时，其实可以在函数名前面加上星号（`*`）。
+C 语言允许定义指向函数的指针。
 
 ```c
-myFunction(string)
-// 等同于
-(*myFunction)(string)
+void print(int a) {
+  printf("%d\n", a);
+}
+
+void (*print_ptr)(int) = &print;
 ```
 
-另一方面，`&`运算符也可以取到函数的地址。
+上面示例中，变量`print_ptr`是一个函数指针，它指向函数`print()`的地址（`&print`，`&`运算符用于从函数名获取函数地址）。注意，`(*print_ptr)`一定要写在圆括号里面，否则函数参数的优先级高于`*`，整个式子就会变成`void* print_ptr(int)`。
+
+函数指针也可以调用函数。
 
 ```c
-find(myFunction)
+(*print_ptr)(10);
 // 等同于
-find(&myFunction)
+print(10);
 ```
 
-当然，为了简洁易读，函数名前面一般情况都不加`*`和`&`。
-
-由于这种特性，下面两种写法都能从函数指针运行一个函数。
+比较特殊的是，C 语言还规定，函数名就代表函数地址，不需要使用`&`，即`print == &print`。
 
 ```c
-void ToUpper(char*);
-void ToLower(char*);
-void (*pf)(char*);
+void (*print_ptr)(int) = &print;
+// 等同于
+void (*print_ptr) = print;
+```
 
-char str[] = "hello";
+这意味着，函数名也是指向函数的指针。
 
+```c
+if (print_ptr == print) // true
+```
+
+总结一下，对于任意函数，都有五种调用函数的写法。
+
+```c
 // 写法一
-pf = ToUpper;
-(*pf)(str);
+print(10)
 
 // 写法二
-pf = ToLower;
-pf(str);
+(*print)(10)
+
+// 写法三
+(&print)(10)
+
+// 写法四
+(*print_ptr)(10)
+
+// 写法五
+print_ptr(10)
 ```
 
-上面代码中，`pf`是一个函数指针（因为`*pf`是一个函数），不管前面加不加`*`，都能通过指针运行一个函数。
+为了简洁易读，一般情况下，函数名前面都不加`*`和`&`。
+
+这种特性的一个应用是，如果一个函数的参数或返回值，也是一个函数，那么函数可以写成下面这样。
+
+```c
+int compute(int (*myfunc)(int), int, int);
+```
+
+上面示例可以清晰地表明，函数`compute()`的第一个参数也是一个函数。
 
 ## 使用注意点
 
