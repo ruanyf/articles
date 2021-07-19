@@ -32,6 +32,14 @@ typedef int five_ints[5];
 five_ints x = {11, 22, 33, 44, 55};
 ```
 
+typedef 为函数起别名的写法如下。
+
+```c
+typedef signed char (*fp)(void);
+```
+
+上面示例中，类型别名`fp`是一个指针，代表函数`signed char (*)(void)`。
+
 ## 主要好处
 
 `typedef`为类型起别名的好处，主要有下面几点。
