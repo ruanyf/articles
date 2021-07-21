@@ -255,6 +255,7 @@ printf("%s says it is %i o'clock\n", "Ben", 21);
 - `%hd`：十进制 short int 类型。
 - `%ho`：八进制 short int 类型。
 - `%hx`：十六进制 short int 类型。
+- `%hu`：unsigned short int 类型。
 - `%ld`：十进制 long int 类型。
 - `%lo`：八进制 long int 类型。
 - `%lx`：十六进制 long int 类型。
