@@ -5,7 +5,7 @@
 C 语言内置的数据类型，除了最基本的几种原始类型，只有数组属于复合类型，且只能包含相同类型的数据，并不够用。实际开发中，主要有下面两种情况，需要更灵活强大的复合类型。
 
 - 复杂的物体需要使用多个变量描述，这些变量都是相关的，最好有某种机制将它们联系起来。
-- 某些函数需要传入多个参数，如果一个个按照顺序传入，非常麻烦，最好能组合成一个复合数据传入。
+- 某些函数需要传入多个参数，如果一个个按照顺序传入，非常麻烦，最好能组合成一个复合结构传入。
 
 为了解决这些问题，C 语言提供了`struct`命令，允许自定义复合数据类型，将不同类型的值组合在一起。这样不仅为编程提供方便，也有利于增强代码的可读性。C 语言没有其他语言的对象（object）和类（class）的概念，Struct 结构很大程度上提供了对象和类的功能，可以将它视为只有属性、没有方法的类。
 
@@ -20,9 +20,9 @@ struct fraction {
 
 上面示例定义了一个分数的数据类型`struct fraction`，包含两个属性`numerator`和`denominator`。
 
-注意，作为一个自定义的数据类型，它的类型名要包括`struct`关键字，比如上例是`struct fraction`，单独的`fraction`没有任何意义，甚至脚本还可以拥有名为`fraction`的变量，虽然这样很容易造成混淆。另外，`struct`语句结尾的分号不能省略，否则很容易产生错误。
+注意，作为一个自定义的数据类型，它的类型名要包括`struct`关键字，比如上例是`struct fraction`，单独的`fraction`没有任何意义，甚至脚本还可以另外定义名为`fraction`的变量，虽然这样很容易造成混淆。另外，`struct`语句结尾的分号不能省略，否则很容易产生错误。
 
-`struct`命令的作用有两个，一个是声明了新的数据类型，二是告诉编译器这个数据类型的内存占用情况，但是并没有为该类型分配内存。只有创建一个该类型的变量时，编译器才会为这个变量分配内存，请看下面的例子。
+定义了新的数据类型以后，就可以声明该类型的变量，这与声明其他类型变量的写法是一样的。
 
 ```c
 struct fraction f1;
@@ -31,7 +31,7 @@ f1.numerator = 22;
 f1.denominator = 7;
 ```
 
-上面示例先声明了一个`struct fraction`类型的变量`f1`，这时编译器就会为`f1`分配内存，接着就可以为`f1`的不同属性赋值。可以看到，变量的属性通过点（`.`）来表示，比如`numerator`属性要写成`f1.numerator`。
+上面示例中，先声明了一个`struct fraction`类型的变量`f1`，这时编译器就会为`f1`分配内存，接着就可以为`f1`的不同属性赋值。可以看到，struct 结构的属性通过点（`.`）来表示，比如`numerator`属性要写成`f1.numerator`。
 
 再提醒一下，声明自定义类型的变量时，类型名前面，不要忘记加上`struct`关键字。也就是说，必须使用`struct fraction f1`声明变量，不能写成`fraction f1`。
 
@@ -47,9 +47,9 @@ struct car {
 struct car saturn = {"Saturn SL/2", 16000.99, 175};
 ```
 
-上面示例中，`saturn`是`struct cat`类型的变量，大括号里面同时对它的三个属性赋值。如果大括号里面的值的数量，少于属性的数量，那么缺失的属性自动初始化为`0`。
+上面示例中，变量`saturn`是`struct cat`类型，大括号里面同时对它的三个属性赋值。如果大括号里面的值的数量，少于属性的数量，那么缺失的属性自动初始化为`0`。
 
-注意，大括号里面的值的顺序，必须与 Struct 类型声明时的顺序一致。否则，必须为每个值指定属性名。
+注意，大括号里面的值的顺序，必须与 Struct 类型声明时属性的顺序一致。否则，必须为每个值指定属性名。
 
 ```c
 struct car saturn = {.speed=172, .name="Saturn SL/2"};
@@ -101,7 +101,7 @@ struct {
 
 上面示例中，在声明变量`b1`和`b2`的同时，为它们赋值。
 
-`typedef`命令可以为 Struct 结构指定一个别名，这样使用起来更简洁。
+下一章接受的`typedef`命令可以为 Struct 结构指定一个别名，这样使用起来更简洁。
 
 ```c
 typedef struct cell_phone {
@@ -122,11 +122,30 @@ struct book {
   char author[100];
   float value;
 }* b1;
+
+// 或者写成两个语句
+struct book {
+  char title[500];
+  char author[100];
+  float value;
+};
+struct book* b1;
 ```
 
 上面示例中，变量`b1`是一个指针，指向的数据是`struct book`类型的实例。
 
-Struct 结构的存储空间，不是各个属性存储空间的总和，而是`int`类型存储空间的倍数。如果`int`类型的存储是4字节，那么 Struct 类型的存储空间就总是4字节、8字节、12字节，以此类推。
+Struct 结构也可以作为数组成员。
+
+```c
+struct fraction numbers[1000];
+
+numbers[0].numerator = 22;
+numbers[0].denominator = 7;
+```
+
+上面示例声明了一个有1000个成员的数组`numbers`，每个成员都是自定义类型`fraction`的实例。
+
+Struct 结构占用的存储空间，不是各个属性存储空间的总和。因为为了计算效率，C 语言的内存占用空间一般来说，都必须是`int`类型存储空间的倍数。如果`int`类型的存储是4字节，那么 Struct 类型的存储空间就总是4的倍数。
 
 ```c
 struct { char a; int b; } s;
@@ -137,10 +156,27 @@ printf("%d\n", sizeof(s)); // 8
 
 ## Struct 的复制
 
-Struct 变量可以使用赋值运算符（`=`），复制给另一个变量，这时会生成一个全新的副本。系统会分配一块新的内存空间，大小与原来的变量相同，把每个属性都复制过去，即原样生成了一份数据。
+Struct 变量可以使用赋值运算符（`=`），复制给另一个变量，这时会生成一个全新的副本。系统会分配一块新的内存空间，大小与原来的变量相同，把每个属性都复制过去，即原样生成了一份数据。这一点跟数组的复制不一样，务必小心。
 
 ```c
 struct cat { char name[30]; short age; } a, b;
+
+strcpy(a.name, "Hula");
+a.age = 3;
+
+b = a;
+b.name[0] = 'M';
+
+printf("%s\n", a.name); // Hula
+printf("%s\n", b.name); // Mula
+```
+
+上面示例中，变量`b`是变量`a`的副本，两个变量的值是各自独立的，修改掉`b.name`不影响`a.name`。这一点跟数组完全不同，数组使用赋值运算符，不会复制数据，只会共享地址。
+
+但是，稍作修改，结果就不一样。
+
+```c
+struct cat { char* name; short age; } a, b;
 
 a.name = "Hula";
 a.age = 3;
@@ -148,20 +184,11 @@ a.age = 3;
 b = a;
 ```
 
-上面示例中，变量`b`是变量`a`的副本，两个变量的值是各自独立的。
+上面示例中，`name`属性变成了一个字符串指针，这时`a`赋值给`b`，导致`b.name`也是同样的字符串指针，指向同一个地址，也就是说两个属性共享同一个地址。因为这时，struct 结构内部保存的是一个指针，而不是上一个例子的数组，这时复制的就不是字符串本身，而是它的指针。
 
-注意，这一点与数组完全不同，数组使用赋值运算符，不会复制数据，只会共享地址。
+注意，这种赋值要求两个变量是同一个类型，不同类型的`struct`变量无法互相赋值。
 
-这种赋值要求两个变量是同一个类型，不同类型的`struct`变量无法互相赋值。另外，C 语言没有提供比较两个自定义数据结构是否相等的方法，无法用比较运算符（比如`==`和`!=`）比较两个数据结构是否相等或不等。
-
-下面是另一个例子。
-
-```c
-struct car saturn = {"Saturn SL/2", 16000.99, 175};
-struct car brick = saturn;
-```
-
-上面示例中，变量`saturn`赋值给另一个变量`brick`，这时`brick`就是一个数据副本。注意，Struct 的某个属性如果是字符串（比如上例的`Saturn SL/2`），那么复制的不是字符串本身，而是字符串的指针，因为 Struct 内部保存的是字符串指针。
+另外，C 语言没有提供比较两个自定义数据结构是否相等的方法，无法用比较运算符（比如`==`和`!=`）比较两个数据结构是否相等或不等。
 
 ## Struct 指针
 
@@ -197,15 +224,11 @@ Struct 指针传入函数的写法如下。
 ```c
 void happy(struct turtle* t) {
 }
-```
 
-上面代码中，`t`是 Struct 结构的指针。这样的话，调用函数时就必须传入指针。
-
-```c
 happy(&myTurtle);
 ```
 
-上面代码中，Struct 类型跟数组不一样，类型标识符并不是指针，所以指针必须写成`&myTurtle`。
+上面代码中，`t`是 Struct 结构的指针，调用函数时传入的是指针。Struct 类型跟数组不一样，类型标识符本身并不是指针，所以传入时，指针必须写成`&myTurtle`。
 
 函数内部也必须使用`(*t).age`的写法，从指针拿到 Struct 结构本身。
 
@@ -219,7 +242,7 @@ void happy(struct turtle* t) {
 
 现在，重新编译执行上面的整个示例，`happy()`内部对 Struct 结构的操作，就会反映到函数外部。
 
-可以看到，`(*t).age`这样的写法很麻烦。C 语言就引入了一个新的箭头运算符（`->`），可以从 Struct 指针上直接获取属性，大大增强了代码的可读性。
+`(*t).age`这样的写法很麻烦。C 语言就引入了一个新的箭头运算符（`->`），可以从 Struct 指针上直接获取属性，大大增强了代码的可读性。
 
 ```c
 void happy(struct turtle* t) {
@@ -227,9 +250,7 @@ void happy(struct turtle* t) {
 }
 ```
 
-总结如下，对于 Struct 变量名，使用点运算符（`.`）获取属性；对于 Struct 变量指针，使用箭头运算符（`->`）获取属性。
-
-对于变量`myStruct`来说，假设`ptr`是它的指针。那么下面三种写法是同一回事。
+总结一下，对于 Struct 变量名，使用点运算符（`.`）获取属性；对于 Struct 变量指针，使用箭头运算符（`->`）获取属性。以变量`myStruct`为例，假设`ptr`是它的指针，那么下面三种写法是同一回事。
 
 ```c
 // ptr == &myStruct
@@ -290,7 +311,7 @@ struct name myname = {"Harry", "Potter"};
 student1.name = myname;
 ```
 
-上面示例中，自定义类型`student`的`name`属性是另一个自定义类型，如果要引用后者的属性，就必须使用两个`.`运算符，比如`student1.name.first`。另外，对字符数组属性赋值，要使用`strcpy()`函数，不能直接赋值，因为字符数组还没有经过初始化，会指向一个随机地址。
+上面示例中，自定义类型`student`的`name`属性是另一个自定义类型，如果要引用后者的属性，就必须使用两个`.`运算符，比如`student1.name.first`。另外，对字符数组属性赋值，要使用`strcpy()`函数，不能直接赋值，因为直接改掉字符数组名的地址会报错。
 
 Struct 结构内部不仅可以引用其他结构，还可以自我引用，即结构内部引用当前结构。比如，链表结构的节点就可以写成下面这样。
 
@@ -302,69 +323,6 @@ struct node {
 ```
 
 上面示例中，`node`结构的`next`属性，就是指向另一个`node`实例的指针。
-
-下面使用上面的结构，生成一个三个节点的链表。
-
-```c
-struct node* head;
-
-// 生成一个三个节点的列表 (11)->(22)->(33)
-head = malloc(sizeof(struct node));
-
-head->data = 11;
-head->next = malloc(sizeof(struct node));
-
-head->next->data = 22;
-head->next->next = malloc(sizeof(struct node));
-
-head->next->next->data = 33;
-head->next->next->next = NULL;
-
-// 遍历这个列表
-for (struct node *cur = head; cur != NULL; cur = cur->next) {
-  printf("%d\n", cur->data);
-}
-```
-
-上面示例是链表结构的最简单实现，通过`for`循环可以对其进行遍历。
-
-## 匿名 Struct
-
-Struct 允许定义匿名结构，即省略结构名。
-
-```c
-struct {
-  char *name;
-  int leg_count, speed;
-};
-```
-
-上面的数据结构，`struct`命令后面没有结构名，所以无法引用。
-
-为了引用匿名结构，必须在定义的同时，声明对应的变量。
-
-```c
-struct {
-  char* name;
-  int leg_count, speed;
-} a, b;
-
-a.name = "antelope";
-b.leg_count = 4;
-```
-
-上面示例中，变量`a`和`b`是前面定义的匿名 Struct 结构的实例。
-
-更常见的用法，是为匿名 Struct 结构指定一个别名。
-
-```c
-typedef struct {
-  char* name;
-  int leg_count, speed;
-} animal;
-
-animal a, b;
-```
 
 ## 位字段
 
@@ -418,11 +376,11 @@ struct vstring {
 `chars`数组到底有多少个成员，可以在为`vstring`分配内存时确定。
 
 ```c
-struct vstring* str = malloc(sizeof(struct vstring) + n);
+struct vstring* str = malloc(sizeof(struct vstring) + n * sizeof(char));
 str->len = n;
 ```
 
-上面示例中，假定`chars`数组的成员数量是`n`，只有在运行时才能知道`n`到底是多少。然后，就为`struct vstring`分配多于它需要的内存：它本身占用的内存长度，再加上`n`个数组成员占用的内存长度。最后，`len`属性记录一下`n`是多少。
+上面示例中，假定`chars`数组的成员数量是`n`，只有在运行时才能知道`n`到底是多少。然后，就为`struct vstring`分配它需要的内存：它本身占用的内存长度，再加上`n`个数组成员占用的内存长度。最后，`len`属性记录一下`n`是多少。
 
 这样就可以让数组`chars`有`n`个成员，不用事先确定，可以跟运行时的需要保持一致。
 

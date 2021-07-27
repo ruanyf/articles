@@ -3,3 +3,9 @@
 - variable.md: 变量
 - operator.md: 运算符
 - flow-control.md: 流程控制
+- types.md: 数据类型
+- pointer.md: 指针
+- function.md: 函数
+- array.md: 数组
+- string.md: 字符串
+- struct.md: Struct 结构
