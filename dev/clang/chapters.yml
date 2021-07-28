@@ -8,4 +8,5 @@
 - function.md: 函数
 - array.md: 数组
 - string.md: 字符串
+- memory.md: 内存管理
 - struct.md: Struct 结构

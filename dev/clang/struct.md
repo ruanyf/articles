@@ -322,7 +322,35 @@ struct node {
 };
 ```
 
-上面示例中，`node`结构的`next`属性，就是指向另一个`node`实例的指针。
+上面示例中，`node`结构的`next`属性，就是指向另一个`node`实例的指针。下面，使用这个结构自定义一个数据链表。
+
+```c
+struct node {
+  int data;
+  struct node* next;
+};
+
+struct node* head;
+
+// 生成一个三个节点的列表 (11)->(22)->(33)
+head = malloc(sizeof(struct node));
+
+head->data = 11;
+head->next = malloc(sizeof(struct node));
+
+head->next->data = 22;
+head->next->next = malloc(sizeof(struct node));
+
+head->next->next->data = 33;
+head->next->next->next = NULL;
+
+// 遍历这个列表
+for (struct node *cur = head; cur != NULL; cur = cur->next) {
+  printf("%d\n", cur->data);
+}
+```
+
+上面示例是链表结构的最简单实现，通过`for`循环可以对其进行遍历。
 
 ## 位字段
 

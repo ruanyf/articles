@@ -22,6 +22,20 @@ char* strncpy(char* s1, const char* s2, size_t n);
 
 `memcpy()`、`memmove()`、`strncpy()`都不要求字符串结尾有空字符，对任意内存块都可以工作。`strcpy()`会持续复制字符，直到遇到一个空字符为止，因此`strcpy()`仅适用于以空字符结尾的字符串。
 
+下面是`memcpy()`拷贝 Struct 结构的例子。
+
+```c
+struct antelope my_antelope;
+struct antelopy my_clone;
+
+// ...
+
+memcpy(&my_clone, &my_antelope, sizeof my_antelope);
+```
+
+上面示例中，将`my_antelope`的内存数据拷贝到`my_clone`所在的内存，这样就形成了一份一模一样的 Struct 拷贝。由于 Struct 类型的变量名不是指针，所以需要在变量名之前添加`&`运算符。
+
+
 ## 拼接函数
 
 char* strcat(char* s1, const char* s2);

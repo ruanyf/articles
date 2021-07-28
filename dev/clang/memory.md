@@ -10,9 +10,11 @@ C 语言的内存管理，分成两部分。一部分是系统管理的，另一
 
 ## void 指针
 
-void 指针指的是无类型的指针，即该指针可以指向任意类型的数据。很多函数的返回值就是 void 指针，比如下面的`malloc()`函数。
+前面章节已经说过了，每一块内存都有地址，通过指针变量可以获取指定地址的内存块。指针变量必须有类型，否则编译器无法知道，如何解读内存块保存的二进制数据。但是，向系统请求内存的时候，有时不确定会有什么样的数据写入内存，需要先获得内存块，稍后再确定写入的数据类型。
 
-void 指针的作用是，其他所有类型指针都可以转为该指针，而该指针也可以转为其他类型的指针。
+为了满足这种需求，C 语言提供了一种不定类型的指针，叫做 void 指针。它只有内存块的地址信息，没有类型信息，等到使用该块内存的时候，再向编译器补充说明，里面的数据类型是什么。
+
+另一方面，void 指针等同于无类型指针，可以指向任意类型的数据，但是不能解读数据。void 指针与其他所有类型指针之间是互相转换关系，任一类型的指针都可以转为 void 指针，而 void 指针也可以转为任一类型的指针。
 
 ```c
 int x = 10;
@@ -34,19 +36,19 @@ printf("%c\n", *p); // 报错
 
 上面示例中，`p`是一个 void 指针，所以这时无法用`*p`取出指针指向的值。
 
+void 指针的重要之处在于，很多内存相关函数的返回值就是 void 指针，只给出内存块的地址信息，所以放在最前面进行介绍。
+
 ## malloc()
 
-`malloc()`函数用于分配内存，可以在“堆”里面分配一段连续的内存块。该函数的原型在头文件`stdlib.h`定义。
-
-它接受一个非负整数作为参数，表示所要分配的内存字节数，返回一个 void 指针，指向分配好的内存块。如果分配没有成功，返回 NULL（不指向任何地方的指针）。
+`malloc()`函数用于分配内存，该函数向系统要求一段内存，系统就在“堆”里面分配一段连续的内存块给它。它的原型定义在头文件`stdlib.h`。
 
 ```c
 void* malloc(size_t size)
 ```
 
-由于`malloc()`函数不知道，将要存储在该块内存的数据是什么类型，所以它返回的指针是无类型的 void 指针。
+它接受一个非负整数作为参数，表示所要分配的内存字节数，返回一个 void 指针，指向分配好的内存块。这是非常合理的，因为`malloc()`函数不知道，将要存储在该块内存的数据是什么类型，所以只能返回一个无类型的 void 指针。
 
-由于 void 指针可以指向任意类型的内存数据，所以可以使用`malloc()`为任意类型的数据分配内存。常见的做法是先使用`sizeof()`函数，算出某种数据类型所需的字节长度，然后再将这个长度传给`malloc()`。
+可以使用`malloc()`为任意类型的数据分配内存，常见的做法是先使用`sizeof()`函数，算出某种数据类型所需的字节长度，然后再将这个长度传给`malloc()`。
 
 ```c
 int* p = malloc(sizeof(int));
@@ -68,10 +70,10 @@ int* p = (int*) malloc(sizeof(int));
 由于`sizeof()`的参数可以是变量，所以上面的例子也可以写成下面这样。
 
 ```c
-int* p = (int*) malloc(sizeof *p);
+int* p = (int*) malloc(sizeof(*p));
 ```
 
-由于存在分配失败的可能，所以最好在使用内存之前检查一下，`malloc()`是否分配成功。
+`malloc()`分配内存有可能分配失败，这时返回常量 NULL。Null 的值为0，是一个无法读写的内存地址，可以理解成一个不指向任何地方的指针。它在包括`stdlib.h`等多个头文件里面都有定义，所以只要可以使用`malloc()`，就可以使用`NULL`。由于存在分配失败的可能，所以最好在使用`malloc()`之后检查一下，是否分配成功。
 
 ```c
 int* p = malloc(sizeof(int));
@@ -86,7 +88,7 @@ if (!p) {
 }
 ```
 
-上面示例中，通过判断返回的指针`p`是否为`NULL`，判断`malloc()`是否分配成功。`NULL`是一个宏，在包括`stdlib.h`等多个头文件里面都有定义，所以只要可以使用`malloc()`，就可以使用`NULL`。
+上面示例中，通过判断返回的指针`p`是否为`NULL`，确定`malloc()`是否分配成功。
 
 `malloc()`最常用的场合，就是为数组和自定义数据结构分配内存。
 
@@ -107,7 +109,7 @@ int* p = (int*) malloc(n * sizeof(int));
 
 上面示例中，`malloc()`可以根据变量`n`的不同，动态为数组分配不同的大小。
 
-注意，`malloc()`不会对所分配的内存进行初始化，里面还保存着原来的值。如果没有初始化，就使用这段内存，可能从里面读到以前的值。所以，程序员要自己负责初始化，举例来说，字符串初始化的方法是使用`strcpy()`函数。
+注意，`malloc()`不会对所分配的内存进行初始化，里面还保存着原来的值。如果没有初始化，就使用这段内存，可能从里面读到以前的值。程序员要自己负责初始化，比如，字符串初始化可以使用`strcpy()`函数。
 
 ```c
 char* p = malloc(4);
@@ -117,49 +119,17 @@ strcpy(p, "abc");
 *p = "abc";
 ```
 
-上面示例中，字符指针`p`指向一段4个字节的内存，`strcpy()`将字符串“abc”拷贝进入这段内存。
-
-下面是一个链表结构的例子。
-
-```c
-struct node {
-  int data;
-  struct node* next;
-};
-
-struct node* head;
-
-// 生成一个三个节点的列表 (11)->(22)->(33)
-head = malloc(sizeof(struct node));
-
-head->data = 11;
-head->next = malloc(sizeof(struct node));
-
-head->next->data = 22;
-head->next->next = malloc(sizeof(struct node));
-
-head->next->next->data = 33;
-head->next->next->next = NULL;
-
-// 遍历这个列表
-for (struct node *cur = head; cur != NULL; cur = cur->next) {
-  printf("%d\n", cur->data);
-}
-```
-
-上面示例是链表结构的最简单实现，通过`for`循环可以对其进行遍历。
+上面示例中，字符指针`p`指向一段4个字节的内存，`strcpy()`将字符串“abc”拷贝放入这段内存，完成了这段内存的初始化。
 
 ## free()
 
-`free()`用于释放`malloc()`函数分配的内存，将这块内存还给系统以便重新使用，否则这个内存块会一直占用到程序运行结束。
-
-它的参数是`malloc()`返回的内存地址。该函数的原型定义在头文件`stdlib.h`里面。
+`free()`用于释放`malloc()`函数分配的内存，将这块内存还给系统以便重新使用，否则这个内存块会一直占用到程序运行结束。该函数的原型定义在头文件`stdlib.h`里面。
 
 ```c
 void free(void* block)
 ```
 
-下面是一个例子。
+上面代码中，`free()`的参数是`malloc()`返回的内存地址。下面就是用法实例。
 
 ```c
 int* p = (int*) malloc(sizeof(int));
@@ -179,17 +149,23 @@ void gobble(double arr[], int n) {
 }
 ```
 
-上面示例中，函数`gobble()`内部分配了内存，但是没有写`free(temp)`。这会造成函数运行结束后，占用的内存块依然保留，如果多次调用`gobble()`，就会留下多个内存块。并且由于指针`temp`已经消失了，也无法访问这些内存块，进行重复使用。
+上面示例中，函数`gobble()`内部分配了内存，但是没有写`free(temp)`。这会造成函数运行结束后，占用的内存块依然保留，如果多次调用`gobble()`，就会留下多个内存块。并且，由于指针`temp`已经消失了，也无法访问这些内存块，再次使用。
 
 ## calloc()
 
-`calloc()`函数的作用与`malloc()`相似，也是分配内存块。该函数的原型在头文件`stdlib.h`定义。
+`calloc()`函数的作用与`malloc()`相似，也是分配内存块。该函数的原型定义在头文件`stdlib.h`。
 
 两者的区别主要有两点：
 
 （1）`calloc()`接受两个参数，第一个参数是数据类型的单位字节长度，第二个是该数据类型的数量。
 
-（2）`calloc()`会将所分配的内存全部初始化为`0`。`malloc()`不会对内存进行初始化，初始化必须额外调用`memset()`函数。
+```c
+void* calloc(size_t n, size_t size);
+```
+
+`calloc()`的返回值也是一个 void 指针。分配失败时，返回 NULL。
+
+（2）`calloc()`会将所分配的内存全部初始化为`0`。`malloc()`不会对内存进行初始化，如果想要初始化为`0`，还要额外调用`memset()`函数。
 
 ```c
 int *p = calloc(10, sizeof(int));
@@ -199,21 +175,24 @@ int *q = malloc(sizeof(int) * 10);
 memset(q, 0, sizeof(int) * 10);
 ```
 
-上面示例中，`calloc()`的一行代码，相当于下面两行`malloc()`代码。
-
-`calloc()`的返回值也是一个 void 指针。分配失败时，返回 NULL。
+上面示例中，`calloc()`相当于`malloc() + memset()`。
 
 `calloc()`分配的内存块，也要使用`free()`释放。
 
 ## realloc()
 
-`realloc()`函数用于修改已经分配的内存块的大小，可以放大也可以缩小，返回一个指向新的内存块的指针。如果分配不成功，返回 NULL。该函数的原型在头文件`stdlib.h`定义。
+`realloc()`函数用于修改已经分配的内存块的大小，可以放大也可以缩小，返回一个指向新的内存块的指针。如果分配不成功，返回 NULL。该函数的原型定义在头文件`stdlib.h`。
 
 ```c
 void* realloc(void* block, size_t size)
 ```
 
-它接受两个参数，第一个是指向已经分配好的内存块的指针（由`malloc()`或`calloc()`或`realloc()`产生），第二个是该内存块的新大小，单位为字节。`realloc()`可能返回一个全新的指针（数据也会自动复制过去），也可能返回跟原来一样的指针（通常是这样，优先在原有内存块上进行缩减，尽量不移动数据）。
+它接受两个参数。
+
+- `block`：已经分配好的内存块指针（由`malloc()`或`calloc()`或`realloc()`产生）。
+- `size`：该内存块的新大小，单位为字节。
+
+`realloc()`可能返回一个全新的地址（数据也会自动复制过去），也可能返回跟原来一样的地址。通常是返回原先的地址，优先在原有内存块上进行缩减，尽量不移动数据。
 
 下面是一个例子，`b`是数组指针，`realloc()`动态调整它的大小。
 
@@ -221,7 +200,6 @@ void* realloc(void* block, size_t size)
 int* b;
 
 b = malloc(sizeof(int) * 10);
-
 b = realloc(b, sizeof(int) * 2000);
 ```
 
@@ -237,7 +215,7 @@ char* p = malloc(3490);
 
 如果`realloc()`的第二个参数是`0`，就会释放掉内存块。
 
-由于有分配失败的可能，所以调用`realloc()`以后，最好检查一下它的返回值是否为 NULL。分配失败的情况下，原有内存块中的数据不会发生改变。
+由于有分配失败的可能，所以调用`realloc()`以后，最好检查一下它的返回值是否为 NULL。分配失败时，原有内存块中的数据不会发生改变。
 
 ```c
 float* new_p = realloc(p, sizeof(*p * 40));
@@ -250,20 +228,22 @@ if (new_p == NULL) {
 
 注意，`realloc()`不会对内存块进行初始化。
 
-## 受限指针
+## restrict 说明符
 
-`restrict`关键字可以用在指针变量的声明，告诉编译器，某块内存区域只有该指针一种访问方式。这种指针称为“受限指针”（restrict pointer）。
+声明指针变量时，可以使用`restrict`说明符，告诉编译器，该块内存区域只有当前指针一种访问方式，其他指针不能读写该块内存。这种指针称为“受限指针”（restrict pointer）。
 
 ```c
 int* restrict p;
 p = malloc(sizeof(int));
 ```
 
-上面示例中，声明指针变量`p`时，加入了`restrict`关键字，使得`p`变成了受限指针。后面，`p`指向`malloc()`函数返回的一块内存区域，这意味着，该区域就只有通过`p`来访问，不存在其他访问方式。
+上面示例中，声明指针变量`p`时，加入了`restrict`说明符，使得`p`变成了受限指针。后面，当`p`指向`malloc()`函数返回的一块内存区域，就味着，该区域只有通过`p`来访问，不存在其他访问方式。
 
 ```c
-int* q;
-q = p; // p 是受限指针
+int* restrict p;
+p = malloc(sizeof(int));
+
+int* q = p;
 *q = 0; // 未定义行为
 ```
 
@@ -271,15 +251,15 @@ q = p; // p 是受限指针
 
 ## memcpy()
 
-`memcpy()`用于将一块内存拷贝到另一块内存。该函数的原型在头文件`string.h`定义。
+`memcpy()`用于将一块内存拷贝到另一块内存。该函数的原型定义在头文件`string.h`。
 
 ```c
-void* memcpy(void* restrict s1, void* restrict s2, size_t n);
+void* memcpy(void* restrict dest, void* restrict source, size_t n);
 ```
 
-上面代码中，`s1`是目标地址，`s2`是源地址，第三个参数`n`是要拷贝的字节数`n`。比如，如果要拷贝数组里面10个 double 类型的元素，`n`就等于`10 * sizeof(double)`，而不是`10`。该函数会将从`s2`开始的`n`个字节，拷贝到`s1`。
+上面代码中，`dest`是目标地址，`source`是源地址，第三个参数`n`是要拷贝的字节数`n`。如果要拷贝10个 double 类型的数组成员，`n`就等于`10 * sizeof(double)`，而不是`10`。该函数会将从`source`开始的`n`个字节，拷贝到`dest`。
 
-`s1`和`s2`都是 void 指针，表示这里不限制指针类型，各种类型的内存数据都可以。两者都有 restrict 关键字，表示两者不应该互相重叠。
+`dest`和`source`都是 void 指针，表示这里不限制指针类型，各种类型的内存数据都可以拷贝。两者都有 restrict 关键字，表示这个内存块不应该有互相重叠的区域。
 
 `memcpy()`的返回值是第一个参数，即目标地址的指针。
 
@@ -293,44 +273,17 @@ int main(void) {
   char s[] = "Goats!";
   char t[100];
 
-  memcpy(t, s, 7);  // 拷贝7个字节，包括终止符
+  memcpy(t, s, sizeof(s));  // 拷贝7个字节，包括终止符
 
   printf("%s\n", t);  // "Goats!"
+
+  return 0;
 }
 ```
 
 上面示例中，字符串`s`所在的内存，被拷贝到字符数组`t`所在的内存。
 
-下面是复制数值的例子。
-
-```c
-#include <stdio.h>
-#include <string.h>
-
-int main(void) {
-  int a[] = {11, 22, 33};
-  int b[3];
-
-  memcpy(b, a, 3 * sizeof(int));
-
-  printf("%d\n", b[1]);  // 22
-}
-```
-
-下面是拷贝 Struct 结构的例子。
-
-```c
-struct antelope my_antelope;
-struct antelopy my_clone;
-
-// ...
-
-memcpy(&my_clone, &my_antelope, sizeof my_antelope);
-```
-
-上面示例中，将`my_antelope`的内存数据拷贝到`my_clone`所在的内存，这样就形成了一份一模一样的 Struct 拷贝。由于 Struct 类型的变量名不是指针，所以需要在变量名之前添加`&`运算符。
-
-使用 void 指针，也可以自己定义一个复制内存的函数。
+使用 void 指针，也可以自定义一个复制内存的函数。
 
 ```c
 void* my_memcpy(void* dest, void* src, int byte_count) {
@@ -350,13 +303,13 @@ void* my_memcpy(void* dest, void* src, int byte_count) {
 
 ## memmove()
 
-`memmove()`函数用于将一段内存数据移动到另一段内存。该函数的原型在头文件`string.h`定义。
+`memmove()`函数用于将一段内存数据移动到另一段内存。该函数的原型定义在头文件`string.h`。
 
 ```c
-void* memmove(void* s1, void* s2, size_t n);
+void* memmove(void* dest, void* source, size_t n);
 ```
 
-上面代码中，`s1`是目标地址，`s2`是源地址，`n`是要移动的字节数。`s1`和`s2`都是 void 指针，表示可以移动任何类型的内存数据，两者可以有重叠。
+上面代码中，`dest`是目标地址，`source`是源地址，`n`是要移动的字节数。`dest`和`source`都是 void 指针，表示可以移动任何类型的内存数据，两个内存区域可以有重叠。
 
 `memmove()`返回值是第一个参数，即目标地址的指针。
 
