@@ -45,3 +45,32 @@ Assertion failed: [expression], function [abc], file [xyz], line [nnn].
 
 assert 的缺点是，因为引入了额外的检查，增加了程序的运行时间。
 
+## static_assert()
+
+C11 引入了静态断言`static_assert()`，用于在编译阶段进行断言判断。
+
+```c
+static_assert(constant-expression, string-literal);
+```
+
+`static_assert()`接受两个参数，第一个参数`constant-expression`是一个常量表达式，第二个参数`string-literal`是一个提示字符串。如果第一个参数的值为false，会产生一条编译错误，第二个参数就是错误提示信息。
+
+```c
+static_assert(sizeof(int) == 4, "64-bit code generation is not supported.");
+```
+
+上面代码的意思是，如果当前计算机的`int`类型不等于4个字节，就会编译报错。
+
+注意，`static_assert()`只在编译阶段运行，无法获得变量的值。如果对变量进行静态断言，就会导致编译错误。
+
+```c
+int positive(const int n) {
+  static_assert(n > 0, "value must > 0");
+  return 0;
+}
+```
+
+上面代码会导致编译报错，因为编译时无法知道变量`n`的值。
+
+`static_assert()`的好处是，尽量在编译阶段发现错误，避免运行时再报错，节省开发时间。另外，有些`assert()`断言位于函数之中，如果不执行该函数，就不会报错，而`static_assert()`不管函数是否执行，都会进行断言判断。最后，`static_assert()`不会生成可执行代码，所以不会造成任何运行时的性能损失。
+

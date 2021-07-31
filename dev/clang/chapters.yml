@@ -9,4 +9,8 @@
 - array.md: 数组
 - string.md: 字符串
 - memory.md: 内存管理
-- struct.md: Struct 结构
+- struct.md: struct 结构
+- typedef.md: typedef 命令
+- union.md: Union 结构
+- enum.md: Enum 类型
+- io.md: I/O 函数

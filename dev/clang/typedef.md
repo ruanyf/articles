@@ -16,7 +16,7 @@ typedef unsigned char BYTE;
 BYTE c = 'z';
 ```
 
-上面示例中，`typedef`命令为类型`unsign char`起别名`BYTE`。
+上面示例中，`typedef`命令为类型`unsign char`起别名`BYTE`，然后就可以使用`BYTE`声明变量。
 
 typedef 可以一次指定多个别名。
 
@@ -24,13 +24,17 @@ typedef 可以一次指定多个别名。
 typedef int antelope, bagel, mushroom;
 ```
 
-typedef 也可以用来为数组起别名。
+上面示例中，一次性为`int`类型起了三个别名。
+
+typedef 也可以用来为数组类型起别名。
 
 ```c
 typedef int five_ints[5];
 
 five_ints x = {11, 22, 33, 44, 55};
 ```
+
+上面示例中，`five_ints`是一个数组类型，包含5个整数的
 
 typedef 为函数起别名的写法如下。
 
@@ -59,14 +63,14 @@ STRING name;
 ```c
 struct treenode {
   // ...
-}
+};
 
 typedef struct treenode* Tree;
 ```
 
 上面示例中，`Tree`为`struct treenode*`的别名。
 
-typedef 可以与 struct 命令联合使用，自定义数据类型的同时，为它起一个别名。
+typedef 也可以与 struct 定义数据类型的命令写在一起。
 
 ```c
 typedef struct animal {
@@ -114,7 +118,7 @@ int i = 100000;
 
 上面代码在32位整数的计算机没有问题，但是在16位整数的计算机就会出错。
 
-C 语言的解决办法，就是提供了一些类型别名，在不同计算机上会解释成不同类型，比如`ptrdiff_t`、`size_t`、`wchar_t`、`int32_t`等。
+C 语言的解决办法，就是提供了类型别名，在不同计算机上会解释成不同类型，比如`int32_t`。
 
 ```c
 int32_t i = 100000;
@@ -122,7 +126,7 @@ int32_t i = 100000;
 
 上面示例将变量`i`声明成`int32_t`类型，保证它在不同计算机上都是32位宽度，移植代码时就不会出错。
 
-这一类的类型别名都是用 typedef 定义的。
+这一类的类型别名都是用 typedef 定义的。下面是类似的例子。
 
 ```c
 typedef long int ptrdiff_t;
@@ -133,4 +137,34 @@ typedef int wchar_t;
 这些整数类型别名都放在头文件`stdint.h`，不同架构的计算机只需修改这个头文件即可，而无需修改代码。
 
 因此，`typedef`有助于提高代码的可移植性，使其能适配不同架构的计算机。
+
+
+（5）简化类型声明
+
+C 语言有些类型声明相当复杂，比如下面这个。
+
+```c
+char (*(*x(void))[5])(void);
+```
+
+typedef 可以简化复杂的类型声明，使其更容易理解。首先，最外面一层起一个类型别名。
+
+```c
+typedef char (*Func)(void);
+Func (*x(void))[5];
+```
+
+这个看起来还是有点复杂，就为里面一层也定义一个别名。
+
+```c
+typedef char (*Func)(void);
+typedef Func Arr[5];
+Arr* x(void);
+```
+
+上面代码就比较容易解读了。
+
+- `x`是一个函数，返回一个指向 Arr 类型的指针。
+- `Arr`是一个数组，有5个成员，每个成员是`Func`类型。
+- `Func`是一个函数指针，指向一个无参数、返回字符值的函数。
 

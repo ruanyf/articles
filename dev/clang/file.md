@@ -174,6 +174,25 @@ $ random | sum
 
 上面示例中，`random`程序的输出，会作为`sum`程序的输入。
 
+## Stream
+
+文件必须先打开，才能读取或写入。
+
+C 语言提供三个默认已经打开的文件。
+
+- stdin	标准输入，通常默认情况下为键盘
+- stdout	标准输出，通常默认情况下为屏幕
+- stderr	标准错误，通常也是默认情况下的屏幕
+
+下面两种写法是等价的。
+
+```c
+printf("Hello, world!\n");
+fprintf(stdout, "Hello, world!\n");
+```
+
+`printf()`是直接写入`stdout`，而`fprint`是指定写入文件`stdout`。
+
 ## fclose()
 
 `fclose()`用来关闭已经使用`fopen()`打开的文件。它接受一个文件指针`fp`作为参数。
@@ -344,6 +363,80 @@ int main(void) {
 ```
 
 上面示例中，每一行都是先打印行号，然后打印该行的内容。
+
+## fgets()，fputs()
+
+`fgets()`函数用于读取输入的字符串。该函数专门设计用于处理文件输入，所以它的名字的第一个字符是`f`，代表`file`。它的原型定义在`stdio.h`。
+
+```c
+fgets(str, sizeof(str), stdin);
+```
+
+`fgets()`的第一个参数是储存字符串的变量名。
+
+`fgets()`的第二个参数指定读取的字符串长度，防止用户输入过长的字符串。如果该参数是`n`，那么`fgets()`会读取到`n - 1`个字符为止，或者读取到第一个换行符为止。`fgets()`会将换行符储存在字符串中，这一点需要注意。
+
+`fgets()`函数的第三个参数是要读取的文件。如果是读取键盘输入的数据，则使用`stdin`（标准输入）作为参数。
+
+`fputs()`函数通常与`fgets`配对使用，用于输出字符串，常用来向文件写入内容。`fputs()`的用法与`puts()`类似，只有一点不同，那就是它不会在字符串末尾添加换行符。
+
+`fputs()`的第一个参数是字符串变量，第二个参数是要写入的文件名。如果是要输出到计算机屏幕上，则使用`stdout`（标准输出）作为第二个参数。
+
+```c
+char words[14];
+
+puts("Enter a string, please.");
+fgets(words, 14, stdin);
+
+puts("This is your string:");
+fputs(words, stdout);
+```
+
+`fgets()`返回一个指向字符串的指针。如果一切顺利，返回的地址与第一个参数相同。但是，如果发生错误，或者读到了文件结尾，它将返回一个空指针（null pointer）。这个指针不会指向有效的数据，可以用宏 NULL 代替。使用这一点可以判断，是否读到了文件结尾。
+
+```c
+char words[10];
+
+puts("Enter strings (q to quit):");
+
+while (fgets(words, 10, stdin) != NULL) {
+  if (words[0] == 'q' && words[1] == '\n')
+    break;
+
+  fputs(words, stdout);
+}
+
+puts("Done.");
+```
+
+上面的示例中，如果用户输入的字符串大于9个字符，`fgets()`会多次读取。如果希望丢弃那些多余的字符，可以参考下面的例子。
+
+```c
+char words[10];
+int i;
+
+puts("Enter strings (q to quit):");
+
+while (fgets(words, 10, stdin) != NULL) {
+  if (words[0] == 'q' && words[1] == '\n')
+    break;
+
+  fputs(words, stdout);
+
+  i = 0;
+  while (words[i] != '\n' && words[i] != '\0')
+    i++;
+
+  if (words[i] == '\0') {
+    while (getchar() != '\n') continue;
+    fputs("\n", stdout);
+  }
+}
+
+puts("Done.");
+```
+
+上面示例中，如果用户输入的字符串大于9个字符（不含最后的换行符），多于9个字符的部分使用`getchar()`从缓存中读出并丢弃。由于丢弃时不会输出最后的换行符，所以丢弃结束后补输出一个换行符。
 
 ## fputs()
 

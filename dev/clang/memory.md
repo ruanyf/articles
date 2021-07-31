@@ -283,6 +283,25 @@ int main(void) {
 
 上面示例中，字符串`s`所在的内存，被拷贝到字符数组`t`所在的内存。
 
+`memcpy()`可以取代`strcpy()`进行字符串拷贝，而且是更好的方法，不仅更安全，速度也更快，它不检查字符串尾部的`\0`字符。
+
+```c
+char* s = "hello world";
+
+size_t len = strlen(s) + 1;
+char *c = malloc(len);
+
+if (c) {
+  // strcpy() 的写法
+  strcpy(c, s);
+
+  // memcpy() 的写法
+  memcpy(c, s, len);
+}
+```
+
+上面示例中，两种写法的效果完全一样，但是`memcpy()`的写法要好于`strcpy()`。
+
 使用 void 指针，也可以自定义一个复制内存的函数。
 
 ```c
