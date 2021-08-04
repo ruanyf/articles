@@ -13,4 +13,6 @@
 - typedef.md: typedef 命令
 - union.md: Union 结构
 - enum.md: Enum 类型
+- preprocessor.md: 预处理器
 - io.md: I/O 函数
+- file.md: 文件操作
