@@ -24,7 +24,16 @@ int　rem;　 //　余数
 
 `ldiv`所执行的任务和div相同，但它作用于长整数，其返回值是一个ldiv_t结构。
 
-## atoi()，atol()
+## 字符串转成数值
+
+`stdlib.h`定义了一系列函数，可以将字符串转为数组。
+
+- atoi()：字符串转成 int
+- atof()：字符串转成 float
+- atol()：字符串转成 long int
+- atoll()：字符串转成 long long int
+
+上面函数名称里面的`a`代表 ASCII，所以`atoi()`的意思是“ASCII to int”。
 
 `atoi()`函数将字符串类型的字母和数字，转换为整数。
 
@@ -47,7 +56,26 @@ int times = atoi(s); // 10
 long atol(char const * string);
 ```
 
-## strtol()，strtoul()
+下面是`atof()`的例子。
+
+```c
+char* pi = "3.14159";
+float f = stof(pi);
+```
+
+上面示例将字符串`pi`转成一个浮点数。
+
+## str 系列转换函数
+
+`stdlib.h`还定义了一些更强功能的字符串转换函数。
+
+- strtol()：字符串转成 long int
+- strtoll()：字符串转成 long long int
+- strtoul()：字符串转成 unsigned long int
+- strtoull()：字符串转成 unsigned long long int
+- strtof()：字符串转成 float
+- strtod()：字符串转成 double
+- strtold()：字符串转成 long double
 
 `strtol()`用来将字符串形式的整数值，转为 long int。如果转换不成功，返回`0`。它与`atoi()`的区别在于，可以指定整数的进制，还允许访问字符串的剩余部分。
 
@@ -58,8 +86,19 @@ long strtol(const char* nPtr, char** endPtr, int base);
 它接受三个参数。
 
 - `nPtr`：待转换的字符串（起首的空白字符会被忽略）。
-- `endPrt`：一个指针，指向不能转换部分的第一个字符。这个参数如果设为 NULL，就表示不需要这个指针。
+- `endPrt`：一个指针，指向不能转换部分的第一个字符。如果字符串可以完全转成数值，该指针指向字符串末尾的终止符`\0`。这个参数如果设为 NULL，就表示不需要处理字符串剩余部分。
 - `base`：待转换整数的进制。这个值应该是`2`到`36`之间的整数，代表相应的进制，如果是特殊值`0`，表示让`strtol()`根据数值的前缀，自己确定进制。
+
+下面是转换十进制整数的例子。
+
+```c
+char* s = "3490";
+unsigned long int x = strtoul(u, NULL, 10);
+
+printf("%lu\n", x); // 3490
+```
+
+下面是转换十六进制整数的例子。
 
 ```c
 char* end;
@@ -75,7 +114,16 @@ printf("%s\n", end); // xx
 
 上面示例中，`strtol()`可以指定字符串包含的是16进制整数。不能转换的部分，可以使用指针`end`进行访问。
 
-下面是另外一个例子。
+下面是转换二进制整数的例子。
+
+```c
+char* s = "101010";
+unsigned long int x = strtoul(s, NULL, 2);
+
+printf("%lu\n", x); // 42
+```
+
+下面是让函数自行判断整数进制的例子。
 
 ```c
 #include <stdio.h>
@@ -262,3 +310,5 @@ system函数把它的字符串参数传递给宿主操作系统，这样它就�
 void system( char const *command );
 
 这个任务执行的准确行为因编译器而异，system的返回值也是如此。但是，system可以用一个NULL参数调用，用于询问命令处理器是否实际存在。在这种情况下，如果存在一个可用的命令处理器，system返回一个非零值，否则它返回零。
+
+

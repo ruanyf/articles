@@ -26,6 +26,17 @@ typedef int antelope, bagel, mushroom;
 
 上面示例中，一次性为`int`类型起了三个别名。
 
+typedef 可以为指针起别名。
+
+```c
+typedef int* intptr;
+
+int a = 10;
+intptr x = &a;
+```
+
+上面示例中，`intptr`是`int*`的别名。不过，使用的时候要小心，这样不容易看出来，变量`x`是一个指针类型。
+
 typedef 也可以用来为数组类型起别名。
 
 ```c
@@ -137,7 +148,6 @@ typedef int wchar_t;
 这些整数类型别名都放在头文件`stdint.h`，不同架构的计算机只需修改这个头文件即可，而无需修改代码。
 
 因此，`typedef`有助于提高代码的可移植性，使其能适配不同架构的计算机。
-
 
 （5）简化类型声明
 
