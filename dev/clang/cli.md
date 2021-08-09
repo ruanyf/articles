@@ -8,9 +8,9 @@ C 语言程序可以从命令行接收参数。
 $ ./foo hello world
 ```
 
-上面示例中，程序`foo`接收了两个参数`hello`和`world`。
+上面示例中，程序`foo`接收了两个命令行参数`hello`和`world`。
 
-程序内部怎么拿到这些命令行参数呢？C 语言会把命令行输入的内容，放在一个数组里面。`main()`函数的参数可以接收到这个数组。
+程序内部怎么拿到命令行参数呢？C 语言会把命令行输入的内容，放在一个数组里面。`main()`函数的参数可以接收到这个数组。
 
 ```c
 #include <stdio.h>
@@ -22,9 +22,11 @@ int main(int argc, char* argv[]) {
 }
 ```
 
-上面示例中，`main()`函数有两个参数`argc`和`argv`。这两个参数的名字可以任意取，但是一般来说，约定俗成就是使用这两个词。
+上面示例中，`main()`函数有两个参数`argc`（argument count）和`argv`（argument variable）。这两个参数的名字可以任意取，但是一般来说，约定俗成就是使用这两个词。
 
-第一个参数`argc`是命令行参数的数量，由于程序名也被计算在内，所以严格地说`argc`是参数数量 + 1。第二个参数`argv`是一个数组，保存了所有的命令行输入，它的每个成员是一个字符串指针。
+第一个参数`argc`是命令行参数的数量，由于程序名也被计算在内，所以严格地说`argc`是参数数量 + 1。
+
+第二个参数`argv`是一个数组，保存了所有的命令行输入，它的每个成员是一个字符串指针。
 
 以`./foo hello world`为例，`argc`是3，表示命令行输入有三个组成部分：`./foo`、`hello`、`world`。数组`argv`用来获取这些输入，`argv[0]`是程序名`./foo`，`argv[1]`是`hello`，`argv[2]`是`world`。一般来说，`argv[1]`到`argv[argc - 1]`依次是命令行的所有参数。`argv[argc]`则是一个空指针 NULL。
 
@@ -73,33 +75,40 @@ for (char** p = argv; *p != NULL; p++) {
 
 ## 退出状态
 
-C 语言规定，如果`main()`函数没有`return`语句，那么默认会添加一句`return 0`，即返回整数`0`。这就是为什么`main()`语句通常约定返回一个整数值，并且返回整数`0`表示程序运行成功。由此约定，如果返回非零值，就表示程序运行出了问题。
+C 语言规定，如果`main()`函数没有`return`语句，那么结束运行的时候，默认会添加一句`return 0`，即返回整数`0`。这就是为什么`main()`语句通常约定返回一个整数值，并且返回整数`0`表示程序运行成功。如果返回非零值，就表示程序运行出了问题。
+
+Bash 的环境变量`$?`可以用来读取上一个命令的返回值，从而知道是否运行成功。
+
+```bash
+$ ./foo hello world
+$ echo $?
+0
+```
+
+上面示例中，`echo $?`用来打印环境变量`$?`的值，该值为`0`，就表示上一条命令运行成功，否则就是运行失败。
 
 注意，只有`main()`会默认添加`return 0`，其他函数都没有这个机制。
 
-C 语言标准库`<stdlib.h>`提供了两个常量，用来表示程序的退出状态。
-
-- `EXIT_SUCCESS`：程序成功终止。
-- `EXIT_FAILURE`：程序因错误而终止。
-
 ## 环境变量
 
-C 语言提供了`getenv()`函数（原型在`<stdlib.h>`）用来读取命令行环境变量。
+C 语言提供了`getenv()`函数（原型在`stdlib.h`）用来读取命令行环境变量。
 
 ```c
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(void) {
-  char* val = getenv("HOME");  // Try to get the value
+  char* val = getenv("HOME");
 
-    // Check to make sure it exists
-    if (val == NULL) {
-        printf("Cannot find the HOME environment variable\n");
-        return 1;
-    }
+  if (val == NULL) {
+    printf("Cannot find the HOME environment variable\n");
+    return 1;
+  }
 
-    printf("Value: %s\n", val);
+  printf("Value: %s\n", val);
+  return 0;
 }
 ```
+
+上面示例中，`getenv("HOME")`用来获取命令行的环境变量`$HOME`，如果这个变量为空（`NULL`），则程序报错返回。
 
