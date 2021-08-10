@@ -66,6 +66,28 @@ printf("%d\n", ptr->count); // 4
 
 上面示例中，`ptr`是`q`的指针，那么`ptr->count`等同于`q.count`。
 
+Union 结构指针与它的属性有关，当前哪个属性能够取到值，它的指针就是对应的数据类型。
+
+```c
+union foo {
+  int a;
+  float b;
+} x;
+
+int* foo_int_p = (int *)&x;
+float* foo_float_p = (float *)&x;
+
+x.a = 12;
+printf("%d\n", x.a);           // 12
+printf("%d\n", *foo_int_p);    // 12
+
+x.b = 3.141592;
+printf("%f\n", x.g);           // 3.141592
+printf("%f\n", *foo_float_p);  // 3.141592
+```
+
+上面示例中，`x`是 foo 结构的指针，它的数据类型完全由当前赋值的属性决定。
+
 typedef 命令可以为 Union 数据类型起别名。
 
 ```c

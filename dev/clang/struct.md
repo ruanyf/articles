@@ -276,18 +276,35 @@ struct fish {
 
 上面示例中，`fish`的属性`breed`是另一个 struct 结构`species`。
 
-赋值的时候，就要使用双重大括号。
+赋值的时候有多种写法。
 
 ```c
+// 写法一
 struct fish shark = {"shark", 9, {"Selachimorpha", 500}};
-// 等同于
+
+// 写法二
 struct breek myBreed = {"Selachimorpha", 500};
 struct fish shark = {"shark", 9, myBreed};
+
+// 写法三
+struct fish shark = {
+  .name="shark",
+  .age=9,
+  .breed={"Selachimorpha", 500}
+};
+
+// 写法四
+struct fish shark = {
+  .name="shark",
+  .age=9,
+  .breed.name="Selachimorpha",
+  .breed.kinds=500
+};
 
 printf("Shark's species is %s", shark.breed.name);
 ```
 
-上面示例中，引用`breed`属性的内部属性，要使用两次点运算符（`shark.breed.name`）。
+上面示例展示了嵌套 Struct 结构的四种赋值写法。另外，引用`breed`属性的内部属性，要使用两次点运算符（`shark.breed.name`）。
 
 下面是另一个嵌套 struct 的例子。
 
@@ -372,7 +389,7 @@ synth.cd = 1;
 
 注意，定义二进制位时，结构内部的各个属性只能是整数类型。
 
-实际储存的时候，C 语言会按照`int`类型占用的字节数，储存一个位字段结构。如果有剩余的二进制位，可以使用未命名属性，填满那些位。也可以使用宽度为0的属性，表示占满当前字节剩余的二进制位，迫使下一个属性储存在下一个字节。
+实际存储的时候，C 语言会按照`int`类型占用的字节数，存储一个位字段结构。如果有剩余的二进制位，可以使用未命名属性，填满那些位。也可以使用宽度为0的属性，表示占满当前字节剩余的二进制位，迫使下一个属性存储在下一个字节。
 
 ```c
 struct {
@@ -384,7 +401,7 @@ struct {
 } stuff;
 ```
 
-上面示例中，`stuff.field1`与`stuff.field2`之间，有一个宽度为两个二进制位的未命名属性。`stuff.field3`将储存在下一个字节。
+上面示例中，`stuff.field1`与`stuff.field2`之间，有一个宽度为两个二进制位的未命名属性。`stuff.field3`将存储在下一个字节。
 
 ## 弹性数组成员
 
