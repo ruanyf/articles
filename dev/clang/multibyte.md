@@ -1,332 +1,300 @@
 # 多字节字符
 
-C 语言诞生的时候，只考虑了英语字符，使用7位的 ASCII 码。字符集使用一个字节表示，就可以了。但是，一旦引入非英语的语种，一个字节就不够了，字符集必须使用多个字节表示。
+本章介绍 C 语言如何处理非英语字符。
 
-1994年，C 语言的标准进行了拓展，支持多字节字节，并且引入了两种支持方案。
+## Unicode 简介
 
-（1）宽字符方案（wide character），每个字符使用相同的字节长度存储。
+C 语言诞生时，只考虑了英语字符，使用7位的 ASCII 码表示所有字符。ASCII 码的范围是0到127，也就是100多个字符，所以`char`类型只占用一个字节，
 
-（2）多字节字符方案（multibyte character），一个字符采用一个或多个字节存储。
+但是，如果处理非英语字符，一个字节就不够了，单单是中文，就至少有几万个字符，字符集就势必使用多个字节表示。
+
+最初，不同国家有自己的字符编码方式，这样不便于多种字符的混用。因此，后来就逐渐统一到 Unicode 编码，将所有字符放入一个字符集。
+
+Unicode 为每个字符提供一个号码，称为码点（code point），其中0到127的部分，跟 ASCII 码是重合的。通常使用“U+十六进制码点”表示一个字符，比如`U+0041`表示字母`A`。
+
+Unicode 编码目前一共包含了100多万个字符，码点范围是 U+0000 到 U+10FFFF。完整表达整个 Unicode 字符集，至少需要三个字节。但是，并不是所有文档都需要那么多字符，比如对于 ASCII 码就够用的英语文档，如果每个字符使用三个字节表示，就会比单字节表示的文件体积大出三倍。
+
+为了适应不同的使用需求，Unicode 标准委员会提供了三种不同的表示方法，表示 Unicode 码点。
+
+- UTF-8：使用1个到4个字节，表示一个码点。不同的字符占用的字节数不一样。
+- UTF-16：对于U+0000 到 U+FFFF 的字符（称为基本平面），使用2个字节表示一个码点。其他字符使用4个字节。
+- UTF-32：统一使用4个字节，表示一个码点。
+
+其中，UTF-8 的使用最为广泛，因为对于 ASCII 字符（U+0000 到 U+007F），它只使用一个字节表示，这就跟 ASCII 的编码方式完全一样。
+
+C 语言提供了两个宏，表示当前系统支持的编码字节长度。这两个宏都定义在头文件`limits.h`。
+
+- `MB_LEN_MAX`：任意支持地区的最大字节长度，定义在`limits.h`。
+- `MB_CUR_MAX`：当前语言的最大字节长度，总是小于或等于`MB_LEN_MAX`，定义在`stdlib.h`。
 
 ## 字符的表示方法
 
+字符表示法的本质，是将每个字符映射为一个整数，然后从编码表获得该整数对应的字符。
+
+C 语言提供了不同的写法，用来表示字符的整数号码。
+
 - `\123`：以八进制值表示一个字符，斜杠后面需要三个数字。
-- `\x4D`：以十六进制表示一个字符，`\x`后面需要两个字符。
+- `\x4D`：以十六进制表示一个字符，`\x`后面是十六进制整数。
 - `\u2620`：以 Unicode 码点表示一个字符（不适用于 ASCII 字符），码点以十六进制表示，`\u`后面需要4个字符。
 - `\U0001243F`：以 Unicode 码点表示一个字符（不适用于 ASCII 字符），码点以十六进制表示，`\U`后面需要8个字符。
 
 ```c
-printf("A \102 C\n");
-printf("A \x42 C\n");
+printf("ABC\n");
+printf("\101\102\103\n");
+printf("\x41\x42\x43\n");
 ```
 
-上面两行都会输出`A B C`。
+上面三行都会输出“ABC”。
 
 ```c
 printf("\u2022 Bullet 1\n");
 printf("\U00002022 Bullet 1\n");
 ```
 
-上面两行都会输出`• Bullet 1`。
+上面两行都会输出“• Bullet 1”。
 
-C 语言本身只能解读基本字符，其它字符都要通过 Unicode 码点解读。所谓基本字符，指的是所有可打印的 ASCII 字符，但是有三个字符除外：`@`、`$`、`` ` ``。
+## 多字节字符的表示
 
-```c
-char* s = "€1.23";
-printf("%s\n", s); 
-```
+C 语言预设只有基本字符，才能使用字面量表示，其它字符都应该使用码点表示，并且当前系统还必须支持该码点的编码方法。
 
-上面示例可能不会输出正确结果，因为欧元符号`€`不属于 C 语言基本字符，编译器未必可以正确处理。
+所谓基本字符，指的是所有可打印的 ASCII 字符，但是有三个字符除外：`@`、`$`、`` ` ``。
 
-正确的写法是将`€`写成 Unicode 码点。
+因此，遇到非英语字符，应该将其写成 Unicode 码点形式。
 
 ```c
-char* s = "\u20AC1.23";
-printf("%s\n", s); 
+char* s = "\u6625\u5929";
+printf("%s\n", s); // 春天
 ```
 
-上面示例中，欧元符号`€`写成`\u20AC`，才能保证得到正确结果。
+上面代码会输出中文“春天”。
 
-注意，`\u + 码点`和`\U + 码点`的写法，不能用来表示 ASCII 码字符（码点小于`0xA0`的字符），但是有三个字符除外：`0x24`（`$`），`0x40`（`@`）和`0x60`（`` ` ``）。
-
-C 语言的字符串函数只针对单字节字符有效，对于多字节字符会返回错误的结果。
-
-- strlen() 将返回字符串的字节数，而不是字符数。
-- 字符串函数无法正常工作：strtok()、 strchr()（改为使用 strstr()）、strspn()、toupper()、tolower()、isalpha() 等。
-- 使用 malloc() 为字符串分配空间时，或声明一个字符数组时，不能按字符数计算，而要按照字节数计算。
+如果当前系统是 UTF-8 编码，可以直接用字面量表示多字节字符。
 
 ```c
-char* s = "\u20AC1.23";  // €1.23
-printf("%zu\n", strlen(s));  // 7
+char* s = "春天";
+printf("%s\n", s);
 ```
 
-上面示例中，字符串`s`包含4个字符，但是`strlen()`返回的结果却是7，因为这是`s`的字节数，其中欧元符号`€`一个字符要占用3个字节储存。
-
-## Unicode
-
-Unicode 编码目前的码点范围是 U+0000 到 U+10FFFF，一共需要21个二进制位空间。
-
-完整表达整个 Unicode 字符集，至少需要三个字节。但是，并不是所有文档都需要那么多字符，比如对于只需要 ASCII 码就够用的英语文档，文件体积会大出三倍。
-
-为了适应不同的使用需求，Unicode 标准委员会提供了三种不同的编码方法，表示 Unicode 码点。
-
-- UTF-8：使用1个到4个字节，表示一个码点。
-- UTF-16：对于基本平面的字符（U+0000 到 U+FFFF），使用2个字节，表示一个码点。其他字符使用4个字节。
-- UTF-32：统一使用4个字节，表示一个码点。
-
-其中，UTF-8 的使用最为广泛，因为只使用一个字节的编码时（U+0000 到 U+007F），它跟 ASCII 的编码方式是一样的。
-
-## 宽字符方案
-
-宽字符是一种多字节字符的处理方法，可以看成使用多个单字节字符，表示一个多字节字符，因此本质上时字符串的数组。
-
-宽字符有一个类型别名`wchat_t`类型，定义在`wchar.h`里面。
+注意，`\u + 码点`和`\U + 码点`的写法，不能用来表示 ASCII 码字符（码点小于`0xA0`的字符），只有三个字符除外：`0x24`（`$`），`0x40`（`@`）和`0x60`（`` ` ``）。
 
 ```c
-#include <wchar.h>
+char* s = "\u0024\u0040\u0060";
+printf("%s\n", s);  // @$`
 ```
 
-定义在头文件`stddef.h`里面。
+上面代码会输出三个 Unicode 字符“@$`”，但是其它 ASCII 字符都不能用这种表示法表示。
 
-`wchar_t`属于整数类型（可能是有符号的，也可能是无符号的，由当前实现决定），长度为16位或32位，足以容纳当前系统的所有字符，每个值对应相应的 Unicode 的码点。
+为了保证程序执行时，字符能够正确解读，最好将程序环境切换到本地化环境。
 
 ```c
-wchar_t wc = '\x03b1';
+set_locale(LC_ALL, "");
 ```
 
-上面示例中，宽字符变量`wc`就是希腊字母 alpha。`\x03b1`是该字符的16进制码点。
+上面代码中，使用`set_locale()`切换到执行环境切换到系统的本地化语言。`set_locale()`的原型定义在头文件`locale.h`，详见标准库部分的《locale.h》章节。
 
-C 语言允许在字符和字符串前面，添加`L`前缀，表示宽字符。
+像下面这样，指定编码语言也可以。
 
 ```c
-// 宽字符
-L'a'
-
-// 宽字符串
-L"abc"
+setlocale(LC_ALL, "zh_CN.UTF-8");
 ```
 
-输出宽字符时，`printf()`的占位符使用`%ls`代表宽字符字符串，`%lc`代表单个宽字符。
+上面代码将程序执行环境，切换到中文环境的 UTF-8 编码。
+
+C 语言允许使用`u8`前缀，对多字节字符串指定编码方式为 UTF-8。
 
 ```c
-wchar_t *s = L"Hello, world!";
-wchar_t c = L'B';
-    
-printf("%ls %lc\n", s, c);
+char* s = u8"春天";
+printf("%s\n", s);
 ```
 
-下面的函数可以用于多字节字符与宽字符的转换。
-
-- mbtowc()	将多字节字符转换为宽字符。
-- wctomb()	将宽字符转换为多字节字符。
-- mbstowcs()	将多字节字符串转换为宽字符串。
-- wcstombs()	将宽字符串转换为多字节字符串。
-
-下面是一个例子。
+一旦字符串里面包含多字节字符，就意味着字符串的字节数与字符数不再一一对应了。比如，字符串的长度为10字节，就不再是包含10个字符，而可能只包含7个字符、5个字符等等。
 
 ```c
-#include <stdio.h>
-#include <stdlib.h>
-#include <wchar.h>
-#include <string.h>
-#include <locale.h>
+set_locale(LC_ALL, "");
 
-int main(void)
-{
-    // Get out of the C locale to one that likely has the euro symbol
-    setlocale(LC_ALL, "");
-
-    // Original multibyte string with a euro symbol (Unicode point 20ac)
-    char *mb_string = "The cost is \u20ac1.23";  // €1.23
-    size_t mb_len = strlen(mb_string);
-
-    // Wide character array that will hold the converted string
-    wchar_t wc_string[128];  // Holds up to 128 wide characters
-
-    // Convert the MB string to WC; this returns the number of wide chars
-    size_t wc_len = mbstowcs(wc_string, mb_string, 128);
-
-    // Print result--note the %ls for wide char strings
-    printf("multibyte: \"%s\" (%zu bytes)\n", mb_string, mb_len);
-    printf("wide char: \"%ls\" (%zu characters)\n", wc_string, wc_len);
-}
+char* s = "春天";
+printf("%d\n", strlen(s)); // 6
 ```
 
-运行上面的程序，会得到下面的结果。
+上面示例中，字符串`s`只包含两个字符，但是`strlen()`返回的结果却是6，表示这两个字符一共占据了6个字节。
 
-```bash
-multibyte: "The cost is €1.23" (19 bytes)
-wide char: "The cost is €1.23" (17 characters)
-```
+C 语言的字符串函数只针对单字节字符有效，对于多字节字符都会失效，比如`strtok()`、`strchr()`、`strspn()`、`toupper()`、`tolower()`、`isalpha()`等不会得到正确结果。
 
-上面程序的`mbstowcs()`用于将第二个参数的多字节字符串，转为第一个参数的宽字符串。
+## 宽字符
 
-第一行表示多字节字符串占19个字节。第二行表示宽字符串有17个字符。
+上一小节的多字节字符串，每个字符的字节宽度是可变的。这种编码方式虽然使用起来方便，但是很不利于字符串处理，因此必须逐一检查每个字符占用的字节数。所以除了这种方式，C 语言还提供了确定宽度的多字节字符存储方式，称为宽字符（wide character）。
+
+所谓“宽字符”，就是每个字符占用的字节数是固定的，要么是2个字节，要么是4个字节。这样的话，就很容易快速处理。
+
+宽字符有一个单独的数据类型 wchar_t，每个宽字符都是这个类型。它属于整数类型的别名，可能是有符号的，也可能是无符号的，由当前实现决定。该类型的长度为16位（2个字节）或32位（4个字节），足以容纳当前系统的所有字符。它定义在头文件`wchar.h`里面。
+
+宽字符的字面量必须加上前缀“L”，否则 C 语言会把字面量当作窄字符类型处理。
 
 ```c
-mbstowcs(wc_string, mb_string, 128);
+set_locale(LC_ALL, "");
+
+wchar_t c = L'牛'；
+printf("%lc\n", c);
+
+wchar_t* s = L"春天";
+printf("%ls\n", s);
 ```
 
-`mbstowcs()`返回宽字符串的长度（以字符为单位）。而且，事实上，它有一个特殊的模式，它只返回给定多字节字符串的字符长度：您只需传递NULL到目标，以及0要转换的最大字符数（该值被忽略）。
+上面示例中，前缀“L”在单引号前面，表示宽字符，对应`printf()`的占位符为`%lc`；在双引号前面，表示宽字符串，对应`printf()`的占位符为`%ls`。
+
+宽字符串的结尾也有一个空字符，不过是宽空字符，占用多个字节。
+
+处理宽字符，需要使用宽字符专用的函数，绝大部分都定义在头文件`wchar.h`。
+
+## 多字节字符处理函数
+
+### mblen()
+
+`mblen()`函数返回一个多字节字符占用的字符数。它的原型定义在头文件`stdlib.h`。
+
+```c
+int mblen(const char* mbstr, size_t n);
+```
+
+它接受两个参数，第一个参数是多字节字符串指针，一般会检查该字符串的第一个字符；第二个参数是需要检查的字节数，这个数字不能大于当前系统单个字符占用的最大字节，一般使用`MB_CUR_MAX`。
+
+它的返回值是该字符占用的字节数。如果当前字符是空的宽字符，则返回`0`；如果当前字符不是有效的多字节字符，则返回`-1`。
 
 ```c
 setlocale(LC_ALL, "");
-    
-// The following string has 7 characters
-size_t len_in_chars = mbstowcs(NULL, "天气不错", 0);
-    
-printf("%zu\n", len_in_chars);
+
+char* mbs1 = "春天";
+printf("%d\n", mblen(mbs1, MB_CUR_MAX)); // 3
+
+char* mbs2 = "abc";
+printf("%d\n", mblen(mbs2, MB_CUR_MAX)); // 1
 ```
 
-上面示例是计算多字节字符串的字符个数。
+上面示例中，字符串“春天”的第一个字符“春”，占用3个字节；字符串“abc”的第一个字符“a”，占用1个字节。
 
-同样的，将宽字符串转为多字节字符串，就要使用`wcstombs()`。
+### wctomb()
 
-- wcslen()：宽字符串长度。
-- fwprintf()：宽字符格式化输出到文件流。
-
-下面输入输出函数通常包括在`stdio.h`和`wchar.h`。
-
-- wprintf()	格式化的控制台输出。
-- wscanf()	格式化的控制台输入。
-- getwchar()	基于字符的控制台输入。
-- putwchar()	基于字符的控制台输出。
-- fwprintf()	格式化文件输出。
-- fwscanf()	格式化文件输入。
-- fgetwc()	基于字符的文件输入。
-- fputwc()	基于字符的文件输出。
-- fgetws()	基于字符串的文件输入。
-- fputws()	基于字符串的文件输出。
-- swprintf()	格式化字符串输出。
-- swscanf()	格式化字符串输入。
-- vfwprintf()	可变格式的文件输出。
-- vfwscanf()	可变格式的文件输入。
-- vswprintf()	可变格式的字符串输出。
-- vswscanf()	可变格式的字符串输入。
-- vwprintf()	可变格式的控制台输出。
-- vwscanf()	可变格式的控制台输入。
-- ungetwc()	将宽字符推回到输出流上。
-- fwide()	获取或设置流多字节/宽方向。
-
-宽字符类型转换函数。
-
-通常包括<wchar.h>这些。
-
-- wcstod()	将字符串转换为double.
-- wcstof()	将字符串转换为float.
-- wcstold()	将字符串转换为long double.
-- wcstol()	将字符串转换为long.
-- wcstoll()	将字符串转换为long long.
-- wcstoul()	将字符串转换为unsigned long.
-- wcstoull()	将字符串转换为unsigned long long.
-
-字符串和内存复制函数
-
-通常包括<wchar.h>这些。
-
-- wcscpy()	复制字符串。
-- wcsncpy()	复制字符串，长度限制。
-- wmemcpy()	复制记忆。
-- wmemmove()	复制可能重叠的内存。
-- wcscat()	连接字符串。
-- wcsncat()	连接字符串，长度限制。
-
-
-
-此外，还有两个类型别名`char16_t`和`char32_t`，定义在头文件`uchar.h`。它们是无符号整数，使用确定的字节长度表示一个字符。当前的 C 实现如果定义了宏`__STDC_UTF_16__`，那么`char16_t`对应 UTF-16 编码；如果定义了宏`__STDC_UTF_32__`，那么`char32_t`对应 UTF-32 编码。
-
-```c
-// wchar_t 类型
-L'a'
-
-// char16_t 类型
-u'a'
-
-// char32_t 类型
-U'a'
-
-// UTF-8 类型
-u8"ABC"
-```
-
-使用 utf-8 的前提是当前系统必须支持 utf-8 编码。否则，要用`\u`和`\U`。
-
-```
-char *s = u8"€123";
-```
-
-由于 C 语言的标准环境只支持基本字符，所以使用 Unicode 之前最好用`setlocale()`切换到本地环境。
-
-```c
-setlocale(LC_ALL, "");
-```
-
-或者在本地机器上明确指定 UTF-8 语言环境，并这样明确设置它。
-
-```c
-setlocale(LC_ALL, "en_US.UTF-8"); 
-```
-
-如果当前系统使用 UTF-16 或 UTF-32 编码，则可以使用`u`或`U`前缀。
-
-```c
-char16_t *s = u"Hello, world!";
-char16_t c = u'B';
-    
-char32_t *t = U"Hello, world!";
-char32_t d = U'B';
-```
-
-这些前缀这些值是以 UTF-16 还是 UTF-32 存储的？取决于实施。
-
-但是你可以测试看看它们是否是。如果宏__STDC_UTF_16__or__STDC_UTF_32__被定义为 (to 1)，则表示这些类型分别包含 UTF-16 或 UTF-32。
-
-UTF-16、UTF-32 与 多字节字符串之间的互相转换。
-
-mbrtoc16()	将多字节字符转换为char16_t字符。
-mbrtoc32()	将多字节字符转换为char32_t字符。
-c16rtomb()	将char16_t字符转换为多字节字符。
-c32rtomb()	将char32_t字符转换为多字节字符。
-
-## 多字节字符方案
-
-在这个方案中，每个字符的字节长度都不等，可以是一个字节，也可以是多个字节，对应 UTF-8 编码。UTF-8 字符使用1个到4个字节，表示一个字符。
-
-- `MB_LEN_MAX`：任意支持地区的最大字节长度，定义在`limits.h`。
-- `MB_CUR_MAX`：当前地区的最大字节长度，总是小于或等于`MB_LEN_MAX`，定义在`stdlib.h`。
-
-## 转换方法
-
-`wctomb()`函数（wide character to multibyte）用于将宽字符转为多字节字符。
+`wctomb()`函数（wide character to multibyte）用于将宽字符转为多字节字符。它的原型定义在头文件`stdlib.h`。
 
 ```c
 int wctomb(char* s, wchar_t wc);
 ```
 
+`wctomb()`接受两个参数，第一个参数是作为目标的多字节字符数组，第二个参数是需要转换的一个宽字符。它的返回值是多字节字符存储占用的字节数量，如果无法转换，则返回`-1`。
+
 ```c
-wchar_t wc = L'\x3B1';     // Greek lowercase alpha, α
+setlocale(LC_ALL, "");
+
+wchar_t wc = L'牛';
 char mbStr[10] = "";
+
 int nBytes = 0;
-nBytes = wctomb( mbStr, wc );
-if( nBytes < 0)
-    puts("Not a valid multibyte character in your locale.");
+nBytes = wctomb(mbStr, wc);
+
+printf("%s\n", mbStr);  // 牛
+printf("%d\n", nBytes);  // 3
 ```
 
-`wctomb()`的第一个参数是存储转换后字符的多字节数组，第二个参数是需要转换的宽字符。返回值是多字节字符存储所需的字节数量，这里是 2。
+上面示例中，`wctomb()`将宽字符“牛”转为多字节字符，`wctomb()`的返回值表示转换后的多字节字符占用3个字节。
 
-## mbtowc()
+### mbtowc()
+
+`mbtowc()`用于将多字节字符转为宽字符。它的原型定义在头文件`stdlib.h`。
 
 ```c
-int mbtowc(wchar_t* pwc, const char* s, size_t n);
+int mbtowc(
+   wchar_t* wchar,
+   const char* mbchar,
+   size_t count
+);
 ```
 
-## mblen()
+它接受3个参数，第一个参数是作为目标的宽字符指针，第二个参数是待转换的多字节字符指针，第三个参数是多字节字符的字节数。
+
+它的返回值是多字节字符的字节数，如果转换失败，则返回`-1`。
 
 ```c
-int mblen(const char* s, size_t n);
+setlocale(LC_ALL, "");
+
+char* mbchar = "牛";
+wchar_t wc;
+wchar_t* pwc = &wc;
+
+int nBytes = 0;
+nBytes = mbtowc(pwc, mbchar, 3);
+
+printf("%d\n", nBytes); // 3
+printf("%lc\n", *pwc);  // 牛
 ```
 
-## 通用字符表示法
+上面示例中，`mbtowc()`将多字节字符“牛”转为宽字符`wc`，返回值是`mbchar`占用的字节数（占用3个字节）。
 
-C 语言支持使用`\uXXXX`或`\uXXXXXXXX`，表示一个 Unicode 字符。小写的`u`后面是4位的16进制数，大写的`U`后面是8位的十六进制数。
+### wcstombs()
 
+`wcstombs()`用来将宽字符串转换为多字节字符串。它的原型定义在头文件`stdlib.h`。
+
+```c
+size_t wcstombs(
+   char* mbstr,
+   const wchar_t* wcstr,
+   size_t count
+);
+```
+
+它接受三个参数，第一个参数`mbstr`是目标的多字节字符串指针，第二个参数`wcstr`是待转换的宽字符串指针，第三个参数`count`是用来存储多字节字符串的最大字节数。
+
+如果转换成功，它的返回值是成功转换后的多字节字符串的字节数，不包括尾部的字符串终止符；如果转换失败，则返回`-1`。
+
+下面是一个例子。
+
+```c
+setlocale(LC_ALL, "");
+
+char mbs[20];
+wchar_t* wcs = L"春天";
+
+int nBytes = 0;
+nBytes = wcstombs(mbs, wcs, 20);
+
+printf("%s\n", mbs); // 春天
+printf("%d\n", nBytes); // 6
+```
+
+上面示例中，`wcstombs()`将宽字符串`wcs`转为多字节字符串`mbs`，返回值`6`表示写入`mbs`的字符串占用6个字节，不包括尾部的字符串终止符。
+
+如果`wcstombs()`的第一个参数是 NULL，则返回转换成功所需要的目标字符串的字节数。
+
+### mbstowcs()
+
+`mbstowcs()`用来将多字节字符串转换为宽字符串。它的原型定义在头文件`stdlib.h`。
+
+```c
+size_t mbstowcs(
+  wchar_t* wcstr,
+  const char* mbstr,
+  size_t count
+);
+```
+
+它接受三个参数，第一个参数`wcstr`是目标宽字符串，第二个参数`mbstr`是待转换的多字节字符串，第三个参数是待转换的多字节字符串的最大字符数。
+
+转换成功时，它的返回值是成功转换的多字节字符的数量；转换失败时，返回`-1`。如果返回值与第三个参数相同，那么转换后的宽字符串不是以 NULL 结尾的。
+
+下面是一个例子。
+
+```c
+setlocale(LC_ALL, "");
+
+char* mbs = "天气不错";
+wchar_t wcs[20];
+
+int nBytes = 0;
+nBytes = mbstowcs(wcs, mbs, 20);
+
+printf("%ls\n", wcs); // 天气不错
+printf("%d\n", nBytes); // 4
+```
+
+上面示例中，多字节字符串`mbs`被`mbstowcs()`转为宽字符串，成功转换了4个字符，所以该函数的返回值为4。
+
+如果`mbstowcs()`的第一个参数为`NULL`，则返回目标宽字符串会包含的字符数量。
