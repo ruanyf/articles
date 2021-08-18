@@ -253,55 +253,52 @@ srand((unsigned int) time(0));
 
 ## atexit()
 
-`atexit()`用来注册函数退出时，要执行的其他函数。它的参数是要执行的函数地址，即函数名。
+`atexit()`用来登记当前函数退出时，要执行的其他函数。它的参数是要执行的函数地址，即函数名。
 
 ```c
-#include <stdio.h>
-#include <stdlib.h>
 void sign_off(void);
 void too_bad(void);
 
 int main(void) {
 
-int n;
+  int n;
+  atexit(sign_off);　　 /* 注册 sign_off()函数 */
 
-atexit(sign_off);　　 /* 注册 sign_off()函数 */
-puts("Enter an integer:");
-
-if (scanf("%d", &n) != 1) {
-  puts("That's no integer!");
-  atexit(too_bad);　/* 注册 too_bad()函数 */
-  exit(EXIT_FAILURE);
-}
+  puts("Enter an integer:");
+  if (scanf("%d", &n) != 1) {
+    puts("That's no integer!");
+    atexit(too_bad);　/* 注册 too_bad()函数 */
+    exit(EXIT_FAILURE);
+  }
 
   printf("%d is %s.\n", n, (n % 2 == 0) ? "even" : "odd");
   return 0;
 }
 
 void sign_off(void) {
-  puts("Thus terminates another magnificent program from");
-  puts("SeeSaw Software!");
+  puts("sign_off");
 }
 
 void too_bad(void) {
-  puts("SeeSaw Software extends its heartfelt condolences");
-  puts("to you upon the failure of your program.");
+  puts("too bad");
 }
 ```
 
-注意，输入失败时，会调用sign_off()和too_bad()函数；但是输入成功时只会调用sign_off()。因为只有输入失败时，才会进入if语句中注册too_bad()。另外还要注意，最先调用的是最后一个被注册的函数。
+上面示例中，用户输入失败时，会调用`sign_off()`和`too_bad()`函数；但是输入成功时只会调用`sign_off()`。因为只有输入失败时，才会进入`if`语句登记`too_bad()`。
 
-`atexit()`注册的函数，当调用`exit()`时就会执行这些函数。注意，即使没有显式调用`exit()`，还是会调用`sign_off()`，因为`main()`结束时会隐式调用`exit()`。
+另外，如果有多条`atexit()`语句，函数退出时最先调用的，是最后一个登记的函数。
 
-`atexit()`注册的函数（如`sign_off()`和`too_bad()`）应该不带任何参数且返回类型为`void`。通常，这些函数会执行一些清理任务，例如更新监视程序的文件或重置环境变量。
+`atexit()`登记的函数（如上例的`sign_off`和`too_bad`）应该不带任何参数且返回类型为`void`。通常，这些函数会执行一些清理任务，例如删除临时文件或重置环境变量。
 
 ## abort()
 
-`abort()`用于不正常地终止一个正在执行的程序。由于这个函数将引发 SIGABRT 信号，你可以在程序中为这个信号设置一个信号处理函数。
+`abort()`用于不正常地终止一个正在执行的程序。使用这个函数的目的，主要是它会触发 SIGABRT 信号，开发者可以在程序中为这个信号设置一个处理函数。
 
 ```c
 void abort(void);
 ```
+
+该函数没有参数。
 
 ## system()
 

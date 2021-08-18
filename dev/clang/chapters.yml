@@ -20,3 +20,9 @@
 - multifile.md: 多文件项目
 - cli.md: 命令行环境
 - multibyte.md: 多字节字符
+- lib/: 标准库
+- lib/assert.h.md: assert.h
+- lib/inttypes.h.md: inttypes.h
+- lib/signal.h.md: signal.h
+- lib/stdint.h.md: stdint.h
+- lib/time.h.md: time.h

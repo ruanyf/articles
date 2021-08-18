@@ -320,6 +320,17 @@ for (;;) {
 `break`语句有两种用法。一种是与`switch`语句配套使用，用来中断某个分支的执行，这种用法前面已经介绍过了。另一种用法是在循环体内部跳出循环，不再进行后面的循环了。
 
 ```c
+for (int i = 0; i < 3; i++) {
+  for (int j = 0; j < 3; j++) {
+    printf("%d, %d\n", i, j);
+    break;
+  }
+}
+```
+
+上面示例中，`break`语句使得循环跳到下一个`i`。
+
+```c
 while ((ch = getchar()) != EOF) {
   if (ch == '\n') break;
   putchar(ch);
@@ -344,6 +355,17 @@ if (n > 1) {
 `continue`语句用于在循环体内部终止本轮循环，进入下一轮循环。只要遇到`continue`语句，循环体内部后面的语句就不执行了，回到循环体的头部，开始执行下一轮循环。
 
 ```c
+for (int i = 0; i < 3; i++) {
+  for (int j = 0; j < 3; j++) {
+    printf("%d, %d\n", i, j);
+    continue;
+  }
+}
+```
+
+上面示例中，有没有`continue`语句，效果一样，都表示跳到下一个`j`。
+
+```c
 while ((ch = getchar()) != '\n') {
   if (ch == '\t') continue;
   putchar(ch);
@@ -366,6 +388,34 @@ if (ch == 'q')
 ```
 
 上面示例中，`top`是一个标签名，可以放在正常语句的前面，相当于为这行语句做了一个标记。程序执行到`goto`语句，就会跳转到它指定的标签名。
+
+```c
+infinite_loop:
+  print("Hello, world!\n");
+  goto infinite_loop;
+```
+
+上面的代码会产生无限循环。
+
+goto 的一个主要用法是跳出多层循环。
+
+```c
+for(...) {
+  for (...) {
+    while (...) {
+      do {
+        if (some_error_condition)
+          goto bail;    
+      } while(...);
+    }
+  }
+}
+    
+bail:
+// ... ...
+```
+
+上面代码有很复杂的嵌套循环，不使用 goto 的话，想要完全跳出所有循环，写起来很麻烦。
 
 注意，goto 只能在同一个函数之中跳转，并不能跳转到其他函数。
 
