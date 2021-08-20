@@ -266,6 +266,7 @@ printf("%s says it is %i o'clock\n", "Ben", 21);
 - `%llu`：unsigned long long int 类型。
 - `%Le`：科学计数法表示的 long double 类型浮点数。
 - `%Lf`：long double 类型浮点数。
+- `%n`：已输出的字符串数量。该占位符本身不输出，只将值存储在指定变量之中。
 - `%o`：八进制整数。
 - `%p`：指针。
 - `%s`：字符串。

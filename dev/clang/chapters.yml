@@ -25,4 +25,5 @@
 - lib/inttypes.h.md: inttypes.h
 - lib/signal.h.md: signal.h
 - lib/stdint.h.md: stdint.h
+- lib/stdio.h.md: stdio.h
 - lib/time.h.md: time.h

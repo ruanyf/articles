@@ -22,23 +22,3 @@ if (errno != 0) {
 取值范围错误（ERANGE）：函数的返回值太大，无法用返回类型白哦是。例如，1000 传入`exp()`作为参数，因为 e^1000 太大，无法使用 double 类型表示。
 
 `errno`的值与 EDOM 和 ERANGE 比较，用来确定到底发生了哪一类错误。
-
-## perror()
-
-`perror()`会在 stderr 显示 errno 的错误信息。该函数的原型定义在`stdio.h`里面。
-
-```c
-errno = 0;
-y = sqrt(x);
-if (errno != 0) {
-  perror("sqrt error");
-  exit(EXIT_FAILURE);
-}
-```
-
-下面是报错信息的例子。
-
-```bash
-sqrt error: Numerical argument out of domain
-```
-

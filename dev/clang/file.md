@@ -172,7 +172,7 @@ if (fclose(fp) != 0)
   printf("Something wrong.");
 ```
 
-不再使用的文件，都应该使用`fclose()`关闭，否则无法释放资源。
+不再使用的文件，都应该使用`fclose()`关闭，否则无法释放资源。一般来说，系统对同时打开的文件数量有限制，及时关闭文件可以避免超过这个限制。
 
 ## EOF
 
@@ -199,7 +199,30 @@ printf("hello");
 
 上面示例将文件`output.txt`关联到`stdout`，此后向`stdout`写入的内容，都会写入`foo.txt`。由于`printf()`默认就是输出到`stdout`，所以运行上面的代码以后，文件`output.txt`会被写入`hello`。
 
-`freopen()`的返回值是它的第三个参数（文件指针）。如果打开失败，会返回空指针 NULL。
+`freopen()`的返回值是它的第三个参数（文件指针）。如果打开失败（比如文件不存在），会返回空指针 NULL。
+
+`freopen()`会自动关闭原先已经打开的文件，如果文件指针并没有指向已经打开的文件，则`freopen()`等同于`fopen()`。
+
+下面是`freopen()`关联`scanf()`的例子。
+
+```c
+int i, i2;
+
+scanf("%d", &i); 
+
+freopen("someints.txt", "r", stdin);
+scanf("%d", &i2);
+```
+
+上面例子中，一共调用了两次`scanf()`，第一次调用是从键盘读取，然后使用`freopen()`将`stdin`指针关联到某个文件，第二次调用就会从该文件读取。
+
+某些系统允许使用`freopen()`，改变文件的打开模式。这时，`freopen()`的第一个参数应该是 NULL。
+
+```c
+freopen(NULL, "wb", stdout);
+```
+
+上面示例将`stdout`的打开模式从`w`改成了`wb`。
 
 ## fgetc()，getc()
 
@@ -728,6 +751,25 @@ clearerr(fp);
 
 上面示例中，`fgetc()`尝试读取一个以”写模式“打开的文件，读取失败就会返回 EOF。这时调用`ferror()`就可以知道上一步操作出错了。处理完以后，再用`clearerr()`清除出错状态。
 
+文件操作函数如果正常执行，`ferror()`和`feof()`都会返回零。如果执行不正常，就要判断到底是哪里出了问题。
+
+```c
+if (fscanf(fp, "%d", &n) != 1) {
+  if (ferror(fp)) {
+    printf("io error\n");
+  }
+  if (feof(fp)) {
+    printf("end of file\n");
+  }
+
+  clearerr(fp);
+
+  fclose(fp);
+}
+```
+
+上面示例中，当`fscanf()`函数报错时，通过检查`ferror()`和`feof()`，确定到底发生什么问题。这两个指示器改变状态后，会保持不变，所以要用`clearerr()`清除它们，`clearerr()`可以同时清除两个指示器。
+
 ## remove()
 
 `remove()`函数用于删除指定文件。它的原型定义在头文件`stdio.h`。
@@ -748,7 +790,7 @@ remove("foo.txt");
 
 ## rename()
 
-`rename()`函数用于文件改名。它的原型定义在头文件`stdio.h`。
+`rename()`函数用于文件改名，也用于移动文件。它的原型定义在头文件`stdio.h`。
 
 ```c
 int rename(const char* old_filename, const char* new_filename);
@@ -764,3 +806,8 @@ rename("foo.txt", "bar.txt");
 
 注意，改名后的文件不能与现有文件同名。另外，如果要改名的文件已经打开了，必须先关闭，然后再改名，对打开的文件进行改名会失败。
 
+下面是移动文件的例子。
+
+```c
+rename("/tmp/evidence.txt", "/home/beej/nothing.txt");
+```
