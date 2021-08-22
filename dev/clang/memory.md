@@ -254,12 +254,16 @@ int* q = p;
 `memcpy()`用于将一块内存拷贝到另一块内存。该函数的原型定义在头文件`string.h`。
 
 ```c
-void* memcpy(void* restrict dest, void* restrict source, size_t n);
+void* memcpy(
+  void* restrict dest, 
+  void* restrict source, 
+  size_t n
+);
 ```
 
 上面代码中，`dest`是目标地址，`source`是源地址，第三个参数`n`是要拷贝的字节数`n`。如果要拷贝10个 double 类型的数组成员，`n`就等于`10 * sizeof(double)`，而不是`10`。该函数会将从`source`开始的`n`个字节，拷贝到`dest`。
 
-`dest`和`source`都是 void 指针，表示这里不限制指针类型，各种类型的内存数据都可以拷贝。两者都有 restrict 关键字，表示这个内存块不应该有互相重叠的区域。
+`dest`和`source`都是 void 指针，表示这里不限制指针类型，各种类型的内存数据都可以拷贝。两者都有 restrict 关键字，表示这两个内存块不应该有互相重叠的区域。
 
 `memcpy()`的返回值是第一个参数，即目标地址的指针。
 
@@ -322,10 +326,16 @@ void* my_memcpy(void* dest, void* src, int byte_count) {
 
 ## memmove()
 
-`memmove()`函数用于将一段内存数据移动到另一段内存。该函数的原型定义在头文件`string.h`。
+`memmove()`函数用于将一段内存数据复制到另一段内存。它跟`memcpy()`的主要区别是，它允许目标区域与源区域有重叠。如果发生重叠，源区域的内容会被更改；如果没有重叠，它与`memcpy()`行为相同。
+
+该函数的原型定义在头文件`string.h`。
 
 ```c
-void* memmove(void* dest, void* source, size_t n);
+void* memmove(
+  void* dest, 
+  void* source, 
+  size_t n
+);
 ```
 
 上面代码中，`dest`是目标地址，`source`是源地址，`n`是要移动的字节数。`dest`和`source`都是 void 指针，表示可以移动任何类型的内存数据，两个内存区域可以有重叠。
@@ -352,3 +362,39 @@ printf("%s\n", (char *) memmove(x, &x[5], 10));
 
 上面示例中，从字符串`x`的5号位置开始的10个字节，就是“Sweet Home”，`memmove()`将其前移到0号位置，所以`x`就变成了“Sweet Home Home”。
 
+## memcmp()
+
+`memcmp()`函数用来比较两个内存区域。它的原型定义在`string.h`。
+
+```c
+int memcmp(
+  const void* s1,
+  const void* s2,
+  size_t n
+);
+```
+
+它接受三个参数，前两个参数是用来比较的指针，第三个参数指定比较的字节数。
+
+它的返回值是一个整数。两块内存区域的每个字节以字符形式解读，按照字典顺序进行比较，如果两者相同，返回`0`；如果`s1`大于`s2`，返回大于0的整数；如果`s1`小于`s2`，返回小于0的整数。
+
+```c
+char* s1 = "abc";
+char* s2 = "acd";
+int r = memcmp(s1, s2, 3); // 小于 0
+```
+
+上面示例比较`s1`和`s2`的前三个字节，由于`s1`小于`s2`，所以`r`是一个小于0的整数，一般为-1。
+
+下面是另一个例子。
+
+```c
+char s1[] = {'b', 'i', 'g', '\0', 'c', 'a', 'r'};
+char s2[] = {'b', 'i', 'g', '\0', 'c', 'a', 't'};
+
+if (memcmp(s1, s2, 3) == 0) // true
+if (memcmp(s1, s2, 4) == 0) // true
+if (memcmp(s1, s2, 7) == 0) // false
+```
+
+上面示例展示了，`memcmp()`可以比较内部带有字符串终止符`\0`的内存区域。
