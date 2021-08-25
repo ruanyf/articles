@@ -1,5 +1,20 @@
 # stdlib.h
 
+## 类型别名和宏
+
+stdlib.h 定义了下面的类型别名。
+
+- size_t：sizeof 的返回类型。
+- wchar_t：宽字符类型。
+
+stdlib.h 定义了下面的宏。
+
+- NULL：空指针。
+- EXIT_SUCCESS：函数运行成功时的退出状态。
+- EXIT_FAILURE：函数运行错误时的退出状态。
+- RAND_MAX：rand() 函数可以返回的最大值。
+- MB_CUR_MAX：当前语言环境中，多字节字符占用的最大字节数。
+
 ## 算术函数
 
 标准函数库包含了4个整型算术函数。
@@ -26,68 +41,140 @@ int　rem;　 //　余数
 
 ## 字符串转成数值
 
+### a 系列函数
+
 `stdlib.h`定义了一系列函数，可以将字符串转为数组。
 
-- atoi()：字符串转成 int
-- atof()：字符串转成 float
-- atol()：字符串转成 long int
-- atoll()：字符串转成 long long int
+- atoi()：字符串转成 int 类型。
+- atof()：字符串转成 double 类型。
+- atol()：字符串转成 long int 类型。
+- atoll()：字符串转成 long long int 类型。
 
-上面函数名称里面的`a`代表 ASCII，所以`atoi()`的意思是“ASCII to int”。
-
-`atoi()`函数将字符串类型的字母和数字，转换为整数。
+它们的原型如下。
 
 ```c
-int atoi(char const * string);
+int atoi(const char* nptr);
+double atof(const char* nptr);
+long int atol(const char* nptr);
+long long int atoll(const char* nptr);
 ```
 
-它接受一个字符串作为参数（字符串起首的空格会被忽略）。
+上面函数的参数都是一个字符串指针，字符串开头的空格会被忽略，转换到第一个无效字符处停止。函数名称里面的`a`代表 ASCII，所以`atoi()`的意思是“ASCII to int”。
+
+它们返回转换后的数值，如果字符串无法转换，则返回`0`。
+
+下面是用法示例。
 
 ```c
-char s[3] = "10";
-int times = atoi(s); // 10
+atoi("3490")   // 3490
+atof("3.141593")   // 3.141593
 ```
 
 如果参数是数字开头的字符串，`atoi()`会只转换数字部分，比如`atoi("42regular")`会返回整数`42`。如果首字符不是数字，比如“hello world”，则会返回`0`。
 
-`atol()`函数与`atoi()`类似，唯一的区别是把字符串转换成 long 类型的值。
+### str 系列函数（浮点数转换）
+
+`stdlib.h`还定义了一些更强功能的浮点数转换函数。
+
+- strtof()：字符串转成 float 类型。
+- strtod()：字符串转成 double 类型。
+- strtold()：字符串转成 long double 类型。
+
+它们的原型如下。
 
 ```c
-long atol(char const * string);
+float strtof(
+  const char* restrict nptr,
+  char** restrict endptr
+);
+
+double strtod(
+  const char* restrict nptr,
+  char** restrict endptr
+);
+    
+long double strtold(
+  const char* restrict nptr,
+  char** restrict endptr
+);
 ```
 
-下面是`atof()`的例子。
+它们都接受两个参数，第一个参数是需要转换的字符串，第二个参数是一个指针，指向原始字符串里面无法转换的部分。
+
+- `nptr`：待转换的字符串（起首的空白字符会被忽略）。
+- `endprt`：一个指针，指向不能转换部分的第一个字符。如果字符串可以完全转成数值，该指针指向字符串末尾的终止符`\0`。这个参数如果设为 NULL，就表示不需要处理字符串剩余部分。
+
+它们的返回值是已经转换后的数值。如果字符串无法转换，则返回`0`。如果转换结果发生溢出，errno 会被设置为 ERANGE。如果值太大（无论是正数还是负数），函数返回`HUGE_VAL`；如果值太小，函数返回零。
 
 ```c
-char* pi = "3.14159";
-float f = stof(pi);
+char *inp = "   123.4567abdc";
+char *badchar;
+
+double val = strtod(inp, &badchar);
+
+printf("%f\n", val); // 123.456700
+printf("%s\n", badchar); // abdc
 ```
 
-上面示例将字符串`pi`转成一个浮点数。
-
-## str 系列转换函数
-
-`stdlib.h`还定义了一些更强功能的字符串转换函数。
-
-- strtol()：字符串转成 long int
-- strtoll()：字符串转成 long long int
-- strtoul()：字符串转成 unsigned long int
-- strtoull()：字符串转成 unsigned long long int
-- strtof()：字符串转成 float
-- strtod()：字符串转成 double
-- strtold()：字符串转成 long double
-
-`strtol()`用来将字符串形式的整数值，转为 long int。如果转换不成功，返回`0`。它与`atoi()`的区别在于，可以指定整数的进制，还允许访问字符串的剩余部分。
+字符串可以完全转换的情况下，第二个参数指向`\0`，因此可以用下面的写法判断是否完全转换。
 
 ```c
-long strtol(const char* nPtr, char** endPtr, int base);
+if (*endptr == '\0') {
+  // 完全转换
+} else {
+  // 存在无法转换的字符
+}
 ```
 
-它接受三个参数。
+如果不关心没有转换的部分，则可以将 endptr 设置为 NULL。
 
-- `nPtr`：待转换的字符串（起首的空白字符会被忽略）。
-- `endPrt`：一个指针，指向不能转换部分的第一个字符。如果字符串可以完全转成数值，该指针指向字符串末尾的终止符`\0`。这个参数如果设为 NULL，就表示不需要处理字符串剩余部分。
-- `base`：待转换整数的进制。这个值应该是`2`到`36`之间的整数，代表相应的进制，如果是特殊值`0`，表示让`strtol()`根据数值的前缀，自己确定进制。
+这些函数还可以将字符串转换为特殊值 Infinity 和 NaN。如果字符串包含 INF 或 INFINITY（大写或小写皆可），则将转换为 Infinity；如果字符串包含 NAN，则将返回 NaN。
+
+### str 系列函数（整数转换）
+
+str 系列函数也有整数转换的对应函数。
+
+- strtol()：字符串转成 long int 类型。
+- strtoll()：字符串转成 long long int 类型。
+- strtoul()：字符串转成 unsigned long int 类型。
+- strtoull()：字符串转成 unsigned long long int 类型。
+
+它们的原型如下。
+
+```c
+long int strtol(
+  const char* restrict nptr,
+  char** restrict endptr,
+  int base
+);
+    
+long long int strtoll(
+  const char* restrict nptr,
+  char** restrict endptr,
+  int base
+);
+    
+unsigned long int strtoul(
+  const char* restrict nptr,
+  char** restrict endptr,
+  int base
+);
+    
+unsigned long long int strtoull(
+  const char* restrict nptr,
+  char** restrict endptr, int base
+);
+```
+
+它们接受三个参数。
+
+（1）`nPtr`：待转换的字符串（起首的空白字符会被忽略）。
+
+（2）`endPrt`：一个指针，指向不能转换部分的第一个字符。如果字符串可以完全转成数值，该指针指向字符串末尾的终止符`\0`。这个参数如果设为 NULL，就表示不需要处理字符串剩余部分。
+
+（3）`base`：待转换整数的进制。这个值应该是`2`到`36`之间的整数，代表相应的进制，如果是特殊值`0`，表示让函数根据数值的前缀，自己确定进制，即如果数字有前缀`0`，则为八进制，如果数字有前缀`0x`或`0X`，则为十六进制。
+
+它们的返回值是转换后的数值，如果转换不成功，返回`0`。
 
 下面是转换十进制整数的例子。
 
@@ -152,65 +239,11 @@ The converted value is -1234567
 The remainder of the original string is "abc"
 ```
 
-如果被转换的值太大，`strtol()`函数在`errno`中存储`ERANGE`这个值，并返回`LONG_MIN`（原值为负数）或`LONG_MAX`（原值为正数）。
-
-`strtoul()`的用法与`strtol()`类似，唯一的区别是将字符串转为 unsigned long int。
-
-```c
-unsigned long strtoul(const char* nPtr, char** endPtr, int base);
-```
-
-如果被转换的值太大，`strtoul()`返回`ULONG_MAX`。
-
-## atof()，strtod()
-
-`atof()`函数将字符串转换成 double 类型的值。如果转换不成功，返回`0.0`。
-
-```c
-double atof(const char* str);
-```
-
-下面是一个例子。
-
-```c
-atof("98993489"); // 98993489.000000
-```
-
-`strtod()`用来将一个字符串形式的浮点数转为 double。如果转换不成功，返回`0`。它与`atof()`的区别是，可以获取一个指针，指向字符串不能转换部分的第一个字符。
-
-```c
-double strtod(const char* nPtr, char** endPtr);
-```
-
-它接受两个参数，第一个参数是字符串（`char*`），第二个参数是字符串数组（`char**`）。
-
-它的处理过程是，首先解析第一个参数（如果起首有空白字符，会被过滤），如果第一个参数可以转换成 double 值，则返回该 double 值，同时将第二个参数指向剩余的不可转换部分的第一个字符；如果第一个参数无法转成 double 值，则返回`0`，同时将第二个参数指向第一个参数。
-
-```c
-#include <stdio.h>
-#include <stdlib.h>
-
-int main(void) {
-  const char* string = "51.2% are admitted";
-  char* stringPtr;
-  double d = strtod(string, &stringPtr);
-  printf("The string \"%s\" is converted to the\n", string);
-  printf("double value %.2f and the string \"%s\"\n", d, stringPtr);
-}
-```
-
-上面示例中，`strtod()`提取字符串`string`的开头的 double 值`51.2`，然后将不能转换的部分（`% are admitted`）的指针放入`stringPtr`。上面代码的输出结果如下。
-
-```bash
-The string "51.2% are admitted" is converted to the
-double value 51.20 and the string "% are admitted"
-```
-
-`atof()`与`strtod()`的转换结果如果太大或太小，无法用 double 值表示，那么将 errno 中存储`ERANGE`这个值。如果值太大（无论是正数还是负数），函数返回`HUGE_VAL`；如果值太小，函数返回零。
+如果被转换的值太大，`strtol()`函数在`errno`中存储`ERANGE`这个值，并返回`LONG_MIN`（原值为负数）或`LONG_MAX`（原值为正数），`strtoul()`则返回`ULONG_MAX`。
 
 ## rand()
 
-`rand()`函数用来生成 0～RAND_MAX 之间的随机数。`RAND_MAX`也定义在`stdlib.h`里面，通常等于 INT_MAX。
+`rand()`函数用来生成 0～RAND_MAX 之间的随机整数。`RAND_MAX`是一个定义在`stdlib.h`里面的宏，通常等于 INT_MAX。
 
 ```c
 // 原型
@@ -220,10 +253,10 @@ int rand(void);
 int x = rand();
 ```
 
-如果希望获得整数 N 到 M 之间的随机数，可以使用下面的写法。
+如果希望获得整数 N 到 M 之间的随机数（包括 N 和 M 两个端点值），可以使用下面的写法。
 
 ```c
-int x = rand() % M + N;
+int x = rand() % （M - N + 1) + N;
 ```
 
 比如，1 到 6 之间的随机数，写法如下。
@@ -231,6 +264,19 @@ int x = rand() % M + N;
 ```c
 int x = rand() % 6 + 1;
 ```
+
+获得浮点数的随机值，可以使用下面的写法。
+
+```c
+// 0 到 0.999999 之间的随机数
+printf("0 to 0.99999: %f\n", rand() / ((float)RAND_MAX + 1));
+
+// n 到 m 之间的随机数：
+// n + m * (rand() / (float)RAND_MAX)
+printf("10.5 to 15.7: %f\n", 10.5 + 5.2 * rand() / (float)RAND_MAX);
+```
+
+上面示例中，由于`rand()`和`RAND_MAX`都是 int 类型，要用显示的类型转换转为浮点数。
 
 ## srand()
 
@@ -242,14 +288,14 @@ int x = rand() % 6 + 1;
 void srand(unsigned int seed);
 ```
 
-通常使用`time()`函数返回的系统时间，作为`srand()`的参数。
+通常使用`time(NULL)`函数返回当前距离时间纪元的秒数，作为`srand()`的参数。
 
 ```c
 #include <time.h>
-srand((unsigned int) time(0));
+srand((unsigned int) time(NULL));
 ```
 
-上面代码中，`time()`的原型定义在头文件`time.h`里面，返回值的类型是类型别名`time_t`，具体的类型与系统有关，所以要强制转换一下类型。`time()`的参数是一个指针，指向一个具体的 time_t 类型的时间值，这里传入空指针`0`作为参数。
+上面代码中，`time()`的原型定义在头文件`time.h`里面，返回值的类型是类型别名`time_t`，具体的类型与系统有关，所以要强制转换一下类型。`time()`的参数是一个指针，指向一个具体的 time_t 类型的时间值，这里传入空指针`NULL`作为参数，由于 NULL 一般是`0`，所以也可以写成`time(0)`。
 
 ## atexit()
 
