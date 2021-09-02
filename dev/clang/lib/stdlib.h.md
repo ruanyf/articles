@@ -15,29 +15,72 @@ stdlib.h 定义了下面的宏。
 - RAND_MAX：rand() 函数可以返回的最大值。
 - MB_CUR_MAX：当前语言环境中，多字节字符占用的最大字节数。
 
-## 算术函数
+## abs()，labs()，llabs()
 
-标准函数库包含了4个整型算术函数。
+这三个函数用于计算整数的绝对值。`abs()`用于 int 类型，`labs()`用于 long int 类型，`llabs()`用于 long long int 类型。
 
 ```c
-int abs( int value );
-long int labs( long int value );
-div_t div( int numerator, int denominator );
-ldiv_t ldiv( long int numer, long int denom );
+int abs(int j);
+long int labs(long int j);
+long long int llabs(long long int j);
 ```
 
-abs函数返回它的参数的绝对值。如果其结果不能用一个整数表示，这个行为是未定义的。
+下面是用法示例。
 
-`labs`用于执行相同的任务，但它的作用对象是长整数。
+```c
+// 输出 |-2| = 2
+printf("|-2| = %d\n", abs(-2));
 
-div函数把它的第2个参数（分母）除以第1个参数（分子），产生商和余数，用一个div_t结构返回。这个结构包含下面两个字段，
+// 输出 |4|  = 4
+printf("|4|  = %d\n", abs(4));
+```
+
+## div()，ldiv()，lldiv()
+
+这三个函数用来计算两个参数的商和余数。`div()`用于 int 类型的相除，`ldiv()`用于 long int 类型的相除，`lldiv()`用于 long long int 类型的相除。
+
+```c
+div_t div(int numer, int denom);
+ldiv_t ldiv(long int numer, long int denom);
+lldiv_t lldiv(long long int numer, long long int denom);
+```
+
+这些函数把第2个参数（分母）除以第1个参数（分子），产生商和余数。这两个值通过一个数据结构返回，`div()`返回 div_t 结构，`ldiv()`返回 ldiv_t 结构，`lldiv()`返回 lldiv_t 结构。
+
+这些结构都包含下面两个字段，
 
 ```c
 int　quot;　 //　商
 int　rem;　 //　余数
 ```
 
-`ldiv`所执行的任务和div相同，但它作用于长整数，其返回值是一个ldiv_t结构。
+它们完整的定义如下。
+
+```c
+typedef struct {
+  int quot, rem;
+} div_t;
+    
+typedef struct {
+  long int quot, rem;
+} ldiv_t;
+    
+typedef struct {
+  long long int quot, rem;
+} lldiv_t;
+```
+
+下面是一个例子。
+
+```c
+div_t d = div(64, -7);
+
+// 输出 64 / -7 = -9
+printf("64 / -7 = %d\n", d.quot);
+
+// 输出 64 % -7 = 1
+printf("64 %% -7 = %d\n", d.rem);
+```
 
 ## 字符串转成数值
 
@@ -297,9 +340,54 @@ srand((unsigned int) time(NULL));
 
 上面代码中，`time()`的原型定义在头文件`time.h`里面，返回值的类型是类型别名`time_t`，具体的类型与系统有关，所以要强制转换一下类型。`time()`的参数是一个指针，指向一个具体的 time_t 类型的时间值，这里传入空指针`NULL`作为参数，由于 NULL 一般是`0`，所以也可以写成`time(0)`。
 
-## atexit()
+## abort()
 
-`atexit()`用来登记当前函数退出时，要执行的其他函数。它的参数是要执行的函数地址，即函数名。
+`abort()`用于不正常地终止一个正在执行的程序。使用这个函数的目的，主要是它会触发 SIGABRT 信号，开发者可以在程序中为这个信号设置一个处理函数。
+
+```c
+void abort(void);
+```
+
+该函数没有参数。
+
+## exit()，quick_exit()，_Exit()
+
+这三个函数都用来退出当前正在执行的程序。
+
+```c
+void exit(int status);
+void quick_exit(int status);
+void _Exit(int status);
+```
+
+它们都接受一个整数，表示程序的退出状态，`0`是正常退出，非零值表示发生错误，可以使用宏`EXIT_SUCCESS`和`EXIT_FAILURE`当作参数。它们本身没有返回值。
+
+它们的区别是，退出时所做的清理工作不同。`exit()`是正常退出，系统会做完整的清理，比如更新所有文件流，并且删除临时文件。`quick_exit()`是快速退出，系统的清理工作稍微少一点。`_Exit()`是立即退出，不做任何清理工作。
+
+下面是一些用法示例。
+
+```c
+exit(EXIT_SUCCESS);
+quick_exit(EXIT_FAILURE);
+_Exit(2);
+```
+
+## atexit()，at_quick_exit()
+
+`atexit()`用来登记当前程序退出时（调用`exit()`或`main()`正常退出），所要执行的其他函数。
+
+`at_quick_exit()`则是登记使用`quick_exit()`方法退出当前程序时，所要执行的其他函数。
+
+`exit()`只能触发`atexit()`登记的函数，`quick_exit()`只能触发`at_quick_exit()`登记的函数。
+
+```c
+int atexit(void (*func)(void));
+int at_quick_exit(void (*func)(void));
+```
+
+它们的参数是要执行的函数地址，即函数名。它们的返回值都是调用成功时返回`0`，调用失败时返回非零值。
+
+下面是一个例子。
 
 ```c
 void sign_off(void);
@@ -336,22 +424,209 @@ void too_bad(void) {
 
 `atexit()`登记的函数（如上例的`sign_off`和`too_bad`）应该不带任何参数且返回类型为`void`。通常，这些函数会执行一些清理任务，例如删除临时文件或重置环境变量。
 
-## abort()
-
-`abort()`用于不正常地终止一个正在执行的程序。使用这个函数的目的，主要是它会触发 SIGABRT 信号，开发者可以在程序中为这个信号设置一个处理函数。
+`at_quick_exit()`也是同样的规则，下面是一个例子。
 
 ```c
-void abort(void);
+void exit_handler_1(void) {
+  printf("1\n");
+}
+
+void exit_handler_2(void) {
+  printf("2\n");
+}
+
+int main(void) {
+  at_quick_exit(exit_handler_1);
+  at_quick_exit(exit_handler_2);
+  quick_exit(0);
+}
 ```
 
-该函数没有参数。
+执行上面的示例，命令行会先输出2，再输出1。
+
+## getenv()
+
+`getenv()`用于获取环境变量的值。环境变量是操作系统提供的程序之外的一些环境参数。
+
+```c
+char* getenv(const char* name);
+```
+
+它的参数是一个字符串，表示环境变量名。返回值也是一个字符串，表示环境变量的值。如果指定的环境变量不存在，则返回 NULL。
+
+下面是输出环境变量`$PATH`的值的例子。
+
+```c
+printf("PATH is %s\n", getenv("PATH"));
+```
 
 ## system()
 
-system函数把它的字符串参数传递给宿主操作系统，这样它就可以作为一条命令，由系统的命令处理器执行。
+`system()`函数用于执行外部程序。它会把它的参数字符串传递给操作系统，让操作系统的命令处理器来执行。
 
-void system( char const *command );
+```c
+void system( char const * command );
+```
 
-这个任务执行的准确行为因编译器而异，system的返回值也是如此。但是，system可以用一个NULL参数调用，用于询问命令处理器是否实际存在。在这种情况下，如果存在一个可用的命令处理器，system返回一个非零值，否则它返回零。
+这个函数的返回值因编译器而异。但是标准规定，如果 NULL 作为参数，表示询问操作系统，是否有可用的命令处理器，如果有的话，返回一个非零值，否则返回零。
 
+下面是执行`ls`命令的例子。
 
+```c
+system("ls -l"); 
+```
+
+## 内存管理函数
+
+stdlib.h 提供了一些内存操作函数，下面几个函数详见《内存管理》一章，其余在本节介绍。
+
+- malloc()：分配内存区域
+- calloc()：分配内存区域。
+- realloc()：调节内存区域大小。
+- free()：释放内存区域。
+
+### aligned_alloc()
+
+很多系统有内存对齐的要求，即内存块的大小必须是某个值（比如64字节）的倍数，这样有利于提高处理速度。`aligned_alloc()`就用于分配满足内存对齐要求的内存块，它的原型如下。
+
+```c
+void* aligned_alloc(size_t alignment, size_t size);
+```
+
+它接受两个参数。
+
+- alignment：整数，表示内存对齐的单位大小，一般是2的整数次幂（2、4、8、16……）。
+- size：整数，表示内存块的大小。
+
+分配成功时，它返回一个无类型指针，指向新分配的内存块。分配失败时，返回 NULL。
+
+```c
+char* p = aligned_alloc(64, 256);
+```
+
+上面示例中，`aligned_alloc()`分配的内存块，单位大小是64字节，要分配的字节数是256字节。
+
+## qsort()
+
+`qsort()`用来快速排序一个数组。它对数组成员的类型没有要求，任何类型数组都可以用这个函数排序。
+
+```c
+void qsort(
+  void *base,
+  size_t nmemb, 
+  size_t size,
+  int (*compar)(const void *, const void *)
+);
+```
+
+该函数接受四个参数。
+
+- base：指向要排序的数组开始位置的指针。
+- nmemb：数组成员的数量。
+- size：数组每个成员占用的字节长度。
+- compar：一个函数指针，指向一个比较两个成员的函数。
+
+比较函数`compar`将指向数组两个成员的指针作为参数，并比较两个成员。如果第一个参数小于第二个参数，该函数应该返回一个负值；如果两个函数相等，返回`0`；如果第一个参数大于第二个参数，应该返回一个正数。
+
+下面是一个用法示例。
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int compar(const void* elem0, const void* elem1) {
+  const int* x = elem0;
+  const int* y = elem1; 
+  
+  return *x - *y;
+}
+
+int main(void) {
+  int a[9] = {14, 2, 3, 17, 10, 8, 6, 1, 13};
+
+  qsort(a, 9, sizeof(int), compar);
+
+  for (int i = 0; i < 9; i++)
+    printf("%d ", a[i]);
+  putchar('\n');
+}
+```
+
+执行上面示例，会输出排序好的数组“1 2 3 6 8 10 13 14 17”。
+
+## bsearch()
+
+`bsearch()`使用二分法搜索，在数组中搜索一个值。它对数组成员的类型没有要求，任何类型数组都可以用这个函数搜索值。
+
+注意，该方法只对已经排序好的数组有效。
+
+```c
+void *bsearch(
+  const void* key,
+  const void* base,
+  size_t nmemb,
+  size_t size,
+  int (*compar)(const void *, const void *)
+);
+```
+
+这个函数接受5个参数。
+
+- key：指向要查找的值的指针。
+- base：指向数组开始位置的指针，数组必须已经排序。
+- nmemb：数组成员的数量。
+- size：数组每个成员占用的字节长度。
+- compar：指向一个将待查找值与其他值进行比较的函数的指针。
+
+比较函数`compar`将待查找的值作为第一个参数，将要比较的值作为第二个参数。如果第一个参数小于第二个参数，该函数应该返回一个负值；如果两个参数相等，返回`0`；如果第一个参数大于第二个参数，返回一个正值。
+
+如果找到待查找的值，`bsearch()`返回指向该值的指针，如果找不到，返回 NULL。
+
+下面是一个用法示例。
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int compar(const void *key, const void *value) {
+  const int* k = key;
+  const int* v = value;
+
+  return *k - *v;
+}
+
+int main(void) {
+  int a[9] = {2, 6, 9, 12, 13, 18, 20, 32, 47};
+
+  int* r;
+  int key;
+
+  key = 12; // 包括在数组中
+  r = bsearch(&key, a, 9, sizeof(int), compar);
+  printf("Found %d\n", *r);
+
+  key = 30;  // 不包括在数组中
+  r = bsearch(&key, a, 9, sizeof(int), compar);
+  if (r == NULL)
+    printf("Didn't find 30\n");
+
+  return 0;
+}
+```
+
+执行上面的示例，会输出下面的结果。
+
+```bash
+Found 12
+Didn't find 30
+```
+
+## 多字节字符函数
+
+stdlib.h 提供了下面的函数，用来操作多字节字符，详见《多字节字符》一章。
+
+- mblen()：多字节字符的字节长度。
+- mbtowc()：将多字节字符转换为宽字符。
+- wctomb()：将宽字符转换为多字节字符。
+- mbstowcs()：将多字节字符串转换为宽字符串。
+- wcstombs()：将宽字符串转换为多字节字符串。

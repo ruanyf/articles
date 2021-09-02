@@ -26,6 +26,7 @@
 - lib/math.h.md: math.h
 - lib/signal.h.md: signal.h
 - lib/stdint.h.md: stdint.h
+- lib/stdlib.h.md: stdlib.h
 - lib/stdio.h.md: stdio.h
 - lib/string.h.md: string.h
 - lib/time.h.md: time.h
