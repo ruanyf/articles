@@ -22,7 +22,13 @@
 - multibyte.md: 多字节字符
 - lib/: 标准库
 - lib/assert.h.md: assert.h
+- lib/ctype.h.md: ctype.h
+- lib/errno.h.md: errno.h
+- lib/float.h.md: float.h
 - lib/inttypes.h.md: inttypes.h
+- lib/iso646.h.md: iso646.h
+- lib/limits.h.md: limits.h
+- lib/locale.h.md: locale.h
 - lib/math.h.md: math.h
 - lib/signal.h.md: signal.h
 - lib/stdint.h.md: stdint.h
@@ -30,3 +36,5 @@
 - lib/stdio.h.md: stdio.h
 - lib/string.h.md: string.h
 - lib/time.h.md: time.h
+- lib/wchar.h.md: wchar.h
+- lib/wctype.h.md: wctype.h

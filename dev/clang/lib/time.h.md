@@ -6,7 +6,7 @@ time_t 是一个表示时间的类型别名，可以视为国际标准时 UTC。
 
 许多系统上，time_t 表示自时间纪元（time epoch）以来的秒数。Unix 的时间纪元是国际标准时 UTC 的1970年1月1日的零分零秒。time_t 如果为负数，则表示时间纪元之前的时间。
 
-`time_t`一般是32位或64位整数类型的别名，具体类型取决于当前系统。如果是32位带符号整数，time_t 可以表示的时间到 2038年1月19日03:14:07 UTC 为止；如果是32位无符号整数，则表示到2106年。如果是64位带符号整数，可以表示`-2930`亿年到`+2930`亿年的时间范围。
+time_t 一般是32位或64位整数类型的别名，具体类型取决于当前系统。如果是32位带符号整数，time_t 可以表示的时间到 2038年1月19日03:14:07 UTC 为止；如果是32位无符号整数，则表示到2106年。如果是64位带符号整数，可以表示`-2930`亿年到`+2930`亿年的时间范围。
 
 ## struct tm
 
@@ -87,27 +87,36 @@ printf("%s", ctime(&now));
 
 注意，`ctime()`会在字符串尾部自动添加换行符。
 
-## localtime()
+## localtime()，gmtime()
 
 `localtime()`函数用来将 time_t 类型的时间，转换为当前时区的 struct tm 结构。
 
-## gmtime()
-
 `gmtime()`函数用来将 time_t 类型的时间，转换为 UTC 时间的 struct tm 结构。
 
-## asctime()
-
-`asctime()`函数用来将 struct tm 结构，直接输出为人类可读的格式。
+它们的区别就是返回值，前者是本地时间，后者是 UTC 时间。
 
 ```c
+struct tm* localtime(const time_t* timer);
+struct tm* gmtime(const time_t* timer);
+```
+
+下面是一个例子。
+
+```c
+time_t now = time(NULL);
+
 // 输出 Local: Sun Feb 28 20:15:27 2021
 printf("Local: %s", asctime(localtime(&now)));
 
-// 输出 UTC: Mon Mar  1 04:15:27 2021
-printf("  UTC: %s", asctime(gmtime(&now)));
+// 输出 UTC  : Mon Mar  1 04:15:27 2021
+printf("UTC  : %s", asctime(gmtime(&now)));
 ```
 
-上面示例中，`localtime()`输出的是当前时区的时间，`gmtime()`输出的是 UTC 时间。
+## asctime()
+
+`asctime()`函数用来将 struct tm 结构，直接输出为人类可读的格式。该函数会自动在输出的尾部添加换行符。
+
+用法示例参考上一小节。
 
 ## mktime()
 
@@ -269,6 +278,7 @@ int main(void) {
 - %m：月数（01-12）。
 - %M：分钟（00～59）。
 - %P：AM 或 PM。
+- %R：相当于"%H:%M"。
 - %S：秒（00-61）。
 - %U：一年的第几星期（00-53），以星期日为第1天。
 - %w：一星期的第几天，星期日为第0天。
@@ -281,7 +291,7 @@ int main(void) {
 
 ## timespec_get()
 
-`timespec_get()`用来将当前时间转成距离时间纪元的秒数纳秒数（十亿分之一秒）。
+`timespec_get()`用来将当前时间转成距离时间纪元的纳秒数（十亿分之一秒）。
 
 ```c
 int timespec_get ( struct timespec* ts, int base ) ;
@@ -289,7 +299,7 @@ int timespec_get ( struct timespec* ts, int base ) ;
 
 `timespec_get()`接受两个参数。
 
-第一个参数是 struct timespec 结构指针用来保存转换后的时间信息。struct timespec 的结构如下。
+第一个参数是 struct timespec 结构指针，用来保存转换后的时间信息。struct timespec 的结构如下。
 
 ```c
 struct timespec {
@@ -298,7 +308,7 @@ struct timespec {
 };
 ```
 
-第二个参数是一个整数，标准只给出了宏 TIME_UTC 这一个值，表示想要获得距离时间纪元的秒数。
+第二个参数是一个整数，表示时间计算的起点。标准只给出了宏 TIME_UTC 这一个可能的值，表示返回距离时间纪元的秒数。
 
 下面是一个例子。
 
@@ -324,7 +334,15 @@ printf("%f seconds since epoch\n", float_time);
 clock_t　clock(void);
 ```
 
-`clock()`函数返回一个数字，表示从程序开始到现在的 CPU 时钟周期的次数。为了把这个值转换为秒，应该把它除以常量`CLOCKS_PER_SEC`（每秒的时钟周期），这个常量也由`time.h`定义。
+`clock()`函数返回一个数字，表示从程序开始到现在的 CPU 时钟周期的次数。这个值的类型是 clock_t，一般是 long int 类型。 
+
+为了把这个值转换为秒，应该把它除以常量`CLOCKS_PER_SEC`（每秒的时钟周期），这个常量也由`time.h`定义。
+
+```c
+printf("CPU time: %f\n", clock() / (double)CLOCKS_PER_SEC);
+```
+
+上面示例可以输出程序从开始到运行到这一行所花费的秒数。
 
 如果计算机无法提供 CPU 时间，或者返回值太大，无法用`clock_t`类型表示，`clock()`函数就返回`-1`。
 

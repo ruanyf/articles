@@ -1,5 +1,7 @@
 # locale.h
 
+## 简介
+
 `locale.h`是程序的本地化设置，主要影响以下的行为。
 
 - 数字格式
@@ -24,7 +26,7 @@
 char* setlocal(int category, const char* locale);
 ```
 
-它接受两个参数。第一个参数表示影响范围，如果值为前面五个宏之一，则只影响该宏对应的类别，如果值为`LC_ALL`，则影响所有类别。第二个参数通常只为`"C"`（正常模式）或`""`（本地模式）。
+它接受两个参数。第一个参数表示影响范围，如果值为前面五个表示类别的宏之一，则只影响该宏对应的类别，如果值为`LC_ALL`，则影响所有类别。第二个参数通常只为`"C"`（正常模式）或`""`（本地模式）。
 
 任意程序开始时，都隐含下面的调用。
 
@@ -48,9 +50,23 @@ setlocale(LC_ALL, "en_US.UTF-8");
 
 但是这样的话，程序的可移植性就变差了，因为无法保证其他系统也会支持那种格式。所以，通常都将第二个参数设为空字符串，使用操作系统的当前设置。
 
-`setlocale()`的返回值是一个字符串指针，表示已经设置好的格式。如果调用失败，则返回空指针。
+`setlocale()`的返回值是一个字符串指针，表示已经设置好的格式。如果调用失败，则返回空指针 NULL。
 
 `setlocale()`可以用来查询当前地区，这时第二个参数设为 NULL 就可以了。
+
+```c
+char *loc;
+
+loc = setlocale(LC_ALL, NULL);
+
+// 输出 Starting locale: C
+printf("Starting locale: %s\n", loc);
+
+loc = setlocale(LC_ALL, "");
+
+// 输出 Native locale: en_US.UTF-8    
+printf("Native locale: %s\n", loc);
+```
 
 ## localeconv()
 
