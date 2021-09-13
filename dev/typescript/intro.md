@@ -35,7 +35,7 @@ TypeScript 统一使用`.ts`作为 TypeScript 脚本的后缀名。
 
 - 编译时发现错误
 - 使得代码更容易维护。
-- 提供更好的 IDE 支持。
+- 提供更好的 IDE 支持，能够语法提示和自动补全。
 
 但是，静态类型也存在缺点，主要是丧失了动态类型的代码灵活性，以及编写代码时会增加一些工作量。
 
@@ -75,3 +75,51 @@ myNumber = 'hello'; // 报错
 ```
 
 上面示例中，变量`myNumber`的类型推断为数值，再赋值为字符串就会报错。
+
+## 安装
+
+```bash
+$ npm install -g typescript
+```
+
+安装完，检查一下是否安装成功。
+
+```bash
+$ tsc -v
+Version 3.2.2
+```
+
+转换脚本命令，转换成 JavaScript 脚本运行。
+
+```bash
+$ tsc app.ts
+```
+
+上面命令会在`app.ts`的相同目录下，生成一个`app.js`文件。
+
+如果转换过程没有任何错误，上面的命令不会有任何显示。如果出错，`tsc`命令会报错，但是依然会生成`app.js`文件。这是因为 TypeScript 作者认为，开发者比编译器，更了解自己的代码，编译器的作用是给出编译错误，至于怎么处理编译结果，那就是开发者自己的判断了。
+
+`--noEmitOnError`参数指定一旦编译报错，就不会生成 JS 文件。
+
+```bash
+$ tsc --noEmitOnError hello.ts
+```
+
+`--target`参数指定编译的版本，TypeScript 默认编译出来的 JavaScript 为 ES3 版本，可以指定编译为 ES2015 版本。
+
+```bash
+$ tsc --target es2015 hello.ts
+```
+
+`--strict`参数指定采用更严格的检查规则。
+
+- noImplicitAny：类型推断一旦出现`any`变量，就报错，即变量必须可以推断为某种明确的类型。因为`any`类型的变量越少，类型系统的收益越大。
+- strictNullChecks
+
+可以同时转换多个文件。
+
+```bash
+$ tsc file1.ts file2.ts file3.ts
+```
+
+如果转换过程中出现错误，tsc 命令会报错，但是

@@ -1,23 +1,64 @@
 # TypeScript 的数据类型
 
+## 类型描述
+
 TypeScript 提供的数据类型，可以分成两大类。
 
-一类是 JavaScript 原有的类型。
+一类是 JavaScript 原有的类型。TypeScript 为内置类型提供了相应的原始类型：
 
-- undefined, null
-- boolean, number,string
-- symbol
-- object
+- number：数值，包括整数和浮点数。
+- string：字符串
+- boolean：布尔值，包括`true`和`false`两个值
+- bigint
+symbol
+null
+undefined
+object
+
+注意，上面所有类型的名称都是小写字母，首字母大写的`Number`、`String`、`Boolean`都是语言内置的对象，而不是类型名称。
 
 另一类是 TypeScript 特有的类型。
 
 - Array (not technically a type in JS)
 - any (the type of all values)
-- Etc.
+- unknown（确保有人使用这种类型声明类型是什么）
+- never（这种类型不可能发生）
+- void：函数返回 undefined 或者没有返回值
+
+unknown	顶级类型。
+never	底部类型。
+对象字面量	例如 { property: Type }
+void	undefined打算用作返回类型的子类型。
+T[]	可变数组，也写成 Array<T>
+[T, T]	元组，它们是固定长度但可变的
+(t: T) => U	函数
 
 注意，undefined 既可以作为值，也可以作为类型，取决于在哪里使用它。对于 null 也是如此。
 
 上面的基本类型，还可以组合成复杂类型。
+
+对于复合数据结构的类型描述，TypeScript 提供了两种语法：interface 和 type。
+
+## any
+
+`any`表示这个值可以是任意类型。
+
+如果一个变量的类型是`any`，表示可以访问它的任意属性，或者像函数一样调用它，或者将它分配给（或从）任何类型的值。
+
+```typescript
+let obj: any = { x: 0 };
+
+// 下面行都不会报错
+obj.foo();
+obj();
+obj.bar = 100;
+obj = "hello";
+const n: number = obj;
+```
+
+如果开发者不指定变量类型，并且 TypeScript 不能从上下文推断出变量类型时，编译器就会默认该变量类型为`any`。
+
+将一个变量的类型设为`any`，实际上关闭了对它的类型检查。
 
 ## 类型别名
 
@@ -29,6 +70,23 @@ const age: Age = 82;
 ```
 
 上面示例中，`Age`就是类型`number`的别名。
+
+## 类型联合
+
+如果一个值可能有多种类型，可以使用`|`运算符进行类型描述。
+
+```typescript
+function getLength(obj: string | string[]) {
+  return obj.length;
+}
+```
+
+除了联合，TypeScript 还有交集：
+
+```typescript
+type Combined = { a: number } & { b: string };
+type Conflicting = { a: number } & { a: string };
+```
 
 ## 数组
 
@@ -83,6 +141,8 @@ const func: (num: number) => string =
 ```typescript
 (num: number) => string
 ```
+
+注意，函数类型描述必须包含参数。
 
 就这个例子而言，函数本身不需要加上类型注释，因为 TS 可以推断出来。
 
@@ -202,6 +262,16 @@ interface Point {
 function pointToString(pt: Point) {
   return `(${pt.x}, ${pt.y})`;
 }
+
+interface User {
+  name: string;
+  id: number;
+}
+
+const user: User = {
+  name: "Hayes",
+  id: 0,
+};
 ```
 
 方法也可以在接口中描述。
@@ -248,6 +318,8 @@ const n22: Num2 = num2;
 对象也可以使用字面量描述类型。
 
 ```typescript
+let o: { n: number; xs: object[] } = { n: 1, xs: [] };
+
 function pointToString(pt: {x: number, y: number}) {
   return `(${pt.x}, ${pt.y})`;
 }
@@ -260,4 +332,120 @@ interface Person {
   name: string;
   company?: string;
 }
-···
+```
+
+## 类
+
+类的类型可以在类的内部描述。
+
+```typescript
+interface User {
+  name: string;
+  id: number;
+}
+ 
+class UserAccount {
+  name: string;
+  id: number;
+ 
+  constructor(name: string, id: number) {
+    this.name = name;
+    this.id = id;
+  }
+}
+ 
+const user: User = new UserAccount("Murphy", 1);
+```
+
+类除了内部的类型描述，通常还需要使用 interface，定义一个返回值的类型。
+
+由于类包含了类型描述，因此直接当作一种类型。
+
+```typescript
+class Empty {}
+ 
+function fn(arg: Empty) {
+  // do something?
+}
+```
+
+## 命名类型
+
+命名类型用来给类型起名字。
+
+有三种方法可以为类型起名字。
+
+- interface
+- type
+- class
+
+```typescript
+type One = { p: string };
+interface Two {
+  p: string;
+}
+class Three {
+  p = "Hello";
+}
+ 
+let x: One = { p: "hi" };
+let two: Two = x;
+two = new Three();
+```
+
+### type
+
+type 关键字可以定义一个类型，包含多种类型。
+
+```typescript
+type MyBool = true | false;
+type WindowStates = "open" | "closed" | "minimized";
+type LockStates = "locked" | "unlocked";
+type PositiveOddNumbersUnderTen = 1 | 3 | 5 | 7 | 9;
+```
+
+`type`可以用来描述数组。
+
+```typescript
+type StringArray = Array<string>;
+type NumberArray = Array<number>;
+type ObjectWithNameArray = Array<{ name: string }>;
+```
+
+## 泛型
+
+泛型为类型提供变量。一个常见的例子是数组。没有泛型的数组可以包含任何东西。带有泛型的数组可以描述数组包含的值。
+
+可以自己定义泛型。
+
+```typescript
+interface Backpack<Type> {
+  add: (obj: Type) => void;
+  get: () => Type;
+}
+```
+
+## 类型匹配
+
+只要对象具有相同的属性，TypeScript 就会认为它们属于相同的类型。
+
+```typescript
+interface Point {
+  x: number;
+  y: number;
+}
+ 
+function logPoint(p: Point) {
+  console.log(`${p.x}, ${p.y}`);
+}
+ 
+// logs "12, 26"
+const point = { x: 12, y: 26 };
+logPoint(point);
+
+const point3 = { x: 12, y: 26, z: 89 };
+logPoint(point3); // logs "12, 26"
+ 
+const rect = { x: 33, y: 3, width: 30, height: 80 };
+logPoint(rect); // logs "33, 3"
+```

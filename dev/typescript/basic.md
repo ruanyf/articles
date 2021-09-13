@@ -53,31 +53,6 @@ num = "12";    // 编译错误
 console.log(num);
 ```
 
-## 安装
-
-```bash
-$ npm install -g typescript
-```
-
-安装完，检查一下是否安装成功。
-
-```bash
-$ tsc -v
-Version 3.2.2
-```
-
-转换脚本命令，转换成 JavaScript 脚本运行。
-
-```bash
-$ tsc app.ts
-```
-
-可以同时转换多个文件。
-
-```bash
-$ tsc file1.ts file2.ts file3.ts
-```
-
 ## 数据类型
 
 ### any 类型
