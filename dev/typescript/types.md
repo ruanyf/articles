@@ -81,6 +81,37 @@ function getLength(obj: string | string[]) {
 }
 ```
 
+下面示例中，`toUpperCase()`是字符串才有的方法，数值类型没有这个方法，所以会报错。
+
+```typescript
+function printId(id: number | string) {
+  console.log(id.toUpperCase()); // 报错
+}
+```
+
+解决方法是对参数做一下类型判断。
+
+```typescript
+function printId(id: number | string) {
+  if (typeof id === "string") {
+    // 只对字符串，执行 toUpperCase() 方法
+    console.log(id.toUpperCase());
+  } else {
+    console.log(id);
+  }
+}
+```
+
+函数的返回值也可以是类型联合。
+
+```typescript
+function getFirstThree(x: number[] | string): number[] | string {
+  return x.slice(0, 3);
+}
+```
+
+上面示例中，函数体内的`slice()`方法是数组与字符串共有的，所以返回值也是`number[] | string`类型。
+
 除了联合，TypeScript 还有交集：
 
 ```typescript
@@ -234,6 +265,27 @@ function stringify123(
 
 ## 对象
 
+对象的类型注释，写法如下。
+
+```typescript
+let o: { n: number; xs: object[] } = { n: 1, xs: [] };
+
+function pointToString(pt: {x: number, y: number}) {
+  return `(${pt.x}, ${pt.y})`;
+}
+```
+
+可选属性可以在属性名后加一个问号`?`。
+
+```typescript
+function printName(obj: { first: string; last?: string }) {
+  // ...
+}
+// Both OK
+printName({ first: "Bob" });
+printName({ first: "Alice", last: "Alisson" });
+```
+
 对象的类型描述，可以使用接口（interface）。
 
 ```typescript
@@ -315,15 +367,7 @@ const n12: Num1 = num2;
 const n22: Num2 = num2;
 ```
 
-对象也可以使用字面量描述类型。
 
-```typescript
-let o: { n: number; xs: object[] } = { n: 1, xs: [] };
-
-function pointToString(pt: {x: number, y: number}) {
-  return `(${pt.x}, ${pt.y})`;
-}
-```
 
 如果某个属性是可选属性，属性名后面可以加一个问号表示。
 
