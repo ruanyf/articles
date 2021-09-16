@@ -71,6 +71,12 @@ const age: Age = 82;
 
 上面示例中，`Age`就是类型`number`的别名。
 
+type 命令可以为任何类型起别名。
+
+```typescript
+type ID = number | string;
+```
+
 ## 类型联合
 
 如果一个值可能有多种类型，可以使用`|`运算符进行类型描述。
@@ -367,8 +373,6 @@ const n12: Num1 = num2;
 const n22: Num2 = num2;
 ```
 
-
-
 如果某个属性是可选属性，属性名后面可以加一个问号表示。
 
 ```type
@@ -378,16 +382,65 @@ interface Person {
 }
 ```
 
+还可以使用 type 关键字为对象起别名。
+
+```typescript
+type Point = {
+  x: number;
+  y: number;
+};
+ 
+function printCoord(pt: Point) {
+  console.log(pt.x);
+  console.log(pt.y);
+}
+ 
+printCoord({ x: 100, y: 100 });
+```
+
+### interface 与 type 的区别
+
+interface 与 type 很大程度上，作用是相同的，可以换用。唯一的区别是， type 定义的类型别名，无法添加属性，而 interface 可以扩展。
+
+（1）扩展新类型
+
+interface 扩展的例子。
+
+```typescript
+interface Animal {
+  name: string
+}
+
+interface Bear extends Animal {
+  honey: boolean
+}
+
+const bear = getBear() 
+bear.name
+bear.honey
+```
+
+type 定义的类型别名想要扩展，只能重新定义一个新的别名。
+
+```typescript
+type Animal = {
+  name: string
+}
+
+type Bear = Animal & { 
+  honey: boolean 
+}
+
+const bear = getBear();
+bear.name;
+bear.honey;
+```
+
 ## 类
 
 类的类型可以在类的内部描述。
 
 ```typescript
-interface User {
-  name: string;
-  id: number;
-}
- 
 class UserAccount {
   name: string;
   id: number;
@@ -397,7 +450,12 @@ class UserAccount {
     this.id = id;
   }
 }
- 
+
+interface User {
+  name: string;
+  id: number;
+}
+
 const user: User = new UserAccount("Murphy", 1);
 ```
 
@@ -493,3 +551,57 @@ logPoint(point3); // logs "12, 26"
 const rect = { x: 33, y: 3, width: 30, height: 80 };
 logPoint(rect); // logs "33, 3"
 ```
+
+## 类型断言
+
+有时，可以指定为浏览器已经提供的类型。
+
+```typescript
+const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement;
+
+// 或者
+const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
+```
+
+类型可以是具体的字符串。
+
+```typescript
+let x: "hello" = "hello";
+// OK
+x = "hello";
+// 报错
+x = "howdy";
+```
+
+上面示例中，类型是字符串“hello”。
+
+字符串或数字的联合也是一种类型。
+
+```typescript
+function printText(s: string, alignment: "left" | "right" | "center") {
+  // ...
+}
+
+function compare(a: string, b: string): -1 | 0 | 1 {
+  return a === b ? 0 : a > b ? 1 : -1;
+}
+```
+
+类型注释中，字符串也可以与其他类型混用。
+
+```javascript
+interface Options {
+  width: number;
+}
+function configure(x: Options | "auto") {
+  // ...
+}
+```
+
+## 类型修饰
+
+```typescript
+const req = { url: "https://example.com", method: "GET" } as const;
+handleRequest(req.url, req.method);
+```
+
