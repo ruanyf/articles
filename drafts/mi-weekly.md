@@ -1,5 +1,11 @@
 ## 周刊材料存档
 
+1、
+
+达尔文是一个内向的人，选择住在伦敦东南近20英里的乡下，避开城里的各种会议和聚会，专心在书房写作。他偶尔会招待一两个访客，但是通常通过信件与外界联系。他在书房里安装了一面镜子，这样他就可以从工作中抬起头，看看邮递员是否正在路上——这是 19 世纪版本的电子邮件刷新按钮。
+
+--[《思想家与步行之间的关系》](https://lithub.com/on-the-link-between-great-thinking-and-obsessive-walking/)
+
 1、[美国无线网络覆盖地图](https://fcc.maps.arcgis.com/apps/webappviewer/index.html?id=6c1b2e73d9d749cdb7bc88a0d1bdd25b)
 
 ![](https://cdn.beekka.com/blogimg/asset/202108/bg2021081012.jpg)
