@@ -2,6 +2,12 @@
 
 1、
 
+曾经有两年时间，我离开了前端开发，去做其他事情。等我回来了，一切都变了，Angularjs 消失了，React 成为业界的主流。RESTful 接口不流行了，开始流行 GraphQL。Kubernetes 真的起飞了。仅仅会 React 还不够，实际上人们用的是 next.js，然后大家都在研究各种 redux 替代品。TypeScript 变得无处不在。
+
+-- [Hacker News 读者](https://news.ycombinator.com/item?id=28410937)
+
+1、
+
 达尔文是一个内向的人，选择住在伦敦东南近20英里的乡下，避开城里的各种会议和聚会，专心在书房写作。他偶尔会招待一两个访客，但是通常通过信件与外界联系。他在书房里安装了一面镜子，这样他就可以从工作中抬起头，看看邮递员是否正在路上——这是 19 世纪版本的电子邮件刷新按钮。
 
 --[《思想家与步行之间的关系》](https://lithub.com/on-the-link-between-great-thinking-and-obsessive-walking/)
