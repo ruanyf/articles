@@ -1,5 +1,13 @@
 ## 周刊材料存档
 
+5、[NFT 作假](https://www.cnet.com/news/fake-banksy-nft-sells-for-nearly-340k-after-hacker-reportedly-taps-into-artists-site/)
+
+![](https://cdn.beekka.com/blogimg/asset/202109/bg2021090509.jpg)
+
+8月31日，欧美著名艺术家 Bansky 的官网被黑，入侵者没有修改任何内容，而是添加了一个页面“banksy.co.uk/NFT.html”（上图）。然后，他把这个页面做成 NFT 在网上发售，由于 Bansky 还从没有发售过 NFT，市场非常轰动，最终以 336,000 美元成交。
+
+等到官方声明这是假页面，这笔钱已经无法追回了。所谓 NFT，就是将网址登记在区块链上面，然后这条记录可以从一个钱包转移到另一个钱包，因此可以买卖。但是，黑客入侵造成的假页面，应该怎么处理，显然是一个难题。
+
 1、
 
 曾经有两年时间，我离开了前端开发，去做其他事情。等我回来了，一切都变了，Angularjs 消失了，React 成为业界的主流。RESTful 接口不流行了，开始流行 GraphQL。Kubernetes 真的起飞了。仅仅会 React 还不够，实际上人们用的是 next.js，然后大家都在研究各种 redux 替代品。TypeScript 变得无处不在。
