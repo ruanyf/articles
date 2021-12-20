@@ -60,6 +60,26 @@ const n: number = obj;
 
 将一个变量的类型设为`any`，实际上关闭了对它的类型检查。
 
+## 类型声明
+
+脚本的头部，声明类型定义。
+
+```typescript
+class Foo {};
+interface Bar {};
+type Bas = {};
+```
+
+声明了类型以后，就可以在类型注释中，使用该类型。
+
+```typescript
+var foo: Foo;
+var bar: Bar;
+var bas: Bas;
+```
+
+
+
 ## 类型别名
 
 `type`命令可以用来为现有类型指定别名。
