@@ -1,6 +1,6 @@
 # TypeScript 的数据类型
 
-## 类型描述
+## 基本类型
 
 TypeScript 提供的数据类型，可以分成两大类。
 
@@ -10,10 +10,10 @@ TypeScript 提供的数据类型，可以分成两大类。
 - string：字符串
 - boolean：布尔值，包括`true`和`false`两个值
 - bigint
-symbol
-null
-undefined
-object
+- symbol
+- null
+- undefined
+- object
 
 注意，上面所有类型的名称都是小写字母，首字母大写的`Number`、`String`、`Boolean`都是语言内置的对象，而不是类型名称。
 
@@ -39,11 +39,23 @@ T[]	可变数组，也写成 Array<T>
 
 对于复合数据结构的类型描述，TypeScript 提供了两种语法：interface 和 type。
 
-## any
+## 特殊类型
+
+### any
 
 `any`表示这个值可以是任意类型。
 
 如果一个变量的类型是`any`，表示可以访问它的任意属性，或者像函数一样调用它，或者将它分配给（或从）任何类型的值。
+
+```typescript
+var power: any;
+
+// Takes any and all types
+power = '123';
+power = 123;
+```
+
+它的作用其实是告诉编译器，关闭对该变量的类型检查。因此，应该尽量避免使用`any`，因为它不进行类型检查，这就失去了使用 TypeScript 的意义。
 
 ```typescript
 let obj: any = { x: 0 };
@@ -59,6 +71,29 @@ const n: number = obj;
 如果开发者不指定变量类型，并且 TypeScript 不能从上下文推断出变量类型时，编译器就会默认该变量类型为`any`。
 
 将一个变量的类型设为`any`，实际上关闭了对它的类型检查。
+
+### null，undefined
+
+如果编译设置设为`strictNullCheck:false`，那么`null`和`undefined`可以分配给任何其它类型。
+
+```typescript
+var num: number;
+var str: string;
+
+// These literals can be assigned to anything
+num = null;
+str = undefined;
+```
+
+### :void
+
+`:void`类型只用来表示函数没有返回值。
+
+```typescript
+function log(message): void {
+    console.log(message);
+}
+```
 
 ## 类型声明
 
@@ -82,7 +117,7 @@ var bas: Bas;
 
 ## 类型别名
 
-`type`命令可以用来为现有类型指定别名。
+`type`命令可以用来为现有类型指定别名，使用`type SomeName = someValidTypeAnnotation`的形式。
 
 ```typescript
 type Age = number;
@@ -95,11 +130,14 @@ type 命令可以为任何类型起别名。
 
 ```typescript
 type ID = number | string;
+type Text = string | { text: string };
+type Coordinates = [number, number];
+type Callback = (data: string) => void;
 ```
 
 ## 类型联合
 
-如果一个值可能有多种类型，可以使用`|`运算符进行类型描述。
+如果一个变量可能有多种类型，可以使用`|`运算符进行类型描述，这称为类型联合（union）。
 
 ```typescript
 function getLength(obj: string | string[]) {
@@ -138,14 +176,46 @@ function getFirstThree(x: number[] | string): number[] | string {
 
 上面示例中，函数体内的`slice()`方法是数组与字符串共有的，所以返回值也是`number[] | string`类型。
 
-除了联合，TypeScript 还有交集：
+## 类型交集
+
+除了类型联合，TypeScript 还有类型交集：
 
 ```typescript
 type Combined = { a: number } & { b: string };
 type Conflicting = { a: number } & { a: string };
 ```
 
+```typescript
+function extend<T extends object, U extends object>(first: T, second: U): T & U {
+  const result = <T & U>{};
+  for (let id in first) {
+    (<T>result)[id] = first[id];
+  }
+  for (let id in second) {
+    if (!result.hasOwnProperty(id)) {
+      (<U>result)[id] = second[id];
+    }
+  }
+
+  return result;
+}
+
+const x = extend({ a: 'hello' }, { b: 42 });
+```
+
 ## 数组
+
+数组的类型注释，是在类型名后面加上数组符号`[]`。
+
+```typescript
+var boolArray: boolean[];
+```
+
+也可以逐一注明数组成员。
+
+```typescript
+let nameNumber: [string, number];
+```
 
 TypeScript 的数组包含两种类型的数据。
 
@@ -291,7 +361,7 @@ function stringify123(
 
 ## 对象
 
-对象的类型注释，写法如下。
+对象可以直接描述类型，即在声明对象变量的时候，用`:{ /*Structure*/ }`在变量名后面声明类型。写法如下。
 
 ```typescript
 let o: { n: number; xs: object[] } = { n: 1, xs: [] };
@@ -312,7 +382,22 @@ printName({ first: "Bob" });
 printName({ first: "Alice", last: "Alisson" });
 ```
 
-对象的类型描述，可以使用接口（interface）。
+如果要复用某个对象的类型，可以使用`interface`描述。可以将`interface`看作多个类型注释的一个容器，这个容器可以有自己的名字，因此可以引用。
+
+```typescript
+interface Name {
+    first: string;
+    second: string;
+}
+
+var name: Name;
+name = {
+    first: 'John',
+    second: 'Doe'
+};
+```
+
+上面示例中，interface 建立了一个容器，名称为`Name`，里面包括两个类型注释，一个是`first`，另一个是`second`，它们的类型都是字符串。
 
 ```typescript
 interface Point {
@@ -536,7 +621,21 @@ type ObjectWithNameArray = Array<{ name: string }>;
 
 ## 泛型
 
-泛型为类型提供变量。一个常见的例子是数组。没有泛型的数组可以包含任何东西。带有泛型的数组可以描述数组包含的值。
+泛型（Generics）为类型提供变量。一个常见的例子是数组。没有泛型的数组可以包含任何东西。带有泛型的数组可以描述数组包含的值。
+
+```typescript
+function reverse<T>(items: T[]): T[] {
+    var toreturn = [];
+    for (let i = items.length - 1; i >= 0; i--) {
+        toreturn.push(items[i]);
+    }
+    return toreturn;
+}
+```
+
+上面示例中，函数 reverse 的参数 items 是一个数组，数组成员的类型是 T（即`items: T[]`），这里的 T 代表 Type，你也可以使用其他字符代替。它的返回值也是一个数组，该数组的成员类型也是 T（即 reverse: T[]）。也就是说，参数收到什么类型的数组，就返回什么类型的字符，比如收到字符串数组，就返回字符串数组，收到数值数组，就返回数值数组。
+
+
 
 可以自己定义泛型。
 

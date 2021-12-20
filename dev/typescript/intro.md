@@ -21,6 +21,12 @@ TypeScript 是静态类型语言，不允许这样的改动。如果变量的类
 
 理论上，JS 脚本都属于合法的 TS 脚本，现有的 JS 代码可以与 TS 代码一起工作。
 
+TypeScript 的设计目的，只是 JavaScript 的类型注释，所以做了两个设计决定。
+
+- 它的类型注释是可选的，你也可以不加，依然是有效的 TypeScript 代码。因此，所有 JavaScript 代码都是合法的 TypeScript 代码。
+
+- TypeScript 不会在出现类型错误时，阻止代码转换成 JavaScript。因此，你可以逐步为以前的 JavaScript 代码添加 TypeScript 类型注释。 
+
 ### 编译
 
 TypeScript 不提供代码的运行环境，只提供代码的转换工具，将 TS 代码转为 JS 代码，然后再在 JS 环境运行。这种代码转换，称为“编译”（compile）。
@@ -88,13 +94,24 @@ TS 提供两种方法，获得存储位置的类型：类型注释和类型推�
 
 ### 类型注释
 
-TS 通过在变量名后面使用冒号，添加类型注释，表示该变量的类型。
+在所有需要注明类型的地方，TypeScript 都允许使用`:TypeAnnotation`的形式说明类型。
+
+最常见的，就是在声明变量时，在变量名后面使用冒号，添加类型注释，表示该变量的类型。
 
 ```typescript
 let x: number;
 ```
 
 上面代码中，变量`x`的类型是数值（number）。
+
+声明函数的时候，也可以注明类型。
+
+```typescript
+var num: number = 123;
+function identity(num: number): number {
+    return num;
+}
+```
 
 如果学过 JS，你可能知道没有初始化的变量，值一律等于`undefined`。那么，undefined 是否会违反静态类型`number`呢？TS 规定变量赋值之前不能读取，从而解决了这个问题。
 

@@ -1,7 +1,5 @@
 # TypeScript 教程
 
-
-
 ## 基本用法
 
 声明变量时，指定类型。
@@ -19,6 +17,8 @@ var uname:string;
 ```typescript
 var num:number = "hello"；
 ```
+
+
 
 ## 类型断言
 
