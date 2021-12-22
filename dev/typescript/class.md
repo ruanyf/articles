@@ -40,6 +40,22 @@ class Point3D extends Point {
 
 上面示例中，实例属性`z`是`Point3D`新增的属性，所以需要给出类型注释。实例属性`x`和`y`是继承的属性，不用重复给出类型注释了。
 
+## 使用 inteface
+
+另一种给出 Class 类型注释的方法，就是使用 interface。这时要使用 implements 关键字。
+
+```typescript
+interface Point {
+    x: number;
+    y: number;
+    z: number; // New member
+}
+
+class MyPoint implements Point { // ERROR : missing member `z`
+    x: number; y: number;
+}
+```
+
 ## 访问修饰符
 
 TypeScript 提供了三个访问修饰符（access modifiers），控制类的成员的可访问性：`public`、`private`和`protected`。
