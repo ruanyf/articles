@@ -328,6 +328,47 @@ function joinNumbers(...nums: number[]): string {
 }
 ```
 
+声明函数类型的两种方法。
+
+```typescript
+type LongHand = {
+    (a: number): number;
+};
+
+type ShortHand = (a: number) => number;
+```
+
+如果存在参数重载，那就只有使用第一种写法。
+
+```typescript
+type LongHandAllowsOverloadDeclarations = {
+    (a: number): number;
+    (a: string): string;
+};
+```
+
+另一种使用 interface 的写法。
+
+```typescript
+interface ReturnString {
+  (): string
+}
+
+declare const foo: ReturnString;
+const bar = foo(); // bar is inferred as a string
+```
+
+如果是构造函数，调用的时候要使用 new 命令，它的类型要写成下面这样。
+
+```typescript
+interface CallMeWithNewToGetString {
+  new(): string
+}
+// Usage
+declare const Foo: CallMeWithNewToGetString;
+const bar = new Foo(); // bar is inferred to be of type string
+```
+
 ## Union 类型
 
 Union 类型用来表示，一个变量可以是多种类型的情况。
@@ -364,6 +405,10 @@ function stringify123(
 对象可以直接描述类型，即在声明对象变量的时候，用`:{ /*Structure*/ }`在变量名后面声明类型。写法如下。
 
 ```typescript
+var sampleVariable: { bar: number }
+
+function foo(sampleParameter: { bar: number }) { }
+
 let o: { n: number; xs: object[] } = { n: 1, xs: [] };
 
 function pointToString(pt: {x: number, y: number}) {
