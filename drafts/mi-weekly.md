@@ -1,5 +1,11 @@
 ## 周刊材料存档
 
+1、
+
+中国最近采取措施，禁止针对中小学的营利性补习班和培训公司，禁止周末补习，这些值得称赞的措施都是为了阻止不断升级的教育军备​​竞赛。
+
+-- [《东方和西方精英竞争的危机》](https://americanaffairsjournal.org/2021/11/crises-of-elite-competition-in-the-east-and-west/)
+
 ## 封面图
 
 ![](https://cdn.beekka.com/blogimg/asset/202111/bg2021110712.jpg)
