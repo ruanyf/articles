@@ -39,6 +39,54 @@ T[]	可变数组，也写成 Array<T>
 
 对于复合数据结构的类型描述，TypeScript 提供了两种语法：interface 和 type。
 
+## 值类型
+
+单个值也视为一种类型。
+
+```typescript
+let x: "hello" = "hello";
+// 正确
+x = "hello";
+// 报错
+x = "howdy";
+```
+
+它在某个变量只能取若干个特定值时很有用。
+
+```typescript
+function printText(s: string, alignment: "left" | "right" | "center") {
+  // ...
+}
+printText("Hello, world", "left");
+printText("G'day, mate", "centre");
+```
+
+单个数值也是类型。
+
+```typescript
+function compare(a: string, b: string): -1 | 0 | 1 {
+  return a === b ? 0 : a > b ? 1 : -1;
+}
+```
+
+值类型可以与 interface 结合使用。
+
+```typescript
+interface Options {
+  width: number;
+}
+function configure(x: Options | "auto") {
+  // ...
+}
+configure({ width: 100 });
+configure("auto");
+
+// 报错
+configure("automatic");
+```
+
+最后，布尔值类型 boolean 本身就是两个布尔值 union 类型`true | false`的别名。
+
 ## 特殊类型
 
 ### any
@@ -92,6 +140,17 @@ str = undefined;
 ```typescript
 function log(message): void {
     console.log(message);
+}
+```
+
+## 非空断言运算符
+
+后缀`!`是非空断言运算符，即保证该值不是nullor undefined：
+
+```typescript
+function liveDangerously(x?: number | null) {
+  // No error
+  console.log(x!.toFixed());
 }
 ```
 
@@ -175,6 +234,8 @@ function getFirstThree(x: number[] | string): number[] | string {
 ```
 
 上面示例中，函数体内的`slice()`方法是数组与字符串共有的，所以返回值也是`number[] | string`类型。
+
+Never 类型表示类型联合里面，缩小类型时，已经穷尽所有可能，不可能存在的类型。
 
 ## 类型交集
 

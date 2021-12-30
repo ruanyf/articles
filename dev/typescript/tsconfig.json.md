@@ -96,5 +96,18 @@ $ tsc -p ./path-to-project-directo
 }
 ```
 
+- noImplicitAny：如果无法推断出类型，就报错。
+- strictNullChecks：打开该设置时，需要显式检查 null 或 undefined。
+
+```typescript
+function doSomething(x: string | null) {
+  if (x === null) {
+    // do nothing
+  } else {
+    console.log("Hello, " + x.toUpperCase());
+  }
+}
+```
+
 - module:commonjs
 - moduleResolution: "Node"
