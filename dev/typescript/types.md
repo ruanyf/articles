@@ -120,6 +120,45 @@ const n: number = obj;
 
 将一个变量的类型设为`any`，实际上关闭了对它的类型检查。
 
+### unknown 
+
+unknown 类似于 any，表示无法确定变量类型。区别是不能对该值进行任何操作。
+
+```typescript
+function f1(a: any) {
+  a.b(); // OK
+}
+function f2(a: unknown) {
+  a.b(); // 报错
+}
+```
+
+### never
+
+never 类型表示函数从不返回值。
+
+```typescript
+function fail(msg: string): never {
+  throw new Error(msg);
+}
+```
+
+The never type represents values which are never observed. In a return type, this means that the function throws an exception or terminates execution of the program.
+
+never also appears when TypeScript determines there’s nothing left in a union.
+
+```typescript
+function fn(x: string | number) {
+  if (typeof x === "string") {
+    // do something
+  } else if (typeof x === "number") {
+    // do something else
+  } else {
+    x; // has type 'never'!
+  }
+}
+```
+
 ### null，undefined
 
 如果编译设置设为`strictNullCheck:false`，那么`null`和`undefined`可以分配给任何其它类型。
