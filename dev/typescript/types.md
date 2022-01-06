@@ -178,9 +178,23 @@ str = undefined;
 
 ```typescript
 function log(message): void {
-    console.log(message);
+  console.log(message);
 }
 ```
+
+## readonly 修饰符
+
+readonly 修饰符表示一个变量不可以修改。
+
+```typescript
+let x: readonly string[] = [];
+let y: string[] = [];
+ 
+x = y; 
+y = x; // 报错
+```
+
+只读数组不能赋值给普通数组。
 
 ## 非空断言运算符
 

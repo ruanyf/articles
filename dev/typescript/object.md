@@ -1,5 +1,58 @@
 # Object 的类型
 
+## 基本用法
+
+对象的类型可以用字面量直接描述。
+
+```typescript
+function greet(person: { name: string; age: number }) {
+  return "Hello " + person.name;
+}
+```
+
+如果一个属性是可选的，属性名后面可以加问号（？）。
+
+```typescript
+interface PaintOptions {
+  shape: Shape;
+  xPos?: number;
+  yPos?: number;
+}
+```
+
+当一个属性是可选的，并且 strictNullChecks 设置打开以后，直接读取可选属性会报错。
+
+```typescript
+function paintShape(opts: PaintOptions) {
+  let xPos = opts.xPos; // 报错
+  let yPos = opts.yPos; // 报错
+  // ...
+}
+```
+
+如果要使用，必须要检查一下是否为 undefined。
+
+```typescript
+function paintShape(opts: PaintOptions) {
+  let xPos = opts.xPos === undefined ? 0 : opts.xPos;
+
+  let yPos = opts.yPos === undefined ? 0 : opts.yPos;
+
+  // ...
+}
+```
+
+注意，目前没法为对象解构的参数指定类型，因为 JavaScript 为对象解构里面的冒号指定了用途。
+
+```typescript
+function draw({ shape: Shape, xPos: number = 100 /*...*/ }) {
+  render(shape); // 报错
+  render(xPos); // 报错
+}
+```
+
+上面示例中，参数解构里面的冒号，作用不是指定类型，而是为对应的参数名指定变量。所以，不存在 shape 变量，而是 shape 属性的值被赋值给了变量 Shape。
+
 ## type 命令
 
 type 命令用来为类型起别名。
@@ -43,6 +96,63 @@ function printCoord(pt: Point) {
 }
  
 printCoord({ x: 100, y: 100 });
+```
+
+interface 可以使用 extends 关键字继承其他接口。
+
+```typescript
+interface BasicAddress {
+  name?: string;
+  street: string;
+  city: string;
+  country: string;
+  postalCode: string;
+}
+ 
+interface AddressWithUnit extends BasicAddress {
+  unit: string;
+}
+```
+
+extends 关键字会从继承的接口里面拷贝属性类型，这样就不必重复书写。
+
+extends 关键字还可以继承多个接口。
+
+```typescript
+interface Colorful {
+  color: string;
+}
+ 
+interface Circle {
+  radius: number;
+}
+ 
+interface ColorfulCircle extends Colorful, Circle {}
+ 
+const cc: ColorfulCircle = {
+  color: "red",
+  radius: 42,
+};
+```
+
+上面示例中，ColorfulCircle 就相当于 Colorful 和 Circle 两个接口合并了。
+
+`&`运算符可以起到两个对象接口合并的作用。
+
+```typescript
+interface Colorful {
+  color: string;
+}
+interface Circle {
+  radius: number;
+}
+ 
+type ColorfulCircle = Colorful & Circle;
+
+function draw(circle: Colorful & Circle) {
+  console.log(`Color was ${circle.color}`);
+  console.log(`Radius was ${circle.radius}`);
+}
 ```
 
 ## type 命令与 interface 命令的区别
@@ -130,3 +240,18 @@ const a = (expr as any) as T;
 ```
 
 上面示例中， 变量 expr 先断言为 any 类型（即取消原有的类型），然后再断言为类型 T。
+
+## readonly
+
+readonly 是对象类型的属性修饰符，表示该属性在运行时不能修改。
+
+```typescript
+interface SomeType {
+  readonly prop: string;
+}
+ 
+function doSomething(obj: SomeType) {
+  // 报错
+  obj.prop = "hello";
+}
+```

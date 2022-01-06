@@ -24,6 +24,85 @@ function firstElement<Type>(arr: Type[]): Type | undefined {
 
 然后，将参数类型定义为`Type[]`，即数组`arr`的成员类型时变量 Type。然后，返回值是 Type 或 undefined，即返回值的类型与参数类型相关，参数类型是 Type，返回值类型也是 Type，两者是一致的，至于 Type 到底是什么类型，这里并不重要。
 
+调用函数的时候，可以在尖括号里面指明参数的实际类型。
+
+```typescript
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+
+// 写法一
+let output = identity<string>("myString");
+```
+
+更常见的做法是让 TypeScript 自己去推断类型。
+
+```typescript
+let output = identity("myString");
+```
+
+类型推断虽然写起来方便，但是有些复杂的使用场景，TypeScript 可能推断不出参数的类型，这时就只能手动注明参数的具体类型了。
+
+如果数组成员是泛型，可以采用下面的写法。
+
+```typescript
+// 写法一
+function loggingIdentity<Type>(arg: Type[]): Type[] {
+  console.log(arg.length);
+  return arg;
+}
+
+// 写法二
+function loggingIdentity<Type>(arg: Array<Type>): Array<Type> {
+  console.log(arg.length); // Array has a .length, so no more error
+  return arg;
+}
+```
+
+函数的泛型写法。
+
+```typescript
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+ 
+// 写法一 
+let myIdentity: <Input>(arg: Input) => Input = identity;
+
+// 写法二
+let myIdentity: { <Type>(arg: Type): Type } = identity;
+```
+
+函数的泛型也可以采用 inteface 定义接口。
+
+```typescript
+interface GenericIdentityFn {
+  <Type>(arg: Type): Type;
+}
+ 
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+ 
+let myIdentity: GenericIdentityFn = identity;
+```
+
+另一种写法是将类型变量定义在 interface 接口上面。
+
+```typescript
+interface GenericIdentityFn<Type> {
+  (arg: Type): Type;
+}
+ 
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+ 
+let myIdentity: GenericIdentityFn<number> = identity;
+```
+
+采用第二种写法时，每次使用 interface 接口时，都必须给出类型变量具体的值。
+
 泛型主要用来描述变量之间的依赖关系，可以理解为引入了表示类型的变量。
 
 ```typescript
@@ -56,7 +135,7 @@ function map<Input, Output>(arr: Input[], func: (arg: Input) => Output): Output[
 const parsed = map(["1", "2", "3"], (n) => parseInt(n));
 ```
 
-类型变量可以继承对象。
+如果类型变量是对象，可以使用 extends 关键字继承其他对象。
 
 ```typescript
 function longest<Type extends { length: number }>(a: Type, b: Type) {
@@ -99,3 +178,99 @@ function greet(s: string) {
   console.log("Hello, " + s);
 }
 ```
+
+下面是泛型与 Interface 接口结合的例子。
+
+```typescript
+interface Box<Type> {
+  contents: Type;
+}
+
+let box: Box<string>;
+```
+
+泛型的类型变量可以嵌套。
+
+```typescript
+type OrNull<Type> = Type | null;
+ 
+type OneOrMany<Type> = Type | Type[];
+ 
+type OneOrManyOrNull<Type> = OrNull<OneOrMany<Type>>;
+           
+type OneOrManyOrNull<Type> = OneOrMany<Type> | null
+ 
+type OneOrManyOrNullStrings = OneOrManyOrNull<string>;
+               
+type OneOrManyOrNullStrings = OneOrMany<string> | null
+```
+
+## 数组泛型
+
+数组类型 number[] or string[] 只是  `Array<number>` 和 `Array<string>`的简写形式。
+
+```typescript
+function doSomething(value: Array<string>) {
+  // ...
+}
+ 
+let myArray: string[] = ["hello", "world"];
+```
+
+如果数组成员可能全部是字符，或全部是数值，类型说明可以写成`Array<string | number>`。
+
+Array 本身是一个泛型的接口，它的类型定义基本上是下面的样子。
+
+```typescript
+interface Array<Type> {
+  /**
+   * Gets or sets the length of the array.
+   */
+  length: number;
+ 
+  /**
+   * Removes the last element from an array and returns it.
+   */
+  pop(): Type | undefined;
+ 
+  /**
+   * Appends new elements to an array, and returns the new length of the array.
+   */
+  push(...items: Type[]): number;
+ 
+  // ...
+}
+```
+
+类似的数据结构 Map、Set、Promise，其实也是泛型接口 Map<K, V>, Set<T>, and Promise<T>。
+
+TypeScript 默认还提供一个 ReadonlyArray 接口，表示该数组不能改变。
+
+```typescript
+function doStuff(values: ReadonlyArray<string>) {
+  // 报错
+  values.push("hello!");
+}
+```
+
+如果看到一个函数的参数是 ReadonlyArray 类型，就不用担心它在数组内部会被改变。
+
+## 泛型类
+
+泛型也可以用在类（class）上面。
+
+```typescript
+class GenericNumber<NumType> {
+  zeroValue: NumType;
+  add: (x: NumType, y: NumType) => NumType;
+}
+ 
+let myGenericNumber = new GenericNumber<number>();
+myGenericNumber.zeroValue = 0;
+myGenericNumber.add = function (x, y) {
+  return x + y;
+};
+```
+
+生成类的实例时，要给出类型变量的具体值。
+
