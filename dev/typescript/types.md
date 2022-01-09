@@ -182,6 +182,28 @@ function log(message): void {
 }
 ```
 
+## type 命令
+
+类型定义时支持模板字符串。
+
+```typescript
+type World = "world";
+
+// 等同于 type Greeting = "hello world"
+type Greeting = `hello ${World}`;
+```
+
+如果类型是多个值的联合，甚至可以产生插值的效果。
+
+```typescript
+type EmailLocaleIDs = "welcome_email" | "email_heading";
+type FooterLocaleIDs = "footer_title" | "footer_sendoff";
+
+// 等同于 type AllLocaleIDs = "welcome_email_id" | "email_heading_id" | "footer_title_id" | "footer_sendoff_id"
+type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
+```
+
+
 ## readonly 修饰符
 
 readonly 修饰符表示一个变量不可以修改。

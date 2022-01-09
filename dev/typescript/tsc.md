@@ -16,5 +16,29 @@ function doSomething(x: string | null) {
 }
 ```
 
-- noImplicitAny：当无法推断一个变量时发出一个错误（或者只能推断为一个隐式的 any 类型），你可以通过显式添加 :any 的类型注解，来让它成为一个 any 类型。
+--noImplicitAny：当无法推断一个变量时发出一个错误（或者只能推断为一个隐式的 any 类型），你可以通过显式添加 :any 的类型注解，来让它成为一个 any 类型。
 
+--strictPropertyInitialization 实例的属性都需要在构造函数里面初始化。
+
+```typescript
+// 报错
+class BadGreeter {
+  name: string;
+}
+
+// 正确
+class GoodGreeter {
+  name: string; 
+  constructor() {
+    this.name = "hello";
+  }
+}
+```
+
+如果确实打算在其他地方初始化，可以使用赋值断言运算符。
+
+```typescript
+class OKGreeter {
+  name!: string;
+}
+```

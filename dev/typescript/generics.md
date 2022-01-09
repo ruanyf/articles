@@ -73,6 +73,18 @@ let myIdentity: <Input>(arg: Input) => Input = identity;
 let myIdentity: { <Type>(arg: Type): Type } = identity;
 ```
 
+除了用于函数，泛型也可以定义类型。
+
+```typescript
+type MessageOf<T extends { message: unknown }> = T["message"];
+ 
+interface Email {
+  message: string;
+}
+ 
+type EmailMessageContents = MessageOf<Email>;
+```
+
 函数的泛型也可以采用 inteface 定义接口。
 
 ```typescript

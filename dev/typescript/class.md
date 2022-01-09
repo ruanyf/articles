@@ -20,6 +20,34 @@ class Point {
 
 上面示例中，实例属性`x`和`y`的类型是`number`。
 
+类的内部也可以包括构造函数的类型签名。
+
+```typescript
+class Point {
+  // Overloads
+  constructor(x: number, y: string);
+  constructor(s: string);
+  constructor(xs: any, y?: any) {
+    // TBD
+  }
+}
+```
+
+注意，构造函数的类型签名不能有返回值的类型，因为它总是返回当前类的实例。
+
+类也可以有索引签名。
+
+```typescript
+class MyClass {
+  [s: string]: boolean | ((s: string) => boolean);
+ 
+  check(s: string) {
+    return this[s] as boolean;
+  }
+}
+```
+
+
 类本身也是一个类型，比如上面例子的类`Point`本身就是一个类型，方法`add()`的参数就是`Point`类型。
 
 继承的时候，只需要给出新增属性的类型注释，不需要给出继承属性的类型注释。
@@ -55,6 +83,8 @@ class MyPoint implements Point { // ERROR : missing member `z`
     x: number; y: number;
 }
 ```
+
+类可以实现多个接口，例如`class C implements A, B {`。
 
 ## 访问修饰符
 
@@ -111,6 +141,28 @@ class Foo {
 
 上面示例的简写形式，自动将`public x`声明为实例属性。
 
+### readonly
+
+readonly 用来修饰一个属性是只读的，只有构造函数可以更改它的值，其它方式都不可以。
+
+```typescript
+class Greeter {
+  readonly name: string = "world";
+  constructor() {
+    this.name = 'otherName';
+  }
+
+  err() {
+    // 报错
+    this.name = "not ok";
+  }
+}
+
+const g = new Greeter();
+// 报错
+g.name = "also not ok";
+```
+
 ## abstract
 
 `abstrct`也是一个修饰符，不仅可以用于类的成员，也可以用于类本身。
@@ -145,6 +197,45 @@ class BarErrorCommand  extends FooCommand {}
 class BarCommand extends FooCommand {
   execute() {
     return `Command Bar executed`;
+  }
+}
+```
+
+## 继承
+
+子类可以使用 extends 关键字继承基类，并且可以覆盖基类里面的同名方法。
+
+```typescript
+class Base {
+  greet() {
+    console.log("Hello, world!");
+  }
+}
+ 
+class Derived extends Base {
+  greet(name?: string) {
+    if (name === undefined) {
+      super.greet();
+    } else {
+      console.log(`Hello, ${name.toUpperCase()}`);
+    }
+  }
+}
+```
+
+但是，子类的同名方法不能改变类型签名。
+
+```typescript
+class Base {
+  greet() {
+    console.log("Hello, world!");
+  }
+}
+ 
+class Derived extends Base {
+  // 报错
+  greet(name: string) {
+    console.log(`Hello, ${name.toUpperCase()}`);
   }
 }
 ```

@@ -155,6 +155,25 @@ function draw(circle: Colorful & Circle) {
 }
 ```
 
+extends 还可以当作运算符，起到判断作用，这称为条件类型（conditional type）。
+
+```typescript
+interface Animal {
+  live(): void;
+}
+interface Dog extends Animal {
+  woof(): void;
+}
+ 
+// 等同于 type Example1 = number
+type Example1 = Dog extends Animal ? number : string;
+
+// 等同于 type Example2 = string
+type Example2 = RegExp extends Animal ? number : string;
+```
+
+上面示例中，extends 判断左侧的类型是否继承自右侧的类型。如果是的，返回 true，否则返回 false。
+
 ## type 命令与 interface 命令的区别
 
 两者作用类似，几乎所有的 interface 命令都可以改写为 type 命令。
