@@ -286,3 +286,18 @@ myGenericNumber.add = function (x, y) {
 
 生成类的实例时，要给出类型变量的具体值。
 
+泛型变量通常是构造函数的参数。给出实例类型时，需要同时给出泛型变量的值。
+
+```typescript
+const someClass = class<Type> {
+  content: Type;
+  constructor(value: Type) {
+    this.content = value;
+  }
+};
+
+// const m: someClass<string>
+const m = new someClass("Hello, world");
+```
+
+
