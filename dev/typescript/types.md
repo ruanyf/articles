@@ -203,6 +203,19 @@ type FooterLocaleIDs = "footer_title" | "footer_sendoff";
 type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
 ```
 
+## typeof 运算符
+
+typeof 运算符是一个 JavaScript 运算符，返回一个值的类型。
+
+```typescript
+// a value
+const person = {
+  name: "Stefan"
+}
+
+// a type
+type Person = typeof person;
+```
 
 ## readonly 修饰符
 
