@@ -31,4 +31,4 @@ Utility.error('maybe!');
 
 namespace 可以嵌套，比如`Utility.Messaging`可以表示名称空间 Utility 下面，还有一个子名称空间 Messaging。
 
-由于模块本身就是一个名称空间，所以 namespace 的用处并不是很大。
+namespace 与模块的作用是一致的，区别是一个文件只能有一个模块，但是可以有多个 namespace。完全可以把模块，看成单个的 namespace，所以 namespace 的用处并不是很大。而且，模块是 JavaScript 的合法语法，namespace 是 TypeScript 添加的语法，编译时必须进行转换，所以建议总是使用模块，替代 namespace。
