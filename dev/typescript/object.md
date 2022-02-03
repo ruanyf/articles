@@ -10,6 +10,13 @@ function greet(person: { name: string; age: number }) {
 }
 ```
 
+对象类型也使用方括号读取属性。
+
+```typescript
+type User = {name: string, age: number}
+type Name = User['name']
+```
+
 如果一个属性是可选的，属性名后面可以加问号（？）。
 
 ```typescript

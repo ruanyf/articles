@@ -6,6 +6,13 @@
 arr: any[]
 ```
 
+数组类型使用方括号读取属性。
+
+```typescript
+type Names = string[]
+type Name = Names[number]
+```
+
 ## 扩展运算符
 
 扩展运算符（`...`）只能用于元组和 rest 数组，用于普通数组会报错。
@@ -29,6 +36,13 @@ const angle = Math.atan2(...args);
 ## Tuple
 
 Tuple（元组）是一种特殊类型的数组，明确定义了包含了多少个成员，以及每个成员的类型。
+
+元组类型也可以方括号读取属性。
+
+```typescript
+type Tuple = [string, number]
+type Age = Tuple[1]
+```
 
 ```typescript
 // 例一

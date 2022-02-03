@@ -477,6 +477,25 @@ fn({});
 fn(fn);
 ```
 
+## extends
+
+`extends`本身也是一个运算符，用来确定两个类型有无继承关系。
+
+```typescript
+TypeC = TypeA extends TypeB ? TrueExpression : FalseExpression
+```
+
+如果`TypeA`继承`TypeB`，那么返回`TrueExpression`分配给`TypeC`，否则得到类型`FalseExpression`分配给`TypeC`。
+
+`extends`可以当作类型的相等运算符。
+
+```typescript
+type Username = 'foo'
+
+// true
+type Matched = Username extends 'foo' ? true : false
+```
+
 ## 静态属性
 
 类的静态属性也可以使用 public、private、protected 修饰符。

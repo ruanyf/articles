@@ -43,6 +43,16 @@ let output = identity("myString");
 
 类型推断虽然写起来方便，但是有些复杂的使用场景，TypeScript 可能推断不出参数的类型，这时就只能手动注明参数的具体类型了。
 
+泛型可以看作是类型的函数，即这个函数接受类型当作参数，返回一个新的类型。
+
+```typescript
+type Fn  <A extends string, B extends string = 'world'>   =  [A, B]
+
+type Result = Fn<'hello'> // ["hello", "world"]
+```
+
+但是，泛型本身不是 TypeScript 的一等公民，不能将一个泛型传给另一个泛型，TypeScript 也不允许将泛型当作类型参数。
+
 如果数组成员是泛型，可以采用下面的写法。
 
 ```typescript
