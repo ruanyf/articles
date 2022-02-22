@@ -18,14 +18,51 @@ $ tsc --target ES5 --experimentalDecorators
 {
   "compilerOptions": {
     "target": "ES5",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }
 ```
 
+- experimentalDecorators：打开装饰器支持。
+- emitDecoratorMetadata：发出一些元数据，供其他工具（比如 reflect-metadata ）使用。
+
 ## 基本语法
 
-装饰器是一种函数，写成`@ + 函数名`。它可以放在类和类方法的定义前面。
+装饰器可以用在五个场合。
+
+- 类装饰器（Class Decorators）：用于类
+- 属性装饰器（Property Decorators）：用于属性
+- 方法装饰器（Method Decorators）：用于方法
+- 存取器装饰器（Accessor Decorators）：用于类的 set 或 get 方法
+- 参数装饰器（Parameter Decorators）：用于方法的参数
+
+```typescript
+@ClassDecorator()
+class A {
+
+    @PropertyDecorator()
+    name: string;
+
+    @MethodDecorator()
+    fly(
+        @ParameterDecorator()
+        meters: number
+    ) {
+        // code
+    }
+
+    @AccessorDecorator()
+    get egg() {
+        // code
+    }
+    set egg(e) {
+        // code
+    }
+}
+```
+
+装饰器是一种函数，写成`@ + 函数名`。它可以放在类和类方法的定义前面。有时候，装饰器函数还带有参数，如果不带有参数，就不用写括号。
 
 ```javascript
 @frozen class Foo {
@@ -39,6 +76,28 @@ $ tsc --target ES5 --experimentalDecorators
 ```
 
 上面代码一共使用了四个装饰器，一个用在类本身（`@frozen`），另外三个用在类方法（`@configurable`、`@enumerable`、`@throttle`）。它们不仅增加了代码的可读性，清晰地表达了意图，而且提供一种方便的手段，增加或修改类的功能。
+
+注意，装饰器只能在类中使用，要么应用于一个类，要么应用于一个类的成员，不能用于独立的函数、类型或接口。
+
+```typescript
+function Decorator() {
+    console.log('In Decorator');
+}
+
+@Decorator // 报错
+function decorated() {
+    console.log('in decorated');
+}
+```
+
+上面示例中，装饰器用于一个普通函数，这是无效的，结果报错。
+
+如果同时使用多种装饰器，它们的执行顺序如下。
+
+1. 正常方法和属性的参数装饰器，然后是方法装饰器、存取装饰器、属性装饰器。
+1. 静态方法和属性的参数装饰器，然后是方法装饰器、存取装饰器、属性装饰器。
+1. 构造函数的参数装饰器。
+1. 类装饰器。
 
 ### 类的装饰
 
@@ -102,6 +161,19 @@ MyClass.isTestable // false
 上面代码中，装饰器`testable`实际上有两个参数（`isTestable`和`target`），但是由于最终只能接受`target`这一个参数，所以必须先调用一次，接受参数`isTestable`，然后返回一个函数，由该函数接受参数`target`。
 
 这种分次调用的写法，解决了装饰器接受多个参数的问题，同时也可以根据其他参数的不同（上例的`@testable(true)`和`@testable(false)`），来调整装饰器的行为，有着广泛的应用。
+
+总之，`@`后面要么是一个函数名，要么是函数表达式，甚至可以写出下面这样的代码。
+
+```typescript
+@((constructor: Function) => {
+    console.log(`Inline constructor decorator `, constructor);
+})
+class InlineDecoratorExample {
+    // properties and methods
+}
+```
+
+上面示例中，`@`后面是一个箭头函数，只用来输出信息，这也是合法的。
 
 注意，装饰器对类的行为的改变，是代码编译时发生的，而不是在运行时。这意味着，装饰器能在编译阶段运行代码。也就是说，装饰器本质就是编译时执行的函数。
 
@@ -312,6 +384,76 @@ class Example {
 上面代码中，外层装饰器`@dec(1)`先进入，但是内层装饰器`@dec(2)`先执行。
 
 除了注释，装饰器还能用来类型检查。所以，对于类来说，这项功能相当有用。从长期来看，它将是 JavaScript 代码静态分析的重要工具。
+
+## 属性装饰器
+
+属性装饰器用来装饰属性，用法如下。
+
+```typescript
+class ContainingClass {
+
+    @Decorator(?? optional parameters)
+    name: type;
+}
+```
+
+属性装饰器函数接受两个参数。
+
+- 第一个参数：对于普通属性是类的 prototype 对象，对于静态属性是类的构造函数。
+- 第二个参数：一个字符串，表示该属性的名称。
+
+```typescript
+function logProperty(target: Object, member: string): any {
+    const prop = Object.getOwnPropertyDescriptor(target, member);
+    console.log(`Property ${member} ${prop}`);
+}
+
+class PropertyExample {
+    @logProperty
+    name: string;
+}
+// 输出 Property name undefined
+```
+
+下面是一个例子。
+
+```typescript
+function ValidRange(min: number, max: number) {
+    return (target: Object, member: string) => {
+        console.log(`Installing ValidRange on ${member}`);
+        let value: number;
+        Object.defineProperty(target, member, {
+            enumerable: true,
+            get: function() {
+                console.log("Inside ValidRange get");
+                return value;
+            },
+            set: function(v: number) {
+                console.log(`Inside ValidRange set ${v}`);
+                if (v < min || v > max) {
+                    throw new Error(`Not allowed value ${v}`);
+                }
+                value = v;
+            }
+        });
+    }
+}
+
+// 输出 Installing ValidRange on year
+class Student {
+    @ValidRange(1900, 2050)
+    year: number;
+}
+
+const stud = new Student();
+
+// Inside ValidRange set 1901
+stud.year = 1901;
+
+// 先输出 Inside ValidRange set 1899
+// 然后报错 Uncaught Error: Not allowed value 1899
+stud.year = 1899;
+```
 
 ## 为什么装饰器不能用于函数？
 
@@ -869,3 +1011,7 @@ class MyClass {}
 @traits(TExample::as({excludes:['foo', 'bar'], alias: {baz: 'exampleBaz'}}))
 class MyClass {}
 ```
+
+## 参考链接
+
+- [Deep introduction to property decorators in TypeScript](https://techsparx.com/nodejs/typescript/decorators/properties.html), by David Herron

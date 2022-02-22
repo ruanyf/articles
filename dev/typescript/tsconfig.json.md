@@ -39,6 +39,20 @@ $ tsc -p ./path-to-project-directo
 
 - compilerOptions：定制编译器行为。
 
+```javascript
+{
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./build",
+        "lib": [ "es2021", "esnext" ],
+        "target": "es2021",
+        "module": "esnext",
+        "esModuleInterop": true,
+        "moduleResolution": "Node"
+    }
+}
+```
+
 ```typescript
 {
   "compilerOptions": {
@@ -111,3 +125,10 @@ function doSomething(x: string | null) {
 
 - module:commonjs
 - moduleResolution: "Node"
+
+- module：编译后代码的模块系统。对于 Node.js，可以采用 CommonJS 模块，对于其他环境，可以采用 ES6 模块，写成 es2020 或者 es2022 或者 esnext。
+- esModuleInterop：修复了一些 CommonJS 和 ES6 模块之间的兼容性问题。
+- moduleResolution：描述如何查找模块。在 TypeScript 中，使用 ES6 模块格式，这意味着我们使用import语句来检索模块，并使用语句定义导出export。TypeScript 支持多种查找模块的算法，我们使用此参数控制这些算法。使用node值告诉 TypeScript 使用与正常 Node.js 模块解析过程匹配的算法，包括对 ES6 模块的支持。
+- target：指定 ECMAScript 版本，即（编译后的）代码所在的语言环境，比如`es2021`。
+- rootDir：TypeScript 源文件所在目录。
+- outDir：编译后的文件所在目录。
