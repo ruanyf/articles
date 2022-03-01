@@ -27,8 +27,6 @@ $ tsc --target ES5 --experimentalDecorators
 - experimentalDecorators：打开装饰器支持。
 - emitDecoratorMetadata：发出一些元数据，供其他工具（比如 reflect-metadata ）使用。
 
-## 基本语法
-
 装饰器可以用在五个场合。
 
 - 类装饰器（Class Decorators）：用于类
@@ -99,9 +97,20 @@ function decorated() {
 1. 构造函数的参数装饰器。
 1. 类装饰器。
 
-### 类的装饰
+## 类装饰器
 
-装饰器可以用来装饰整个类。
+装饰器可以用来装饰整个类。这时，装饰器的行为就是下面这样。
+
+```javascript
+@decorator
+class A {}
+
+// 等同于
+class A {}
+A = decorator(A) || A;
+```
+
+也就是说，装饰器是一个对类进行处理的函数。装饰器函数的第一个参数，就是所要装饰的目标类。
 
 ```javascript
 @testable
@@ -117,20 +126,6 @@ MyTestableClass.isTestable // true
 ```
 
 上面代码中，`@testable`就是一个装饰器。它修改了`MyTestableClass`这个类的行为，为它加上了静态属性`isTestable`。`testable`函数的参数`target`是`MyTestableClass`类本身。
-
-基本上，装饰器的行为就是下面这样。
-
-```javascript
-@decorator
-class A {}
-
-// 等同于
-
-class A {}
-A = decorator(A) || A;
-```
-
-也就是说，装饰器是一个对类进行处理的函数。装饰器函数的第一个参数，就是所要装饰的目标类。
 
 ```javascript
 function testable(target) {
@@ -249,6 +244,42 @@ export default class MyReactComponent extends React.Component {}
 
 相对来说，后一种写法看上去更容易理解。
 
+下面是利用装饰器，覆盖掉同名方法的例子。
+
+```typescript
+function Override<T extends { new(...args: any[]): {} }>(target: T) {
+    return class extends target {
+        area(w: number, h: number) {
+            return {
+                w, h, area: w * h
+            };
+        }
+    }
+}
+
+@Override
+class Overridden {
+    area(w: number, h: number) {
+        return w * h;
+    }
+}
+```
+
+利用上面这种覆盖的写法，可以实现打印功能。
+
+```typescript
+import * as util from 'util';
+
+function LogClassCreate<T extends { new(...args: any[]): {}}>(target: T) {
+    return class extends target {
+        constructor(...args: any[]) {
+            super(...args);
+            console.log(`Create ${util.inspect(target)} with args=`, args);
+        }
+    }
+}
+```
+
 ## 方法的装饰
 
 装饰器不仅可以装饰类，还可以装饰类的属性。
@@ -263,6 +294,80 @@ class Person {
 上面代码中，装饰器`readonly`用来装饰“类”的`name`方法。
 
 装饰器函数`readonly`一共可以接受三个参数。
+
+- 类的构造函数（对于类的静态方法），或者类的原型（对于类的实例方法）。
+- 方法名，类型为字符串。
+- 方法的描述对象。
+
+```typescript
+import * as util from 'util';
+
+function logMethod(target: Object, propertyKey: string,
+                   descriptor: PropertyDescriptor) {
+
+    console.log(`logMethod`, {
+        target, propertyKey, descriptor, 
+        targetKeys: Object.getOwnPropertyNames(target),
+        function: descriptor.value,
+        funcText: descriptor.value.toString()
+    });
+}
+
+class MethodExample {
+
+    @logMethod
+    method(x: number) {
+        return x * 2;
+    }
+}
+
+/* 输出
+logMethod {
+  target: {},
+  propertyKey: 'method',
+  descriptor: {
+    value: [Function: method],
+    writable: true,
+    enumerable: false,
+    configurable: true
+  },
+  targetKeys: [ 'constructor', 'method' ],
+  function: [Function: method],
+  funcText: 'method(x) {\n        return x * 2;\n    }'
+}
+*/
+```
+
+利用属性描述对象，可以获得所装饰的方法本身，下面是一个输出调试信息的例子。
+
+```typescript
+function MethodSpy(target: Object,
+    propertyKey: string, descriptor: PropertyDescriptor) {
+
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+        console.log(`MethodSpy before ${propertyKey}`, args);
+        const result = originalMethod.apply(this, args);
+        console.log(`MethodSpy after ${propertyKey}`, result);
+        return result;
+    }
+}
+
+class SpiedOn {
+
+    @MethodSpy
+    area(width: number, height: number) {
+        return width * height;
+    }
+
+    @MethodSpy
+    areaCircle(diameter: number) {
+        return Math.PI * ((diameter / 2) ** 2);
+    }
+}
+```
+
+
 
 ```javascript
 function readonly(target, name, descriptor){
@@ -455,6 +560,184 @@ stud.year = 1901;
 stud.year = 1899;
 ```
 
+## 存取器的装饰
+
+装饰器可以用于类的存取器（accessor），即一个属性的取值器（getter）和存值器（setter）。
+
+```typescript
+class Example {
+
+    #name: string;
+
+    @Decorator
+    set name(n: string) { this.#name = n; }
+    get name() { return #name; }
+
+    #width: number;
+    #height: number;
+
+    @Decorator
+    get area() { return this.#width * this.#height; }
+}
+```
+
+存取方法的装饰器会收到三个参数。
+
+- 如果是类的静态属性的存取方法，会收到构造函数；如果是实例属性的存取方法，会收到类的原型。
+- 属性名。
+- 该属性的描述对象。
+
+```typescript
+function LogAccessor(target: Object, propertyKey: string,
+                    descriptor: PropertyDescriptor) {
+
+    console.log(`LogAccessor`, {
+        target, propertyKey, descriptor
+    });
+}
+
+class Simple {
+
+    #num: number;
+
+    @LogAccessor
+    set num(w: number) { this.#num = w; }
+    get num() { return this.#num; }
+}
+```
+
+注意，同一个属性的取值器和存值器，不能用同一个装饰器，换句话说只能装饰一个，否则就会报错。因为我们可以从该属性的描述对象上面，同时拿到取值器和存值器。
+
+```typescript
+descriptor: {
+    get: [Function: get num],
+    set: [Function: set num],
+    enumerable: false,
+    configurable: true
+}
+```
+
+下面的例子就是改写原始的存取器。
+
+```typescript
+function AccessorSpy<T>() {
+    return function (target: Object, propertyKey: string,
+                    descriptor: PropertyDescriptor) {
+
+        const originals = {
+            get: descriptor.get,
+            set: descriptor.set
+        };
+        if (originals.get) {
+            descriptor.get = function (): T {
+                const ret: T = originals.get.call(this);
+                console.log(`AccessorSpy get ${String(propertyKey)}`, ret);
+                return ret;
+            };
+        }
+        if (originals.set) {
+            descriptor.set = function(newval: T) {
+                console.log(`AccessorSpy set ${String(propertyKey)}`, newval);
+                originals.set.call(this, newval);
+            };
+        }
+    }
+}
+```
+
+装饰器还可以用作属性的验证，如果赋值时不满足条件就报错。
+
+```typescript
+function Validate<T>(validator: Function) {
+    return (target: Object, propertyKey: string,
+        descriptor: PropertyDescriptor) => {
+        
+        const originals = {
+            get: descriptor.get,
+            set: descriptor.set
+        };
+        if (originals.set) {
+            descriptor.set = function(newval: T) {
+                console.log(`Validate set ${String(propertyKey)}`, newval);
+                if (validator) {
+                    if (!validator(newval)) {
+                        throw new Error(`Invalid value for ${propertyKey} -- ${newval}`);
+                    }
+                }
+                originals.set.call(this, newval);
+            };
+        }
+    }
+}
+
+class CarSeen {
+
+    #speed: number;
+
+    @Validate<number>((speed: number) => {
+        console.log(`Validate speed ${speed}`);
+        if (typeof speed !== 'number') return false;
+        if (speed < 10 || speed > 65) return false;
+        return true;
+    })
+    set speed(speed) {
+        console.log(`set speed ${speed}`);
+        this.#speed = speed; }
+    get speed() { return this.#speed; }
+
+}
+```
+
+## 参数的装饰
+
+参数的装饰用来装饰类方法的参数。
+
+```typescript
+@ClassDecorator()
+class A {
+...
+    @MethodDecorator()
+    fly(
+        @ParameterDecorator(?? optional parameters)
+        meters: number
+    ) {
+        // code
+    }
+...
+}
+```
+
+装饰参数时，装饰器接受三个参数。
+
+- 类的构造函数（如果当前方法是类的静态方法），类的原型（如果当前方法是类的实例方法）。
+- 方法名，类型为字符串。
+- 函数参数列表中参数的位置序号（从0开始）。
+
+```typescript
+import * as util from 'util';
+
+function logParameter(target: Object, propertyKey: string | symbol,
+                        parameterIndex: number) {
+
+    console.log(`logParameter ${target} ${util.inspect(target)} ${String(propertyKey)} ${parameterIndex}`);
+}
+
+class ParameterExample {
+
+    member(@logParameter x: number,
+           @logParameter y: number) {
+        console.log(`member ${x} ${y}`);
+    }
+}
+
+const pex = new ParameterExample();
+pex.member(2, 3);
+pex.member(3, 5);
+pex.member(5, 8);
+```
+
+跟其他装饰器不同，参数装饰器主要用于输出信息，没有办法修改实例方法的行为。
+
 ## 为什么装饰器不能用于函数？
 
 装饰器只能用于类和类的方法，不能用于函数，因为存在函数提升。
@@ -546,6 +829,30 @@ x
 多重装饰器的效果，类似于函数的合成。对于上例来说，就是执行`f(g(x))`。
 
 编译器执行的时候，会从上到下先得到每个装饰器的最终值，然后再从下到上，将对象依次作用于每个装饰器。
+
+```typescript
+function withParam(path: string) {
+    console.log(`outer withParam ${path}`);
+    return (target: Function) => {
+        console.log(`inner withParam ${path}`);
+    };
+}
+
+@withParam('first')
+@withParam('middle')
+@withParam('last')
+class ExampleClass {
+}
+
+/*
+outer withParam first
+outer withParam middle
+outer withParam last
+inner withParam last
+inner withParam middle
+inner withParam first
+*/
+```
 
 ```typescript
 function first() {
@@ -1015,3 +1322,4 @@ class MyClass {}
 ## 参考链接
 
 - [Deep introduction to property decorators in TypeScript](https://techsparx.com/nodejs/typescript/decorators/properties.html), by David Herron
+- [Deep introduction to accessor decorators in TypeScript](https://techsparx.com/nodejs/typescript/decorators/accessors.html), by David Herron
