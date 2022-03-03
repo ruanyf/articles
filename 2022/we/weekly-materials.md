@@ -1,5 +1,12 @@
 # 备用材料
 
+
+6、[Ubuntu 22.04 LTS 的树莓派支持](https://liliputing.com/2022/01/ubuntu-22-04-lts-will-run-on-a-raspberry-pi-4-with-just-2gb-of-ram.html)（英文）
+
+![](https://cdn.beekka.com/blogimg/asset/202201/bg2022011308.webp)
+
+Ubuntu 宣布，下一个版本将可以直接运行在只有 2GB 内存的树莓派。
+
 ## 封面图
 
 ![](https://cdn.beekka.com/blogimg/asset/202202/bg2022020612.jpg)
