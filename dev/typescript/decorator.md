@@ -99,7 +99,129 @@ function decorated() {
 
 ## 类装饰器
 
-装饰器可以用来装饰整个类。这时，装饰器的行为就是下面这样。
+装饰器可以用来装饰整个类。它作用于构造函数，可以用来修改类的定义。
+
+类的构造函数是类装饰器的唯一参数。类装饰器如果返回值，会替换掉原来的构造函数。
+
+```typescript
+@sealed
+class BugReport {
+  type = "report";
+  title: string;
+ 
+  constructor(t: string) {
+    this.title = t;
+  }
+}
+
+function sealed(constructor: Function) {
+  Object.seal(constructor);
+  Object.seal(constructor.prototype);
+}
+```
+
+下面是一个例子。
+
+```typescript
+function withParam(path: string) {
+    console.log(`outer withParam ${path}`);
+    return (target: Function) => {
+        console.log(`inner withParam ${path}`);
+    };
+}
+
+@withParam('first')
+@withParam('middle')
+@withParam('last')
+class ExampleClass {
+}
+
+/* 输出为
+outer withParam first
+outer withParam middle
+outer withParam last
+inner withParam last
+inner withParam middle
+inner withParam first
+*/
+```
+
+下面是替换构造函数的例子。
+
+```typescript
+function Override<T extends { new(...args: any[]): {} }>(target: T) {
+    return class extends target {
+        area(w: number, h: number) {
+            return {
+                w, h, area: w * h
+            };
+        }
+    }
+}
+
+@Override
+class Overridden {
+
+    area(w: number, h: number) {
+        return w * h;
+    }
+}
+
+console.log(new Overridden().area(5, 6));
+console.log(new Overridden().area(6, 7));
+```
+
+下面是继承构造函数的例子。
+
+```typescript
+import * as util from 'util';
+
+function LogClassCreate<T extends { new(...args: any[]): {}}>(target: T) {
+    return class extends target {
+        constructor(...args: any[]) {
+            super(...args);
+            console.log(`Create ${util.inspect(target)} with args=`, args);
+        }
+    }
+}
+
+@LogClassCreate
+class Rectangle {
+    width: number;
+    height: number;
+
+    constructor(width: number, height: number) {
+        this.height = height;
+        this.width = width;
+    }
+
+    area() { return this.width * this.height; }
+}
+
+@LogClassCreate
+class Circle {
+    diameter: number;
+    constructor(diameter: number) {
+        this.diameter = diameter;
+    }
+
+    area() { return ((this.diameter / 2) ** 2) * (Math.PI); }
+}
+
+const rect1 = new Rectangle(3, 5);
+console.log(`area rect1 ${rect1.area()}`);
+
+const rect2 = new Rectangle(5, 8);
+console.log(`area rect2 ${rect2.area()}`);
+
+const rect3 = new Rectangle(8, 13);
+console.log(`area rect3 ${rect3.area()}`);
+
+const circ1 = new Circle(20);
+console.log(`area circ1 ${circ1.area()}`);
+```
+
+这时，装饰器的行为就是下面这样。
 
 ```javascript
 @decorator
@@ -277,6 +399,20 @@ function LogClassCreate<T extends { new(...args: any[]): {}}>(target: T) {
             console.log(`Create ${util.inspect(target)} with args=`, args);
         }
     }
+}
+```
+
+类装饰器如果没有参数，会导致报错。
+
+```typescript
+function Decorator() {
+    console.log('In Decorator');
+}
+
+// 报错
+@Decorator
+class FooClass {
+    foo: string;
 }
 ```
 
@@ -1321,5 +1457,6 @@ class MyClass {}
 
 ## 参考链接
 
+- [Deep introduction to using and implementing TypeScript decorators](https://techsparx.com/nodejs/typescript/decorators/introduction.html), by David Herron
 - [Deep introduction to property decorators in TypeScript](https://techsparx.com/nodejs/typescript/decorators/properties.html), by David Herron
 - [Deep introduction to accessor decorators in TypeScript](https://techsparx.com/nodejs/typescript/decorators/accessors.html), by David Herron
