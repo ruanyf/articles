@@ -17,7 +17,7 @@ $ tsc --target ES5 --experimentalDecorators
 ```javascript
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES6",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   }
@@ -26,6 +26,17 @@ $ tsc --target ES5 --experimentalDecorators
 
 - experimentalDecorators：打开装饰器支持。
 - emitDecoratorMetadata：发出一些元数据，供其他工具（比如 reflect-metadata ）使用。
+
+```typescript
+function simpleDecorator() {
+  console.log('---hi I am a decorator---')
+}
+
+@simpleDecorator
+class A {}
+```
+
+上面示例就是一个最简单的装饰器。
 
 装饰器可以用在五个场合。
 
@@ -61,6 +72,21 @@ class A {
 ```
 
 装饰器是一种函数，写成`@ + 函数名`。它可以放在类和类方法的定义前面。有时候，装饰器函数还带有参数，如果不带有参数，就不用写括号。
+
+装饰器会在代码家在阶段执行，而且只会执行一次。
+
+```typescript
+function f(C) {
+  console.log('apply decorator')
+  return C
+}
+
+@f
+class A {}
+// output: apply decorator
+```
+
+上面示例中，类 A 并没有新建实例，但是装饰器也会执行。
 
 ```javascript
 @frozen class Foo {
@@ -101,7 +127,37 @@ function decorated() {
 
 装饰器可以用来装饰整个类。它作用于构造函数，可以用来修改类的定义。
 
-类的构造函数是类装饰器的唯一参数。类装饰器如果返回值，会替换掉原来的构造函数。
+类的构造函数是类装饰器的唯一参数。类装饰器如果返回值，会替换掉原来的构造函数。下面是它的类型签名。
+
+```typescript
+type ClassDecorator = <TFunction extends Function>
+  (target: TFunction) => TFunction | void;
+```
+
+下面是一个例子。
+
+```typescript
+type Consturctor = { new (...args: any[]): any };
+
+function toString<T extends Consturctor>(BaseClass: T) {
+  return class extends BaseClass {
+    toString() {
+      return JSON.stringify(this);
+    }
+  };
+}
+
+@toString
+class C {
+  public foo = "foo";
+  public num = 24;
+}
+
+console.log(new C().toString())
+// -> {"foo":"foo","num":24}
+```
+
+上面的示例为类加了一个`toString()`方法。
 
 ```typescript
 @sealed
@@ -418,7 +474,7 @@ class FooClass {
 
 ## 方法的装饰
 
-装饰器不仅可以装饰类，还可以装饰类的属性。
+装饰器不仅可以装饰类，还可以装饰类的方法。
 
 ```javascript
 class Person {
@@ -427,13 +483,72 @@ class Person {
 }
 ```
 
-上面代码中，装饰器`readonly`用来装饰“类”的`name`方法。
+上面代码中，装饰器`@readonly`用来装饰“类”的`name()`方法。
 
 装饰器函数`readonly`一共可以接受三个参数。
 
-- 类的构造函数（对于类的静态方法），或者类的原型（对于类的实例方法）。
-- 方法名，类型为字符串。
-- 方法的描述对象。
+- 第一个参数：（对于类的静态方法）类的构造函数，或者（对于类的实例方法）类的原型。
+- 第二个参数：该方法的方法名，类型为字符串。
+- 第三个参数：该方法的描述对象。
+
+装饰器函数的返回值（如果有的话），就是修改后的该方法的描述对象。下面是它的类型签名。
+
+```typescript
+type MethodDecorator = <T>(
+  target: Object,
+  propertyKey: string | symbol,
+  descriptor: TypedPropertyDescriptor<T>
+) => TypedPropertyDescriptor<T> | void;
+```
+
+```typescript
+class Greeter {
+  greeting: string;
+  constructor(message: string) {
+    this.greeting = message;
+  }
+ 
+  @enumerable(false)
+  greet() {
+    return "Hello, " + this.greeting;
+  }
+}
+
+function enumerable(value: boolean) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    descriptor.enumerable = value;
+  };
+}
+```
+
+上面示例中，装饰器`@enumerable()`装饰 Greeter 类的`greet()`方法，作用是修改该方法的描述对象的可遍历性属性`enumerable`。`@enumerable(false)`表示将该方法修改成不可遍历。
+
+下面再看一个例子。
+
+```typescript
+function logger(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  const original = descriptor.value;
+
+  descriptor.value = function (...args) {
+    console.log('params: ', ...args);
+    const result = original.call(this, ...args);
+    console.log('result: ', result);
+    return result;
+  }
+}
+
+class C {
+  @logger
+  add(x: number, y:number ) {
+    return x + y;
+  }
+}
+
+const c = new C();
+c.add(1, 2);
+// -> params: 1, 2
+// -> result: 3
+```
 
 ```typescript
 import * as util from 'util';
@@ -626,22 +741,28 @@ class Example {
 
 除了注释，装饰器还能用来类型检查。所以，对于类来说，这项功能相当有用。从长期来看，它将是 JavaScript 代码静态分析的重要工具。
 
-## 属性装饰器
+## 属性的装饰
 
 属性装饰器用来装饰属性，用法如下。
 
 ```typescript
 class ContainingClass {
-
-    @Decorator(?? optional parameters)
-    name: type;
+  @Decorator(?? optional parameters)
+  name: type;
 }
 ```
 
 属性装饰器函数接受两个参数。
 
-- 第一个参数：对于普通属性是类的 prototype 对象，对于静态属性是类的构造函数。
-- 第二个参数：一个字符串，表示该属性的名称。
+- 第一个参数：（对于类的普通属性）类的 prototype 对象，或者（对于类的静态属性）类的构造函数。
+- 第二个参数：该属性的属性名，类型为字符串。
+
+该装饰器不需要返回值。下面是它的类型签名。
+
+```typescript
+type PropertyDecorator =
+  (target: Object, propertyKey: string | symbol) => void;
+```
 
 ```typescript
 function logProperty(target: Object, member: string): any {
@@ -698,7 +819,7 @@ stud.year = 1899;
 
 ## 存取器的装饰
 
-装饰器可以用于类的存取器（accessor），即一个属性的取值器（getter）和存值器（setter）。
+装饰器可以用于类的存取器（accessor），所谓“存取器”指的是某个属性的取值器（getter）和存值器（setter）。
 
 ```typescript
 class Example {
@@ -717,19 +838,86 @@ class Example {
 }
 ```
 
-存取方法的装饰器会收到三个参数。
+上面示例中，`@Decorator`装饰`name`属性的存值器和取值器，同时也装饰`area`属性的取值器。
 
-- 如果是类的静态属性的存取方法，会收到构造函数；如果是实例属性的存取方法，会收到类的原型。
-- 属性名。
-- 该属性的描述对象。
+存取方法的装饰器函数可以有三个参数。
+
+- 第一个参数：（对于类的静态属性的存取方法）类的构造函数，或者（对于类的实例属性的存取方法）类的原型。
+- 第二个参数：该属性的属性名。
+- 第三个参数：该属性的描述对象。
+
+装饰器的返回值（如果有的话），会作为该属性新的描述对象。它的类型签名与方法装饰器的类型签名是一样的。
+
+```typescript
+class Point {
+  private _x: number;
+  private _y: number;
+  constructor(x: number, y: number) {
+    this._x = x;
+    this._y = y;
+  }
+ 
+  @configurable(false)
+  get x() {
+    return this._x;
+  }
+ 
+  @configurable(false)
+  get y() {
+    return this._y;
+  }
+}
+
+function configurable(value: boolean) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    descriptor.configurable = value;
+  };
+}
+```
+
+上面示例中，装饰器`@configurable(false)`关闭了所装饰属性（`x`和`y`）的描述对象的`configurable`属性（可配置性）。
+
+TypeScript 不允许对同一个属性的存取器使用同一个装饰器，换句话说只能装饰一个，否则就会报错。
+
+```typescript
+// 报错
+@Decorator
+set name(n: string) { this.#name = n; }
+
+@Decorator
+get name() { return #name; }
+```
+
+上面的示例会报错，因为`@Decorator`不能同时装饰`name`的存值器和取值器
+
+但是，下面的写法不会报错。
+
+```typescript
+@Decorator
+set name(n: string) { this.#name = n; }
+get name() { return #name; }
+```
+
+上面的示例不会报错，因为`@Decorator`只会装饰它后面第一个出现的存值器（`set name()`），并不装饰取值器（`get name()`）。
+
+装饰器之所以不能同时用于同一个属性的存值器和取值器，原因是装饰器可以从属性的描述对象上面，同时拿到取值器和存值器，因此只调用一次就够了。
+
+```typescript
+descriptor: {
+    get: [Function: get num],
+    set: [Function: set num],
+    enumerable: false,
+    configurable: true
+}
+```
 
 ```typescript
 function LogAccessor(target: Object, propertyKey: string,
-                    descriptor: PropertyDescriptor) {
+  descriptor: PropertyDescriptor) {
 
     console.log(`LogAccessor`, {
         target, propertyKey, descriptor
-    });
+  });
 }
 
 class Simple {
@@ -742,16 +930,6 @@ class Simple {
 }
 ```
 
-注意，同一个属性的取值器和存值器，不能用同一个装饰器，换句话说只能装饰一个，否则就会报错。因为我们可以从该属性的描述对象上面，同时拿到取值器和存值器。
-
-```typescript
-descriptor: {
-    get: [Function: get num],
-    set: [Function: set num],
-    enumerable: false,
-    configurable: true
-}
-```
 
 下面的例子就是改写原始的存取器。
 
@@ -826,7 +1004,7 @@ class CarSeen {
 
 ## 参数的装饰
 
-参数的装饰用来装饰类方法的参数。
+参数装饰器用来装饰构造函数或者方法的参数。
 
 ```typescript
 @ClassDecorator()
@@ -845,9 +1023,19 @@ class A {
 
 装饰参数时，装饰器接受三个参数。
 
-- 类的构造函数（如果当前方法是类的静态方法），类的原型（如果当前方法是类的实例方法）。
-- 方法名，类型为字符串。
-- 函数参数列表中参数的位置序号（从0开始）。
+- 第一个参数：（对于静态方法）类的构造函数，或者（对于类的实例方法）类的原型。
+- 第二个参数：当前方法的方法名，类型为字符串。
+- 第三个参数：当前参数在函数参数序列的位置（从0开始）。
+
+该装饰器不需要返回值。下面是它的类型签名。
+
+```typescript
+type ParameterDecorator = (
+  target: Object,
+  propertyKey: string | symbol,
+  parameterIndex: number
+) => void;
+```
 
 ```typescript
 import * as util from 'util';
@@ -873,6 +1061,61 @@ pex.member(5, 8);
 ```
 
 跟其他装饰器不同，参数装饰器主要用于输出信息，没有办法修改实例方法的行为。
+
+## 装饰器的执行顺序
+
+不同类型的装饰器按照如下顺序执行。
+
+1. 每个实例方法（或属性）的参数装饰器、方法装饰器、存取器装饰器、属性装饰器。
+1. 每个静态方法（或属性）的参数装饰器、方法装饰器、存取器装饰器、属性装饰器。
+1. 构造函数的参数装饰器。
+1. 类装饰器。
+
+```typescript
+function f(key: string): any {
+  // console.log("evaluate: ", key);
+  return function () {
+    console.log("call: ", key);
+  };
+}
+
+@f("Class Decorator")
+class C {
+  @f("Static Property")
+  static prop?: number;
+
+  @f("Static Method")
+  static method(@f("Static Method Parameter") foo) {}
+
+  constructor(@f("Constructor Parameter") foo) {}
+
+  @f("Instance Method")
+  method(@f("Instance Method Parameter") foo) {}
+
+  @f("Instance Property")
+  prop?: number;
+}
+```
+
+每个实例方法和属性（或静态方法和属性）的装饰器的执行顺序，按照它们在代码里面出现的顺序。
+
+但是，同一方法或构造函数中不同参数的装饰器的求值顺序是相反的，最后一个参数的装饰器将首先被调用。
+
+```typescript
+function f(key: string): any {
+  // console.log("evaluate: ", key);
+  return function () {
+    console.log("call: ", key);
+  };
+}
+
+class C {
+  method(
+    @f("Parameter Foo") foo,
+    @f("Parameter Bar") bar
+  ) {}
+}
+```
 
 ## 为什么装饰器不能用于函数？
 
@@ -950,7 +1193,7 @@ function loggingDecorator(wrapped) {
 const wrapped = loggingDecorator(doSomething);
 ```
 
-## 装饰器的合成
+## 多个装饰器的合成
 
 多个装饰器可以应用于同一个对象。
 

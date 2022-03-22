@@ -37,6 +37,28 @@ enum Color {
 }
 ```
 
+也可以每个成员都指定各自的值。
+
+```typescript
+enum Direction {
+  Up = 1,
+  Down = 4,
+  Left = 5,
+  Right = 3,
+}
+```
+
+甚至每个成员可以指定为相同的值。
+
+```typescript
+enum Direction {
+  Up = 1,
+  Down = 1,
+  Left = 1,
+  Right = 1,
+}
+```
+
 ```typescript
 enum Color {
     Red,
@@ -47,7 +69,33 @@ var col = Color.Red;
 col = 0; // Effectively same as Color.Red
 ```
 
+Enum 转换成 JavaScript 代码，会以对象表示，因此下面的代码不会报错。
+
+```typescript
+enum E {
+  X,
+  Y,
+  Z,
+}
+ 
+function f(obj: { X: number }) {
+  return obj.X;
+}
+ 
+// Works, since 'E' has a property named 'X' which is a number.
+f(E);
+```
+
 TypeScript 的 enum 允许为常量的值，设为字符串。
+
+```typescript
+enum Direction {
+  Up = "UP",
+  Down = "DOWN",
+  Left = "LEFT",
+  Right = "RIGHT",
+}
+```
 
 ```typescript
 export enum EvidenceTypeEnum {
@@ -104,3 +152,17 @@ enum Color {
 ```
 
 注意，第二段 Enum 定义的第一个成员，必须给出初始化值，否则会跟第一段发生冲突，导致 TypeScript 编译时报错。
+
+## 反向映射
+
+Enum 成员值为数值时，存在反向映射。
+
+```typescript
+enum Enum {
+  A,
+}
+ 
+let nameOfA = Enum[0]; // "A"
+```
+
+这种情况只发生在成员值为数值的情况。如果成员值为字符串，则不存在反向映射。
