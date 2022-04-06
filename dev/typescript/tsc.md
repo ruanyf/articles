@@ -1,5 +1,18 @@
 # tsc 命令和 TypeScript 配置
 
+## module
+
+`module`参数指定编译的输出格式。
+
+```bash
+$ tsc --module commonjs Test.ts
+```
+
+它可以接受以下值。
+
+- commonjs：供 Node.js 使用
+- amd：供 require.js 使用
+
 ## strictNullChecks
 
 如果 strictNullChecks 设为 off，那些等于null或undefined的值仍然可以正常访问，并且null或undefined可以分配给任何类型的属性。推荐总是打开该设置。

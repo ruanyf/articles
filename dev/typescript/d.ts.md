@@ -2,7 +2,54 @@
 
 TypeScript 项目免不了引入第三方库，有些第三方库没有类型注释，是单纯的 JavaScript 库。这时就需要声明一个`vendor.d.ts`文件，声明第三方库的类型。这里的 d 表示 declaration（声明）。比如，加载 jQuery，可以新建一个`jquery.d.ts`文件。
 
-开源库 [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) 提供大部分常用第三方库的类型，在写自己的`[vendor.d.ts]`之前，可以先到这个库查看，它有没有提供。
+为了描述不是用 TypeScript 编写的库的形状，我们需要声明库公开的 API。通常，这些是在.d.ts文件中定义的。如果您熟悉 C/C++，您可以将这些视为.h文件。
+
+在 Node.js 中，大多数任务都是通过加载一个或多个模块来完成的。我们可以为每个模块，定义一个自己的 .d.ts 文件，但是把所有模块的类型定义放在一个大的 .d.ts 文件更方便。
+
+
+
+开源库 [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) 提供大部分常用第三方库的类型，在写自己的`[vendor.d.ts]`之前，可以先到这个库查看，它有没有提供。下面是 node.d.ts 的简化的样子。
+
+```typescript
+declare module "url" {
+  export interface Url {
+    protocol?: string;
+    hostname?: string;
+    pathname?: string;
+  }
+  export function parse(
+    urlStr: string,
+    parseQueryString?,
+    slashesDenoteHost?
+  ): Url;
+}
+declare module "path" {
+  export function normalize(p: string): string;
+  export function join(...paths: any[]): string;
+  export var sep: string;
+}
+```
+
+后面就可以在脚本里面，使用`/// <reference> node.d.ts`给出类型定义。
+
+```typescript
+/// <reference path="node.d.ts"/>
+import * as URL from "url";
+let myUrl = URL.parse("https://www.typescriptlang.org");
+```
+
+有时候，很难为别人的模块写出完整的 .d.ts 类型定义文件。TypeScript 这时允许在 .d.ts 里面只写模块名，不写具体的类型定义。
+
+```typescript
+declare module "hot-new-module";
+```
+
+脚本加载这个模块以后，所有引入的接口都是 any 类型。
+
+```typescript
+import x, { y } from "hot-new-module";
+x(y);
+```
 
 d.ts 文件里面，需要声明引入变量的类型。比如，jQuery 可以这样声明。
 
