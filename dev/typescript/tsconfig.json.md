@@ -7,8 +7,26 @@
 使用`tsc`命令编译代码时，它会在当前目录和所有父目录里面寻找 tsconfig.json 文件。也可以使用`-p`参数指定`tsconfig.json`所在的目录。
 
 ```bash
-$ tsc -p ./path-to-project-directo
+$ tsc -p ./path-to-project-directory
 ```
+
+下面是一个简单的 tsconfig.json。
+
+```json
+{
+  "compilerOptions": {
+    "outDir": "./built",
+    "allowJs": true,
+    "target": "es5"
+  },
+  "include": ["./src/**/*"]
+}
+```
+
+- include：读入`src`目录中的所有文件。
+- allowJs：接受 JavaScript 文件作为输入。
+- outDir：输出的编译结果放在`built`目录。
+- target：编译产物的 JS 版本为 ECMAScript 5。
 
 下面是它的一些基本属性。
 
@@ -132,3 +150,9 @@ function doSomething(x: string | null) {
 - target：指定 ECMAScript 版本，即（编译后的）代码所在的语言环境，比如`es2021`。
 - rootDir：TypeScript 源文件所在目录。
 - outDir：编译后的文件所在目录。
+
+- noImplicitReturns：函数必须有 return 语句。
+- noFallthroughCasesInSwitch：switch 的 case 代码块中必须有 break 语句。
+- allowUnreachableCode：发现有运行不到的代码时报错。
+- allowUnusedLabels：发现没有使用的代码标签时报错。
+

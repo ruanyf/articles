@@ -52,6 +52,21 @@ function paintShape(opts: PaintOptions) {
 注意，目前没法为对象解构的参数指定类型，因为 JavaScript 为对象解构里面的冒号指定了用途。
 
 ```typescript
+let { a: newName1, b: newName2 } = o;
+
+// 等同于
+let newName1 = o.a;
+let newName2 = o.b;
+```
+
+上面示例中，冒号不是表示属性`a`和`b`的类型，而是指定新的变量名。如果要为`a`和`b`指定类型，不得不写成下面这样。
+
+```typescript
+let { a: newName1, b: newName2 }
+  : { a: string; b: number } = o;
+```
+
+```typescript
 function draw({ shape: Shape, xPos: number = 100 /*...*/ }) {
   render(shape); // 报错
   render(xPos); // 报错
