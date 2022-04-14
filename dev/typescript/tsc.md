@@ -60,9 +60,40 @@ class OKGreeter {
 }
 ```
 
+## allowJs
+
+参数`--allowJs`允许 TS 脚本加载 JS 脚本。同时，编译器会将源码里面的 JS 文件，拷贝到编译结果的目录。
+
+## checkJs
+
+参数`--checkJs`可以让编译器对 JavaScript 文件进行类型检查，前提是必须同时使用参数`--allowJs`。它等同于在 JS 脚本头部加上`// @ts-check`的指令。
+
+使用`--checkJS`时，如果 JS 脚本头部有`// @ts-nocheck`指令，则不会对该文件进行类型检查。
+
+## noEmit
+
+参数`--noEmit`表示编译器不会产生任何输出，只用来对文件进行类型检查。
+
+## noResolve
+
+参数`--noResolve`表示不进行模块定位，除非该模块是由命令行传入。
+
+```bash
+$ tsc app.ts moduleA.ts --noResolve
+```
+
+上面的命令指定编译`app.ts`和`moduleA.ts`，等于从命令行传入`moduelA.ts`。`--noResolve`则是指定不进行模块定位，除了命令行传入的`moduleA.ts`。
+
+如果`app.ts`里面加载了`moduleA`和`moduleB`，就会有下面的结果。
+
+```typescript
+import * as A from "moduleA"; // 正确，moduleA 从命令传入
+import * as B from "moduleB"; // 报错，找不到 moduleB
+```
+
 ## traceResolution
 
-`--traceResolution`参数会在编译时，输入查找模块的详细过程。
+参数`--traceResolution`会在编译时，输出查找模块的详细过程。
 
 下面是一个演示，源文件`src/app.ts`有一行`import * as ts from "typescript"`，TypeScript 尝试加载模块`typescript`。
 
@@ -84,21 +115,3 @@ Found 'package.json' at 'node_modules/typescript/package.json'.
 File 'node_modules/typescript/lib/typescript.d.ts' exist - use it as a module resolution result.
 ======== Module name 'typescript' was successfully resolved to 'node_modules/typescript/lib/typescript.d.ts'. ========
 ```
-
-## noResolve
-
-参数`--noResolve`表示不进行模块定位，除非该模块是由命令行传入。
-
-```bash
-$ tsc app.ts moduleA.ts --noResolve
-```
-
-上面的命令指定编译`app.ts`和`moduleA.ts`，等于从命令行传入`moduelA.ts`。`--noResolve`则是指定不进行模块定位，除了命令行传入的`moduleA.ts`。
-
-如果`app.ts`里面加载了`moduleA`和`moduleB`，就会有下面的结果。
-
-```typescript
-import * as A from "moduleA"; // 正确，moduleA 从命令传入
-import * as B from "moduleB"; // 报错，找不到 moduleB
-```
-
