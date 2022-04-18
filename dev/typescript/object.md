@@ -2,7 +2,78 @@
 
 ## 基本用法
 
-对象的类型可以用字面量直接描述。
+对象的类型可以用大括号直接描述。
+
+```typescript
+const obj: {  
+  x: number;
+  y: number;  
+} = { x: 1, y: 1 };
+```
+
+上面示例中，对象`obj`的类型就是在大括号里面，注明每个属性的类型。
+
+注意，对象类型的每个属性后面，要使用分号结尾。
+
+`interface`关键字可以把类型描述提炼成一个接口。这样就很简洁，还可以复用。
+
+```typescript
+interface myObj {
+  x: number;
+  y: number;
+}
+
+const obj:myObj = { x: 1, y: 1 }; 
+```
+
+上面示例中，`interface`关键字定义了一个类型接口`myObj`，变量就可以直接指定为该类型。
+
+对象的方法使用函数类型描述。
+
+```typescript
+interface myObj {
+  x: number;
+  y: number;
+  // 或者写成
+  // add: (x:number, y:number) => number;
+  add(x:number, y:number): number;
+}
+
+const obj:myObj = { 
+  x: 1, 
+  y: 1, 
+  add(x, y) {
+    return x + y;
+  } 
+}; 
+```
+
+上面示例中，类型`myObj`有一个方法`add()`，需要定义它的参数类型和返回值类型。
+
+JavaScript 有这样一种情况，函数除了直接调用，还可以作为对象使用，可以添加属性。
+
+```javascript
+function fn() {
+  return 'hello';
+}
+fn.foo = 'bar';
+```
+
+上面示例中，`fn()`是一个函数，也是一个对象，可以添加属性`fn.foo`。它的类型可以写成下面这样。
+
+```typescript
+interface myFn {
+  foo: string;
+  (): string;
+}
+
+const fn:myFn = function () {
+  return 'hello';
+}
+fn.foo = 'bar';
+```
+
+上面示例中，接口`myFn`里面的`(): string;`，就表示这个接口可以直接当作函数调用。
 
 ```typescript
 function greet(person: { name: string; age: number }) {

@@ -2,12 +2,28 @@
 
 ## 基本用法
 
-函数整体的类型可以用箭头函数表示。
+函数的类型写法是，同时给出参数类型和返回值类型。
 
 ```typescript
-function greeter(fn: (a: string) => void) {
-  fn("Hello, World");
+function hello(txt: string):void {
+  console.log('hello ' + txt);
 }
+```
+
+上面示例中，参数类型（`txt: string`）写在参数名的后面，返回值类型写在参数括号的后面，`void`表示没有返回值。
+
+如果参数是一个函数，使用箭头函数的形式，表示整个函数的类型。
+
+```typescript
+function hello(txt: string):void {
+  console.log('hello' + txt);
+}
+
+function greeter(fn: (a: string) => void):void {
+  fn('world');
+}
+
+greeter(hello);
 ``` 
 
 上面示例中，`(a: string) => void`表示该函数有一个参数`a`，类型为`string`，返回值的类型是`void`，即没有返回值。
