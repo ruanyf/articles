@@ -15,6 +15,17 @@ const obj: {
 
 注意，对象类型的每个属性后面，要使用分号结尾。
 
+如果某个属性是可选的，需要在属性名后面加一个问号。
+
+```typescript
+const obj: {  
+  x: number;
+  y?: number;  
+} = { x: 1 };
+```
+
+上面示例中，属性`y`是可选的。
+
 `interface`关键字可以把类型描述提炼成一个接口。这样就很简洁，还可以复用。
 
 ```typescript
@@ -34,9 +45,9 @@ const obj:myObj = { x: 1, y: 1 };
 interface myObj {
   x: number;
   y: number;
+  add(x:number, y:number): number;
   // 或者写成
   // add: (x:number, y:number) => number;
-  add(x:number, y:number): number;
 }
 
 const obj:myObj = { 
@@ -50,7 +61,7 @@ const obj:myObj = {
 
 上面示例中，类型`myObj`有一个方法`add()`，需要定义它的参数类型和返回值类型。
 
-JavaScript 有这样一种情况，函数除了直接调用，还可以作为对象使用，可以添加属性。
+JavaScript 有这样一种情况，函数除了直接调用，还可以作为对象使用，添加属性。
 
 ```javascript
 function fn() {
@@ -59,7 +70,7 @@ function fn() {
 fn.foo = 'bar';
 ```
 
-上面示例中，`fn()`是一个函数，也是一个对象，可以添加属性`fn.foo`。它的类型可以写成下面这样。
+上面示例中，`fn()`是一个函数，也是一个对象，可以添加属性`fn.foo`。它的类型写成下面这样。
 
 ```typescript
 interface myFn {

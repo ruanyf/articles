@@ -44,6 +44,12 @@ TypeScript 的设计目的，就是为 JavaScript 加上静态类型系统，并
 
 JavaScript 语法可以参考[《JavaScript 教程》](https://wangdoc.com/javascript)和[《ES6 教程》](https://wangdoc.com/es6)。
 
+## 类型的概念
+
+类型是值的特征。如果一组值具有共同的特征，就可以说，它们属于同一种类型。
+
+类型是人为添加的一种编程约束。
+
 ## 静态类型的优点
 
 TypeScript 为什么要为 JavaScript 添加类型呢？原因是静态类型语言有一些突出的优点。

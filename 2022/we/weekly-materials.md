@@ -1,5 +1,14 @@
 # 备用材料
 
+
+![](https://cdn.beekka.com/blogimg/asset/202202/bg2022022004.webp)
+
+格鲁吉亚的首富有一个私人花园，里面种了很多古树名木。他购买这些树木以后，从里海运输到格鲁吉亚。一个导演将运送树木的过程，拍成了纪录片，平静的海面上，只见一棵大树漂过，非常魔幻。（[via](https://english.elpais.com/culture/2022-02-18/taming-the-garden-the-strange-journey-of-ancient-trees-to-a-georgian-billionaires-mansion.html)）
+
+缙云戏台
+
+https://www.thepaper.cn/newsDetail_forward_17180568
+
 冬天哈气的鸟 https://www.thisiscolossal.com/2022/03/kathrin-swoboda-red-wing-blackbird/
 
 1、[汽车厂商的儿童玩具](https://www.sohu.com/a/512485944_129829)
