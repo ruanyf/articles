@@ -45,6 +45,18 @@ function greeter(fn: GreetFunction) {
 }
 ```
 
+函数类型也可以定义成一个对象，详见《对象类型》一章。
+
+```typescript
+interface myfn {
+  (a:number, b:number): number;
+}
+
+var add:myfn = (a, b) => a + b;
+```
+
+上面示例中，interface 命令定义了接口`myfn`，这个接口的类型是一个对象，但是该对象可调用，因此也就是一个函数。
+
 ## void
 
 void 类型指函数没有返回值。
@@ -231,18 +243,22 @@ function doSomething(fn: DescribableFunction) {
 
 ## 构造函数的类型
 
-构造函数用来生成实例对象，必须使用`new`命令调用。构造函数的类型，也要使用对象的形式表达。
+构造函数用来生成实例对象，必须使用`new`命令调用。构造函数的类型，必须添加`new`。
 
 ```typescript
 type SomeConstructor = {
   new (s: string): SomeObject;
 };
-function fn(ctor: SomeConstructor) {
-  return new ctor("hello");
+
+
+interface BankAccount {  
+    balance: number;  
+    deposit(credit: number): number;  
 }
+var BankAccount: new() => BankAccount;
 ```
 
-它的参数名前面要加上 new。
+圆括号前面要加上`new`。
 
 有些构造函数，加不加 new 都可以调用（比如`Date()`），这时它的类型两种方式都要声明。
 

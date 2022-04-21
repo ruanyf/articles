@@ -84,13 +84,22 @@ const fn:myFn = function () {
 fn.foo = 'bar';
 ```
 
-上面示例中，接口`myFn`里面的`(): string;`，就表示这个接口可以直接当作函数调用。
+上面示例中，接口`myFn`里面的`(): string;`，就表示这个接口可以直接当作函数调用。圆括号表示执行该类型（即调用函数），返回值的类型是`string`。
+
+由于任何函数都可以看作是可以执行的对象，这意味着函数的类型有两种写法，一种是函数的写法，一种是对象的写法。
 
 ```typescript
-function greet(person: { name: string; age: number }) {
-  return "Hello " + person.name;
+// 写法一
+function myfn():string {
+  return 'hello world';
 }
+
+// 写法二
+var myfn: { (): string; } = 
+  () => 'hello world';
 ```
+
+上面示例定义函数类型时，采用了两种写法。写法一是把类型写成函数，写法二是把类型写成对象，两者是等价的。
 
 对象类型也使用方括号读取属性。
 
@@ -156,6 +165,32 @@ function draw({ shape: Shape, xPos: number = 100 /*...*/ }) {
 ```
 
 上面示例中，参数解构里面的冒号，作用不是指定类型，而是为对应的参数名指定变量。所以，不存在 shape 变量，而是 shape 属性的值被赋值给了变量 Shape。
+
+## 类型的兼容
+
+类型只是规定了，本类型的值必须具有的特征。如果类型 A 满足类型 B 的特征，TypeScript 就认为前者兼容后者，或者说类型 A 是类型 B 的子类型（subtyping）。
+
+```typescript
+interface t1 {
+  foo: number;
+}
+
+interface t2 {
+  foo: number;
+  bar: number;
+}
+```
+
+上面示例中，类型`t1`必须具有属性`foo`，类型`t2`必须具有属性`foo`和`bar`，可以看到`t2`满足`t1`的特征。这时就可以说`t2`兼容`t1`，或者`t2`是`t1`的子类型。
+
+兼容类型的值，可以赋值给另一个类型。
+
+```typescript
+const o2:t2 = { foo: 1, bar: 2};
+const o1:t1 = o2; // 正确
+```
+
+上面示例中，对象`o2`的类型是`t2`，对象`o1`的类型是`t1`，两者并不是同一个类型。但是`o2`可以赋值给`o1`，并不会报错，原因就是类型`t2`兼容类型`t1`。
 
 ## type 命令
 
