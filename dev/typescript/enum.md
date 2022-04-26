@@ -17,6 +17,29 @@ var card = CardSuit.Clubs;
 card = "not a member of card suit";
 ```
 
+使用时，就按照对象属性的调用方式，调用 enum 成员。
+
+```typescript
+const enum Operator {  
+    ADD,  
+    DIV,  
+    MUL,  
+    SUB  
+}
+
+function compute(op: Operator, a: number, b: number) {  
+  switch (op) {  
+    case Operator.ADD:  
+        // execute add  
+        break;  
+    case Operator.DIV:  
+        // execute div  
+        break;  
+    // ...  
+  }  
+}
+```
+
 enum 的值，类型都是 number，里面的常量按照顺序赋值。
 
 ```typescript
@@ -58,6 +81,32 @@ enum Direction {
   Right = 1,
 }
 ```
+
+enum 设定的成员都是只读的，不能重新赋值。
+
+```typescript
+enum Color {
+    Red,     // 0
+    Green,   // 1
+    Blue     // 2
+}
+
+Color.Red = 4; // 报错
+```
+
+上面示例中，重新为 enum 成员赋值会报错。
+
+为了让这一点更醒目，通常会在 enum 关键字前面加上`const`修饰，表示这是常量。
+
+```typescript
+const enum Color {
+    Red,     // 0
+    Green,   // 1
+    Blue     // 2
+}
+```
+
+加上`const`，编译结果会直接将 enum 成员转为对应的值，这样会提高性能表现。
 
 ```typescript
 enum Color {

@@ -281,6 +281,33 @@ function doStuff(values: ReadonlyArray<string>) {
 
 泛型也可以用在类（class）上面。
 
+下面是一个链表的例子。
+
+```typescript
+interface NamedItem {  
+    name: string;  
+}
+
+class List<T extends NamedItem> {  
+    next: List<T> = null;
+
+    constructor(public item: T) {  
+    }
+
+    insertAfter(item: T) {  
+        var temp = this.next;  
+        this.next = new List(item);  
+        this.next.next = temp;  
+    }
+
+    log() {  
+        console.log(this.item.name);  
+    }
+
+    // ...  
+}
+```
+
 ```typescript
 class GenericNumber<NumType> {
   zeroValue: NumType;

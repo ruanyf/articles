@@ -205,17 +205,46 @@ type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
 
 ## typeof 运算符
 
-typeof 运算符是一个 JavaScript 运算符，返回一个值的类型。
+typeof 运算符是一个 JavaScript 运算符，返回一个字符串，代表参数值的类型。
+
+JavaScript 的`typeof`运算符，可能返回八种值。
+
+```javascript
+typeof undefined; // "undefined"
+typeof true; // "boolean"
+typeof 1337; // "number"
+typeof "foo"; // "string"
+typeof {}; // "object"
+typeof parseInt; // "function"
+typeof Symbol(); // "symbol"
+typeof 127n // "bigint"
+```
+
+在 TypeScript 中，如果`typeof`运算符出现在值的位置（比如等号的右边），那么用法与 JavaScript 的用法完全一样。
 
 ```typescript
-// a value
-const person = {
-  name: "Stefan"
-}
+// 编译前
+var numberType: string = typeof 1337;
 
-// a type
-type Person = typeof person;
+// 编译后
+var numberType = typeof 1337;
 ```
+
+上面示例中，编译后就是把类型删掉了，`typeof`运算符没有任何变化。
+
+但是，`typeof`运算符也可以用在 TypeScript 类型注释里面。这时，它返回的不是字符串，而是参数值对应的 TypeScript 类型。
+
+```typescript
+let r1 = { width: 100, height: 200 };
+let r2: typeof r1;
+
+// 等同于
+let r1 = { width: 100, height: 200 };
+type R = typeof r1;
+let r2: R;
+```
+
+上面示例中，`typeof`返回的是变量`r1`的 TypeScript 类型，即一个对象，该对象包含属性`width`和属性`height`。
 
 ## readonly 修饰符
 
