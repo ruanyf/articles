@@ -18,8 +18,6 @@ var uname:string;
 var num:number = "hello"；
 ```
 
-
-
 ## 类型断言
 
 类型断言可以用来手动指定一个值的类型。

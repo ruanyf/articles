@@ -31,6 +31,8 @@ Utility.error('maybe!');
 
 也就是说，namespace 其实相当于 JavaScript 的一个对象，内部的变量是对象的属性，内部的方法是对象的方法。
 
+注意，namespace 既是一种类型，也是一个指，会保留在编译后的 JavaScript 代码里面。
+
 namespace 可以嵌套，比如`Utility.Messaging`可以表示名称空间 Utility 下面，还有一个子名称空间 Messaging。
 
 namespace 与模块的作用是一致的，区别是一个文件只能有一个模块，但是可以有多个 namespace。完全可以把模块，看成单个的 namespace，所以 namespace 的用处并不是很大。而且，模块是 JavaScript 的合法语法，namespace 是 TypeScript 添加的语法，编译时必须进行转换，所以建议总是使用模块，替代 namespace。

@@ -132,6 +132,32 @@ myForEach([1, 2, 3], (a, i) => {
 
 ## 函数重载
 
+有些函数接受不同类型的参数时，会有不同的行为。这种根据参数类型不同，执行不同逻辑的行为，称为函数重载（function overload）。
+
+```javascript
+reverse('abc') // 'cba'
+reverse([1, 2, 3]) // [3, 2, 1]
+```
+
+上面示例中，`reverse()`接受字符串作为参数时，返回的是逆序的字符串；接受数组作为参数时，返回的是逆序的数组。
+
+这意味着，该函数内部有处理字符串和数组的两套逻辑，根据参数类型的不同，分别执行对应的逻辑。这就叫“函数重载”。
+
+TypeScript 对于“函数重载”的类型描述方法是，逐一定义每一种情况的类型。
+
+```typescript
+function reverse(string: string): string;
+function reverse<T>(array: T[]): T[];
+function reverse<T>(stringOrArray: string | T[]): string | T[] {
+  return typeof stringOrArray === "string"
+    ? stringOrArray.split("").reverse().join("")
+    : stringOrArray.slice().reverse();
+}
+```
+
+上面示例中，前两行类型描述列举了重载的各种情况。第三行是函数本身的类型描述，必须与所有指定的重载情况兼容。
+
+
 如果函数可以接受多种数目的参数，可以为每一种数目指定一个类型签名。
 
 ```typescript

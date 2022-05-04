@@ -1,5 +1,80 @@
 # TypeScript 的数据类型
 
+## any 类型
+
+any 类型是 TypeScript 提供的一种基本类型，表示这个值可能是任意类型。
+
+```typescript
+let x:any;
+
+x = 1;
+x = 'foo';
+```
+
+上面示例中，变量`x`的类型是`any`，表示它的值可以是任意类型，赋值为数值或字符串，都不会报错。
+
+`any`类型的变量，不仅可以接受任何类型的值，也可以赋值给其他任何类型的变量。
+
+```typescript
+let x:any = 'hello';
+
+let y:number;
+y = x; // 不会报错
+```
+
+上面示例中，变量`x`是`any`类型，赋值给数值类型的`y`并不会报错，哪怕`x`的值是一个字符串。
+
+`any`的值可以赋值给其他类型的变量，主要原因是 TypeScript 的其他所有类型都是`any`的子类型，而父类型的值可以赋值给子类型的变量。
+
+如果变量的类型是`any`，该变量可以作为对象使用，访问它的任意属性，也可以作为函数使用，直接调用它。
+
+```typescript
+let x:any = 'hello';
+
+x.foo(); // 不会报错 
+x(); // 不会报错
+x.bar = 100; // 不会报错
+```
+
+上面代码不会报错的原因是，将变量类型设为`any`，实际上会关闭对它的类型检查。只要没有句法错误，无论代码怎么写，TypeScript 都不会出现编译错误。
+
+`any`的其他使用注意点如下。
+
+（1）类型设为`any`等于不设类型，失去了使用 TypeScript 的意义，完全不建议使用，除非是为以前的复杂 JavaScript 代码做类型适配。
+
+（2）如果开发者不指定变量类型，并且 TypeScript 不能从上下文推断出变量类型时，编译器就会默认该变量类型为`any`。
+
+```typescript
+// 等同于 y:any;  
+var y;
+
+// 等同于 z:{ a:any; b:any; };
+var z: { a; b; };
+
+// 等同于 f(x:any):void
+function f(x) {   
+  console.log(x);  
+}
+```
+
+## TypeScript 的类型系统
+
+- primitive types
+- object types：包括 class、interface、array、tuple、function、构造函数。
+- union types：值可能是多种类型中的一种。
+- intersection types：值可能同时有一种以上的类型。
+- type parameters
+
+原始类型有以下几种。
+
+- Number
+- Boolean
+- String
+- Symbol
+- Void：表示没有值，比如没有返回值的函数。
+- Null
+- Undefined
+
 ## 基本类型
 
 TypeScript 提供的数据类型，可以分成两大类。
@@ -89,37 +164,6 @@ configure("automatic");
 
 ## 特殊类型
 
-### any
-
-`any`表示这个值可以是任意类型。
-
-如果一个变量的类型是`any`，表示可以访问它的任意属性，或者像函数一样调用它，或者将它分配给（或从）任何类型的值。
-
-```typescript
-var power: any;
-
-// Takes any and all types
-power = '123';
-power = 123;
-```
-
-它的作用其实是告诉编译器，关闭对该变量的类型检查。因此，应该尽量避免使用`any`，因为它不进行类型检查，这就失去了使用 TypeScript 的意义。
-
-```typescript
-let obj: any = { x: 0 };
-
-// 下面行都不会报错
-obj.foo();
-obj();
-obj.bar = 100;
-obj = "hello";
-const n: number = obj;
-```
-
-如果开发者不指定变量类型，并且 TypeScript 不能从上下文推断出变量类型时，编译器就会默认该变量类型为`any`。
-
-将一个变量的类型设为`any`，实际上关闭了对它的类型检查。
-
 ### unknown 
 
 unknown 类似于 any，表示无法确定变量类型。区别是不能对该值进行任何操作。
@@ -159,18 +203,100 @@ function fn(x: string | number) {
 }
 ```
 
-### null，undefined
+## null，undefined
 
-如果编译设置设为`strictNullCheck:false`，那么`null`和`undefined`可以分配给任何其它类型。
+null 和 undefined 是 JavaScript 的两个特殊值，`null`表示空，`undefined`表示未定义。
+
+如果变量类型设为`null`，就只能赋值为`null`。如果变量类型设为`undefined`，就只能赋值为`undefined`。
 
 ```typescript
-var num: number;
-var str: string;
+let foo:null;
 
-// These literals can be assigned to anything
-num = null;
-str = undefined;
+foo = null; // 正确
+foo = undefined; // 报错
+foo = 123; // 报错
+
+let bar:undefined;
+
+bar = undefined; // 正确
+bar = null; // 报错
+bar = 123; // 报错
 ```
+
+上面示例中，`null`类型只能赋值为`null`，`undefined`只能赋值为`undefined`，否则就会报错。
+
+TypeScript 约定，`null`和`undefined`可以赋值给它们之外的任意其他类型。也就是说，TypeScript 的所有其他类型除了本类型的值以外，总是包括`null`和`undefined`这两个值。
+
+```typescript
+let age: number;
+age = 24;        // OK
+age = null;      // OK
+age = undefined; // OK
+```
+
+上面代码中，变量`age`的类型是数值，但是可以赋值为`null`和`undefined`。
+
+这通常不是开发者想要的行为，因此 TypeScript 提供了一个`strictNullChecks`设置，只要打开就不允许变量设为`null`或`undefined`。
+
+下面在配置文件`tsconfig.json`打开这个设置。
+
+```json
+{
+  "compilerOptions": {
+    "strictNullChecks": true
+    // ...
+  }
+}
+```
+
+这时，`null`或`undefined`赋值给其他类型就会报错。
+
+```typescript
+let age: number;
+age = 24;        // OK
+age = null;      // 报错
+age = undefined; // 报错
+```
+
+这种情况下，如果某个类型需要包括空值，可以使用联合类型的写法。
+
+```typescript
+let name: string | null;
+name = "Marius";  // OK
+name = null;      // OK
+```
+
+上面示例中，变量`name`的值可以是字符串，也可以是`null`。
+
+对于对象的属性，如果可以等于`undefined`（即可省略），可以在属性名后面加一个问号（`?`）表示。
+
+```typescript
+type User = {
+  firstName: string;
+  lastName: string | undefined;
+};
+// 等同于
+type User = {
+  firstName: string;
+  lastName?: string;
+};
+```
+
+上面示例中，类型`User`是一个对象，它的属性`firstName`为一个字符串，属性`lastName`可以是字符串，也可以是`undefined`，即可以省略。
+
+如果函数的参数可以等于`undefined`，就表示该参数可以省略，可以在参数名后面加一个问号表示。
+
+```typescript
+function doSomething(callback: () => void|undefined) {
+  // ...
+}
+// 等同于
+function doSomething(callback?: () => void) {
+  // ...
+}
+```
+
+上面示例中，函数`doSomething()`的参数`callback`，可以是一个函数，也可以为`undefined`，即可以省略。
 
 ### :void
 
