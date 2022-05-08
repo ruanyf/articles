@@ -297,15 +297,15 @@ class Foo {
 
 上面示例的简写形式，自动将`public x`声明为实例属性。
 
-### readonly
+### readonly 修饰符
 
-readonly 用来修饰一个属性是只读的，只有构造函数可以更改它的值，其它方式都不可以。
+`readonly`用来修饰类的某个属性，表示该属性只能在初始化时或构造方法里面设置，一旦设置后就不能更改它的值，即该属性设置后就变成只读了。
 
 ```typescript
 class Greeter {
-  readonly name: string = "world";
+  readonly name: string = "world"; // 正确
   constructor() {
-    this.name = 'otherName';
+    this.name = 'otherName'; // 正确
   }
 
   err() {
@@ -318,6 +318,8 @@ const g = new Greeter();
 // 报错
 g.name = "also not ok";
 ```
+
+上面示例中，`g.name`是一个只读属性，可以在初始化时或构造方法里面设置（如果两个地方都设置了，以构造函数为准），在其他方法修改该属性都会报错。
 
 ## abstract
 

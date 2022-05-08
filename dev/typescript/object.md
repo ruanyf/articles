@@ -399,17 +399,19 @@ const a = (expr as any) as T;
 
 上面示例中， 变量 expr 先断言为 any 类型（即取消原有的类型），然后再断言为类型 T。
 
-## readonly
+## readonly 修饰符
 
-readonly 是对象类型的属性修饰符，表示该属性在运行时不能修改。
+`readonly`是对象类型的属性修饰符。标记为`readonly`的属性只能在对象初始化期间赋值，此后就不能修改该属性。
 
 ```typescript
-interface SomeType {
-  readonly prop: string;
-}
- 
-function doSomething(obj: SomeType) {
-  // 报错
-  obj.prop = "hello";
-}
+type Point = {
+  readonly x: number;
+  readonly y: number;
+};
+
+const p:Point = { x: 0, y: 0 };
+
+p.x = 100; // 报错
 ```
+
+上面示例中，类型`Point`的属性`x`和`y`都带有修饰符`readonly`，表示这两个属性只能在初始化期间，后面再修改就会报错。
