@@ -144,6 +144,19 @@ function compare(a: string, b: string): -1 | 0 | 1 {
 }
 ```
 
+下面是用数值类型限定端口的例子。
+
+```typescript
+function getPort(scheme: "http" | "https"): 80 | 443 {
+  switch (scheme) {
+    case "http":
+      return 80;
+    case "https":
+      return 443;
+  }
+}
+```
+
 值类型可以与 interface 结合使用。
 
 ```typescript
