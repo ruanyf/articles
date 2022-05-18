@@ -30,7 +30,12 @@ greeter(hello);
 
 这里有几个注意点。
 
-（1）类型里面的参数名是必须的。TypeScript 会将`(string) => void`理解成函数有一个名叫 string 的参数。
+（1）类型里面的参数名是必须的。TypeScript 会将`(string) => void`理解成函数有一个名叫 string 的参数，并且这个`string`参数的类型是`any`。
+
+```typescript
+type FunctionType2 = (string, number) => number;
+// (string: any, number: any) => number
+```
 
 （2）函数的参数要放在圆括号里面。
 

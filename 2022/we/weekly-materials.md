@@ -1,5 +1,10 @@
 # 备用材料
 
+1、[什么是微服务？](https://www.backblaze.com/blog/what-are-microservices/)（英文）
+
+![](https://cdn.beekka.com/blogimg/asset/202112/bg2021120402.webp)
+
+本文介绍了微服务的含义和优缺点，写得很好，简单明了。
 
 ![](https://cdn.beekka.com/blogimg/asset/202202/bg2022022004.webp)
 

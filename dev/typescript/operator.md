@@ -2,6 +2,82 @@
 
 ## keyof
 
+JavaScript 的对象是一个容器，可以放置任何类型的数据。有时候，需要知道某个对象所包含数据的所有类型。
+
+```javascript
+const todo = {
+  id: 1,
+  text: "Buy milk",
+  due: new Date(2016, 11, 31),
+};
+```
+
+上面示例中，对象`todo`包括三个属性，它们的类型依次是数值（number）、字符串（string）、日期（Date）。
+
+keyof 运算符可以返回这个对象的所有键名。
+
+```typescript
+type TodoKeys = keyof Todo; // "id" | "text" | "due"
+```
+
+下面是一个例子。
+
+```javascript
+function prop(obj, key) {
+  return obj[key];
+}
+```
+
+上面这个`prop()`函数，如果要加上类型注释，只能写成下面这样。
+
+```javascript
+function prop(obj: {}, key: string):any {
+  return obj[key];
+}
+```
+
+上面示例中，函数`prop()`返回值没法事先给出，只能写成`any`，因为`obj[key]`可能是任意值。
+
+```javascript
+const todo = {
+  id: 1,
+  text: "Buy milk",
+  due: new Date(2016, 11, 31),
+};
+
+const id = prop(todo, "id"); // any
+const text = prop(todo, "text"); // any
+const due = prop(todo, "due"); // any
+```
+
+这时使用 keyof 运算符，就可以给出准确描述类型。
+
+```typescript
+function prop<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+```
+
+上面示例中，TypeScript 现在可以推断函数`prop()`的返回类型是`T[K]`。
+
+```javascript
+const todo = {
+  id: 1,
+  text: "Buy milk",
+  due: new Date(2016, 11, 31),
+};
+
+const id = prop(todo, "id"); // number
+const text = prop(todo, "text"); // string
+const due = prop(todo, "due"); // Date
+```
+
+这时，如果传递一个`todo`对象上不存在的键名，TypeScript 就会报错。
+
+```typescript
+const foo = prop(todo, "bar"); // 报错
+```
+
 keyof 运算符接受一个对象类型作为参数，返回该对象的键名的 Union 集合。
 
 ```typescript
