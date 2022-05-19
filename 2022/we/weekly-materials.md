@@ -1,5 +1,19 @@
 # 备用材料
 
+3、
+
+我不喜欢“MVP”这个词（最小可行产品），它会让没有经验的人误以为创业很容易。
+
+当我看到刚毕业的学生试图创办自己的公司时，我真希望他们能等一等，先找到一个现存的问题，以及他们认为他们真正可以触及的市场，然后再动手制作可以解决这个问题的 MVP。
+
+-- [《MVP 是有害的》](https://michaeldehaan.substack.com/p/minimal-viable-product-is-old-and?s=r)
+
+4、
+
+美国的城市面貌已经凝固了，仿佛停留在1970年代。它就像一个史前生物被困在树脂中，与粘性物质作斗争而失去了力量。如果它不尽快逃逸，这种树脂将会硬化成琥珀，使其形状永远保存下来。
+
+--[《为什么美国不再能快速建造》](https://fullstackeconomics.com/why-america-cant-build-big-things-any-more/)
+
 1、[什么是微服务？](https://www.backblaze.com/blog/what-are-microservices/)（英文）
 
 ![](https://cdn.beekka.com/blogimg/asset/202112/bg2021120402.webp)
