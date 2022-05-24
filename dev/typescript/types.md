@@ -79,7 +79,7 @@ function f(x) {
 
 TypeScript 提供的数据类型，可以分成两大类。
 
-一类是 JavaScript 原有的类型。TypeScript 为内置类型提供了相应的原始类型：
+一类是 JavaScript 原有的类型。TypeScript 提供了8个内置的基本类型，基本上与 JavaScript 的数据类型一致。
 
 - number：数值，包括整数和浮点数。
 - string：字符串
@@ -126,6 +126,19 @@ x = "hello";
 x = "howdy";
 ```
 
+`const`命令声明的变量，TypeScript 推断出来的类型就是一个值。
+
+```typescript
+// 推断类型是 “https”，不是 string
+const stringLiteral = "https"; // Type "https"
+
+// 推断类型是 42，不是 number
+const numericLiteral = 42; // Type 42
+
+// 推断类型是 true,不是 boolean
+const booleanLiteral = true; // Type true
+```
+
 它在某个变量只能取若干个特定值时很有用。
 
 ```typescript
@@ -156,6 +169,8 @@ function getPort(scheme: "http" | "https"): 80 | 443 {
   }
 }
 ```
+
+
 
 值类型可以与 interface 结合使用。
 
