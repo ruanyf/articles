@@ -145,3 +145,118 @@ type FilterStringProp<T> = {
 
 type FilteredUser = FilterStringProp<User> // { name: string }
 ```
+
+## `Partial<T>`
+
+`Partial<T>`是 TypeScript 预定义的工具类型，用来将对象类型的所有属性都变成可选属性。
+
+```typescript
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+```
+
+```typescript
+interface TodoItem {
+   description: string | undefined;
+   priority: "high" | "medium" | "low" | undefined;
+}
+
+type PartialTodoItem = Partial<TodoItem>;
+
+// 正确
+const foo:TodoItem = {};
+// 报错
+const bar:PartialTodoItem = {};
+```
+
+## `Required<T>`
+
+`Required<T>`是 TypeScript 内置的工具类型，用来将对象类型的所有属性（包括可选属性）变成必备类型。
+
+```typescript
+interface TodoItem {
+   description: string | undefined;
+   priority?: "high" | "medium" | "low" | undefined;
+}
+
+type Required<T> = {
+  [P in keyof T]-?: T[P];
+};
+```
+
+上面定义中，符号`-?`表示去除可选属性的问号（`？`），使其变成必备属性。
+
+与其相对应，`+?`表示将属性变成可选属性，等同于`?`。因此，前面的`Partial<T>`的定义也可以写成下面这样。
+
+```typescript
+type Partial<T> = {
+  [P in keyof T]+?: T[P];
+};
+```
+
+```typescript
+type RequiredTodoItem = Required<TodoItem>;
+// {
+//   description: string;
+//   priority: "high" | "medium" | "low";
+// }
+```
+
+上面示例中，经此转换之后，`priority`属性不再是可选的。
+
+## `Readonly<T>`
+
+`Required<T>`是 TypeScript 内置的工具类型，用来将对象类型的所有属性变成只读。
+
+```typescript
+interface TodoItem {
+   description: string | undefined;
+   priority?: "high" | "medium" | "low" | undefined;
+}
+
+type ReadonlyTodoItem = Readonly<TodoItem>;
+// {
+//   readonly description?: string | undefined;
+//   readonly priority?: "high" | "medium" | "low" | undefined;
+// }
+
+const todo: ReadonlyTodoItem = {
+  description: "Mow the lawn",
+  priority: "high",
+};
+
+// 报错
+todo.priority = "medium";
+```
+
+我们可以自定义工具类型`Mutable<T>`，将对象类型的只读属性变成可变属性。
+
+```typescript
+type Mutable<T> = {
+  -readonly [P in keyof T]: T[P];
+};
+```
+
+上面定义中，`-readonly`表示去除属性的只读。
+
+```typescript
+const todo: Mutable<ReadonlyTodoItem> = {
+  description: "Mow the lawn",
+  priority: "high",
+};
+
+todo.priority = "medium";
+```
+
+类似的，将属性变成只读，就是写成`+readonly`，等同于`readonly`。
+
+```typescript
+type Readonly<T> = {
+  +readonly [P in keyof T]: T[P];
+};
+```
+
+## 参考链接
+
+- [Mapped Type Modifiers in TypeScript](https://mariusschulz.com/blog/mapped-type-modifiers-in-typescript), Marius Schulz

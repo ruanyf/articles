@@ -202,6 +202,36 @@ enum Color {
 
 注意，第二段 Enum 定义的第一个成员，必须给出初始化值，否则会跟第一段发生冲突，导致 TypeScript 编译时报错。
 
+如果 Enum 成员的值不会改变，建议加上`const`命令，这样有利于提高运行性能。
+
+```typescript
+const enum MediaTypes {
+  JSON = "application/json",
+  XML = "application/xml",
+}
+```
+
+一旦加上`const`命令时，运行时就不能再访问 Enum 结构了。如果有特殊需求，需要再访问，需要在编译时打开`preserveConstEnums`选项。
+
+## 字符串枚举
+
+除了设为数值，枚举成员的值也可以设为字符串。处理一组相关的字符串常量时，这种结构非常有用。
+
+```typescript
+enum MediaTypes {
+  JSON = "application/json",
+  XML = "application/xml",
+}
+
+fetch("https://example.com/api/endpoint", {
+  headers: {
+    Accept: MediaTypes.JSON,
+  },
+}).then(response => {
+  // ...
+});
+```
+
 ## 反向映射
 
 Enum 成员值为数值时，存在反向映射。
@@ -215,3 +245,4 @@ let nameOfA = Enum[0]; // "A"
 ```
 
 这种情况只发生在成员值为数值的情况。如果成员值为字符串，则不存在反向映射。
+

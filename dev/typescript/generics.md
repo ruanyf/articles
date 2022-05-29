@@ -337,4 +337,17 @@ const someClass = class<Type> {
 const m = new someClass("Hello, world");
 ```
 
+## 范型变量的默认值
 
+范型的类型变量可以设置默认值。
+
+```typescript
+declare namespace React {
+  class Component<Props = any, State = any> {
+    props: Props;
+    state: State;
+  }
+}
+```
+
+上面示例中，范型变量`Props`和`State`的默认值，都是`any`类型。

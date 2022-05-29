@@ -70,6 +70,18 @@ class OKGreeter {
 
 使用`--checkJS`时，如果 JS 脚本头部有`// @ts-nocheck`指令，则不会对该文件进行类型检查。
 
+## importHelpers
+
+使用`--importHelpers`编译器选项和tslib npm 包。指定时，--importHelpers将导致 TypeScript 编译器从tslib. 然后像 webpack 这样的打包器可以只内联该 npm 包一次，避免代码重复。
+
+## init
+
+`--init`会生成一个默认的配置文件`tsconfig.json`。
+
+```bash
+$ tsc --init
+```
+
 ## noEmit
 
 参数`--noEmit`表示编译器不会产生任何输出，只用来对文件进行类型检查。
@@ -89,6 +101,28 @@ $ tsc app.ts moduleA.ts --noResolve
 ```typescript
 import * as A from "moduleA"; // 正确，moduleA 从命令传入
 import * as B from "moduleB"; // 报错，找不到 moduleB
+```
+
+## strict
+
+`--strict`参数会打开严格模式。它会启用下面八个编译器选项。
+
+- --alwaysStrict
+- --strictBindCallApply
+- --strictFunctionTypes
+- --strictNullChecks
+- --strictPropertyInitialization
+- --noImplicitAny
+- --noImplicitThis
+- --useUnknownInCatchVariables
+
+在打开`--strict`的同时，上面这些属性也可以关闭其中一项或几项。
+
+```json
+{
+  "strict": true,
+  "alwaysStrict": false
+}
 ```
 
 ## traceResolution

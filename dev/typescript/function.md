@@ -135,6 +135,55 @@ myForEach([1, 2, 3], (a, i) => {
 });
 ```
 
+注意，如果传入的参数对象有多余的属性，TypeScript 不会报错。
+
+```typescript
+interface PrettierConfig {
+  printWidth?: number;
+  tabWidth?: number;
+  semi?: boolean;
+}
+
+function createFormatter(config: PrettierConfig) {
+  // ...
+}
+
+const prettierConfig = {
+  printWidth: 100,
+  semicolons: true,
+};
+
+// 不报错
+const formatter = createFormatter(prettierConfig);
+```
+
+但是，如果没有重合的属性，TypeScript 会报错。
+
+```typescript
+interface PrettierConfig {
+  printWidth?: number;
+  tabWidth?: number;
+  semi?: boolean;
+}
+
+function createFormatter(config: PrettierConfig) {
+  // ...
+}
+
+const prettierConfig = {
+  semicolons: true,
+};
+
+// 报错
+const formatter = createFormatter(prettierConfig);
+```
+
+一种解决方法就是做一个类型断言。
+
+```typescript
+const formatter = createFormatter(prettierConfig as PrettierConfig);
+```
+
 ## 函数重载
 
 有些函数接受不同类型的参数时，会有不同的行为。这种根据参数类型不同，执行不同逻辑的行为，称为函数重载（function overload）。

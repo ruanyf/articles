@@ -55,7 +55,9 @@ $ tsc -p ./path-to-project-directory
 }
 ```
 
-- compilerOptions：定制编译器行为。
+## compileOptions
+
+compilerOptions：定制编译器行为。
 
 ```javascript
 {
@@ -70,6 +72,32 @@ $ tsc -p ./path-to-project-directory
     }
 }
 ```
+
+示例
+
+```json
+{
+  "compilerOptions": {
+    "target": "es5",
+    "moduleResolution": "node",
+    "module": "esnext",
+    "strict": true,
+    "importHelpers": true
+  }
+}
+```
+
+各项解释。
+
+- target：为了支持旧版浏览器，我们希望将 ES5 定位为语言级别。"es2015"如果您不需要支持旧版浏览器，您可以将此设置提高到（或更高）。
+- moduleResolution:我们希望 TypeScript 编译器模仿 Node 本身使用的模块解析机制，例如让它自动从 npm 包中获取类型。查看TypeScript 文档中的模块解析章节以获取更多信息。
+- module：我们希望编译器发出所有import/export声明和import()表达式不变。稍后我们将让 webpack 打包和拆分我们的代码。
+- strict：我们选择严格的类型检查模式来为我们的应用程序获得最高级别的类型安全。我建议您始终设置strict为true. 如果您tsc --init用于创建tsconfig.json文件，则默认启用此设置。
+- importHelpers：由于我们将 ES5 定位为语言级别，因此 TypeScript 编译器会在我们使用/时发出一堆辅助函数，例如__awaiter和。为了每个包只发出一次这些帮助函数而不是每次使用一次，我们将指示编译器从包中导入它们。查看TypeScript 2.1：External Helpers Library以获取有关编译器选项的更多信息。__generatorasyncawaittslibimportHelpers
+
+### preserveConstEnums
+
+Enum 命令使用`const`命令修饰时，保留 Enum 结构。
 
 ```typescript
 {
@@ -156,3 +184,61 @@ function doSomething(x: string | null) {
 - allowUnreachableCode：发现有运行不到的代码时报错。
 - allowUnusedLabels：发现没有使用的代码标签时报错。
 
+### strictPropertyInitialization
+
+`--strictPropertyInitialization`选项表示每个实例属性都必须初始化，包括以下几种情况。
+
+- 设为 undefined 类型
+- 显式初始化
+- 构造函数中赋值
+
+```typescript
+class User {
+  // 报错，属性 username 没有初始化
+  username: string;
+}
+
+// 解决方法一
+class User {
+  username = "n/a";
+}
+
+// 解决方法二
+class User {
+  username: string | undefined;
+}
+
+// 解决方法三
+class User {
+  username: string;
+
+  constructor(username: string) {
+    this.username = username;
+  }
+}
+// 或者
+class User {
+  constructor(public username: string) {}
+}
+
+// 解决方法四：赋值断言 
+class User {
+  username!: string;
+
+  constructor(username: string) {
+    this.initialize(username);
+  }
+
+  private initialize(username: string) {
+    this.username = username;
+  }
+}
+```
+
+它是`--strict`选项的一部分。
+
+注意，使用该属性的前提是，必须设置`--strictNullChecks`。
+
+## 参考链接
+
+- [Strict Property Initialization in TypeScript](https://mariusschulz.com/blog/strict-property-initialization-in-typescript), Marius Schulz

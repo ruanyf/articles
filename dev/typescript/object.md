@@ -415,3 +415,47 @@ p.x = 100; // 报错
 ```
 
 上面示例中，类型`Point`的属性`x`和`y`都带有修饰符`readonly`，表示这两个属性只能在初始化期间，后面再修改就会报错。
+
+## unknown 类型
+
+`unknown`类型表示对象可以有未知属性。
+
+```typescript
+interface PrettierConfig {
+  [prop: string]: unknown;
+  printWidth?: number;
+  tabWidth?: number;
+  semi?: boolean;
+}
+
+// 不加 unknown 类型
+const prettierConfig: PrettierConfig = {
+  semicolons: true, // Error
+};
+
+// 添加 unknown 类型
+const prettierConfig: PrettierConfig = {
+  semicolons: true, // 正确
+};
+```
+
+注意，一旦对象包含了指定属性，再指定其他属性，传入函数就不会报错。
+
+```typescript
+interface PrettierConfig {
+  printWidth?: number;
+  tabWidth?: number;
+  semi?: boolean;
+}
+
+function createFormatter(config: PrettierConfig) {
+  // ...
+}
+
+const prettierConfig = {
+  printWidth: 100,
+  semicolons: true,
+};
+
+const formatter = createFormatter(prettierConfig);
+```
