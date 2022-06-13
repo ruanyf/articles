@@ -76,6 +76,19 @@ const cats: Record<CatName, CatInfo> = {
 };
 ```
 
+## ReadonlyArray
+
+`ReadonlyArray`指定数组为只读。
+
+```typescript
+const values: ReadonlyArray<string> = ["a", "b", "c"];
+
+values[0] = "x"; // Type error
+values.push("x"); // Type error
+values.pop(); // Type error
+values.splice(1, 1); // Type error
+```
+
 ## Pick
 
 `Pick<Type, Keys>`表示类型是从对象`Type`里面，挑选`Keys`指定的键名。
@@ -92,6 +105,30 @@ type TodoPreview = Pick<Todo, "title" | "completed">;
 const todo: TodoPreview = {
   title: "Clean room",
   completed: false,
+};
+```
+
+```typescript
+type UserWithoutEmail = Pick<User, UserKeysWithoutEmail>;
+
+// This is equivalent to:
+type UserWithoutEmail = Pick<User, "id" | "name">;
+
+// This is equivalent to:
+type UserWithoutEmail = {
+  id: string;
+  name: string;
+};
+```
+
+Pick 在 lib.es5.d.ts 的定义如下。
+
+```typescript
+/**
+ * From T, pick a set of properties whose keys are in the union K
+ */
+type Pick<T, K extends keyof T> = {
+  [P in K]: T[P];
 };
 ```
 
@@ -123,6 +160,31 @@ const todoInfo: TodoInfo = {
 };
 ```
 
+```typescript
+type User = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+type UserWithoutEmail = Omit<User, "email">;
+
+// This is equivalent to:
+type UserWithoutEmail = {
+  id: string;
+  name: string;
+};
+```
+
+它的定义如下。
+
+```typescript
+/**
+ * Construct a type with the properties of T except for those in type K.
+ */
+type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
+```
+
 ## Exclude
 
 `Exclude<UnionType, ExcludedMembers>`用来从联合类型里面，排除某些类型。
@@ -136,6 +198,15 @@ type T1 = Exclude<"a" | "b" | "c", "a" | "b">;
 
 // type T2 = string | number
 type T2 = Exclude<string | number | (() => void), Function>;
+```
+
+`Exclude`的定义如下。
+
+```typescript
+/**
+ * Exclude from T those types that are assignable to U
+ */
+type Exclude<T, U> = T extends U ? never : T;
 ```
 
 ## Extract

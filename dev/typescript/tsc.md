@@ -64,11 +64,18 @@ class OKGreeter {
 
 参数`--allowJs`允许 TS 脚本加载 JS 脚本。同时，编译器会将源码里面的 JS 文件，拷贝到编译结果的目录。
 
+使用选项--allowJs，TypeScript 编译器将输入目录中的 JavaScript 文件复制到输出目录。
+
 ## checkJs
 
 参数`--checkJs`可以让编译器对 JavaScript 文件进行类型检查，前提是必须同时使用参数`--allowJs`。它等同于在 JS 脚本头部加上`// @ts-check`的指令。
 
 使用`--checkJS`时，如果 JS 脚本头部有`// @ts-nocheck`指令，则不会对该文件进行类型检查。
+
+`--checkJs`，tsc 编译器还会对 JavaScript 文件进行类型检查（--allowJs必须启用，此选项才能正常工作）。鉴于可用信息有限，它尽其所能。检查哪些文件可以通过其中的注释进行配置：
+
+- 显式排除：如果 JavaScript 文件包含注释// @ts-nocheck，则不会对其进行类型检查。
+- 显式包括：如果没有--checkJs，注释`// @ts-check`可用于对单个 JavaScript 文件进行类型检查。
 
 ## importHelpers
 
@@ -84,7 +91,7 @@ $ tsc --init
 
 ## noEmit
 
-参数`--noEmit`表示编译器不会产生任何输出，只用来对文件进行类型检查。
+参数`--noEmit`表示编译器不会产生任何输出，也就是不会有编译结果，只用来对文件进行类型检查。
 
 ## noResolve
 
@@ -102,6 +109,77 @@ $ tsc app.ts moduleA.ts --noResolve
 import * as A from "moduleA"; // 正确，moduleA 从命令传入
 import * as B from "moduleB"; // 报错，找不到 moduleB
 ```
+
+## resolveJsonModule
+
+`--resolveJsonModule`允许 TypeScript 导入 JSON 模块。
+
+在 tsconfig.json 打开这个选项。
+
+```json
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  }
+}
+```
+
+然后，import 命令就可以导入 json 模块了。
+
+```typescript
+import * as config from "./config.json";
+```
+
+## showConfig
+
+`--showConfig`检验tsconfig.json文件的有效性，并将其打印到控制台。这对于调试配置问题很有用，尤其是与tsconfig.json文件extends中的属性一起使用时。
+
+举例来说，下面是一个 tsconfig.json 文件。
+
+```json
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "strict": true,
+    "importHelpers": true
+  },
+  "include": ["**/*.ts"]
+}
+```
+
+运行`tsc --showConfig`命令。
+
+```bash
+$ tsc --showConfig
+```
+
+控制台会显示下面的内容。
+
+```json
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es6",
+    "moduleResolution": "node",
+    "strict": true,
+    "importHelpers": true
+  },
+  "files": ["./main.ts", "./utils/crypto.ts"],
+  "include": ["**/*.ts"]
+}
+```
+
+上面是 TypeScript 实际上会运行的配置。
+
+注意，上面添加了`files`属性，tsconfig.json 并没有这个属性。这是 TypeScript 根据`include`属性，计算出来这个配置文件所针对的 TypeScript 脚本。
+
+注意，`--showConfig`在 tsconfig.json 文件里面设置无效，只能用于命令行。
 
 ## strict
 

@@ -239,6 +239,21 @@ class User {
 
 注意，使用该属性的前提是，必须设置`--strictNullChecks`。
 
+## extends
+
+`extends`可以指定当前 tsconfig.json 文件，所继承的原始配置文件。
+
+```json
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015"
+  },
+  "include": ["**/*.ts"]
+}
+```
+
 ## 参考链接
 
 - [Strict Property Initialization in TypeScript](https://mariusschulz.com/blog/strict-property-initialization-in-typescript), Marius Schulz
