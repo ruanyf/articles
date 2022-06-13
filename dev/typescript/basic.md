@@ -381,3 +381,40 @@ SomeNameSpaceName.SomeClassName;
 如果一个命名空间在一个单独的 TypeScript 文件中，则应使用三斜杠 /// 引用它，语法格式如下：
 
 /// <reference path = "SomeFileName.ts" />
+
+## 使用方法
+
+### TypeScript Playground
+
+最简单的 TypeScript 使用方法，就是使用官网的 [TypeScript Playground](http://www.typescriptlang.org/play/)。只要打开网页，把代码贴进文本框，就会自动编译代码，并且在浏览器中执行编译后的 JS 代码。
+
+它具有支持完整的 IDE 支持，比如自动提示、显示静态类型错误。而且，它还可以把代码片段和编译器设置，保存到 URL 中，便于分享给他人。
+
+### TS Node
+
+[TS Node](https://github.com/TypeStrong/ts-node) 是基于 Node.js 的一个工具软件，可以运行 TypeScript 代码。
+
+使用时，可以全局安装。
+
+```bash
+$ npm install -g ts-node
+```
+
+使用`npx ts-node`，可以在不安装它的情况下运行。
+
+安装后，就可以直接运行 TS 脚本。
+
+```bash
+$ ts-node script.ts
+# 或者
+$ npx ts-node script.ts
+```
+
+执行时，不带有任何参数，它就会提供一个 TapeScript 命令行 REPL 运行环境。
+
+```bash
+$ ts-node
+> const twice = (x: string) => x + x;
+> twice('abc')
+'abcabc'
+```
