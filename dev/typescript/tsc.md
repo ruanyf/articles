@@ -185,13 +185,13 @@ $ tsc --showConfig
 
 `--strict`参数会打开严格模式。它会启用下面八个编译器选项。
 
-- --alwaysStrict
+- --alwaysStrict：Use JavaScript’s strict mode whenever possible.
 - --strictBindCallApply
-- --strictFunctionTypes
-- --strictNullChecks
-- --strictPropertyInitialization
-- --noImplicitAny
-- --noImplicitThis
+- --strictFunctionTypes: enables stronger checks for function types.
+- --strictNullChecks: null is not part of any type (other than its own type, null) and must be explicitly mentioned if it is a acceptable value.
+- --strictPropertyInitialization: Properties in class definitions must be initialized, unless they can have the value undefined.
+- --noImplicitAny：如果 TypeScript 无法自己推导出类型，开发者必须注明类型。如果设为 false，推断不出，就一律设为 any。
+- --noImplicitThis：Complain if the type of this isn’t clear.
 - --useUnknownInCatchVariables
 
 在打开`--strict`的同时，上面这些属性也可以关闭其中一项或几项。

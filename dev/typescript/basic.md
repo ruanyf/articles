@@ -1,22 +1,35 @@
-# TypeScript 教程
+# TypeScript 基本语法
 
-## 基本用法
+## 类型声明
 
-声明变量时，指定类型。
+TypeScript 代码基本是在 JavaScript 代码的基础上，为变量和存储位置加上类型声明。
 
-```typescript
-var [变量名] : [类型];
-
-var uname:string;
-```
-
-如果声明变量时，不指定类型，该变量可以为任意类型。
-
-变量值应该与类型一致，如果不一致，编译会报错。
+类型声明的写法，就是在变量或存储位置的后面加上“:[类型]”。
 
 ```typescript
-var num:number = "hello"；
+let foo:string;
 ```
+
+上面示例是一行变量声明语句，变量名`foo`后面的`:string`就是类型声明，表示变量`foo`的类型是`string`（字符串）。
+
+除了变量声明，定义函数时，也要给出参数和返回值的类型声明。
+
+```typescript
+function toString(num:number):string {
+  return String(num);
+}
+```
+
+上面示例中，函数`toString()`的参数`num`的类型是`number`，返回值的类型是`string`。注意，返回值类型需要写在参数括号的后面。
+
+变量的值应该与声明的类型一致，如果不一致，TypeScript 在编译时就会报错。
+
+```typescript
+// 报错
+let foo:string = 123;
+```
+
+上面示例中，变量`foo`声明的类型是字符串，但是赋值为数值`123`，TypeScript 就会报错。
 
 ## 类型断言
 

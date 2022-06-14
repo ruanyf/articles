@@ -185,6 +185,19 @@ const otherString = someString.toUpperCase(); // "HELLO WORLD"
 
 ## TypeScript 的类型系统
 
+JavaScript 语言（注意，不是 TypeScript）将数据分成8种类型。
+
+- Undefined: the set with the only element undefined
+- Null: the set with the only element null
+- Boolean: the set with the two elements false and true
+- Number: the set of all numbers
+- BigInt: the set of all arbitrary-precision integers
+- String: the set of all strings
+- Symbol: the set of all symbols
+- Object: the set of all objects (which includes functions and arrays)
+
+TypeScript 在 JavaScript 之上又加了一层“静态类型”，在编译时（或类型检查时）对所有数据和存储位置进行分类。所以，TypeScript 的类型系统不同于 JavaScript 的类型系统。
+
 - primitive types
 - object types：包括 class、interface、array、tuple、function、构造函数。
 - union types：值可能是多种类型中的一种。
