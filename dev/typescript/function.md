@@ -62,11 +62,15 @@ var add:myfn = (a, b) => a + b;
 
 上面示例中，interface 命令定义了接口`myfn`，这个接口的类型是一个对象，但是该对象可调用，因此也就是一个函数。
 
-## void
+## void 类型
 
-void 类型指函数没有返回值。
+如果函数没有返回值，或者说返回值是`undefined`，TypeScript 就认为函数的返回值是 void 类型。
 
-JavaScript 函数如果没有返回值，实际上是 undefined。
+```typescript
+function f1(): void {
+  return undefined;
+}
+```
 
 严格地说，void 类型表示，该函数的返回值没有利用价值，或者说不应该使用该函数的返回值。所以，下面的函数返回值类型是 void，但是对于有返回值的函数并不报错。
 
@@ -183,6 +187,33 @@ const formatter = createFormatter(prettierConfig);
 ```typescript
 const formatter = createFormatter(prettierConfig as PrettierConfig);
 ```
+
+## rest 参数
+
+rest 参数的类型是一个数组，该数组的所有成员必须类型相同。
+
+```typescript
+function joinNumbers(...nums: number[]): string {
+  return nums.join('-');
+}
+```
+
+## 参数默认值
+
+TypeScript 函数的参数默认值写法，与 JavaScript 一致。
+
+```typescript
+function createPoint(
+  x:number = 0,
+  y:number = 0
+):[number, number] {
+  return [x, y];
+}
+
+createPoint() // [0, 0]
+```
+
+上面示例中，参数`x`和`y`的默认值都是`0`。
 
 ## 函数重载
 

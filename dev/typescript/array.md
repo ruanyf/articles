@@ -1,4 +1,17 @@
-# 数组的类型
+# TypeScript 数组
+
+TypeScript 的数组（array）与 JavaScript 的数组不同，所有成员必须是同一类型的值，成员的数量不限。
+
+对于那些成员类型不同的 JavaScript 数组，在 TypeScript 里面称为元组（tuple），放在下一章介绍。
+
+数组类型有两种声明方式。
+
+```typescript
+// 方式一
+let arr1:number[] = [];
+// 方式二
+let arr2:Array<number> = [];
+```
 
 如果数组可以放各种类型的数据，则可以使用`any`表示成员的类型。
 
@@ -35,7 +48,21 @@ const angle = Math.atan2(...args);
 
 ## Tuple
 
-Tuple（元组）是一种特殊类型的数组，明确定义了包含了多少个成员，以及每个成员的类型。
+元组（tuple）是 TypeScript 独有的数据类型，代表了成员类型不同的 JavaScript 数组。元组必须明确声明每个成员的类型，以及包含多少个成员。
+
+下面的例子是数组的成员是一个元组。
+
+```typescript
+// entries 的类型推断为 [string, number][]
+// entries 的值为  [[ 'a', 1 ], [ 'b', 2 ]]
+const entries = Object.entries({ a: 1, b: 2 });
+```
+
+一般来说，元组成员的类型不同，但是也允许所有成员的类型的类型相同。
+
+```typescript
+let point:[number, number] = [7, 5];
+```
 
 元组类型也可以方括号读取属性。
 

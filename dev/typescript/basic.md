@@ -1,8 +1,10 @@
 # TypeScript 基本语法
 
+本章介绍 TypeScript 的一些最基本的语法和概念。
+
 ## 类型声明
 
-TypeScript 代码基本是在 JavaScript 代码的基础上，为变量和存储位置加上类型声明。
+TypeScript 代码简单说就是在 JavaScript 代码的基础上，为变量和存储位置加上类型声明。
 
 类型声明的写法，就是在变量或存储位置的后面加上“:[类型]”。
 
@@ -31,6 +33,48 @@ let foo:string = 123;
 
 上面示例中，变量`foo`声明的类型是字符串，但是赋值为数值`123`，TypeScript 就会报错。
 
+## 类型推断
+
+变量和存储位置并不要求都有类型声明，如果没有，TypeScript 会尝试自己推断类型。
+
+```typescript
+let foo = 123;
+```
+
+上面示例中，变量`foo`并没有类型声明，TypeScript 就会推断它的类型。由于它被赋值为一个数值，因此 TypeScript 推断它的类型为`number`。
+
+如果变量`foo`的值后面更改为其他类型，TypeScript 就会报错。
+
+```typescript
+let foo = 123;
+foo = 'hello'; // 报错
+```
+
+上面示例中，变量`foo`的类型推断为`number`，后面赋值为字符串，TypeScript 就会报错。
+
+TypeScript 也可以推断函数的返回值。
+
+```typescript
+function toString(num:number) {
+  return String(num);
+}
+```
+
+上面示例中，函数`toString()`没有声明返回值的类型，但是 TypeScript 推断返回的是字符串。
+
+如果缺乏足够明确的信息，TypeScript 可能无法推断出某个变量或位置是什么类型。这时，TypeScript 就会将其设为`any`类型，即可能为任何类型。
+
+很多项目采用严格设定（打开了`noImplicitAny`），不允许类型推断为`any`，这时如果 TypeScript 无法推断出类型，就会报错。
+
+```typescript
+// 报错
+function fn(s) {
+  console.log(s.subtr(3));
+}
+```
+
+上面示例中，TypeScript 无法推断出参数`s`的类型。如果项目不允许推断为`any`类型，就会报错。
+
 ## 类型断言
 
 类型断言可以用来手动指定一个值的类型。
@@ -50,19 +94,6 @@ console.log(str2)
 当 S 类型是 T 类型的子集，或者 T 类型是 S 类型的子集时，S 能被成功断言成 T。这是为了在进行类型断言时提供额外的安全性，完全毫无根据的断言是危险的，如果你想这么做，你可以使用 any。
 
 它之所以不被称为类型转换，是因为转换通常意味着某种运行时的支持。但是，类型断言纯粹是一个编译时语法，同时，它也是一种为编译器提供关于如何分析代码的方法。
-
-## 类型推断
-
-当类型没有给出时，TypeScript 编译器利用类型推断来推断类型。
-
-如果由于缺乏声明而不能推断出类型，那么它的类型被视作默认的动态 any 类型。
-
-```typescript
-var num = 2;    // 类型推断为 number
-console.log("num 变量的值为 "+num); 
-num = "12";    // 编译错误
-console.log(num);
-```
 
 ## 数据类型
 
