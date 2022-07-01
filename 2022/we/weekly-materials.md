@@ -1,5 +1,11 @@
 # 备用材料
 
+1、[Mosaic](https://github.com/ahhhh6980/Mosaic)
+
+![](https://cdn.beekka.com/blogimg/asset/202203/bg2022032013.webp)
+
+一个命令行小玩具，用一堆指定的图片作为拼图，拼出样图。
+
 3、
 
 我不喜欢“MVP”这个词（最小可行产品），它会让没有经验的人误以为创业很容易。
