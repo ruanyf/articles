@@ -84,6 +84,10 @@ function f(x) {
 
 ## unknown
 
+`unknown`可以看作是更安全的`any`，它也表示任何类型，但是有着更多的限制。
+
+一般来说，可以设为`any`的地方，都应该优先考虑设为`unknown`。
+
 所有类型的值都可以分配给 unknown 类型的变量。
 
 ```typescript
@@ -140,6 +144,39 @@ function isString(v:unknown):string {
   return 'not string';
 }
 ```
+
+也就是说，必须先进行类型检查，然后再使用`unknown`。
+
+```typescript
+function func(value: unknown) {
+  // 报错
+  value.toFixed(2);
+
+  // 正确
+  (value as number).toFixed(2); // OK
+}
+
+function func(value: unknown) {
+  // 报错
+  value * 5;
+
+  if (value === 123) { // 正确
+    value * 5; // OK
+  }
+}
+
+function func(value: unknown) {
+  // 报错
+  value.length;
+
+  if (typeof value === 'string') { 
+    // 正确
+    value.length; // OK
+  }
+}
+```
+
+上面示例中，如果直接使用`unknown`类型的变量就会报错，进行类型检查以后再使用，就不会报错。
 
 在联合类型中，unknown吸收所有类型。这意味着如果任何组成类型是unknown，则联合类型的计算结果为unknown。
 

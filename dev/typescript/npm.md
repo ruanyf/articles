@@ -10,3 +10,7 @@ $ npm install --save @types/lodash
 ```
 
 lodash 的类型描述就是`@types/lodash`的文件`index.d.ts`。
+
+## TS 模块转 npm 模块
+
+TS 代码放在`ts`子目录，编译出来的 CommonJS 代码放在`dist`子目录。

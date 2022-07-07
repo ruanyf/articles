@@ -102,6 +102,28 @@ f(10); // OK
 
 上面示例中，虽然 x 的类型是 number，但实际上是 number | undefined。如果一个参数后面有问号，就表示它有可能是 undefined。
 
+```typescript
+function f1(x?: number) { 
+  return x; 
+}
+
+f1(undefined) // undefined
+```
+
+上面示例中，参数`x`是可选的，等同于说`x`可以赋值为`undefined`。
+
+但是，反过来就不成立，类型设为`undefined`的参数就不能省略。
+
+```typescript
+function f(x: undefined | number) {
+  return x;
+}
+
+f() // 报错
+```
+
+上面示例中，参数`x`的类型是`undefined|number`，表示要么传入`undefined`，要么传入一个数值，如果省略这个参数，就会报错。
+
 函数的前部参数有可能为空，这时要注明有可能为`undefined`。
 
 ```typescript
@@ -190,12 +212,22 @@ const formatter = createFormatter(prettierConfig as PrettierConfig);
 
 ## rest 参数
 
-rest 参数的类型是一个数组，该数组的所有成员必须类型相同。
+rest 参数的类型是一个数组，该数组的所有成员必须类型相同，也需要指定类型。
 
 ```typescript
 function joinNumbers(...nums: number[]): string {
   return nums.join('-');
 }
+```
+
+下面是另一个例子。
+
+```typescript
+function multiply(n: number, ...m: number[]) {
+  return m.map((x) => n * x);
+}
+// 'a' gets value [10, 20, 30, 40]
+const a = multiply(10, 1, 2, 3, 4);
 ```
 
 ## 参数默认值
@@ -214,6 +246,16 @@ createPoint() // [0, 0]
 ```
 
 上面示例中，参数`x`和`y`的默认值都是`0`。
+
+设有默认值的参数，都是可选参数。这时，如果传入`undefined`，也会触发默认值。
+
+```typescript
+function f2(x = 456) {
+  return x;
+}
+
+f2(undefined) // 456
+```
 
 ## 函数重载
 
@@ -293,18 +335,6 @@ function fn() {
 }
 // 报错
 fn();
-```
-
-## rest 参数
-
-rest 参数是一个数组，也需要指定类型。
-
-```typescript
-function multiply(n: number, ...m: number[]) {
-  return m.map((x) => n * x);
-}
-// 'a' gets value [10, 20, 30, 40]
-const a = multiply(10, 1, 2, 3, 4);
 ```
 
 ## 参数解构

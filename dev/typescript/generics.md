@@ -277,6 +277,40 @@ function doStuff(values: ReadonlyArray<string>) {
 
 如果看到一个函数的参数是 ReadonlyArray 类型，就不用担心它在数组内部会被改变。
 
+## 函数泛型
+
+函数定义使用范型的例子。
+
+```typescript
+function identity<Arg>(arg: Arg): Arg {
+  return arg;
+}
+
+const num1 = identity<number>(123);
+```
+
+由于存在类型推断，也可以不给出类型变量，让 TypeScript 自己推断。
+
+```typescript
+const num2 = identity(123);
+```
+
+箭头函数的类型变量写法如下。
+
+```typescript
+const identity = <Arg>(arg: Arg): Arg => arg;
+```
+
+对象方法的类型变量写法如下。
+
+```typescript
+const obj = {
+  identity<Arg>(arg: Arg): Arg {
+    return arg;
+  },
+};
+```
+
 ## 泛型类
 
 泛型也可以用在类（class）上面。

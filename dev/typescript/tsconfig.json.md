@@ -254,6 +254,26 @@ class User {
 }
 ```
 
+## lib
+
+`lib`: TypeScript 应该注意哪些平台特性？可能性包括 ECMAScript 标准库和浏览器的 DOM。
+
+## module
+
+`module`：指定编译输出的格式。
+
+## outDir
+
+`outDir`：字符串，编译结果的存放位置。
+
+## rootDir
+
+`rootDir`：字符串，表示 TypeScript 脚本文件的位置。
+
+## target
+
+`target`: 字符串，编译所针对的 ECMAScript 的目标版本。
+
 ## 参考链接
 
 - [Strict Property Initialization in TypeScript](https://mariusschulz.com/blog/strict-property-initialization-in-typescript), Marius Schulz
