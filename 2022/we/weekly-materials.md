@@ -1,5 +1,11 @@
 # 备用材料
 
+7、[Let's Block It!](https://letsblock.it/)
+
+![](https://cdn.beekka.com/blogimg/asset/202201/bg2022012505.webp)
+
+uBlock Origin 插件，提供基于内容的过滤，比如过滤谷歌的搜索结果、Youtube 视频等等。
+
 ## 自动驾驶的事故责任
 
 自动驾驶车辆一旦发生事故，到底算谁的责任？
