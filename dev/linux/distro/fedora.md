@@ -152,4 +152,123 @@ $ proxychains4 command options
 $ proxychains4 -q /bin/bash
 ```
 
+## nginx 安装
+
+安装 nginx。
+
+```bash
+$ sudo dnf install nginx -y
+```
+
+验证 nginx 是否安装成功。
+
+```bash
+$ nginx -v
+```
+
+激活 nginx。
+
+```bash
+$ sudo systemctl enable nginx --now
+```
+
+查看 nginx 的状态。
+
+```bash
+$ sudo systemctl status nginx
+```
+
+如果需要单独启动 nginx，使用下面的命令。
+
+```bash
+$ sudo systemctl start nginx
+```
+
+打开防火墙 80 端口和 443 端口。
+
+```bash
+$ sudo firewall-cmd --permanent --add-service=http --add-service=https
+```
+
+重新加载防火墙。
+
+```bash
+$ sudo firewall-cmd --reload
+```
+
+## nginx 配置
+
+nginx 配置文件是`/etc/nginx/nginx.conf`。
+
+新建一个个人网站的配置文件`/etc/nginx/conf.d/pn41.conf`。
+
+```nginx
+server {
+    listen 80;
+    server_name pn41;
+    root /var/www/pn41/public_html;
+    index index.html;
+}
+```
+
+新建个人网站目录。
+
+```bash
+$ sudo mkdir -p /var/www/pn41/public_html
+$ sudo chown -R $USER:$USER /var/www/pn41/public_html
+$ sudo chmod -R 755 /var/www/pn41
+$ vi /var/www/pn41/public_html/index.html
+```
+
+```html
+<html>
+ <head>
+  <title>Welcome to PN41!</title>
+ </head>
+ <body>
+   <h1>Success!  The your_domain server block is working!</h1>
+ </body>
+</html>
+```
+
+测试 nginx 配置。
+
+```bash
+$ sudo nginx -t
+```
+
+重新启动 
+
+```bash
+$ sudo systemctl restart nginx
+```
+
+## 防火墙管理
+
+https://fedoramagazine.org/control-the-firewall-at-the-command-line/
+
+查看防火墙是否正在运行。
+
+```bash
+$ sudo firewall-cmd --state
+```
+
+检查当前允许的服务/端口。
+
+```bash
+$ sudo firewall-cmd --permanent --list-services
+```
+
+允许 HTTP 和 HTTPS 端口。
+
+```bash
+$ sudo firewall-cmd --permanent --add-service=http
+$ sudo firewall-cmd --permanent --add-service=https
+```
+
+重新加载防火墙。
+
+```bash
+$ sudo systemctl reload firewalld
+```
 
