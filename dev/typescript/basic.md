@@ -75,6 +75,15 @@ function fn(s) {
 
 上面示例中，TypeScript 无法推断出参数`s`的类型。如果项目不允许推断为`any`类型，就会报错。
 
+## 类型不是值
+
+TypeScript 添加的类型系统，只能用于类型运行。它不是 JavaScript 的值，不能用于 JavaScript 的值运算。
+
+```typescript
+let x:any;
+console.log(any); // 报错
+```
+
 ## 类型断言
 
 类型断言可以用来手动指定一个值的类型。

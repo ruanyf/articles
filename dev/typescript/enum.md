@@ -1,5 +1,7 @@
 # enum
 
+## 基本用法
+
 enum 用来将一组相关的值，放在一个容器里面。
 
 ```typescript
@@ -49,6 +51,8 @@ enum Color {
     Blue     // 2
 }
 ```
+
+第一个成员的值默认为 0，后面的成员会在前一个成员的值的基础上加1。
 
 可以指定其中一个常量的值。
 
@@ -108,14 +112,25 @@ const enum Color {
 
 加上`const`，编译结果会直接将 enum 成员转为对应的值，这样会提高性能表现。
 
+Enum 成员的整数值可以使用计算式，前提是编译时能够完成计算。
+
 ```typescript
-enum Color {
-    Red,
-    Green,
-    Blue
+enum Perm {
+  UserRead     = 1 << 8, // bit 8
+  UserWrite    = 1 << 7,
+  UserExecute  = 1 << 6,
+  GroupRead    = 1 << 5,
+  GroupWrite   = 1 << 4,
+  GroupExecute = 1 << 3,
+  AllRead      = 1 << 2,
+  AllWrite     = 1 << 1,
+  AllExecute   = 1 << 0,
 }
-var col = Color.Red;
-col = 0; // Effectively same as Color.Red
+
+enum NoYesNum {
+  No = 123,
+  Yes = Math.random(), // OK
+}
 ```
 
 Enum 转换成 JavaScript 代码，会以对象表示，因此下面的代码不会报错。
@@ -213,6 +228,25 @@ const enum MediaTypes {
 
 一旦加上`const`命令时，运行时就不能再访问 Enum 结构了。如果有特殊需求，需要再访问，需要在编译时打开`preserveConstEnums`选项。
 
+Enum 用于类型时，有一个缺点，就是输入任何整数都不会报错。
+
+```typescript
+enum NoYes { No, Yes }
+function func(noYes: NoYes) {}
+func(33);  // 未报错
+```
+
+使用字符串 Enum，就没有这个问题。
+
+```typescript
+enum NoYes { No='No', Yes='Yes' }
+
+function func(noYes: NoYes) {}
+
+func('abc'); // 报错
+func('Yes'); // 报错
+```
+
 ## 字符串枚举
 
 除了设为数值，枚举成员的值也可以设为字符串。处理一组相关的字符串常量时，这种结构非常有用。
@@ -232,6 +266,66 @@ fetch("https://example.com/api/endpoint", {
 });
 ```
 
+字符串值不能使用表达式赋值。
+
+```typescript
+enum NoYesStr {
+  No = 'No',
+  // @ts-expect-error: Computed values are not permitted in
+  // an enum with string valued members.
+  Yes = ['Y', 'e', 's'].join(''),
+}
+```
+
+Enum 成员也可以是字符串和数值混合赋值，形成异构枚举。
+
+```typescript
+enum Enum {
+  One = 'One',
+  Two = 'Two',
+  Three = 3,
+  Four = 4,
+}
+```
+
+TypeScript 只支持数字和字符串作为枚举成员值，不允许使用其他值，比如 Symbol 值。
+
+字符串值的下一个成员，必须赋值，否则报错。
+
+```typescript
+enum Enum {
+  A,
+  B,
+  C = 'C',
+  D = 'D',
+  E , // 报错
+  F,
+}
+```
+
+## keyof
+
+```typescript
+enum HttpRequestKeyEnum {
+  'Accept',
+  'Accept-Charset',
+  'Accept-Datetime',
+  'Accept-Encoding',
+  'Accept-Language',
+}
+// %inferred-type: "Accept" | "Accept-Charset" | "Accept-Datetime" |
+// "Accept-Encoding" | "Accept-Language"
+type HttpRequestKey = keyof typeof HttpRequestKeyEnum;
+```
+
+注意，这里的`typeof`不能忘记，否则`keyof HttpRequestKeyEnum`相当于`keyof number`。
+
+```typescript
+// %inferred-type: "toString" | "toFixed" | "toExponential" |
+// "toPrecision" | "valueOf" | "toLocaleString"
+type Keys = keyof HttpRequestKeyEnum;
+```
+
 ## 反向映射
 
 Enum 成员值为数值时，存在反向映射。
@@ -244,5 +338,24 @@ enum Enum {
 let nameOfA = Enum[0]; // "A"
 ```
 
+上面示例中，可以从成员去取到值，也可以从值取到成员。这就叫反向映射。
+
 这种情况只发生在成员值为数值的情况。如果成员值为字符串，则不存在反向映射。
 
+```javascript
+var NoYes;
+(function (NoYes) {
+  NoYes[NoYes["No"] = 0] = "No";
+  NoYes[NoYes["Yes"] = 1] = "Yes";
+})(NoYes || (NoYes = {}));
+```
+
+上面代码中，实际进行了两组赋值。
+
+```javascript
+NoYes["No"] = 0;
+NoYes["Yes"] = 1;
+
+NoYes[0] = "No";
+NoYes[1] = "Yes";
+```
