@@ -385,3 +385,12 @@ declare namespace React {
 ```
 
 上面示例中，范型变量`Props`和`State`的默认值，都是`any`类型。
+
+## 变量继承
+
+范型的类型变量，可以采用对象继承的形式。
+
+```typescript
+function computeDistance2<P extends Point>(point: P) { /*...*/ }
+computeDistance2({ x: 1, y: 2, z: 3 }); // 正确
+```

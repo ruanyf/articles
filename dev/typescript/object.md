@@ -26,6 +26,29 @@ const obj: {
 
 上面示例中，属性`y`是可选的。
 
+`readonly`表示属性是只读属性。
+
+```typescript
+interface MyInterface {
+  readonly prop: number;
+}
+```
+
+注意，TypeScript 不区分对象自身的属性和继承的属性，一律视为对象的属性。
+
+```typescript
+interface MyInterface {
+  toString(): string; // inherited property
+  prop: number; // own property
+}
+
+const obj: MyInterface = { // 正确
+  prop: 123,
+};
+```
+
+上面示例中，`obj`只写了`prop`属性，但是不报错。
+
 `interface`关键字可以把类型描述提炼成一个接口。这样就很简洁，还可以复用。
 
 ```typescript
@@ -244,7 +267,9 @@ interface Point {
   x: number;
   y: number;
 }
- 
+
+const point: Point = {x: 1, y: 2};
+
 function printCoord(pt: Point) {
   console.log("The coordinate's x value is " + pt.x);
   console.log("The coordinate's y value is " + pt.y);
@@ -252,6 +277,98 @@ function printCoord(pt: Point) {
  
 printCoord({ x: 100, y: 100 });
 ```
+
+interface 的完整用法如下。
+
+```typescript
+interface ExampleInterface {
+  // Property signature
+  myProperty: boolean;
+
+  // Method signature
+  myMethod(str: string): number;
+
+  // Index signature
+  [key: string]: any;
+
+  // Call signature
+  (num: number): string;
+
+  // Construct signature
+  new(str: string): ExampleInstance; 
+}
+```
+
+下面是 interface 定义对象的方法。
+
+```typescript
+interface HasMethodDef {
+  simpleMethod(flag: boolean): void;
+}
+interface HasFuncProp {
+  simpleMethod: (flag: boolean) => void;
+}
+
+const objWithMethod: HasMethodDef = {
+  simpleMethod(flag: boolean): void {},
+};
+const objWithMethod2: HasFuncProp = objWithMethod;
+```
+
+interface 也可以表示字典（dictionary）类型的对象。
+
+```typescript
+interface TranslationDict {
+  [key:string]: string; // (A)
+}
+const dict = {
+  'yes': 'sí',
+  'no': 'no',
+  'maybe': 'tal vez',
+};
+```
+
+注意，键名的类型只能是`string`或`number`，不能是其他类型（比如`symbol`），也不能是联合类型`string|number`。
+
+由于 JavaScript 对象的数字键，内部会自动转成字符串键名。所以，数字键对应的值，应该符合字符串键值的类型。
+
+```typescript
+interface StringAndNumberKeys {
+  [key: string]: Object;
+  [key: number]: RegExp;
+}
+```
+
+上面的定义是正确的，因为数字键的值类型是`RegExp`是字符串键的值类型`Object`的子集。
+
+由于对象的所有键名都是字符串（除了 Symbol 键名），所以一旦定义了序列的字符串属性，其他的属性和方法不能跟字符串序列属性冲突。
+
+```typescript
+interface I1 {
+  [key: string]: boolean;
+
+  // 报错
+  myProp: number;
+  
+  // 报错
+  myMethod(): string;
+}
+```
+
+下面的类型定义就不会报错。
+
+```typescript
+interface I2 {
+  [key: string]: number;
+  myProp: number;
+}
+
+interface I3 {
+  [key: string]: () => string;
+  myMethod(): string;
+}
+```
+
 
 interface 可以使用 extends 关键字继承其他接口。
 
@@ -331,7 +448,108 @@ type Example2 = RegExp extends Animal ? number : string;
 
 ## type 命令与 interface 命令的区别
 
+对象类型有`type`和`interface`两种定义方法。
+
+```typescript
+// Object type literal
+type ObjType1 = {
+  a: boolean,
+  b: number;
+  c: string,
+};
+
+// Interface
+interface ObjType2 {
+  a: boolean,
+  b: number;
+  c: string,
+}
+```
+
+它们都可以使用分号或逗号，作为分隔符。最后一个成员的分隔符是可选的，可以加上，也可以省略。
+
 两者作用类似，几乎所有的 interface 命令都可以改写为 type 命令。
+
+它们有几个区别。
+
+第一个区别，`type`类型可以嵌入行内，但是`interface`不可以。
+
+```typescript
+// Inlined object type literal:
+function f1(x: {prop: number}) {}
+
+// Referenced interface:
+function f2(x: ObjectInterface) {} 
+interface ObjectInterface {
+  prop: number;
+}
+```
+
+第二个区别，`type`类型不能有重名。
+
+```typescript
+// 报错
+type PersonAlias = {first: string};
+// 报错
+type PersonAlias = {last: string};
+```
+
+`interface`可以重名，TypeScript 会将它们自动合并成一个定义。
+
+```typescript
+interface PersonInterface {
+  first: string;
+}
+interface PersonInterface {
+  last: string;
+}
+const jane: PersonInterface = {
+  first: 'Jane',
+  last: 'Doe',
+};
+```
+
+第三个区别是，`interface`不能包含属性映射（mapping），`type`可以。
+
+```typescript
+interface Point {
+  x: number;
+  y: number;
+}
+
+// 正确
+type PointCopy1 = {
+  [Key in keyof Point]: Point[Key]; // (A)
+};
+
+// 报错
+interface PointCopy2 {
+   [Key in keyof Point]: Point[Key];
+};
+```
+
+第四个区别是，`this`只能用于`interface`。
+
+```typescript
+// 正确
+interface AddsStrings {
+  add(str: string): this;
+};
+
+// 报错
+type AddsStrings = {
+  add(str: string): this;
+};
+
+class StringBuilder implements AddsStrings {
+  result = '';
+  add(str: string) {
+    this.result += str;
+    return this;
+  }
+}
+```
+
 
 它们的区别主要是可扩展性。type 定义的类型别名，无法加新属性。
 
@@ -384,6 +602,70 @@ bear.honey
 上面示例中，只要使用`extends`关键字，就能基于原来的接口进行扩展。
 
 因为 inteface 的灵活性更高，所以建议优先使用 inteface，代替 type 命令。
+
+## 多余的属性
+
+TypeScript 允许对象具有多余的属性。
+
+```typescript
+interface Point {
+  x: number;
+  y: number;
+}
+
+function computeDistance(point: Point) { /*...*/ }
+
+const obj = { x: 1, y: 2, z: 3 };
+computeDistance(obj); // 正确
+```
+
+但是，直接传入对象的字面量时，不能有多余的属性。
+
+```typescript
+computeDistance({ x: 1, y: 2, z: 3 }); // 报错
+computeDistance({x: 1, y: 2}); // 正确
+```
+
+这是为了防止直接在代码里面写入对象字面量时，出现打字错误。
+
+如果对象来自代码的其他地方，一般认为就不会包含打字错误。允许多余的属性，就可以极大提高代码的灵活性。
+
+但是有一个例外，空对象总是允许多余的属性。
+
+```typescript
+interface Empty { }
+const b: Empty = {myProp: 1, anotherProp: 2}; // 正确
+```
+
+如果想强制让对象字面量有多余的属性，可以采用下面的断言写法。
+
+```typescript
+computeDistance1({ x: 1, y: 2, z: 3 } as Point); 
+```
+
+```typescript
+interface HasYear {
+  year: number;
+}
+
+function getAge(obj: HasYear) {
+  const yearNow = new Date().getFullYear();
+  return yearNow - obj.year;
+}
+```
+
+上面示例中，函数`getAge()`内部如果引用了对象`obj`除了`year`以外的属性，就会报错。
+
+如果想强制使用没有属性的对象，可以采用下面的写法。
+
+```typescript
+interface WithoutProperties {
+  [key: string]: never;
+}
+
+// 报错
+const a: WithoutProperties = { prop: 1 };
+```
 
 ## 类型断言
 

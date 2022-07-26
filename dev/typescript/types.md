@@ -366,6 +366,68 @@ configure("automatic");
 
 最后，布尔值类型 boolean 本身就是两个布尔值 union 类型`true | false`的别名。
 
+## Object 与 object 的区别
+
+```typescript
+let x:Object;
+let y:object;
+```
+
+类型声明为`Object`（大写），表示`x`是`Object`的实例。
+
+JavaScript 存在一些对象，不属于`Object`的实例。
+
+```javascript
+const obj = Object.create(null);
+Object.getPrototypeOf(obj2) // null
+
+typeof obj2 // object
+obj2 instanceof Object // false
+```
+
+上面示例中，对象`object`的类型是对象，但不是`Object`的实例，因为它的原型对象不是`Object.prototype`。
+
+类型设为`Object`的一个问题是，原始类型也符合`Object`类型。
+
+```typescript
+function func1(x: Object) { }
+func1('abc');  // 正确
+```
+
+上面示例不报错，这是因为字符串、数值、布尔值都会自动转为对象，成为 Object 的实例。
+
+```typescript
+'abc'.hasOwnProperty === Object.prototype.hasOwnProperty
+// true
+```
+
+类型设为`object`（小写）则表示一切`typeof`运算符返回值为`object`的值，也就是所有非原始类型的值（undefined, null, booleans, numbers, bigints, strings）。
+
+而且，原始类型也不符合`object`。
+
+```typescript
+function func1(x:object) { }
+func1('abc');  // 报错
+```
+
+第三个问题是，类型设为`Object`（大写）时，不方便自定义原生方法。
+
+```typescript
+// 报错
+const obj1: Object = { toString() { return 123 } };
+```
+
+上面代码报错是因为`toString()`是一个原生方法，它已经有类型定义了，必须返回一个字符串，而不能返回数值。
+
+但是，类型设为`object`就没有这个问题。
+
+```typescript
+// 正确
+const obj2: object = { toString() { return 123 } };
+```
+
+由于`object`的适用范围大于`Object`，所以建议总是使用`object`（小写），而不是`Object`（大写）。
+
 ## 特殊类型
 
 ### unknown 
