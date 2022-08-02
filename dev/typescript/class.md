@@ -20,6 +20,72 @@ class Point {
 
 上面示例中，实例属性`x`和`y`的类型是`number`。
 
+```typescript
+class Color {
+  name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+```
+
+这个类定义创建了两件事。
+
+首先，一个名为Color（可以通过调用new）的构造函数：
+
+```typescript
+assert.equal(
+  typeof Color, 'function')
+```
+
+其次，创建了一个名为`Color`实例类型。
+
+```typescript
+const green: Color = new Color('green');
+```
+
+注意，类名`Color`作为类型使用时，只能用来表示实例的类型，不能用来表示类本身。
+
+```typescript
+class Point {
+  x: number;
+  y: number;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+// 错误
+function createPoint(PointClass:Point, x: number, y: number) { // (A)
+  return new PointClass(x, y);
+}
+
+// 正确
+function createPoint(PointClass: typeof Point, x: number, y: number) { 
+  return new PointClass(x, y);
+}
+// 或者
+function createPoint(
+  PointClass: new (x: number, y: number) => Point, // (A)
+  x: number, y: number
+) {
+  return new PointClass(x, y);
+}
+// 或者
+function createPoint(
+  PointClass: {new (x: number, y: number): Point},
+  x: number, y: number
+) {
+  return new PointClass(x, y);
+}
+
+const point = createPoint(Point, 3, 6);
+assert.ok(point instanceof Point);
+```
+
+上面示例中，`Point`作为类型时，不能用来表示类本身。这里是要传入一个类，作为构造函数使用，所以必须写成`typeof Point`。
+
 如果属性是构造函数的参数，那么声明属性有一种简便写法，前面需要加上 public、private、protected。
 
 ```typescript
@@ -116,6 +182,15 @@ class MyPoint implements Point { // ERROR : missing member `z`
 
 类可以实现多个接口，例如`class C implements A, B {`。
 
+注意，interface 描述的是类的对外接口，所以只能定义公开属性，不能定义私有属性。
+
+```typescript
+interface IFoo
+{
+  private member: {}; // 报错
+}
+```
+
 ## 访问修饰符
 
 TypeScript 提供了三个访问修饰符（access modifiers），控制类的成员的可访问性：`public`、`private`和`protected`。
@@ -138,11 +213,11 @@ g.greet();
 
 ### private
 
-`private`是私有属性，只能在定义它的类内部使用，实例和子类都不能读取。
+`private`是私有属性，只能用在定义它的类内部，实例和子类都不能读取私有属性。
 
 ```typescript
 class Base {
-  private x = 0;
+  private x:number = 0;
 }
 const b = new Base();
 console.log(b.x); // 报错
@@ -171,7 +246,7 @@ class Derived extends Base {
 
 ```typescript
 class MySafe {
-  private secretKey = 12345;
+  private secretKey:number = 12345;
 }
  
 const s = new MySafe();
@@ -188,6 +263,33 @@ class MySafe {
 const s = new MySafe();
 console.log(s["secretKey"]); // undefined
 ```
+
+### 私有构造函数
+
+构造函数也可以是私有的，这就防止了直接用`new`命令生成类的实例。
+
+通常，这时会有一个静态方法，充当工厂函数，要求所有实例都通过该方法生成。
+
+```typescript
+class DataContainer {
+  #data: string;
+  static async create() {
+    const data = await Promise.resolve('downloaded'); // (A)
+    return new this(data);
+  }
+  private constructor(data: string) {
+    this.#data = data;
+  }
+  getData() {
+    return 'DATA: '+this.#data;
+  }
+}
+DataContainer.create()
+  .then(dc => assert.equal(
+    dc.getData(), 'DATA: downloaded'));
+```
+
+上面示例中，所有实例都通过静态方法`DataContainer.create()`生成。
 
 ### protected
 
@@ -326,9 +428,15 @@ g.name = "also not ok";
 
 `abstrct`也是一个修饰符，不仅可以用于类的成员，也可以用于类本身。
 
-它表明这个类不能实例化，必须用子类继承后，对子类实例化。也就是说，抽象类只用于定义类的原型，必须继承后使用。
+抽象类表明这个类不能实例化，必须用子类继承后，对子类实例化。也就是说，抽象类只用于定义类的原型，必须继承后使用。
 
-`abstract`的作用是，确保一系列相关的子类拥有跟基类相同的接口。
+抽象方法没有实现，只有类型签名。每个子类必须有一个具有相同名称和兼容类型签名的具体方法。如果一个类有任何抽象方法，它也必须是抽象的。
+
+`abstract`的作用是，确保一系列相关的子类拥有跟基类相同的接口，可以看作是模板，其中每个抽象方法都是必须由子类填充（实现）的空白。对于抽象类里面的非抽象方法，则表示是子类已经实现的接口。
+
+虽然一个类可以实现多个接口，但它最多只能扩展一个抽象类。
+
+注意，“抽象”只存在于编译时。在运行时，抽象类是普通类，不存在抽象方法（因为它们只提供编译时信息）。
 
 ```typescript
 abstract class Base {
@@ -391,6 +499,54 @@ function greet(ctor: typeof Base) {
 }
 // 报错
 greet(Base);
+```
+
+下面是抽象方法的例子。
+
+```typescript
+class StringBuilder {
+  string = '';
+  add(str: string) {
+    this.string += str;
+  }
+}
+abstract class Printable {
+  toString() {
+    const out = new StringBuilder();
+    this.print(out);
+    return out.string;
+  }
+  abstract print(out: StringBuilder): void;
+}
+
+class Entries extends Printable {
+  entries: Entry[];
+  constructor(entries: Entry[]) {
+    super();
+    this.entries = entries;
+  }
+  print(out: StringBuilder): void {
+    for (const entry of this.entries) {
+      entry.print(out);
+    }
+  }
+}
+
+class Entry extends Printable {
+  key: string;
+  value: string;
+  constructor(key: string, value: string) {
+    super();
+    this.key = key;
+    this.value = value;
+  }
+  print(out: StringBuilder): void {
+    out.add(this.key);
+    out.add(': ');
+    out.add(this.value);
+    out.add('\n');
+  }
+}
 ```
 
 ## 继承

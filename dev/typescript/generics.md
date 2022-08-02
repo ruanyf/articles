@@ -371,6 +371,24 @@ const someClass = class<Type> {
 const m = new someClass("Hello, world");
 ```
 
+类可以使用范型写成通用形式，其实就是写一个构造函数。
+
+```typescript
+type Class<T> = new (...args: any[]) => T;
+
+// 或者
+interface Class<T> {
+  new(...args: any[]): T;
+}
+
+function createInstance<T>(
+  AnyClass:Class<T>,
+  ...args:any[]
+):T {
+  return new AnyClass(...args);
+}
+```
+
 ## 范型变量的默认值
 
 范型的类型变量可以设置默认值。

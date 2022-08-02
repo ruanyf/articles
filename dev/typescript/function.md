@@ -15,6 +15,14 @@ function hello(txt: string):void {
 如果参数是一个函数，使用箭头函数的形式，表示整个函数的类型。
 
 ```typescript
+const repeat2 = (str: string, times: number): string => {
+  return str.repeat(times);
+};
+
+// 或者
+const repeat3 = (str: string, times: number): string =>
+  str.repeat(times);
+
 function hello(txt: string):void {
   console.log('hello' + txt);
 }
@@ -44,13 +52,21 @@ type FunctionType2 = (string, number) => number;
 比较方便的写法，是为函数指定一个类型别名。
 
 ```typescript
+type Repeat = (str: string, times: number) => string;
+
 type GreetFunction = (a: string) => void;
 function greeter(fn: GreetFunction) {
   // ...
 }
 ```
 
-函数类型也可以定义成一个对象，详见《对象类型》一章。
+上面这种类型写法，有两个地方需要注意。
+
+（1）两个参数`str`和`times`的参数名需要声明。
+
+（2）返回类型`string`使用箭头分隔，而不是使用冒号。
+
+函数类型也可以使用对象接口来定义，详见《对象类型》一章。
 
 ```typescript
 interface myfn {
@@ -61,6 +77,8 @@ var add:myfn = (a, b) => a + b;
 ```
 
 上面示例中，interface 命令定义了接口`myfn`，这个接口的类型是一个对象，但是该对象可调用，因此也就是一个函数。
+
+这种写法类似于方法的类型定义，但是不用写方法名。
 
 ## void 类型
 
@@ -210,6 +228,49 @@ const formatter = createFormatter(prettierConfig);
 const formatter = createFormatter(prettierConfig as PrettierConfig);
 ```
 
+
+## 参数默认值
+
+TypeScript 函数的参数默认值写法，与 JavaScript 一致。
+
+```typescript
+function createPoint(
+  x:number = 0,
+  y:number = 0
+):[number, number] {
+  return [x, y];
+}
+
+createPoint() // [0, 0]
+```
+
+上面示例中，参数`x`和`y`的默认值都是`0`。这时可以省略`x`和`y`的类型声明，因为可以从默认值推断出来。
+
+```typescript
+function createPoint(
+  x = 0, y = 0
+):[number, number] {
+  return [x, y];
+}
+```
+
+设有默认值的参数，都是可选参数。这时，如果传入`undefined`，也会触发默认值。
+
+```typescript
+function trim3(str = ''): string {
+  return str.trim();
+}
+
+// 类型推断为 (str?: string) => string
+trim3;
+
+function f2(x = 456) {
+  return x;
+}
+
+f2(undefined) // 456
+```
+
 ## rest 参数
 
 rest 参数的类型是一个数组，该数组的所有成员必须类型相同，也需要指定类型。
@@ -228,33 +289,6 @@ function multiply(n: number, ...m: number[]) {
 }
 // 'a' gets value [10, 20, 30, 40]
 const a = multiply(10, 1, 2, 3, 4);
-```
-
-## 参数默认值
-
-TypeScript 函数的参数默认值写法，与 JavaScript 一致。
-
-```typescript
-function createPoint(
-  x:number = 0,
-  y:number = 0
-):[number, number] {
-  return [x, y];
-}
-
-createPoint() // [0, 0]
-```
-
-上面示例中，参数`x`和`y`的默认值都是`0`。
-
-设有默认值的参数，都是可选参数。这时，如果传入`undefined`，也会触发默认值。
-
-```typescript
-function f2(x = 456) {
-  return x;
-}
-
-f2(undefined) // 456
 ```
 
 ## 函数重载

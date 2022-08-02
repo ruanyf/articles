@@ -235,6 +235,22 @@ class User {
 }
 ```
 
+如果使用 TypeScript 无法识别的方式，进行初始化，就要使用赋值断言。
+
+```typescript
+class Point {
+  x!: number; // (A)
+  y!: number; // (B)
+  constructor() {
+    this.initProperties();
+  }
+  initProperties() {
+    this.x = 0;
+    this.y = 0;
+  }
+}
+```
+
 它是`--strict`选项的一部分。
 
 注意，使用该属性的前提是，必须设置`--strictNullChecks`。
