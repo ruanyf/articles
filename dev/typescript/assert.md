@@ -1,5 +1,37 @@
 # 类型断言
 
+类型断言允许我们覆盖 TypeScript 为值计算的静态类型。这对于解决类型系统的限制很有用。
+
+它相当于其他语言中的类型转换，但类型断言不会抛出异常，并且只用于静态检查，在运行时不做任何事情。
+
+```typescript
+const data: object = ['a', 'b', 'c']; // (A)
+
+// @ts-expect-error: Property 'length' does not exist on type 'object'.
+data.length; // (B)
+
+assert.equal(
+  (data as Array<string>).length, 3); // (C)
+```
+
+上面示例中，`['a', 'b', 'c']`会被 TypeScript 归类为对象，所以不能使用`length`属性。类型断言就将其指定为数组。
+
+一般来说，类型断言应该少避免，因为它改变了 TypeScript 内置规则，有可能破坏静态检查。
+
+类型推断可以暂时改变一个值的类型。
+
+```typescript
+interface Named {
+  name: string;
+}
+function getName(obj: object): string {
+  if (typeof (obj as Named).name === 'string') { // (A)
+    return (obj as Named).name; // (B)
+  }
+  return '(Unnamed)';
+}
+```
+
 使用类型断言之后，unknown 类型就可以作为所断言的类型使用。
 
 ```typescript
@@ -196,7 +228,23 @@ root.addEventListener("click", e => {
 });
 ```
 
-非空断言运算符!告诉 TypeScript 假设返回的值document.getElementById()是非空且非未定义的（也称为“非空值”）。TypeScript 将排除类型null和undefined。
+非空断言运算符`!`告诉 TypeScript 假设返回的值document.getElementById()是非空且非未定义的（也称为“非空值”）。TypeScript 将排除类型null和undefined。
+
+非空断言表示该值可能不是`undefined`或`null`。
+
+下面是另一个例子。
+
+```typescript
+const theName = 'Jane' as (null | string);
+
+// @ts-expect-error: Object is possibly 'null'.
+theName.length;
+
+assert.equal(
+  theName!.length, 4); // OK
+```
+
+上面示例中，变量加上感叹号后缀，表示该值非空。
 
 非空断言运算符没有任何运行时表现。也就是说，TypeScript 编译器不会发出任何验证代码来验证表达式实际上是非空的。所以，比较保险的方法是手动检查一下类型。
 
@@ -211,6 +259,45 @@ root.addEventListener("click", e => {
   /* ... */
 });
 ```
+
+非空断言符还可以进行赋值断言。如果打开了严格的属性初始化，有时 TypeScript 没有推断出属性初始化，就会报错。
+
+```typescript
+class Point1 {
+  // @ts-expect-error: Property 'x' has no initializer and is not definitely
+  // assigned in the constructor.
+  x: number;
+
+  // @ts-expect-error: Property 'y' has no initializer and is not definitely
+  // assigned in the constructor.
+  y: number;
+
+  constructor() {
+    this.initProperties();
+  }
+  initProperties() {
+    this.x = 0;
+    this.y = 0;
+  }
+}
+```
+
+这时就可以使用非空断言符，进行赋值断言。
+
+```typescript
+class Point2 {
+  x!: number; // (A)
+  y!: number; // (B)
+  constructor() {
+    this.initProperties();
+  }
+  initProperties() {
+    this.x = 0;
+    this.y = 0;
+  }
+}
+```
+
 
 ## 断言函数
 

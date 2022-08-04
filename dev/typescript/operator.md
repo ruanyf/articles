@@ -1,6 +1,20 @@
-# 运算符
+# 类型运算
 
 ## keyof
+
+keyof 列出了对象类型的属性键。
+
+```typescript
+type Obj = {
+  0: 'a',
+  1: 'b',
+  prop0: 'c',
+  prop1: 'd',
+};
+
+// %inferred-type: 0 | 1 | "prop0" | "prop1"
+type Result = keyof Obj;
+```
 
 JavaScript 的对象是一个容器，可以放置任何类型的数据。有时候，需要知道某个对象所包含数据的所有类型。
 
@@ -18,6 +32,28 @@ keyof 运算符可以返回这个对象的所有键名。
 
 ```typescript
 type TodoKeys = keyof Todo; // "id" | "text" | "due"
+```
+
+元组的返回结果可能出人意料。
+
+```typescript
+应用于keyof元组类型的结果可能有些出乎意料：
+
+// number | "0" | "1" | "2" | "length" | "pop" | "push" | ···
+type Result = keyof ['a', 'b', 'c'];
+```
+
+下面是交集类型和联合类型的 keyof 差异。
+
+```typescript
+type A = { a: number, shared: string };
+type B = { b: number, shared: string };
+
+// %inferred-type: "a" | "b" | "shared"
+type Result1 = keyof (A & B);
+
+// %inferred-type: "shared"
+type Result2 = keyof (A | B);
 ```
 
 下面是一个例子。
@@ -222,11 +258,43 @@ type P = ReturnType<typeof f>;
 
 索引访问类型（indexed access type）指的是计算类型的时候，TypeScript 会查找另一种类型的属性（又称“索引”）。
 
+在计算类型的时候，`T[K]`会返回该属性的类型。
+
 ```typescript
 type Person = { age: number; name: string; alive: boolean };
 
 // 等同于 type Age = number
 type Age = Person["age"];
+```
+
+```typescript
+type Obj = {
+  0: 'a',
+  1: 'b',
+  prop0: 'c',
+  prop1: 'd',
+};
+
+// %inferred-type: "a" | "b"
+type Result1 = Obj[0 | 1];
+
+// %inferred-type: "c" | "d"
+type Result2 = Obj['prop0' | 'prop1'];
+
+// %inferred-type: "a" | "b" | "c" | "d"
+type Result3 = Obj[keyof Obj];
+```
+
+```typescript
+type Obj = {
+  [key: string]: RegExp, // (A)
+};
+
+// %inferred-type: string | number
+type KeysOfObj = keyof Obj;
+
+// %inferred-type: RegExp
+type ValuesOfObj = Obj[string];
 ```
 
 索引访问类型是一种类型，可以用于所有的类型计算。
@@ -276,4 +344,67 @@ type Age = Person[typeof key];
 
 type key = "age";
 type Age = Person[key];
+```
+
+## 条件运算
+
+```typescript
+«Type2» extends «Type1» ? «ThenType» : «ElseType»
+```
+
+如果Type2可赋值给Type1，则此类型表达式的结果为ThenType。否则，它是ElseType。
+
+```typescript
+type Wrap<T> = T extends { length: number } ? [T] : T;
+
+// %inferred-type: [string]
+type A = Wrap<string>;
+
+// %inferred-type: RegExp
+type B = Wrap<RegExp>;
+```
+
+类似 TypeScript 的三元运算符，TypeScript 也可以写多重判断。
+
+```typescript
+type LiteralTypeName<T> =
+  T extends undefined ? "undefined" :
+  T extends null ? "null" :
+  T extends boolean ? "boolean" :
+  T extends number ? "number" :
+  T extends bigint ? "bigint" :
+  T extends string ? "string" :
+  never;
+
+// %inferred-type: "bigint"
+type Result1 = LiteralTypeName<123n>;
+
+// %inferred-type: "string" | "number" | "boolean"
+type Result2 = LiteralTypeName<true | 1 | 'a'>;
+```
+
+## 工具函数
+
+```typescript
+/**
+ * Exclude from T those types that are assignable to U
+ */
+type Exclude<T, U> = T extends U ? never : T;
+
+// %inferred-type: "a" | "b"
+type Result1 = Exclude<1 | 'a' | 2 | 'b', number>;
+
+// %inferred-type: "a" | 2
+type Result2 = Exclude<1 | 'a' | 2 | 'b', 1 | 'b' | 'c'>;
+
+/**
+ * Extract from T those types that are assignable to U
+ */
+type Extract<T, U> = T extends U ? T : never;
+
+// %inferred-type: 1 | 2
+type Result1 = Extract<1 | 'a' | 2 | 'b', number>;
+
+// %inferred-type: 1 | "b"
+type Result2 = Extract<1 | 'a' | 2 | 'b', 1 | 'b' | 'c'>;
 ```

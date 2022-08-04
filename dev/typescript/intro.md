@@ -44,6 +44,18 @@ TypeScript 的设计目的，就是为 JavaScript 加上静态类型系统，并
 
 JavaScript 语法可以参考[《JavaScript 教程》](https://wangdoc.com/javascript)和[《ES6 教程》](https://wangdoc.com/es6)。
 
+## TypeScript 的历史
+
+2012年，微软公司宣布了 TypeScript 项目，它的主要设计者是著名的编程语言设计大师 Anders Hejlsberg，他也是 C## 和 .Net 的设计师。
+
+微软发明这门语言的主要目的，是让 JavaScript 程序员可以参与 Windows 8 应用程序的开发。当时，Windows 8 即将发布，它的应用程序除了 C# 和 Visual Basic，还可以用 HTML 和 JavaScript 来写。微软希望，这种新语言既能让 JavaScript 程序员快速上手，也能让 .Net 程序员感到熟悉。
+
+所以，TypeScript 的很多语法概念，很大程度上跟 .Net 是类似的。
+
+这门语言的特点，就是为 JavaScript 加入一个类型系统，使其能够进行静态语法分析。这样严格的语法约束，就使其能够用于大型的、多人合作的软件项目。
+
+另外，TypeScript 是一个开源项目，接受社区的参与，核心的编译器采用 Apache 2.0 许可证。
+
 ## 类型的概念
 
 类型（type）就是一组具有相同特征的值。如果一组值具有共同的特征，就可以说，它们属于同一种类型。

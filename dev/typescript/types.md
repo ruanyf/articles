@@ -631,6 +631,22 @@ typeof Symbol(); // "symbol"
 typeof 127n // "bigint"
 ```
 
+如果没有明确标注类型，typeof 会返回一个具体的值作为类型。
+
+```typescript
+const str:string = 'abc';
+
+// %inferred-type: "string"
+type Result = typeof str;
+
+const x:Result = "bc";
+
+const str = 'abc';
+
+// %inferred-type: "abc"
+type Result = typeof str;
+```
+
 在 TypeScript 中，如果`typeof`运算符出现在值的位置（比如等号的右边），那么用法与 JavaScript 的用法完全一样。
 
 ```typescript
@@ -803,6 +819,139 @@ function extend<T extends object, U extends object>(first: T, second: U): T & U 
 }
 
 const x = extend({ a: 'hello' }, { b: 42 });
+```
+
+## 缩小类型
+
+如果一个变量属于联合类型，所以使用时一般需要缩小类型。
+
+第一种方法是使用`if`判断。
+
+```typescript
+function getScore(value: number|string): number {
+  if (typeof value === 'number') { // (A)
+    // %inferred-type: number
+    value;
+    return value;
+  }
+  if (typeof value === 'string') { // (B)
+    // %inferred-type: string
+    value;
+    return value.length;
+  }
+  throw new Error('Unsupported value: ' + value);
+}
+```
+
+下面是另一个例子。
+
+```typescript
+interface Book {
+  title: null | string;
+  isbn: string;
+}
+
+function getTitle(book: Book) {
+  if (book.title === null) {
+    // %inferred-type: null
+    book.title;
+    return '(Untitled)';
+  } else {
+    // %inferred-type: string
+    book.title;
+    return book.title;
+  }
+}
+```
+
+第二种方法是使用`switch`缩小类型。
+
+```typescript
+function getScore(value: number|string): number {
+  switch (typeof value) {
+    case 'number':
+      // %inferred-type: number
+      value;
+      return value;
+    case 'string':
+      // %inferred-type: string
+      value;
+      return value.length;
+    default:
+      throw new Error('Unsupported value: ' + value);
+  }
+}
+```
+
+缩小类型的前提是，需要先获取类型。获取类型的几种方法如下。
+
+```typescript
+function func(value: Function|Date|number[]) {
+  if (typeof value === 'function') {
+    // %inferred-type: Function
+    value;
+  }
+
+  if (value instanceof Date) {
+    // %inferred-type: Date
+    value;
+  }
+
+  if (Array.isArray(value)) {
+    // %inferred-type: number[]
+    value;
+  }
+}
+```
+
+如果一个值是`any`或`unknown`，你又想对它进行处理，就必须先缩小类型。
+
+```typescript
+function parseStringLiteral(stringLiteral: string): string {
+  const result: unknown = JSON.parse(stringLiteral);
+  if (typeof result === 'string') { // (A)
+    return result;
+  }
+  throw new Error('Not a string literal: ' + stringLiteral);
+}
+```
+
+缩小对象的属性，要用`in`运算符。
+
+```typescript
+type FirstOrSecond =
+  | {first: string}
+  | {second: string};
+
+function func(firstOrSecond: FirstOrSecond) {
+  if ('second' in firstOrSecond) {
+    // %inferred-type: { second: string; }
+    firstOrSecond;
+  }
+}
+
+// 错误
+function func(firstOrSecond: FirstOrSecond) {
+  // @ts-expect-error: Property 'second' does not exist on
+  // type 'FirstOrSecond'. [...]
+  if (firstOrSecond.second !== undefined) {
+    // ···
+  }
+}
+```
+
+`in`运算符只能用于联合类型，不能用于检查一个属性是否存在。
+
+```typescript
+function func(obj: object) {
+  if ('name' in obj) {
+    // %inferred-type: object
+    obj;
+
+    // 报错
+    obj.name;
+  }
+}
 ```
 
 ## 数组

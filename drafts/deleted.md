@@ -1,6 +1,6 @@
 # DNS 查询原理详解
 
-通过 DNS 查询，得到域名的 IP 地址，才能访问网站。
+只有通过 DNS 查询，得到域名的 IP 地址，才能访问网站。
 
 那么，DNS 查询到底是怎么完成的？本文通过实例，详细介绍背后的步骤。
 
@@ -26,15 +26,15 @@
 
 它的查询语法如下（美元符号`$`是命令行提示符）。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ dig @[DNS 服务器] [域名]
-```
+</code></pre></blockquote>
 
 向 1.1.1.1 查询域名，就执行下面的命令。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ dig @1.1.1.1 es6.ruanyifeng.com
-```
+</code></pre></blockquote>
 
 正常情况下，它会输出一大堆内容。
 
@@ -62,7 +62,7 @@ $ dig @1.1.1.1 es6.ruanyifeng.com
 
 **（2）顶级域名**
 
-根域名的下一级是顶级域名。它分成两种：通用顶级域名（gTLD，比如 `.com` 和 `.net`）和国别顶级域名（ccTLD，比如 `.cn` 和 `.us`）。
+根域名连接到顶级域名。它分成两种：通用顶级域名（gTLD，比如 .com 和 .net）和国别顶级域名（ccTLD，比如 .cn 和 .us）。
 
 顶级域名由国际域名管理机构 ICANN 控制，它委托商业公司管理 gTLD，委托各国管理自己的国别域名。
 
@@ -100,9 +100,9 @@ $ dig @1.1.1.1 es6.ruanyifeng.com
 
 操作系统会选其中一台，查询 TLD 服务器的 IP 地址。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ dig @192.33.4.12 es6.ruanyifeng.com
-```
+</code></pre></blockquote>
 
 上面示例中，我们选择`192.33.4.12`，向它发出查询，询问`es6.ruanyifeng.com`的 TLD 服务器的 IP 地址。
 
@@ -118,9 +118,9 @@ dig 命令的输出结果如下。
 
 有了 TLD 服务器的 IP 地址以后，我们再选一台接着查询。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ dig @192.41.162.30 es6.ruanyifeng.com
-```
+</code></pre></blockquote>
 
 上面示例中，192.41.162.30 是随便选的一台 .com 的 TLD 服务器，我们向它询问 `es6.ruanyifeng.com` 的 IP 地址。
 
@@ -136,9 +136,9 @@ $ dig @192.41.162.30 es6.ruanyifeng.com
 
 第三步，再向一级域名的 DNS 服务器查询二级域名的 IP 地址。
 
-```bash
+<blockquote><pre><code class="language-bash">
 $ dig @172.64.32.123 es6.ruanyifeng.com
-```
+</code></pre></blockquote>
 
 返回结果如下。
 

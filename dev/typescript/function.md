@@ -106,6 +106,43 @@ const f3: voidFunc = function () {
 };
 ```
 
+## 函数的赋值
+
+函数的赋值指的是将某个函数赋值给指定类型的变量。
+
+```typescript
+const targetFunc: Trg = sourceFunc;
+```
+
+有一些地方需要注意。
+
+（1）函数的返回值类型必须与指定类型相符。
+
+```typescript
+const trg1: (x: RegExp) => Object = (x: Object) => /abc/;
+```
+
+（2）如果指定的类型没有返回值（即返回`void`），则具体的函数实际上可以返回任何值。因为这种情况下，TypeScript 总是忽略 void，不再关心具体的返回值。
+
+```typescript
+const trg2: () => void = () => new Date();
+```
+
+（3）具体函数的参数数量，不能多于指定类型的参数。
+
+```typescript
+// 报错
+const trg3: () => string = (x: string) => 'abc';
+```
+
+但是，具体函数的参数数量，可以少于指定类型的参数数量。
+
+```typescript
+const trg4: (x: string) => string = () => 'abc';
+```
+
+上面示例是正确的，即 TypeScript 允许省略参数。因为 JavaScript 允许函数接受多余的参数，所以 TypeScript 就没有要求一定要显式给出。
+
 ## 可选参数
 
 如果一个参数有可能为空，可以在参数名后面加问号表示。
@@ -273,7 +310,7 @@ f2(undefined) // 456
 
 ## rest 参数
 
-rest 参数的类型是一个数组，该数组的所有成员必须类型相同，也需要指定类型。
+rest 参数表示函数所有的剩余参数，它的类型是一个数组。该数组的所有成员必须类型相同，也需要指定类型。
 
 ```typescript
 function joinNumbers(...nums: number[]): string {
@@ -289,6 +326,19 @@ function multiply(n: number, ...m: number[]) {
 }
 // 'a' gets value [10, 20, 30, 40]
 const a = multiply(10, 1, 2, 3, 4);
+```
+
+rest 参数可以与变量解构结合使用。
+
+```typescript
+function repeat1(...[str, times]: [string, number]): string {
+  return str.repeat(times);
+}
+
+// 等同于
+function repeat2(str: string, times: number): string {
+  return str.repeat(times);
+}
 ```
 
 ## 函数重载
@@ -317,7 +367,6 @@ function reverse<T>(stringOrArray: string | T[]): string | T[] {
 ```
 
 上面示例中，前两行类型描述列举了重载的各种情况。第三行是函数本身的类型描述，必须与所有指定的重载情况兼容。
-
 
 如果函数可以接受多种数目的参数，可以为每一种数目指定一个类型签名。
 
@@ -369,6 +418,35 @@ function fn() {
 }
 // 报错
 fn();
+```
+
+对象的方法也可以使用重载。
+
+```typescript
+class StringBuilder {
+  #data = '';
+
+  add(num: number): this;
+  add(bool: boolean): this;
+  add(str: string): this;
+  add(value: any): this {
+    this.#data += String(value);
+    return this;
+  }
+
+  toString() {
+    return this.#data;
+  }
+}
+
+const sb = new StringBuilder();
+sb
+  .add('I can see ')
+  .add(3)
+  .add(' monkeys!')
+;
+assert.equal(
+  sb.toString(), 'I can see 3 monkeys!')
 ```
 
 ## 参数解构
