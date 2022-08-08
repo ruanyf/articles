@@ -87,6 +87,36 @@ compilerOptions：定制编译器行为。
 }
 ```
 
+### baseUrl
+
+`baseUrl`参数的值为字符串，指定 TypeScript 源文件目录。
+
+### outDir
+
+`outDir`参数的值为字符串，指定编译产物 JavaScript 文件目录。
+
+### noEmitOnError
+
+`"noEmitOnError`参数的值为布尔值，指定一旦编译报错，就不生成编译产物。
+
+### target
+
+`target`参数的值为字符串，指定编译出来的 JavaScript 代码的版本。
+
+注意，如果编译的目标版本过老，比如`"target": "es3"`，有些语法可能无法编译，`tsc`命令会报错。
+
+### watch
+
+`"watch`参数的值为布尔值，如果设为`true`，就会监听 TypeScript 脚本，一旦有变动，就自动重新编译。
+
+### lib
+
+`lib`参数的值是一个数组，描述项目需要加载的外部类型描述文件。
+
+```javascript
+"lib": ["dom", "es2015"]
+```
+
 各项解释。
 
 - target：为了支持旧版浏览器，我们希望将 ES5 定位为语言级别。"es2015"如果您不需要支持旧版浏览器，您可以将此设置提高到（或更高）。

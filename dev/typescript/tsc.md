@@ -1,5 +1,7 @@
 # tsc 命令和 TypeScript 配置
 
+tsc 可以使用配置文件`tsconfig.json`，自动读取当前目录下的这个配置文件。
+
 ## module
 
 `module`参数指定编译的输出格式。
@@ -83,11 +85,15 @@ class OKGreeter {
 
 ## init
 
-`--init`会生成一个默认的配置文件`tsconfig.json`。
+`--init`参数会在当前目录生成一个全新的配置文件`tsconfig.json`。
 
 ```bash
 $ tsc --init
 ```
+
+这个配置文件里面的大多数配置都被注释掉了，需要什么参数，可以取消注释。
+
+另外，目前默认的编译目标是`es2016`。
 
 ## noEmit
 

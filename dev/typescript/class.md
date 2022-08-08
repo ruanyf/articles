@@ -164,6 +164,40 @@ class Point3D extends Point {
 
 上面示例中，实例属性`z`是`Point3D`新增的属性，所以需要给出类型注释。实例属性`x`和`y`是继承的属性，不用重复给出类型注释了。
 
+## class 类型
+
+class 可以作为类型使用。
+
+```typescript
+class Foo {
+  x:number;
+  constructor() {
+    this.x = 123;
+  }
+}
+
+const f1:Foo = new Foo();
+```
+
+上面示例中，`Foo`是一个类，可以作为类型使用，指定变量`f1`为该类型就表示`f1`是`Foo`的一个实例。
+
+但是，TypeScript 规定，只要某个对象跟某个 class 具有相同的方法和属性，就认为该对象属于该 class 的类型。
+
+```typescript
+const obj = { x: 234 };
+const f2:Foo = obj; // 正确
+```
+
+上面示例中，对象`obj`并不是`Foo`的实例，但是赋值给变量`f2`不会报错，TypeScript 认为`obj`也属于`Foo`类型，因为它们的属性相同。
+
+由于这种情况，所以运算符`instanceof`判断某个对象是否属于某个 class 类型，有时会产生遗漏。
+
+```typescript
+obj instanceof Foo // false
+```
+
+上面示例中，运算符`instanceof`确认变量`obj`不是 Foo 的实例，但是`obj`又属于 Foo 类型的值。
+
 ## 使用 inteface
 
 另一种给出 Class 类型注释的方法，就是使用 interface。这时要使用 implements 关键字。

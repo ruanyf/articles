@@ -294,7 +294,16 @@ function readButtonInput(name: string, version: number, ...input: boolean[]) {
 }
 ```
 
-## 多重数组
+## 多维数组
+
+TypeScript 允许`T[][]`的形式，表示二维数组。
+
+```typescript
+var trilogies: string[][] = [
+["An Unexpected Journey", "The Desolation of Smaug", "There and Back Again"],
+["The Fellowship Of the Ring", "The Two Towers", "The Return Of The King"]
+];
+```
 
 下面是一个多重数组的例子。
 

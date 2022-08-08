@@ -26,6 +26,22 @@ const obj: {
 
 上面示例中，属性`y`是可选的。
 
+如果对象的属性可以等于`undefined`，就表示这个属性可以省略，等同在于属性名后面加一个问号（`?`）。
+
+```typescript
+type User = {
+  firstName: string;
+  lastName: string | undefined;
+};
+// 等同于
+type User = {
+  firstName: string;
+  lastName?: string;
+};
+```
+
+上面示例中，类型`User`是一个对象，它的属性`lastName`可以是字符串，也可以是`undefined`，就表示该属性可以省略不写。
+
 `readonly`表示属性是只读属性。
 
 ```typescript

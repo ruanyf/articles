@@ -433,41 +433,153 @@ namespace SomeNameSpaceName {
 SomeNameSpaceName.SomeClassName;
 如果一个命名空间在一个单独的 TypeScript 文件中，则应使用三斜杠 /// 引用它，语法格式如下：
 
+```typescript
 /// <reference path = "SomeFileName.ts" />
+```
 
-## 使用方法
+## TypeScript Playground
 
-### TypeScript Playground
+最简单的 TypeScript 使用方法，就是使用官网的在线编译页面，叫做 [TypeScript Playground](http://www.typescriptlang.org/play/)。
 
-最简单的 TypeScript 使用方法，就是使用官网的 [TypeScript Playground](http://www.typescriptlang.org/play/)。只要打开网页，把代码贴进文本框，就会自动编译代码，并且在浏览器中执行编译后的 JS 代码。
+只要打开这个网页，把 TypeScript 代码贴进文本框，它就会自动编译出 JavaScript 代码，并且在浏览器中执行。
 
-它具有支持完整的 IDE 支持，比如自动提示、显示静态类型错误。而且，它还可以把代码片段和编译器设置，保存到 URL 中，便于分享给他人。
+这个网页具有支持完整的 IDE 支持，具有自动语法提示、还能显示静态类型错误。而且，它支持把代码片段和编译器设置保存到 URL，便于分享给他人。
 
-### TS Node
+## ts-node
 
-[TS Node](https://github.com/TypeStrong/ts-node) 是基于 Node.js 的一个工具软件，可以运行 TypeScript 代码。
+[ts-node](https://github.com/TypeStrong/ts-node) 是基于 Node.js 的一个软件包，可以直接运行 TypeScript 代码。
 
-使用时，可以全局安装。
+使用时，可以全局安装这个软件包。
 
 ```bash
 $ npm install -g ts-node
 ```
 
-使用`npx ts-node`，可以在不安装它的情况下运行。
-
 安装后，就可以直接运行 TS 脚本。
 
 ```bash
 $ ts-node script.ts
-# 或者
+```
+
+上面命令运行了 TypeScript 脚本`script.ts`，给出结果。
+
+如果不安装 ts-node，也可以通过 npx 调用它，再运行 TypeScript 脚本。
+
+```bash
 $ npx ts-node script.ts
 ```
 
-执行时，不带有任何参数，它就会提供一个 TapeScript 命令行 REPL 运行环境。
+上面命令中，`npx`会在线调用 ts-node 软件包，从而在不安装的情况下，运行`script.ts`。
+
+如果执行 ts-node 时不带有任何参数，它会提供一个 TypeScript 的命令行 REPL 运行环境，你可以在这个环境中输入 TypeScript 代码，逐行执行。
+
+```bash
+$ ts-node
+>
+```
+
+上面示例中，单独运行`ts-node`命令，会给出一个大于符号，这就是 TypeScript 的命令行提示符，可以逐行输入代码运行。
 
 ```bash
 $ ts-node
 > const twice = (x: string) => x + x;
 > twice('abc')
 'abcabc'
+> 
 ```
+
+上面示例中，在 TypeScript 命令行 REPL 环境中，先输入一个函数`twice`，然后调用该函数，就会得到结果。
+
+要推出这个 REPL 环境，可以按下 Ctrl + d，或者输入`.exit`。
+
+## tsc 编译器
+
+TypeScript 提供 tsc 编译器，将 TypeScript 脚本编译成 JavaScript 脚本。
+
+安装时，可以全局安装 typescript 这个软件包。
+
+```bash
+$ npm install -g typescript
+```
+
+安装完，检查一下是否安装成功。
+
+```bash
+# 或者输入 tsc --version
+$ tsc -v
+Version 4.6.2
+```
+
+`tsc`命令后面，加上 TypeScript 脚本文件，就可以将其转换成 JavaScript 脚本。
+
+```bash
+$ tsc app.ts
+```
+
+上面命令会在当前目录下，生成一个`app.js`脚本文件，这个脚本就完全是编译后的 JavaScript 代码。
+
+`tsc`命令也可以同时转换多个 TypeScript 文件。
+
+```bash
+$ tsc file1.ts file2.ts file3.ts
+```
+
+上面命令会生成三个 JavaScript 脚本文件`file1.js`、`file2.js`、`file3.js`。
+
+如果转换过程没有任何错误，`tsc`命令不会有任何显示。如果你没有看到任何提示，就表示编译成功了。
+
+如果编译过程出错，`tsc`命令会报错，但是依然会生成 JavaScript 编译产物。举例来说，下面是一个错误的 TypeScript 脚本`app.ts`。
+
+```typescript
+// app.ts
+let foo:number = 123;
+foo = 'abc'; // 报错
+```
+
+上面示例中，变量`foo`是数值类型，赋值为字符串就会报错。下面用`tsc`命令编译这个脚本。
+
+```bash
+$ tsc app.ts
+
+app.ts:2:1 - error TS2322: Type 'string' is not assignable to type 'number'.
+
+2 foo = 'abc';
+  ~~~
+
+Found 1 error in app.ts:2
+```
+
+上面示例中，`tsc`编译这个有错的脚本，就会报错，提示用户变量`foo`正在被赋值为字符串。
+
+但是这种情况下，编译产物`app.js`还是会照样生成，下面就是编译后的结果。
+
+```javascript
+// app.js
+var foo = 123;
+foo = 'abc';
+```
+
+可以看到，尽管有错，tsc 还是会原样将 TypeScript 编译成 JavaScript 脚本。
+
+这是因为 TypeScript 团队认为，编译器的作用是给出编译错误，至于怎么处理编译结果，那就是开发者自己的判断了。开发者更了解自己的代码，所以会把编译结果交给开发者，让开发者决定下一步怎么处理。
+
+如果希望一旦报错就停止编译，不生成编译产物，可以使用`tsc`命令的参数`--noEmitOnError`。
+
+```bash
+$ tsc --noEmitOnError app.ts
+```
+
+上面的命令在报错后，就不会生成`app.js`。
+
+`tsc`命令有很多参数，下面再介绍几个。
+
+`--target`参数指定编译的版本，TypeScript 默认编译出来的 JavaScript 为 ES3 版本，可以指定编译为 ES2015 版本。
+
+```bash
+$ tsc --target es2015 hello.ts
+```
+
+`--strict`参数指定采用更严格的检查规则。
+
+- noImplicitAny：类型推断一旦出现`any`变量，就报错，即变量必须可以推断为某种明确的类型。因为`any`类型的变量越少，类型系统的收益越大。
+- strictNullChecks

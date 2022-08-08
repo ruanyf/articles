@@ -33,6 +33,10 @@ declare module "path" {
 后面就可以在脚本里面，使用`/// <reference> node.d.ts`给出类型定义。
 
 ```typescript
+/// <reference path="lib\jquery-1.8.d.ts" />
+```
+
+```typescript
 /// <reference path="node.d.ts"/>
 import * as URL from "url";
 let myUrl = URL.parse("https://www.typescriptlang.org");

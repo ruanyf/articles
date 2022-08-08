@@ -268,27 +268,16 @@ TypeScript 提供的数据类型，可以分成两大类。
 
 注意，上面所有类型的名称都是小写字母，首字母大写的`Number`、`String`、`Boolean`都是语言内置的对象，而不是类型名称。
 
-另一类是 TypeScript 特有的类型。
+另一类是 TypeScript 特有的类型，比如下面这些。
 
-- Array (not technically a type in JS)
 - any (the type of all values)
 - unknown（确保有人使用这种类型声明类型是什么）
 - never（这种类型不可能发生）
 - void：函数返回 undefined 或者没有返回值
 
-unknown	顶级类型。
-never	底部类型。
-对象字面量	例如 { property: Type }
-void	undefined打算用作返回类型的子类型。
-T[]	可变数组，也写成 Array<T>
-[T, T]	元组，它们是固定长度但可变的
-(t: T) => U	函数
-
-注意，undefined 既可以作为值，也可以作为类型，取决于在哪里使用它。对于 null 也是如此。
+注意，undefined 和 null 既可以作为值，也可以作为类型，取决于在哪里使用它们。
 
 上面的基本类型，还可以组合成复杂类型。
-
-对于复合数据结构的类型描述，TypeScript 提供了两种语法：interface 和 type。
 
 ## 值类型
 
@@ -443,56 +432,11 @@ function f2(a: unknown) {
 }
 ```
 
-## never
-
-`never`类型表示肯定不会出现的值，主要用在从不执行 return（返回）的函数。
-
-从不执行 return 的函数，有以下几种情况。
-
-（1）抛出错误的函数。
-
-```typescript
-function fail(msg: string): never {
-  throw new Error(msg);
-}
-```
-
-注意，只有抛出错误，才是 never 类型。如果显式返回一个 Error 对象，则不是。
-
-```typescript
-function fail():Error {
-  return new Error("Something failed");
-}
-```
-
-（2）无限执行的函数。
-
-```typescript
-const sing = function():never {
-  while (true) {
-    console.log('sing');
-};
-```
-
-`never`类型不同于`void`类型。前者表示不可能执行返回，后者表示不返回值，即返回`undefined`。
-
-```typescript
-// 正确
-function sing():void {
-  console.log('sing');
-}
-
-// 报错
-function sing():never {
-  console.log('sing');
-}
-```
-
 ## null，undefined
 
-null 和 undefined 是 JavaScript 的两个特殊值，`null`表示空，`undefined`表示未定义。
+null 和 undefined 是 JavaScript 的两个特殊值，`null`表示空（即该处没有值），`undefined`表示未定义（即该处的值还未定义）。
 
-如果变量类型设为`null`，就只能赋值为`null`。如果变量类型设为`undefined`，就只能赋值为`undefined`。
+由于 TypeScript 允许单个值就是一个类型，所以 null 和 undefined 本身也能作为类型。但是，如果用它们作为类型，变量就不能再赋予其他值了。
 
 ```typescript
 let foo:null;
@@ -508,9 +452,9 @@ bar = null; // 报错
 bar = 123; // 报错
 ```
 
-上面示例中，`null`类型只能赋值为`null`，`undefined`只能赋值为`undefined`，否则就会报错。
+上面示例中，变量`foo`的类型是`null`，只能赋值为`null`；变量`bar`的类型是`undefined`，只能赋值为`undefined`。它们赋予其他值都会报错。
 
-TypeScript 约定，`null`和`undefined`可以赋值给它们之外的任意其他类型。也就是说，TypeScript 的所有其他类型除了本类型的值以外，总是包括`null`和`undefined`这两个值。
+注意，TypeScript 规定，`null`和`undefined`可以赋值给任意其他类型。也就是说，TypeScript 的所有其他类型除了本类型的值以外，总是可以赋值为`null`或`undefined`这两个值。
 
 ```typescript
 let age: number;
@@ -519,9 +463,9 @@ age = null;      // OK
 age = undefined; // OK
 ```
 
-上面代码中，变量`age`的类型是数值，但是可以赋值为`null`和`undefined`。
+上面代码中，变量`age`的类型是数值，但是可以赋值为`null`或`undefined`。
 
-这通常不是开发者想要的行为，因此 TypeScript 提供了一个`strictNullChecks`设置，只要打开就不允许变量设为`null`或`undefined`。
+这是为了适应 JavaScript 语言允许变量值为空的情况，但有时不是 TypeScript 开发者想要的行为，因此 TypeScript 提供了一个编译器的`strictNullChecks`设置，只要打开它，其他类型的变量（除了`any`类型和`unknown`类型）就不能赋值为`null`或`undefined`。
 
 下面在配置文件`tsconfig.json`打开这个设置。
 
@@ -534,7 +478,7 @@ age = undefined; // OK
 }
 ```
 
-这时，`null`或`undefined`赋值给其他类型就会报错。
+这时，`null`或`undefined`赋值给其他类型（除了`any`类型和`unknown`类型）就会报错。
 
 ```typescript
 let age: number;
@@ -543,7 +487,7 @@ age = null;      // 报错
 age = undefined; // 报错
 ```
 
-这种情况下，如果某个类型需要包括空值，可以使用联合类型的写法。
+这时，如果某个类型需要包括空值，可以使用联合类型的写法。
 
 ```typescript
 let name: string | null;
@@ -552,36 +496,6 @@ name = null;      // OK
 ```
 
 上面示例中，变量`name`的值可以是字符串，也可以是`null`。
-
-对于对象的属性，如果可以等于`undefined`（即可省略），可以在属性名后面加一个问号（`?`）表示。
-
-```typescript
-type User = {
-  firstName: string;
-  lastName: string | undefined;
-};
-// 等同于
-type User = {
-  firstName: string;
-  lastName?: string;
-};
-```
-
-上面示例中，类型`User`是一个对象，它的属性`firstName`为一个字符串，属性`lastName`可以是字符串，也可以是`undefined`，即可以省略。
-
-如果函数的参数可以等于`undefined`，就表示该参数可以省略，可以在参数名后面加一个问号表示。
-
-```typescript
-function doSomething(callback: () => void|undefined) {
-  // ...
-}
-// 等同于
-function doSomething(callback?: () => void) {
-  // ...
-}
-```
-
-上面示例中，函数`doSomething()`的参数`callback`，可以是一个函数，也可以为`undefined`，即可以省略。
 
 ### :void
 
@@ -751,28 +665,51 @@ type Coordinates = [number, number];
 type Callback = (data: string) => void;
 ```
 
-## 类型联合
+## 类型并集（Union）
 
-如果一个变量可能有多种类型，可以使用`|`运算符进行类型描述，这称为类型联合（union）。
+TypeScript 允许多种类型的联合，可以使用`|`运算符将这些类型组成一个并集（union）。
 
 ```typescript
-function getLength(obj: string | string[]) {
-  return obj.length;
+let x:string|number;
+x = 123; // 正确
+x = 'abc'; // 正确
+```
+
+上面示例中，变量`x`可以是字符串，也可以是数值，只要赋值为这两个类型，都不会报错。
+
+类型并集对于一个变量有多种类型的情况，非常有用。比如，布尔值变量就可以写成下面的形式，非常简洁明了。
+
+```typescript
+let setting:true|false;
+```
+
+性别变量则可以写成下面这样。
+
+```typescript
+let gender:'male'|'female';
+```
+
+彩虹色可以写成七种颜色的并集。
+
+```typescript
+let rainbowColor:'赤'|'橙'|'黄'|'绿'|'青'|'蓝'|'紫';
+```
+
+如果一个变量有多种类型，处理该变量时，往往需要进行类型缩小，逐一区分该值属于哪一种类型，再进行处理。
+
+```typescript
+function printId(id:number|string) {
+  // 报错
+  console.log(id.toUpperCase());
 }
 ```
 
-下面示例中，`toUpperCase()`是字符串才有的方法，数值类型没有这个方法，所以会报错。
+上面示例中，函数参数`id`可能是数值，也可能是字符串，这时直接对这个变量调用`toUpperCase()`方法会报错，因为这个方法只存在于字符串，不存在于数值。
+
+解决方法就是对参数`id`做一下类型判断，确定它的类型以后再进行处理。这在 TypeScript 里面叫做“类型缩小”（type narrowing）。
 
 ```typescript
-function printId(id: number | string) {
-  console.log(id.toUpperCase()); // 报错
-}
-```
-
-解决方法是对参数做一下类型判断。
-
-```typescript
-function printId(id: number | string) {
+function printId(id:number|string) {
   if (typeof id === "string") {
     // 只对字符串，执行 toUpperCase() 方法
     console.log(id.toUpperCase());
@@ -782,17 +719,10 @@ function printId(id: number | string) {
 }
 ```
 
-函数的返回值也可以是类型联合。
+上面示例中，函数体内部会判断一下变量`id`的类型，如果是字符串，就对其执行`toUpperCase()`方法。
 
-```typescript
-function getFirstThree(x: number[] | string): number[] | string {
-  return x.slice(0, 3);
-}
-```
+“类型缩小”是 TypeScript 处理类型并集的标准方法，凡是遇到可能为多种类型的场合，都需要逐一缩小类型进行处理。实际上，可以把并集看成是一种“类型放大”（type widening），处理时就需要“类型缩小”（type narrowing）。
 
-上面示例中，函数体内的`slice()`方法是数组与字符串共有的，所以返回值也是`number[] | string`类型。
-
-Never 类型表示类型联合里面，缩小类型时，已经穷尽所有可能，不可能存在的类型。
 
 ## 类型交集
 
@@ -1118,37 +1048,6 @@ interface CallMeWithNewToGetString {
 // Usage
 declare const Foo: CallMeWithNewToGetString;
 const bar = new Foo(); // bar is inferred to be of type string
-```
-
-## Union 类型
-
-Union 类型用来表示，一个变量可以是多种类型的情况。
-
-```typescript
-function getScore(numberOrString: number|string): number {
-  // ...
-}
-```
-
-TypeScript 里面，null 和 undefined 是单独的类型。如果一个变量有可能是 null，必须单独把它列出。
-
-```typescript
-let maybeNumber: null|number = null;
-maybeNumber = 123;
-```
-
-有些函数的参数不是可选的，如果不传入值，就必须显式传入 null，类型注释写法如下。
-
-```typescript
-function stringify123(
-  callback: null | ((num: number) => string)
-) {
-  const num = 123;
-  if (callback) {
-    return callback(123); 
-  }
-  return String(num);
-}
 ```
 
 ## 对象

@@ -106,6 +106,59 @@ const f3: voidFunc = function () {
 };
 ```
 
+## never 类型
+
+`never`类型表示肯定不会出现的值，主要用于表示某个函数肯定不会返回值，即函数不会正常执行结束。
+
+它有以下两种情况。
+
+（1）抛出错误的函数。
+
+```typescript
+function fail(msg:string):never {
+  throw new Error(msg);
+}
+```
+
+上面示例中，函数`fail()`会抛错，所以返回值是`never`。
+
+注意，只有抛出错误，才是 never 类型。如果显式用`return`语句返回一个 Error 对象，返回值就不是 never 类型。
+
+```typescript
+function fail():Error {
+  return new Error("Something failed");
+}
+```
+
+上面示例中，函数`fail()`返回一个 Error 对象，所以返回值类型是 Error。
+
+（2）无限执行的函数。
+
+```typescript
+const sing = function():never {
+  while (true) {
+    console.log('sing');
+};
+```
+
+上面示例中，函数`sing()`会永远执行，不会返回，所以返回值类型是 never。
+
+注意，`never`类型不同于`void`类型。前者表示函数没有执行结束，不可能有返回值；后者表示函数正常执行结束，但是不返回值，或者说返回`undefined`。
+
+```typescript
+// 正确
+function sing():void {
+  console.log('sing');
+}
+
+// 报错
+function sing():never {
+  console.log('sing');
+}
+```
+
+上面示例中，函数`sing()`虽然没有`return`语句，但实际上是省略了`return undefined`这行语句，真实的返回值是`undefined`。所以，它的返回值类型要写成`void`，而不是`never`。
+
 ## 函数的赋值
 
 函数的赋值指的是将某个函数赋值给指定类型的变量。
