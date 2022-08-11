@@ -176,27 +176,86 @@ class Foo {
   }
 }
 
-const f1:Foo = new Foo();
+const f:Foo = new Foo();
 ```
 
-上面示例中，`Foo`是一个类，可以作为类型使用，指定变量`f1`为该类型就表示`f1`是`Foo`的一个实例。
+上面示例中，`Foo`是一个类，可以作为类型使用，指定变量`f`为该类型就表示`f`是`Foo`的一个实例。
 
-但是，TypeScript 规定，只要某个对象跟某个 class 具有相同的方法和属性，就认为该对象属于该 class 的类型。
+TypeScript 规定，只要两个类的结构相同（属性和方法相同），就认为这两个类的类型相同，可以互相替代。
 
 ```typescript
-const obj = { x: 234 };
-const f2:Foo = obj; // 正确
+class Person {
+  name: string;
+}
+
+class Customer {
+  name: string;
+}
+
+// 正确
+const cust:Customer = new Person();
 ```
 
-上面示例中，对象`obj`并不是`Foo`的实例，但是赋值给变量`f2`不会报错，TypeScript 认为`obj`也属于`Foo`类型，因为它们的属性相同。
+上面示例中，`Person`和`Customer`是两个结构相同的类，TypeScript 将它们视为相同类型，因此可以互相替换。
 
-由于这种情况，所以运算符`instanceof`判断某个对象是否属于某个 class 类型，有时会产生遗漏。
+现在修改一下代码，`Person`类添加一个属性。
 
 ```typescript
-obj instanceof Foo // false
+class Person {
+  name: string;
+  age: number;
+}
+
+class Customer {
+  name: string;
+}
+
+// 正确
+const cust:Customer = new Person();
 ```
 
-上面示例中，运算符`instanceof`确认变量`obj`不是 Foo 的实例，但是`obj`又属于 Foo 类型的值。
+上面示例中，`Person`类添加了一个属性`age`，跟`Customer`类的结构不再相同。但是这种情况下，TypeScript 依然认为，`Person`属于`Customer`类型。这是因为在使用`Customer`类型的情况下，应该只会用到它的`name`属性，而`Person`类具有`name`属性，可以认为符合`Customer`的结构，它多出来的`age`属性由于用不到，可以不予考虑。
+
+反过来就不行，如果`Customer`类多出一个属性，就会编译报错。
+
+```typescript
+class Person {
+  name: string;
+}
+
+class Customer {
+  name: string;
+  age: number;
+}
+
+// 报错
+const cust:Customer = new Person();
+```
+
+上面示例中，`Person`类比`Customer`类少一个属性`age`，它就不属于`Customer`类型。因为在使用`Customer`类型的情况下，可能会用到它的`age`属性，而`Person`类就没有这个属性。
+
+这说明，只要 A 类具有 B 类的结构，哪怕还有额外的属性和方法，TypeScript 也认为 A 属于 B 的类型。
+
+不仅是类，如果某个对象跟某个 class 结构相同，TypeScript 也认为两者的类型相同。
+
+```typescript
+class Person {
+  name: string;
+}
+
+const obj = { name: 'John' };
+const p:Person = obj; // 正确
+```
+
+上面示例中，对象`obj`并不是`Person`的实例，但是赋值给变量`p`不会报错，TypeScript 认为`obj`也属于`Person`类型，因为它们的属性相同。
+
+由于这种情况，运算符`instanceof`不适用于判断某个对象是否跟某个 class 属于同一类型。
+
+```typescript
+obj instanceof Person // false
+```
+
+上面示例中，运算符`instanceof`确认变量`obj`不是 Person 的实例，但是两者的类型是相同的。
 
 ## 使用 inteface
 
@@ -244,6 +303,23 @@ g.greet();
 ```
 
 `public`是属性的默认状态，可以省略不写。
+
+公开属性有一种简便写法，就是用在构造函数的属性前面。
+
+```typescript
+clss Foo {
+  bar: string;
+}
+
+// 等同于
+class Foo {
+  constructor(public bar:string) {
+    // ...
+  }
+}
+```
+
+上面示例中，`Foo`类的内部声明了一个属性`bar`，相当于构造函数的`bar`参数用`public`修饰，两种写法是等价的。`public`就相当于表明，构造函数的这个参数是可以公开访问的。
 
 ### private
 
@@ -457,6 +533,21 @@ g.name = "also not ok";
 ```
 
 上面示例中，`g.name`是一个只读属性，可以在初始化时或构造方法里面设置（如果两个地方都设置了，以构造函数为准），在其他方法修改该属性都会报错。
+
+`readonly`属性也可以采用构造函数参数的简便写法。
+
+```typescript
+class Foo {
+  readonly bar:string;
+}
+
+// 等同于
+class Foo {
+  constructor(readonly bar:string) {
+    // ...
+  }
+}
+```
 
 ## abstract
 

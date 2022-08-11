@@ -105,7 +105,9 @@ value = new TypeError(); // OK
 value = Symbol("type"); // OK
 ```
 
-但是，unknown 类型不能赋值给其他类型，只有`unknown`本身和`any`类型除外。
+然后，你要使用这个值时，都必须进行类型缩小，明确它到底是什么类型，才能读取。
+
+（1）unknown 类型不能赋值给其他类型，只有`unknown`本身和`any`类型除外。
 
 ```typescript
 let value: unknown;
@@ -121,6 +123,18 @@ let value8: Function = value; // Error
 ```
 
 与`any`相比，这样就保证了不确定类型的值，只会局限在`unknown`类型的变量，不会扩散到其他类型的变量。
+
+使用判断语句，明确 unknown 变量的类型以后，就可以将它赋值给其他变量。
+
+```typescript
+let value: unknown;
+
+if (typeof value === 'number') {
+  let value4: number = value;
+}
+```
+
+（2）不能调用它的方法和属性。
 
 TypeScript 对`unknown`类型非常严格，假设它不存在任何属性和方法，也不能调用。这导致下面的操作都会报错。
 

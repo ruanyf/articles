@@ -249,7 +249,37 @@ const o1:t1 = o2; // 正确
 
 ## type 命令
 
-type 命令用来为类型起别名。
+type 命令为类型起别名，使得类型名变得更有意义。
+
+```typescript
+type Age = number;
+type Weight = number;
+```
+
+上面示例中，`type`命令为数值类型起了两个别名`Age`（年龄）和`Weight`（体重）。虽然实际使用时，变量类型指定为`Age`或`Weight`，跟指定为`number`效果完全一样，但是代码的含义更清晰了，而且以后如果要修改类型，也会更方便。
+
+type 别名可以嵌套。
+
+```typescript
+type Person = {
+  name: string,
+  age: Age,
+  weight: Weight,
+};
+
+// 等同于
+type Person = {
+  name: string;
+  age: Age;
+  weight: Weight;
+};
+```
+
+上面示例中，`type`命令定义了一个对象类型`Person`，里面使用了前面定义的类型别名`Age`和`Weight`。
+
+注意，在对象类型内部，属性的分隔符既可以是逗号，也可以是分号。
+
+使用时变量的类型就能了解它们的含义。
 
 ```typescript
 type Point = {

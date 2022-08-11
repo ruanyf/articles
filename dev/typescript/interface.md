@@ -1,5 +1,27 @@
 # interface 接口
 
+很多面向对象的编程语言都有 interface 语法结构，用来表示对象必须实现的属性和方法。TypeScript 也提供了 interface 命令。
+
+```typescript
+interface Person {
+  firstName: string;
+  lastName: string;
+  age: number;
+}
+```
+
+上面的示例定义了一个接口`Person`，它相当于对象的模板。任何实现这个接口的对象，都必须部署接口定义的属性`firstName`、`lastName`和`age`，并且必须符合规定的类型。
+
+对象实现这个接口就很简单，只要指定对象的类型为该接口即可。
+
+```typescript
+const p:Persion = {
+  firstName: 'John',
+  lastName: 'Smith',
+  age: 25
+};
+```
+
 ## 接口合并
 
 多个同名接口会合并成一个接口。
