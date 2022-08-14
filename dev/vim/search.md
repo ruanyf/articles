@@ -73,3 +73,8 @@ replace with Line (y/n/a/q/l/^E/^Y)?
 - l	执行这次替换并退出。l 是 “last” 的简写。
 - Ctrl-e, Ctrl-y	分别是向下滚动和向上滚动。用于查看建议替换的上下文。
 
+```vim
+:g/match/y A
+```
+
+上面命令将所有包含“匹配”的行拉入（复制）到"a/@a寄存器中。

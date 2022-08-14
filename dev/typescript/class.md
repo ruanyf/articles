@@ -2,7 +2,7 @@
 
 ## 概述
 
-在类的内部，首先给出实例属性的类型注释，然后再定义方法。
+类的内部先给出实例的类型注释，然后再定义方法。
 
 ```typescript
 class Point {
@@ -19,6 +19,30 @@ class Point {
 ```
 
 上面示例中，实例属性`x`和`y`的类型是`number`。
+
+类的方法属于函数，类型可以写在定义里面，所以可以不必先定义。但是，单独定义方法的类型，也是可以的。
+
+```typescript
+class Point {
+    x: number;
+    y: number;
+    
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+
+    add(point:Point): Point;
+    add(point:Point) {
+      return new Point(
+        this.x + point.x,
+        this.y + point.y
+      );
+    }
+}
+```
+
+上面示例中，方法`add()`有单独一行的类型定义。注意，方法的实现必须紧跟在它的类型定义后面，否则会报错。
 
 ```typescript
 class Color {
@@ -549,7 +573,39 @@ class Foo {
 }
 ```
 
-## abstract
+## 方法重载
+
+如果存在方法重载（method overloading），方法的每种使用形式都必须给出单独的类型定义。
+
+```typescript
+class ProductService {
+  getProducts(): void;
+  getProducts(id: number): void;
+  getProducts(id?: number) {
+    if (typeof id === 'number') {
+     console.log(`Getting the product info for ${id}`);
+    } else {
+      console.log(`Getting all products`);
+    }
+  }
+}
+
+const prodService = new ProductService();
+prodService.getProducts(123);
+prodService.getProducts();
+```
+
+上面示例中，方法`getProducts()`的具体实现之中，参数`id`后面必须带有问号`?`，否则会报错。因为它有两种调用形式，参数`id`是可以省略的。
+
+方法`getProducts()`前面的两行类型定义，其实是可以省略的，所以大多数情况下，方法重载可以不单独写类型定义。
+
+但是，对于复杂的方法重载，可以考虑写上每一种调用形式的类型定义，这样方便阅读代码，另一方面对于 IDE 的 API 提示也很有帮助。
+
+## abstract 类
+
+TypeScript 允许在类定义的前面，加上关键字`abstract`，表示该类不能被实例化，只能当作其他类的模板。这种类就叫做“抽象类”（abastract class）。
+
+抽象类的内部可以有实现好的方法，也可以有抽象方法，即方法定义前加上关键字`abstract`，表示该方法需要继承该类的类来实现。
 
 `abstrct`也是一个修饰符，不仅可以用于类的成员，也可以用于类本身。
 
