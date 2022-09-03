@@ -289,24 +289,160 @@ obj instanceof Person // false
 interface Point {
     x: number;
     y: number;
-    z: number; // New member
 }
 
-class MyPoint implements Point { // ERROR : missing member `z`
-    x: number; y: number;
+class MyPoint implements Point {
+  x: number = 1;
+  y: number = 2;
 }
 ```
 
-类可以实现多个接口，例如`class C implements A, B {`。
-
-注意，interface 描述的是类的对外接口，所以只能定义公开属性，不能定义私有属性。
+Class 可以部署接口以外的方法和属性。
 
 ```typescript
-interface IFoo
-{
-  private member: {}; // 报错
+class MyPoint implements Point {
+  x: number = 1;
+  y: number = 2;
+  z: number = 3; // 接口没有定义的属性
 }
 ```
+
+上面示例中，`MyPoint`类实现了`Point`接口，但是内部还部署了一个属性`z`，这是接口`point`没有定义的。
+
+但是如果相反，`MyPoint`类缺少`Point`接口里面的方法，那么就会报错。
+
+```typescript
+// 报错
+class MyPoint implements Point {
+  x: number = 1;
+}
+```
+
+上面示例中，`MyPoint`类少了`Point`接口里面的属性`y`，编译时就会报错。
+
+类可以实现多个接口，每个接口之间使用逗号分隔。
+
+```typescript
+class Car implements MotorVehicle, Flyable, Swimmable {
+// Implement all the methods from three
+// interfaces here
+}
+```
+
+上面示例中，`Car`类同时实现了`MotorVehicle`、`Flyable`、`Swimmable`三个接口。这意味着，它必须部署这三个接口声明的所有属性和方法。
+
+但是，同时实现多个接口并不是一个好的写法，容易使得代码难以管理，可以使用两种方法替代。
+
+第一种方法是类的继承。
+
+```typescript
+class Car implements MotorVehicle {
+}
+
+class SecretCar extends Car implements Flyable, Swimmable {
+
+}
+```
+
+上面示例中，`SecretCar`类继承了`Car`类，然后再实现`Flyable`和`Swimmable`两个接口。
+
+第二种方法是接口的继承。
+
+```typescript
+interface A {
+  a:number;
+}
+
+interface B extends A {
+  b:number;
+}
+```
+
+上面示例中，接口`B`就继承了接口`A`。
+
+前一个例子可以用接口继承改写。
+
+```typescript
+interface MotorVehicle {
+  // ...
+}
+interface Flyable {
+  // ...
+}
+interface Swimmable {
+  // ...
+}
+
+interface SuperCar extends MotoVehicle,Flyable, Swimmable {
+  // ...
+}
+
+class SecretCar implements SuperCar {
+  // ...
+}
+```
+
+上面示例中，接口`SuperCar`就继承了多个接口。
+
+注意，发生多重继承时（即一个接口同时继承多个接口），不同接口不能有互相冲突的属性。
+
+```typescript
+interface Flyable {
+  foo:number;
+}
+
+interface Swimmable {
+  foo:string;
+}
+```
+
+上面示例中，属性`foo`在两个接口里面的类型不同，如果同时继承这两个接口，编译时就会报错。
+
+`implements`关键字后面，不仅可以是接口，也可以是一个类。这时，后面的类将被当作接口。
+
+```typescript
+class Car {
+  num:number = 111;
+}
+
+// 错误
+class MyCar implements Car {
+}
+
+// 正确
+class MyCar implements Car {
+  num:number = 222;
+}
+```
+
+上面示例中，`implements`后面是类`Car`，这时 TypeScript 就把`Car`视为一个接口，要求`MyCar`部署`Car`里面的每一个属性和方法，否则就会报错。
+
+注意，interface 描述的是类的对外接口，所以只能定义公开属性，不能定义私有属性。因为 TypeScript 设计者认为，私有属性是类的内部实现，接口作为模板，不应该涉及类的内容代码写法。
+
+```typescript
+interface Foo {
+  private member:{}; // 报错
+}
+```
+
+上面示例中，接口`Foo`有一个私有属性，结果就报错了。
+
+对于变量来说，既可以声明类型是 Class，也可以声明类型是 Interface。
+
+```typescript
+interface MotorVehicle {
+}
+
+class Car implements MotorVehicle {
+}
+
+// 写法一
+const c1: Car = new Car();
+// 写法二
+const c2: MotorVehicle = new Car();
+```
+
+这两种写法的区别是，如果类`Car`里面部署了接口`MotoVehicle`没有的属性和方法，那么只有变量`c1`可以调用这些属性和方法。
 
 ## 访问修饰符
 
