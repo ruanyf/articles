@@ -518,6 +518,16 @@ function sum({ a, b, c }: ABC) {
 }
 ```
 
+## 高阶函数
+
+一个函数的返回值还是一个函数，那么前一个函数就称为高阶函数（higher-order function）。
+
+一个箭头函数返回的还是一个箭头函数，下面就是一个例子。
+
+```typescript
+(someValue: number) => (multiplier: number) => someValue * multiplier;
+```
+
 ## 函数的属性
 
 JavaScript 函数是一种特殊对象，所以可以有属性。

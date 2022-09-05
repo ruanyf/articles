@@ -1,47 +1,72 @@
 # 泛型
 
-有些函数可以接受各种类型的参数，返回值的类型与参数类型相关。
+## 泛型的概念
 
-any 可以表达这种情况。
+前面章节的所有类型都是确定的，即使用之前就知道某个值是什么类型。但是很多时候，类型是不确定的，跟输入的值有关，如果输入改变类型，输出也会改变。这种类型不确定的情况，就叫做泛型（generics）。
 
-```typescript
-function firstElement(arr: any[]): any {
-  return arr[0];
+举例来说，有些函数可以接受不定类型的参数，返回值的类型与参数类型相关。
+
+```javascript
+function f(x) {
+  return x;
 }
 ```
 
-但是，any 实际上取消了类型检查，并不是一个很理想的方式。
+上面示例是一个函数，原封不动地返回它的参数。参数是什么类型，返回值就是什么类型，因此没有办法提前知道返回值的类型。它的类型描述只能写成下面这样。
 
-这时，可以引入类型变量的概念，来解决这个问题，进行更精确的描述。
-
-```typescript
-function firstElement<Type>(arr: Type[]): Type | undefined {
-  return arr[0];
+```javascript
+function f(x:any):any {
+  return x;
 }
 ```
 
-先在函数名后面，使用尖括号定义要用到的类型变量`Type`。Type 就是变量名，可以随便起，大写或小写都没关系，不过类型变量名一般都采用首字母大写，表示这代表一种类型。
-
-然后，将参数类型定义为`Type[]`，即数组`arr`的成员类型时变量 Type。然后，返回值是 Type 或 undefined，即返回值的类型与参数类型相关，参数类型是 Type，返回值类型也是 Type，两者是一致的，至于 Type 到底是什么类型，这里并不重要。
-
-调用函数的时候，可以在尖括号里面指明参数的实际类型。
+有了泛型以后，就可以利用它的输出值类型由输入值决定这个特点，来描述它的类型。
 
 ```typescript
-function identity<Type>(arg: Type): Type {
-  return arg;
+function f<T>(x:T):T {
+  return x;
 }
-
-// 写法一
-let output = identity<string>("myString");
 ```
 
-更常见的做法是让 TypeScript 自己去推断类型。
+上面示例中，函数名`f`后面有一个尖括号，里面列出了这个函数需要的类型参数，即这个函数的类型需要依靠参数决定。本例只有一个类型参数`T`。
+
+类型参数的名字可以随便取，通常使用`T`（type 的第一个字母）。后面的代码很好懂，函数参数`x`的类型为`T`，返回值的类型也为`T`，这就准确表示了这个函数的类型。
+
+总之，泛型可以理解成一段类型逻辑，输入值和输出值都是类型，可以接受多种类型的输入，但是输入类型和输出类型之间存在一一对应的关系。
+
+调用函数时，可以在尖括号里面指明类型参数的值。
 
 ```typescript
-let output = identity("myString");
+function f<T>(x:T):T {
+  return x;
+}
+
+f<number>(2) // 2
+```
+
+上面示例中，调用函数`f()`时，尖括号里面给出类型参数`T`的值是`number`，表示`f()`的参数和返回值类型都是数值。
+
+不过，为了方便，调用时不写类型参数的值，让 TypeScript 自己推断。
+
+```typescript
+f(2) // 正确
 ```
 
 类型推断虽然写起来方便，但是有些复杂的使用场景，TypeScript 可能推断不出参数的类型，这时就只能手动注明参数的具体类型了。
+
+类型参数允许设置默认值。这样的话，调用时不给出具体的类型，就会使用默认值。
+
+```typescript
+function f<T = number>(x:T):T {
+  return x;
+}
+```
+
+上面示例中，类型参数`T`的默认值为`number`，调用时不给出`T`的值，就会默认`f()`的参数类型为`number`。
+
+不过，即使`f()`的参数不是数值（比如`f('abc')`），编译也不会报错，因为 TypeScript 检查类型时，发现参数是字符串，就会设定`T`的值为字符串。
+
+泛型主要用在三个场合：函数、接口和类。
 
 泛型可以看作是类型的函数，即这个函数接受类型当作参数，返回一个新的类型。
 
@@ -227,78 +252,101 @@ type OneOrManyOrNullStrings = OneOrManyOrNull<string>;
 type OneOrManyOrNullStrings = OneOrMany<string> | null
 ```
 
-## 数组泛型
+## 数组的泛型表示
 
-数组类型 number[] or string[] 只是  `Array<number>` 和 `Array<string>`的简写形式。
+数组类型可以使用泛型表示。前面的《数组》一章提到过，数组类型有两种表示方法。
 
 ```typescript
-function doSomething(value: Array<string>) {
-  // ...
-}
- 
-let myArray: string[] = ["hello", "world"];
+// 方法一
+let someValues: number[];
+
+// 方法二
+let someValues: Array<number>;
 ```
 
-如果数组成员可能全部是字符，或全部是数值，类型说明可以写成`Array<string | number>`。
+上面的方法二，就是使用泛型表示数组。`Array<number>`表示所有成员都是数值的数组，其中`Array`是 TypeScript 提供的数组生成接口，当它的类型参数是`number`时，返回的就是一个全部成员都是数值的数组类型。
 
-Array 本身是一个泛型的接口，它的类型定义基本上是下面的样子。
+同样的，如果数组成员都是字符串，那么类型就可以写成`Array<string>`。事实上，在 TypeScript 内部，写法一`number[]`、`string[]`只是写法二`Array<number>`、`Array<string>`的简写形式。
+
+数组的类型参数，可以是各种各样的类型，`Array<string|number>`就表示数组成员可以是字符串，也可以是数值。
+
+```typescript
+class Person {}
+const people = new Array<Person>(10);
+```
+
+上面示例中，`Array<Person>`表示数组成员都是`Person`类的实例对象。
+
+`Array`本身是一个泛型接口，在 TypeScript 内部它的类型定义基本是下面的样子。
 
 ```typescript
 interface Array<Type> {
-  /**
-   * Gets or sets the length of the array.
-   */
+
   length: number;
  
-  /**
-   * Removes the last element from an array and returns it.
-   */
   pop(): Type | undefined;
  
-  /**
-   * Appends new elements to an array, and returns the new length of the array.
-   */
   push(...items: Type[]): number;
  
   // ...
 }
 ```
 
-类似的数据结构 Map、Set、Promise，其实也是泛型接口 Map<K, V>, Set<T>, and Promise<T>。
+上面代码中，`push()`方法的参数`item`的类型是`Type[]`，跟`Array()`的参数类型`Type`保持一致。调用`push()`的时候，TypeScript 就会检查两者是否一致。
 
-TypeScript 默认还提供一个 ReadonlyArray 接口，表示该数组不能改变。
+其他的 TypeScript 内部数据结构，比如`Map`、`Set`和`Promise`，其实也是泛型接口，完整的写法是`Map<K, V>`、`Set<T>`和`Promise<T>`。
+
+TypeScript 默认还提供一个`ReadonlyArray<T>`接口，表示该类型数组不能修改。
 
 ```typescript
-function doStuff(values: ReadonlyArray<string>) {
-  // 报错
-  values.push("hello!");
+function doStuff(
+  values: ReadonlyArray<string>
+) {
+  values.push("hello!");  // 报错
 }
 ```
 
-如果看到一个函数的参数是 ReadonlyArray 类型，就不用担心它在数组内部会被改变。
+上面示例中，参数`values`的类型是`ReadonlyArray<string>`，表示不能修改这个数组，所以函数体内部新增数组成员就会报错。
 
-## 函数泛型
+所以，如果看到一个函数的参数是`ReadonlyArray`类型，就不用担心它在函数内部会被改变。
 
-函数定义使用范型的例子。
+## 泛型接口
+
+接口定义可以使用泛型。
 
 ```typescript
-function identity<Arg>(arg: Arg): Arg {
-  return arg;
+interface Comparator<T> {
+  compareTo(value: T): number;
 }
 
-const num1 = identity<number>(123);
+class Rectangle implements Comparator<Rectangle> {
+
+  compareTo(value: Rectangle): number {
+    // the algorithm of comparing rectangles goes here
+  }
+}
+
+class Triangle implements Comparator<Triangle> {
+  compareTo(value: Triangle): number {
+    // the algorithm of comparing triangles goes here
+  }
+}
 ```
 
-由于存在类型推断，也可以不给出类型变量，让 TypeScript 自己推断。
+## 泛型函数
+
+前面已经给出了泛型函数的例子。
 
 ```typescript
-const num2 = identity(123);
+function f<T>(x:T):T {
+  return x;
+}
 ```
 
-箭头函数的类型变量写法如下。
+箭头函数的写法如下。
 
 ```typescript
-const identity = <Arg>(arg: Arg): Arg => arg;
+const f = <T>(x:T):T => x;
 ```
 
 对象方法的类型变量写法如下。
@@ -314,6 +362,39 @@ const obj = {
 ## 泛型类
 
 泛型也可以用在类（class）上面。
+
+```typescript
+class Pair<K, V> {
+  key: K;
+  value: V;
+}
+```
+
+通常来说，类的构造函数会用到类型参数。
+
+```typescript
+class Pair<K, V> {
+  constructor(
+    public key: K,
+    public value: V
+  ) {
+    // ...
+  }
+}
+
+let p1: Pair<number, string> = new Pair(1, "Apple");
+```
+
+```typescript
+class A<T> {
+  value: T;
+}
+
+class B extends A<any> {
+}
+```
+
+上面示例中，类`A`有一个类型参数`T`，使用时必须将`T`替换成具体的类型，所以类`B`的定义里面，给出了父类`A`的类型参数`any`。
 
 下面是一个链表的例子。
 
