@@ -1,18 +1,55 @@
 # 装饰器
 
-[说明] Decorator 提案经过了大幅修改，目前还没有定案，不知道语法会不会再变。下面的内容完全依据以前的提案，已经有点过时了。等待定案以后，需要完全重写。
-
 ## 简介
 
-装饰器（Decorator）是一种与类（class）相关的语法，用来注释或修改类和类方法。许多面向对象的语言都有这项功能，目前有一个[提案](https://github.com/tc39/proposal-decorators)将其引入了 ECMAScript。
+装饰器（Decorator）是一种语法结构，附加在类、方法、存取器、属性和参数上面，用来修改它们的行为。
 
-TypeScript 的装饰器是一个实验性功能，使用时需要在命令行打开`--experimentalDecorators`选项。
+它本身是一个函数，写成`@函数名`，针对所装饰的对象，在运行时调用。
+
+举例来说，装饰器函数是`Injectable()`，那么需要写成`@Injectable`。如果用来一个类`A`，那么写法如下。
+
+```typescript
+@Injectable class A {}
+```
+
+加上装饰器以后，类`A`的行为在运行时就会发生改变。相比用子类改变父类的行为，装饰器更加简洁优雅，缺点是不那么直观，功能也受到一些限制。所以，装饰器一般只用来为类添加某种特定行为。
+
+下面示例就是一个最简单的装饰器。
+
+```typescript
+function simpleDecorator() {
+  console.log('hi');
+}
+
+@simpleDecorator
+class A {}
+```
+
+上面示例中，函数`simpleDecorator()`用作装饰器，附加在类`A`之上，后者运行时就会打印一行日志。
+
+编译上面的代码会报错，提示没有用到装饰器的参数。现在就为装饰器加上参数，让它更像正式运行的代码。
+
+```typescript
+function simpleDecorator(target:any) {
+  console.log('hi, this is ' + target);
+  return target;
+}
+
+@simpleDecorator
+class A {}
+```
+
+上面的代码就可以顺利通过编译了，代码含义这里先不解释。大家只要理解，类`A`在执行前会先执行装饰器`simpleDecorator()`，并且会向装饰器自动转入参数就可以了。
+
+TypeScript 的装饰器是一个实验性功能，编译时需要在命令行打开`--experimentalDecorators`选项。
 
 ```bash
 $ tsc --target ES5 --experimentalDecorators
 ```
 
-或者，在`tsconfig.json`文件里面进行设置。
+除了`--experimentalDecorators`这个配置项目用来打开装饰器支持，还有另外一个配置项`--emitDecoratorMetadata`，用来产生一些元数据，供其他工具（比如 reflect-metadata ）使用。
+
+这两个配置项可以在命令行设置，也可以在`tsconfig.json`文件里面进行设置。
 
 ```javascript
 {
@@ -24,69 +61,57 @@ $ tsc --target ES5 --experimentalDecorators
 }
 ```
 
-- experimentalDecorators：打开装饰器支持。
-- emitDecoratorMetadata：发出一些元数据，供其他工具（比如 reflect-metadata ）使用。
+装饰器可以用在五个场景。
 
-```typescript
-function simpleDecorator() {
-  console.log('---hi I am a decorator---')
-}
+> - 类装饰器（Class Decorators）：用于类。
+> - 属性装饰器（Property Decorators）：用于属性。
+> - 方法装饰器（Method Decorators）：用于方法。
+> - 存取器装饰器（Accessor Decorators）：用于类的 set 或 get 方法。
+> - 参数装饰器（Parameter Decorators）：用于方法的参数。
 
-@simpleDecorator
-class A {}
-```
-
-上面示例就是一个最简单的装饰器。
-
-装饰器可以用在五个场合。
-
-- 类装饰器（Class Decorators）：用于类
-- 属性装饰器（Property Decorators）：用于属性
-- 方法装饰器（Method Decorators）：用于方法
-- 存取器装饰器（Accessor Decorators）：用于类的 set 或 get 方法
-- 参数装饰器（Parameter Decorators）：用于方法的参数
+下面是这五种装饰器一起使用的一个样板。
 
 ```typescript
 @ClassDecorator()
 class A {
 
-    @PropertyDecorator()
-    name: string;
+  @PropertyDecorator()
+  name: string;
 
-    @MethodDecorator()
-    fly(
-        @ParameterDecorator()
-        meters: number
-    ) {
-        // code
-    }
+  @MethodDecorator()
+  fly(
+    @ParameterDecorator()
+    meters: number
+  ) {
+    // code
+  }
 
-    @AccessorDecorator()
-    get egg() {
-        // code
-    }
-    set egg(e) {
-        // code
-    }
+  @AccessorDecorator()
+  get egg() {
+    // code
+  }
+  set egg(e) {
+    // code
+  }
 }
 ```
 
-装饰器是一种函数，写成`@ + 函数名`。它可以放在类和类方法的定义前面。有时候，装饰器函数还带有参数，如果不带有参数，就不用写括号。
-
-装饰器会在代码家在阶段执行，而且只会执行一次。
+注意，装饰器只能在类中使用，要么应用于一个类，要么应用于一个类的成员，不能用于独立的函数、类型或接口。
 
 ```typescript
-function f(C) {
-  console.log('apply decorator')
-  return C
+function Decorator() {
+  console.log('In Decorator');
 }
 
-@f
-class A {}
-// output: apply decorator
+@Decorator // 报错
+function decorated() {
+  console.log('in decorated');
+}
 ```
 
-上面示例中，类 A 并没有新建实例，但是装饰器也会执行。
+上面示例中，装饰器用于一个普通函数，这是无效的，结果报错。
+
+五种装饰器的用法都不一样，下面逐一讲解。
 
 ```javascript
 @frozen class Foo {
@@ -101,20 +126,7 @@ class A {}
 
 上面代码一共使用了四个装饰器，一个用在类本身（`@frozen`），另外三个用在类方法（`@configurable`、`@enumerable`、`@throttle`）。它们不仅增加了代码的可读性，清晰地表达了意图，而且提供一种方便的手段，增加或修改类的功能。
 
-注意，装饰器只能在类中使用，要么应用于一个类，要么应用于一个类的成员，不能用于独立的函数、类型或接口。
 
-```typescript
-function Decorator() {
-    console.log('In Decorator');
-}
-
-@Decorator // 报错
-function decorated() {
-    console.log('in decorated');
-}
-```
-
-上面示例中，装饰器用于一个普通函数，这是无效的，结果报错。
 
 如果同时使用多种装饰器，它们的执行顺序如下。
 
@@ -125,9 +137,80 @@ function decorated() {
 
 ## 类装饰器
 
-装饰器可以用来装饰整个类。它作用于构造函数，可以用来修改类的定义。
+类装饰器应用于类（class），用来改造类的构造函数。
 
-类的构造函数是类装饰器的唯一参数。类装饰器如果返回值，会替换掉原来的构造函数。下面是它的类型签名。
+类装饰器有唯一参数，就是构造函数。类装饰器如果有返回值，就会替换掉原来的构造函数。
+
+类装饰器会在代码加载阶段执行，而且只会执行一次。
+
+```typescript
+function f(target:any) {
+  console.log('apply decorator')
+  return target;
+}
+
+@f
+class A {}
+// 输出：apply decorator
+```
+
+上面示例中，类`A`并没有新建实例，但是装饰器也会执行。
+
+如果类装饰器需要其他参数，可以采取“工厂模式”，即返回一个装饰器函数。然后，调用装饰器的时候，就需要先执行一次工厂函数。
+
+```typescript
+function factory(info:string) {
+  console.log('received: ', info);
+  return function (target:any) {
+    console.log('apply decorator');
+    return target;
+  }
+}
+
+@factory('log something')
+class A {}
+```
+
+上面示例中，函数`factory()`的返回值才是装饰器，所以加载装饰器的时候，要先执行一次`@factory('log something')`，才能得到装饰器。这样做的好处是，可以加入额外的参数，本例是`info`。
+
+类装饰器可以没有返回值，如果有返回值，就会替代所装饰的类的构造函数。由于 JavaScript 的类等同于构造函数，所以装饰器通常返回一个新的类。
+
+```typescript
+function decorator(target:object) {
+  return class extends target {
+    value = 123;  
+  };
+}
+
+@decorator
+class Foo {
+  value = 456;
+}
+
+const foo = new Foo();
+console.log(foo.value); // 123
+```
+
+上面示例中，装饰器`decorator`返回一个新的类，替代了原来的类。
+
+上例的装饰器参数`target`类型是`object`，可以改成类，这样就更准确了。
+
+```typescript
+type constructorMixin = {
+  new(...args: any[]): {}
+};
+
+function decorator<T extends constructorMixin> (
+  target: T
+) {
+  return class extends target {
+    value = 123;  
+  };
+}
+```
+
+
+下面是类装饰器的类型描述。
 
 ```typescript
 type ClassDecorator = <TFunction extends Function>
@@ -487,9 +570,9 @@ class Person {
 
 装饰器函数`readonly`一共可以接受三个参数。
 
-- 第一个参数：（对于类的静态方法）类的构造函数，或者（对于类的实例方法）类的原型。
-- 第二个参数：该方法的方法名，类型为字符串。
-- 第三个参数：该方法的描述对象。
+- 第一个参数`target`：（对于类的静态方法）类的构造函数，或者（对于类的实例方法）类的原型。
+- 第二个参数`propertyKey`：该方法的方法名，类型为字符串。
+- 第三个参数`descriptor`：该方法的描述对象。
 
 装饰器函数的返回值（如果有的话），就是修改后的该方法的描述对象。下面是它的类型签名。
 
@@ -515,7 +598,11 @@ class Greeter {
 }
 
 function enumerable(value: boolean) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
     descriptor.enumerable = value;
   };
 }
@@ -1697,6 +1784,10 @@ class MyClass {}
 @traits(TExample::as({excludes:['foo', 'bar'], alias: {baz: 'exampleBaz'}}))
 class MyClass {}
 ```
+
+## 元数据
+
+装饰器会对所装饰的对象添加一些元数据。
 
 ## 参考链接
 

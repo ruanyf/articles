@@ -2,7 +2,18 @@
 
 ## keyof
 
-keyof 列出了对象类型的属性键。
+keyof 是一个键名查询运算符，列出了对象类型或接口的所有属性名。
+
+```typescript
+interface Person {
+  name: string;
+  age: number;
+}
+
+type propNames = keyof Person; // "name" | "age"
+
+type propTypes = Person[propNames]; // string | number
+```
 
 ```typescript
 type Obj = {
@@ -347,6 +358,45 @@ type Age = Person[key];
 ```
 
 ## 条件运算
+
+条件运算符可以根据当前类型是否符合某种条件，返回不同的类型。
+
+```typescript
+T extends U ? X : Y
+```
+
+上面式子中的`extends`用来判断，类型`T`是否继承了类型`U`。这里的`T`和`U`可以是任意类型。
+
+举例来说，有两个类`Cat`和`Animal`，它们的关系是`class Cat extends Animal`，那么`Cat extends Animal`就为真，而`Animal extends Cat`就为伪。
+
+```typescript
+function getProducts<T>(id?: T):
+T extends number ? Product : Product[]
+```
+
+上面示例中，函数`getProducts()`的返回值类型，取决于类型参数`T`是否为数值，如果是的，返回`Product`，否则返回`Product[]`。
+
+下面就是这个函数的实现。
+
+```typescript
+class Product {
+  id: number;
+}
+
+const getProducts = function<T>(id?: T):
+T extends number ? Product : Product[] {
+  if (typeof id === 'number') {
+    return { id: 123 } as any;
+  } else {
+    return [{ id: 123 }, {id: 567}] as any;
+  }
+}
+
+const result1 = getProducts(123);
+const result2 = getProducts();
+```
+
+上面示例的`as any`表示关闭 TypeScript 的类型推断，开发者自己保证类型正确。不这样写会编译报错，因为 TypeScript 无法推断返回值符合条件式的类型。
 
 ```typescript
 «Type2» extends «Type1» ? «ThenType» : «ElseType»

@@ -300,6 +300,12 @@ class Point {
 }
 ```
 
+## inlineSources
+
+`--inlineSources true`生成的 SourceMap 文件里面包含了 TypeScript 源码，即两者在同一个文件里面。
+
+使用这个参数的前提是打开了 sourceMap 属性。
+
 ## lib
 
 `lib`: TypeScript 应该注意哪些平台特性？可能性包括 ECMAScript 标准库和浏览器的 DOM。
@@ -315,6 +321,10 @@ class Point {
 ## rootDir
 
 `rootDir`：字符串，表示 TypeScript 脚本文件的位置。
+
+## sourceMap
+
+`--sourceMap true`生成 sourcemap 文件。
 
 ## target
 

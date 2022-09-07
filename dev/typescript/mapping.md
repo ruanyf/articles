@@ -1,6 +1,8 @@
 # 类型映射
 
-TypeScript 可以将现有的类型转换为新的类型。具体的做法是遍历数据结构（即对象类型），逐一按照映射规则，将其转成另一个类型。
+## 概念
+
+TypeScript 可以将现有的类型转换为新的类型。具体的做法是通过一个变形函数，将一种类型按照映射规则，转成另一个类型。
 
 下面是一个原始类型。
 
@@ -146,6 +148,29 @@ type FilterStringProp<T> = {
 type FilteredUser = FilterStringProp<User> // { name: string }
 ```
 
+## 自定义映射
+
+```typescript
+function filterBy<T, P extends keyof T>(
+  property: P,
+  value: T[P],
+  array: T[]
+) {
+  return array.filter(item => item[property] === value);
+}
+
+interface Person {
+  name: string;
+  age: number;
+}
+const persons: Person[] = [
+  { name: 'John', age: 32 },
+  { name: 'Mary', age: 33 },
+];
+
+filterBy('name', 'John', persons)
+```
+
 ## `Partial<T>`
 
 `Partial<T>`是 TypeScript 预定义的工具类型，用来将对象类型的所有属性都变成可选属性。
@@ -210,6 +235,34 @@ type RequiredTodoItem = Required<TodoItem>;
 `Required<T>`是 TypeScript 内置的工具类型，用来将对象类型的所有属性变成只读。
 
 ```typescript
+interface Person {
+  name: string;
+  age: number;
+}
+
+interface ReadonlyPerson {
+  readonly name: string;
+  readonly age: number;
+}
+
+const worker: Person = {name: "John", age: 22};
+
+function doStuff(
+  person: Readonly<Person>
+) {
+  person.age = 25; // 报错
+}
+```
+
+TypeScript 对 Readonly 的定义如下。
+
+```typescript
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P];
+};
+```
+
+```typescript
 interface TodoItem {
    description: string | undefined;
    priority?: "high" | "medium" | "low" | undefined;
@@ -255,6 +308,20 @@ todo.priority = "medium";
 type Readonly<T> = {
   +readonly [P in keyof T]: T[P];
 };
+```
+
+`Readonly<T>`与`Partial<T>`可以结合使用。
+
+```typescript
+interface Person {
+  name: string;
+  age: number;
+}
+
+const worker1: Readonly<Partial<Person>> 
+= {name: "John"};
+
+worker1.name = "Mary"; // 报错
 ```
 
 ## 参考链接

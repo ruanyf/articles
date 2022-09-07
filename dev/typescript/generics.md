@@ -493,3 +493,5 @@ declare namespace React {
 function computeDistance2<P extends Point>(point: P) { /*...*/ }
 computeDistance2({ x: 1, y: 2, z: 3 }); // 正确
 ```
+
+`extends`表示当前类继承基类，比如`<T extends constructorMixin>`表示`T`继承了`constructorMixin`，这意味着前者具有后者的结构，并且还有一些自己的属性和方法。因此，所有可以使用`constructorMixin`的地方，都可以使用`T`。

@@ -37,6 +37,8 @@ function doSomething(x: string | null) {
 
 --noImplicitAny：当无法推断一个变量时发出一个错误（或者只能推断为一个隐式的 any 类型），你可以通过显式添加 :any 的类型注解，来让它成为一个 any 类型。
 
+## strictPropertyInitialization
+
 --strictPropertyInitialization 实例的属性都需要在构造函数里面初始化。
 
 ```typescript
@@ -60,6 +62,12 @@ class GoodGreeter {
 class OKGreeter {
   name!: string;
 }
+```
+
+这一项有时很烦人，可以把它关闭掉。
+
+```javascript
+"strictPropertyInitialization": false
 ```
 
 ## allowJs
