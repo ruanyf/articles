@@ -1,6 +1,40 @@
-# d.ts 文件
+# d.ts 类型声明文件
 
-TypeScript 项目免不了引入第三方库，有些第三方库没有类型注释，是单纯的 JavaScript 库。这时就需要声明一个`vendor.d.ts`文件，声明第三方库的类型。这里的 d 表示 declaration（声明）。比如，加载 jQuery，可以新建一个`jquery.d.ts`文件。
+TypeScript 项目有时需要引入第三方的 JavaScript 库，这些库很可能没有类型注释，是单纯的 JavaScript 库。这时就需要一个类型声明文件（type definition file）。
+
+类型声明文件的作用是，给出当前库的 API 的类型描述。
+
+根据约定，类型声明文件的文件名为`[vendor].d.ts`的形式。这里的`vendor`表示第三方库的名称，`d`表示 declaration（声明）。比如，jQuery 的类型声明文件就是`jQuery.d.ts`。
+
+第三方库如果没有提供原生的类型描述文件，可以去 [DefinitelyTyped 仓库](https://github.com/DefinitelyTyped/DefinitelyTyped)找找看。这个仓库是 TypeScript 社区维护的类型描述文件仓库。
+
+TypeScript 社区在 `@types`名称空间下，发布类型声明文件的 NPM 软件包。只要安装软件包，就可以加载某个库的类型声明文件，比如 jquery 的类型软件包就是`@types/jquery`，它的安装命令如下。
+
+```bash
+$ npm install @types/jquery -D
+```
+
+同时，在`tsconfig.json`文件里面加上类型声明文件的位置。
+
+```javascript
+{
+  "compilerOptions": {
+    "types" : ["jquery"]
+  }
+}
+```
+
+上面代码中，`compilerOptions.types`属性是一个数组，成员是所要加载的类型声明文件，要加载几个文件，就有几个成员。它们的默认位置是子目录`node_modules/@types`。
+
+有时实在没有第三方库的类型声明文件，你可以告诉 TypeScript 相关对象的类型是`any`。比如，使用 jQuery 的脚本可以写成下面这样。
+
+```typescript
+declare var $: any 
+```
+
+上面代码表示，jQuery 的`$`对象是外部引入的，类型是`any`，也就是 TypeScript 不用对它进行类型检查。
+
+有些库自带类型声明文件，比如`moment`自带`moment.d.ts`。
 
 为了描述不是用 TypeScript 编写的库的形状，我们需要声明库公开的 API。通常，这些是在.d.ts文件中定义的。如果您熟悉 C/C++，您可以将这些视为.h文件。
 
@@ -132,4 +166,61 @@ $ npm install @types/jquery --save-dev
 import * as $ from "jquery";
 ```
 
+## es6-shim.d.ts 
 
+如果代码编译成 ES5（`tsconfig.json`设成`"target": ES5`），但是代码会用到 ES6 的 API，并且希望 IDE 能够正确识别，可以引入`es6-shim.d.ts`。
+
+```bash
+$ npm install @types/es6-shim -D
+```
+
+`tsconfig.json`加入下面的设置。
+
+```javascript
+"types" : ["jquery", "es6-shim"]
+```
+
+另外一个新的垫片库是`core-js`。
+
+## reference 命令
+
+自己以前的项目可以自定义一个类型声明文件，比如`typings.d.ts`。
+
+比如，你以前写过一个函数。
+
+```typescript
+function greeting(name) {
+  console.log("hello " + name);
+}
+```
+
+新项目要用到这个函数，你可以为这个函数单独写一个类型文件`src/typings.d.ts`。
+
+```typescript
+export function greeting(name: string): void;
+```
+
+然后，需要在用到这个库的脚本头部加上一行，用三斜杠语法告诉 TypeScript 类型声明文件的位置。
+
+```typescript
+/// <reference path="src/typings.d.ts" />
+```
+
+如果类型声明文件是随 NPM 安装的，那么`reference`语句的属性需要从`path`改成`type`。
+
+```typescript
+/// <reference types="some-library" />
+```
+
+## JavaScript 项目加入 TypeScript
+
+如果现有的 JavaScript 项目需要加入 TypeScript，可以在`tsconfig.json`文件加入`"allowJs": true`设置，表示将 JS 文件一起复制到编译产物目录。
+
+这时，TypeScript 不会对 JavaScript 脚本进行类型检查。如果你希望也进行类型检查，可以设置`"checkJs": true`。
+
+另一种方法是在 JavaScript 脚本的第一行，加上注释`//@ts-check`，这时 TypeScript 也会对这个脚本进行检查。
+
+打开`"checkJs": true`以后，如果不希望对有的 JavaScript 脚本进行类型检查，可以在该脚本头部加上`//@ts-ignore`。
+
+You can also help tsc with type inference by adding the JSDoc annotations (such as
+@param and @return) to your JavaScript code.
