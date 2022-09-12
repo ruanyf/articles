@@ -50,6 +50,28 @@ const someString: string = value as string;
 const otherString = someString.toUpperCase(); // BOOM
 ```
 
+## 指定类型
+
+TypeScript 允许采用类型断言的方式，强制改变类型，方法是在一个值前面加上尖括号（`<typeName>`）指定类型。
+
+```typescript
+let str = '1';
+let str2:number = <number><any> str;
+console.log(str2) // "1"
+```
+
+上面示例中，变量`str2`的类型是数值，但是赋值为一个字符串`str`，正常情况下会报错。这时如果你确定需要这样赋值，可以强制指定`str`的类型为`<number><any>`。这样的话，TypeScript 就会认为`str`的类型是数值，尽管实际上它是一个字符串。
+
+这种语法有一个前提，就是如果将类型`T1`指定为`T2`，那么需要`T1`是`T2`的子类型，或者`T2`是`T1`的子类型。
+
+```typescript
+const s1:number|string = 'hello';
+const s2:number = <number>s1; 
+```
+
+指定类型并不是真的改变一个值的类型，而是提示编译器，应该如何处理这个值。
+
+
 ## const 断言
 
 如果`const`声明的对象属性是文字表达式，这些属性的类型是`string`，而不是文字表达式的值。断言可以使得这些属性的类型变为所声明的值。

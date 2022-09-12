@@ -1,5 +1,7 @@
 # interface 接口
 
+interface 是一种类型约定，中文译为“接口”。变量指定为某个接口，就表示遵守约定。
+
 很多面向对象的编程语言都有 interface 语法结构，用来表示对象必须实现的属性和方法。TypeScript 也提供了 interface 命令。
 
 ```typescript
@@ -20,6 +22,26 @@ const p:Persion = {
   lastName: 'Smith',
   age: 25
 };
+```
+
+## 数组接口
+
+接口也可以表示数组。
+
+```typescript
+interface namelist {
+  [index:number]:string
+}
+
+var list2: namelist =["John",1,"Bran"] //Error. 1 is not type string 
+
+interface ages {
+  [index:string]: number
+}
+
+var agelist: ages;
+agelist["John"]=15 // Ok
+agelist[2]="nine" // Error
 ```
 
 ## 接口合并

@@ -2,47 +2,69 @@
 
 ## 概述
 
-TypeScript（简称为“TS”）是微软公司发明的一种编程语言。
+TypeScript（简称“TS”）是微软公司发明的一种编程语言。
 
-它的主要目的是为 JavaScript 语言（简称为“JS”）添加类型注释，将其改为静态类型语言。
+它并不是一种独立的全新编程语言，而是在 JavaScript 语言（简称为“JS”）的基础上添加了类型系统，可以看成是 JavaScript 的衍生语言。
 
-JavaScript 本身是动态类型语言（即变量可以随时改变类型），也不支持类型注释。
+### TypeScript 与 JavaScript 的关系
+
+具体来说，TypeScript 沿用了 JavaScript 的所有语法，并添加了一些类型相关的新语法，属于 JavaScript 的超集。
+
+“超集”指的是，JavaScript 代码都属于合法的 TyepScript 代码，可以被 TypeScript 引擎理解。
+
+但是，反过来就不行，TypeScript 代码不能被 JavaScript 引擎理解，必须通过编译器，编译成 JavaScript 代码，才能在 JavaScript 引擎运行。
+
+由于 TypeScript 可以编译成 JavaScript，所以凡是可以使用 JavaScript 的地方，都可以使用 TypeScript。
+
+下面是一个最简单的例子，演示一下 TypeScript 和 JavaScript 的差异。
 
 ```javascript
+// JavaScript 代码
 let x = 123;
-x = 'hello world';
+x = 'hello';
 ```
 
-上面是一段 JavaScript 代码，变量`x`的值可以是任意类型，并且允许随时改变类型。上面示例中，`x`先赋值为数值`123`，然后又变为字符串`hello world`，这就叫做（变量的）动态类型。
+上面是两行 JavaScript 代码。第一行声明了一个变量`x`，变量的值是一个数值。
 
-TypeScript 首先要求变量声明时，必须给出类型注释。
+第二行将`x`的值改成了一个字符串。由于JavaScript 是动态类型语言，即变量的类型是动态的，可以是任意类型，并且能够随时改变类型，所以上面的代码是完全合法的。
+
+如果采用 TypeScript，声明变量就要写成下面这样。
 
 ```typescript
+// TypeScript 代码
 let x:number = 123;
 ```
 
-上面示例中，变量`x`后面的`:number`就是类型注释，冒号表示类型描述，`number`表示变量`x`的类型是`number`（数值），所以可以赋值为`123`。赋值为其他类型的值，就会报错。
+上面示例中，变量`x`后面的`:number`就是类型注释，表示它的值应该是一个数值。TypeScript 要求变量声明时，必须给出类型注释。
+
+如果变量的值与指定的类型不符合，就会报错。
 
 ```typescript
-// 报错
-let x:number = 'hello world';
-
-// 报错
-let x:number = 'hello world';
-x = 'hello world';
+let x:number = 'hello'; // 报错
 ```
 
-上面示例中，变量`x`的类型是数值，却被赋值为字符串`hello world`，结果就报错了。
+上面示例中，变量`x`的类型是数值，却被赋值为字符串`hello`，结果就报错了。
 
-变量一旦设定类型，它的类型就固定了。如果变量的类型一开始是数值，那就只能存放数值，不能存放其它类型的值。这就叫做静态类型。
+变量一旦设定了类型，就只能存放这个类型的值，不能存放其它类型的值。这就叫做静态类型。
 
-TypeScript 的设计目的，就是为 JavaScript 加上静态类型系统，并不想成为一门独立的全新语言。所以，它沿用了 JavaScript 的所有语法，只添加了类型相关的一些新语法，可以视为是 JavaScript 的超集语言。
-
-理论上，JavaScript 脚本都属于合法的 TyepScript 脚本，现有的 JavaScript 代码可以与 TypeScript 代码一起工作。但是，TypeScript 代码必须通过编译器，编译为 JavaScript 代码，才能在 JavaScript 引擎中执行。
+### 学习途径
 
 学习 TypeScript，必须先了解 JavaScript 的语法。本书假定读者已经掌握了 JavaScript 语言，就不再介绍它的语法了，只介绍 TypeScript 引入的静态类型系统。
 
 JavaScript 语法可以参考[《JavaScript 教程》](https://wangdoc.com/javascript)和[《ES6 教程》](https://wangdoc.com/es6)。
+
+学习 TypeScript 需要有 JavaScript 基础。比较理想的学习途径是，先学会 JavaScript，再学习 TypeScript。 
+
+跳过 JavaScript，直接学习 TypeScript 也是可以学会的，但是最终还是需要懂 JavaScript。因为 TypeScript 主要运行在浏览器和 Node.js 环境，这两个环境都只支持 JavaScript，所有接口和资料都是为后者准备的。事实上，TypeScript 代码运行时，都是先编译成 JavaScript 然后再运行。
+
+本书完整介绍 TypeScript 语言，但是不涉及 JavaScript 语法的详细介绍，假设读者对后者已经有一个基本了解。
+
+需要注意的是，JavaScript 的语法标准已经从 ES5 进化到了 ES6。标准委员会从2015年开始，每年发布一个新的语法版本：ES015、ES2016、ES017…… TypeScript 完全采用 ES6 的语法，所以掌握 ES6 也是的。
+
+如果你对 JavaScript 语法（ES5 和 ES6）还不熟悉，建议先阅读 JavaScript 语法标准教程和 ES6 语法入门，再来阅读本书。
+
+
+
 
 ## TypeScript 的历史
 
@@ -65,6 +87,10 @@ JavaScript 语法可以参考[《JavaScript 教程》](https://wangdoc.com/javas
 类型是人为添加的一种编程约束，主要目的是在软件开发过程中，让编译器和开发工具可以提供更多的验证和帮助，帮助提高代码质量，减少错误。
 
 ## 静态类型的优点
+
+有了类型以后，TypeScript 就可以对代码进行类型检查。不用运行代码，只通过分析类型，就能及时发现代码错误。另外，类型注释也有利于编辑器提供语法提示，以及自动生成文档。
+
+并且，TypeScript 有助于提高代码质量，保证代码安全，更适合用在大型的企业级项目。这就是为什么大量 JavaScript 项目转成 TypeScript 的原因。
 
 TypeScript 为什么要为 JavaScript 添加类型呢？原因是静态类型语言有一些突出的优点。
 

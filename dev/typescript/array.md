@@ -296,7 +296,11 @@ function readButtonInput(name: string, version: number, ...input: boolean[]) {
 
 ## 多维数组
 
-TypeScript 允许`T[][]`的形式，表示二维数组。
+TypeScript 允许`T[][]`的形式，表示二维数组，`T`是最底层数组成员的类型。
+
+```typescript
+var multi: number[][]=[[1,2,3],[23,24,25]]
+```
 
 ```typescript
 var trilogies: string[][] = [

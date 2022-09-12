@@ -2,9 +2,17 @@
 
 tsc 可以使用配置文件`tsconfig.json`，自动读取当前目录下的这个配置文件。
 
-## module
+## --declaration
 
-`module`参数指定编译的输出格式。
+生成一个`.d.ts`类型声明文件。
+
+## --help
+
+显示帮助信息。
+
+## --module
+
+`--module`参数指定编译的输出格式。
 
 ```bash
 $ tsc --module commonjs Test.ts
@@ -18,6 +26,39 @@ $ tsc --module commonjs Test.ts
 - umd
 - es2015
 - esnext
+
+## --module noImplicitAny
+
+类型推测不允许出现 any 类型。
+
+## --out
+
+将多个原始脚本编译成单个文件。
+
+## -p
+
+`-p`指定配置文件。如果配置文件不是当前目录的`tsconfig.json`文件，那么就需要使用`-p`参数指定配置文件。
+
+```bash
+$ tsc -p src/client/tsconfig.client.json
+$ tsc -p src/server/tsconfig.server.json
+```
+
+## --removeComments
+
+在输出文件中移除代码注释。
+
+## --sourcemap
+
+生成一个 sourcemap 文件(.map 文件)。
+
+## --target
+
+指定编译后输出代码的 JavaScript 版本。
+
+## --watch
+
+监视文件变动，自动重新编译。
 
 ## strictNullChecks
 
