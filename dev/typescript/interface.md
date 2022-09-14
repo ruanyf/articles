@@ -44,6 +44,52 @@ agelist["John"]=15 // Ok
 agelist[2]="nine" // Error
 ```
 
+## 接口继承
+
+接口可以继承，子接口使用`extends`关键字继承父接口。
+
+```typescript
+Child_interface extends super_interface
+```
+
+接口允许多重继承。
+
+```typescript
+Child_interface extends s1_interface,s1_interface,…,sN_interface
+```
+
+```typescript
+interface Person{age: number}
+
+interface Musician extends Person{
+  instrument:string
+}
+
+var drummer =<Musician>{};
+
+drummer.age =27;
+drummer.instrument="Drums";
+```
+
+多重继承的例子。
+
+```typescript
+interface IParent1{
+  v1: number
+}
+interface IParent2{
+  v2: number
+}
+interface Child extends IParent1,IParent2 {}
+
+var Iobj:Child={
+  v1:12,
+  v2:23
+}
+
+console.log("value 1: "+ Iobj.v1 +" value 2: " + Iobj.v2)
+```
+
 ## 接口合并
 
 多个同名接口会合并成一个接口。

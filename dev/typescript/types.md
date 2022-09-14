@@ -265,6 +265,44 @@ TypeScript 在 JavaScript 之上又加了一层“静态类型”，在编译时
 - Null
 - Undefined
 
+针对JavaScript中的每一种原始数据类型，TypeScript都提供了对应的类型：
+
+- boolean
+- string
+- number
+- bigint
+- symbol
+- undefined
+- null
+
+String 类型指的是字符串的包装对象，`string`代表字符串原始值。
+
+```typescript
+const s1:String = new String('hello');
+const s2:string = 'hello';
+```
+
+由于 JavaScript 字符串可以自动转为对象，所以字面量直接赋值给 String 类型是可以的。
+
+```typescript
+const s1:String = 'hello';
+```
+
+但是反过来就不行，字符串对象不能赋值给 string 类型。
+
+```typescript
+// 报错
+const s2:string = new String('hello');
+```
+
+注意，直接调用`String()`，返回值是一个字符串，可以赋值给`string`类型。
+
+```typescript
+const s2:string = String('hello');
+```
+
+由于大多数使用原始值的场合，都不是使用原始值的包装对象，因此平时主要使用的是`string`类型。
+
 ## 基本类型
 
 TypeScript 提供的数据类型，可以分成两大类。
@@ -369,6 +407,30 @@ configure("automatic");
 
 最后，布尔值类型 boolean 本身就是两个布尔值 union 类型`true | false`的别名。
 
+## Object 类型
+
+Object 类型有一个特点，那就是除了undefined值和 null值外，其他任何值都可以赋值给Object类型。
+
+```typescript
+let obj: Object;
+ 
+// 正确
+obj = { x: 0 };
+obj = true;
+obj = 'hi';
+obj = 1;
+ 
+// 编译错误
+obj = undefined;
+obj = null;
+```
+
+字符串之所以可以赋值给`Object`类型，是因为字符串可以自动转为对象。
+
+```typescript
+'str'.valueOf()
+```
+
 ## Object 与 object 的区别
 
 ```typescript
@@ -377,6 +439,49 @@ let y:object;
 ```
 
 类型声明为`Object`（大写），表示`x`是`Object`的实例。
+
+`Object`是一个接口。
+
+```typescript
+interface ObjectConstructor {
+  new(value?: any): Object;
+  readonly prototype: Object;
+  // ...
+}
+
+declare var Object: ObjectConstructor;
+```
+
+Object 对应 JavaScript 语言视为对象的值，这包括字符串、数值、布尔值等原始类型，也被认为符合 Object 类型。
+
+这显然很容易混淆，TypeScript 2.2版本就新增了一个新的`object`类型表示非原始类型，即对应那些狭义的真正为对象的值。
+
+```typescript
+// 正确
+const a:Object = 1;
+
+// 报错
+const b:object = 1;
+```
+
+Object 类型和 object 类型都只能表示原生提供的属性，用户自定义的属性都不存在于这两个类型。
+
+```typescript
+const o1:Object = { foo: 0 };
+const o2:object = { foo: 0 };
+
+// 报错
+o1.foo
+// 正确
+o1.toString()
+
+// 报错
+o2.foo
+// 正确
+o2.toString()
+```
+
+上面示例中，`foo`是自定义属性，访问就会报错。`toString()`是对象的原生方法，可以正确访问。
 
 JavaScript 存在一些对象，不属于`Object`的实例。
 
@@ -430,6 +535,20 @@ const obj2: object = { toString() { return 123 } };
 ```
 
 由于`object`的适用范围大于`Object`，所以建议总是使用`object`（小写），而不是`Object`（大写）。
+
+有了`object`以后，有些场合就能精确表示类型了。比如，`Object.create()`方法的参数不能是原始类型值，只能是对象或`null`。
+
+```typescript
+Object.create(123) // 报错
+```
+
+如果没有`object`，就没办法精确表示参数类型，只能写成`any`。现在，参数类型就可以写成下面这样。
+
+```typescript
+interface ObjectConstructor {
+  create(o: object|null, ...):any;
+}
+```
 
 ## 特殊类型
 

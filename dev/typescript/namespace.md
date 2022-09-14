@@ -1,5 +1,7 @@
 # namespace
 
+namespace（名称空间）是一个将相关代码组织在一起的方式。
+
 ## 基本用法
 
 namespace 用来定一个名称空间，其内部的所有变量和函数，都必须在这个名称空间里面使用。如果要在命名空间以外使用，就必须用`export`命令在内部指定接口。
@@ -19,6 +21,8 @@ Utility.log('Call me');
 Utility.error('maybe!');
 ```
 
+凡是有`export`前缀的成员，才可以在名称空间外部引用。
+
 它转换后的 JavaScript 代码如下。
 
 ```typescript
@@ -36,6 +40,42 @@ Utility.error('maybe!');
 namespace 可以嵌套，比如`Utility.Messaging`可以表示名称空间 Utility 下面，还有一个子名称空间 Messaging。
 
 namespace 与模块的作用是一致的，区别是一个文件只能有一个模块，但是可以有多个 namespace。完全可以把模块，看成单个的 namespace，所以 namespace 的用处并不是很大。而且，模块是 JavaScript 的合法语法，namespace 是 TypeScript 添加的语法，编译时必须进行转换，所以建议总是使用模块，替代 namespace。
+
+namespace 可以嵌套。
+
+```typescript
+namespace tutorialPoint {
+  export namespace invoiceApp {
+    export class Invoice {
+      public calculateDiscount(price: number){
+        return price *.40;
+      }
+    }
+  }
+}
+
+var invoice = new tutorialPoint.invoiceApp.Invoice();
+console.log(invoice.calculateDiscount(500));
+```
+
+上面示例中，嵌套名称空间的成员，需要使用双点号引用。
+
+namespace 不仅可以包括实义代码，也可以包括类型代码。
+
+```typescript
+namespace SomeNameSpace {
+  export interface ISomeInterfaceName{}
+  export class SomeClassName{}
+}
+```
+
+上面代码中，SomeNameSpace 是一个名称空间，里面不仅包括了一个类，还包括一个只用于类型的接口。
+
+如果 namespace 代码放在一个单独的文件里，那么引入这个文件需要使用三斜杠的语法。
+
+```typescript
+/// <reference path = "SomeFileName.ts" />
+```
 
 ## 输出的加载
 

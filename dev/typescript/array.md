@@ -94,6 +94,15 @@ let member:Name = arr[0];
 
 上面示例中，类型`Name`是字符串类型。
 
+注意，TypeScript 不会对数组的越界引用报错。
+
+```typescript
+const arr:number[] = [1, 2, 3];
+const ele = arr[10]; // 不报错
+```
+
+上面示例中，读取数组`arr`不存在的成员并不报错。这是因为 TypeScript 认为数组的成员数量是动态的，可以随时新增和减少。
+
 ## 类型推断
 
 TypeScript 会自动推断数组成员的类型。
@@ -148,7 +157,62 @@ const args = [8, 5] as const;
 const angle = Math.atan2(...args);
 ```
 
-## const 断言
+## 只读数组，const 断言
+
+只读数组的成员不能改变，可以在声明数组时，加上`readonly`关键字。
+
+```typescript
+let arr:readonly number[] = [0, 1];
+
+delete arr[0]; // 报错
+arr[1] = 2; // 报错
+arr.push(3); // 报错
+
+arr = [1,2]; // 不报错
+```
+
+上面示例中，`arr`是一个只读数组，删除、修改、新增数组成员都会报错。但是，变量`arr`赋值为另一个数组并不报错。
+
+如果要禁止修改变量`arr`赋值为另一个数组，可以从`const`声明。
+
+```typescript
+const arr:readonly number[] = [0, 1];
+arr = [1,2]; // 报错
+```
+
+上面示例中，`const`声明的变量是不能重新赋值的，所以变量`arr`赋值为另一个数组就会报错。
+
+注意，`readonly`关键字不能与数组的泛型声明法一起使用。
+
+```typescript
+const arr:readonly Array<number> = [0, 1]; // 报错
+```
+
+上面示例中，`readonly`与泛型声明法一起使用，就会报错。
+
+`readonly`关键字会生成一种单独的类型，比如`readonly number[]`跟`number[]`是不一样的类型，前者是后者的子类型。
+
+由于子类型继承了父类型的所有特征，并加上了自己的特性，所以父类型可以赋值给子类型，反过来就不行。
+
+```typescript
+const a1:number[] = [0, 1];
+const a2:readonly number[] = a1; // 正确
+
+const a3:readonly number[] = [0, 1];
+const a4:number[] = a3; // 报错
+```
+
+上面示例中，父类型`number[]`可以赋值给子类型`readonly number[]`，但是反过来就不行。
+
+除了使用`readonly`关键字，只读数组的声明还可以使用工具类型`Readonly<T>`和`ReadonlyArray<T>`。
+
+```typescript
+const arr:Readonly<number[]> = [0, 1];
+// 或者
+const arr:ReadonlyArray<number> = [0, 1];
+```
+
+上面两种写法都可以声明只读数组。注意，两者尖括号里面的写法不一样，`Readonly<T>`的尖括号里面是整个数组（`number[]`），而`ReadonlyArray<T>`的尖括号里面是数组成员（`number`）。
 
 const 断言用来声明数组成员不会改变。
 
@@ -186,10 +250,12 @@ const booleanAndString2 = [true, 'abc'];
 
 元组必须明确声明每个成员的类型，以及包含多少个成员。
 
-```typscript
+```typescript
 const s:[string, string, boolean]
   = ['a', 'b', true];
 ```
+
+元组的声明正好与数组相反，数组是类型写在方括号外面（`number[]`），元组是类型写在方括号里面（`[number]`）。
 
 下面的例子是数组的成员是一个元组。
 
@@ -205,7 +271,7 @@ const entries = Object.entries({ a: 1, b: 2 });
 let point:[number, number] = [7, 5];
 ```
 
-元组类型也可以方括号读取属性。
+元组成员的读取跟数组是一样的，也是通过方括号读取。
 
 ```typescript
 type Tuple = [string, number]
@@ -226,18 +292,17 @@ function doSomething(pair: [string, number]) {
 doSomething(["hello", 42]);
 ```
 
-元祖也可以使用 readonly 修饰符。
+元祖也可以声明成只读元组。
 
 ```typescript
-function doSomething(pair: readonly [string, number]) {
-  // ...
-}
+// 写法一
+const p1:readonly [number, number] = [0, 0];
 
-function doSomething(pair: readonly [string, number]) {
-  // 报错
-  pair[0] = "hello!";
-}
+// 写法二
+const p2:Readonly<[number, number]> = [0, 0];
 ```
+
+上面两种写法都声明了只读元组，修改元组成员就会报错。
 
 只读元组可以用 `as const`替代`readonly`。另外,只读的元组不能替代普通元组
 
@@ -252,46 +317,102 @@ function distanceFromOrigin([x, y]: [number, number]) {
 distanceFromOrigin(point);
 ```
 
-元祖成员后面可以加号，表示这个成员是可选的。注意，问号只能用于元祖的尾部成员。
+元祖成员后面可以加号，表示这个成员是可选的。注意，问号只能用于元祖的尾部成员，也就是说，所有可选成员必须在必选成员之后。
 
 ```typescript
-type Either2dOr3d = [number, number, number?];
- 
-function setCoordinate(coord: Either2dOr3d) {
-
-// const z: number | undefined
-  const [x, y, z] = coord;
-              
-// (property) length: 2 | 3
- 
-console.log(`Provided coordinates had ${coord.length} dimensions`);
-}
+type myTuple = [number, number, number?, string?];
 ```
 
-元组内部的成员，也能使用扩展运算符。但是，扩展运算符作用的成员类型，只能是数组或另一个元组。
+上面示例中，元组`myTuple`的最后两个成员是可选的。也就是说，两个成员、三个成员、四个成员都有可能。
+
+元组的成员其实也可以写成不定数量，那就是使用 扩展运算符（`...`），将不定数量的成员都用一个数组表示。
+
+```typescript
+[...T[]]
+```
+
+下面是一个例子。
+
+```typescript
+const myTuple:[number, ...string[]]
+  = [0, 'a', 'b'];
+```
+
+上面示例中，元组的第一个成员是数值，后面有多少个成员都可以，只要都是字符串。
+
+扩展运算符用在元组的任意位置都可以。
 
 ```typescript
 type StringNumberBooleans = [string, number, ...boolean[]];
 type StringBooleansNumber = [string, ...boolean[], number];
 type BooleansStringNumber = [...boolean[], string, number];
-
-const a: StringNumberBooleans = ["hello", 1];
-const b: StringNumberBooleans = ["beautiful", 2, true];
-const c: StringNumberBooleans = ["world", 3, true, false, true, false, true];
 ```
 
-这种语法的一个作用是描述 rest 参数。
+上面示例中，扩展运算符分别在元组的尾部、中部和头部。
+
+函数的 rest 参数，就常常用这种语法来表示类型。
 
 ```typescript
-function readButtonInput(...args: [string, number, ...boolean[]]) {
+function readButtonInput(
+  ...args:[string, number, ...boolean[]]
+) {
   const [name, version, ...input] = args;
   // ...
 }
 
 // 等同于
-function readButtonInput(name: string, version: number, ...input: boolean[]) {
+function readButtonInput(
+  name: string,
+  version: number,
+  ...input: boolean[]
+) {
   // ...
 }
+```
+
+上面示例中，函数`readButtonInput()`的参数类型完全可以用元组表示，哪怕参数数量是不确定的。
+
+如果没有可选成员和扩展运算符，TypeScript 会推断出元组的成员数量。
+
+```typescript
+function f(point: [number, number]) {
+  if (point.length === 3) {  // 报错
+    // ...
+  }
+}
+```
+
+上面示例会报错，原因是 TypeScript 发现元组`point`的长度是`2`，不可能等于`3`。
+
+如果包含了可选参数，TypeScript 会推断出可能的成员数量。
+
+```typescript
+const myTuple:[...string[]] = ['a', 'b', 'c'];
+console.log(typeof myTuple.length) // number
+```
+
+上面示例会报错，原因是 TypeScript 发现`myTuple.length`的类型是`1|2|3`，不可能等于`4`。
+
+如果使用了扩展运算符，TypeScript 只会推断出元组的成员数量是一个数值（number）。
+
+```typescript
+const myTuple = [...string[]];
+console.log(typeof myTuple.length) // number
+```
+
+TypeScript 数组是元组的子类型，所以后者可以赋值给前者，反之则不行。
+
+```typescript
+const point: [number, number] = [0, 0];
+const nums: number[] = point; // 正确
+```
+
+只读元组是元组的子类型，只读数组是只读数组的子类型。
+
+```typescript
+const t: [number, number] = [0, 0];
+const rt: readonly [number, number] = t; 
+const rar:readonly number[] = rt;
 ```
 
 ## 多维数组
