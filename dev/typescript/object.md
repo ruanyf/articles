@@ -13,7 +13,32 @@ const obj: {
 
 上面示例中，对象`obj`的类型就是在大括号里面，注明每个属性的类型。
 
-属性的类型可以用分号结尾，也可以用逗号结尾。
+属性的类型可以用分号结尾，也可以用逗号结尾。最后一个属性后面，可以写分号或逗号，也可以不写。
+
+对象赋值时，不能有多余的属性。
+
+```typescript
+const obj: {  
+  x: number;
+  y: number;  
+} = { x: 1, y: 1, z: 1 }; // 报错
+```
+
+上面示例中，变量`obj`的类型定义里面，只有`x`和`y`两个属性。如果赋值时有多余的属性（比如`z`），就会报错。
+
+读写多余的属性也会报错。
+
+```typescript
+const obj: {  
+  x: number;
+  y: number;  
+} = { x: 1, y: 1 };
+
+console.log(obj.z); // 报错
+obj.z = 1; // 报错
+```
+
+上面示例中，读写多余的属性`z`都会报错。
 
 如果某个属性是可选的，需要在属性名后面加一个问号。
 
@@ -248,6 +273,67 @@ const o1:t1 = o2; // 正确
 ```
 
 上面示例中，对象`o2`的类型是`t2`，对象`o1`的类型是`t1`，两者并不是同一个类型。但是`o2`可以赋值给`o1`，并不会报错，原因就是类型`t2`兼容类型`t1`。
+
+## 空对象
+
+空对象是 TypeScript 的一种特殊类型。
+
+```typescript
+const obj = {};
+obj.prop = 123; // 报错
+```
+
+上面示例中，变量`obj`的值是一个空对象，然后对`obj.prop`赋值就会报错。
+
+原因是这时 TypeScript 会推断变量`obj`的类型为空对象，实际执行的是下面的代码。
+
+```typescript
+const obj:{} = {};
+```
+
+空对象没有自定义属性，所以对自定义属性赋值就会报错。空对象只能使用继承的属性，即继承自原型对象`Object.prototype`的属性。
+
+```typescript
+obj.toString()
+```
+
+上面示例中，`toString()`方法是一个继承自原型对象的方法，TypeScript 允许在空对象上使用。
+
+由于 TypeScript 采用结构子类型（ structural subtyping），只要兼容空对象的结构，就会认为符合空对象类型。
+
+所以，任何对象都可以赋值给空对象类型，因为任何对象都可以看作“空对象 + 属性”，在结构上兼容空对象属性。
+
+```typescript
+const obj:{} = { foo: 123 };
+console.log(obj.foo) // 报错
+```
+
+上面示例的第一行代码不会报错，因为`{ foo: 123 }`在结构上兼容空对象。但是，第二行代码会报错，因为空对象类型没有自定义属性。
+
+空对象属于`Object`的子类型，所以任何属于`Object`类型的值，都可以赋值给空对象类型。
+
+```typescript
+const test1:{} = 'hello';
+const test2:{} = 123;
+const test3:{} = false;
+```
+
+上面示例中，由于字符串、数值、布尔值都会自动转为对象，所以都可以赋值给空对象类型，不会报错。
+
+但是，`null`和`undefined`不能赋值给空对象类型，因为它们不能转为对象。
+
+```typescript
+const test4:{} = null; // 报错
+const test5:{} = undefined; // 报错
+```
+
+由于原生的`Object`类型也没有自定义属性，所以`{}`可以视为`Object`的一种简写形式。
+
+```typescript
+const obj:Object = { foo: 123 };
+// 等同于
+const obj:{} = { foo: 123 };
+```
 
 ## type 命令
 
