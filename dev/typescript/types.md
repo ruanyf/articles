@@ -82,6 +82,8 @@ function f(x) {
 }
 ```
 
+注释指令`// @ts-ignore`也可以关闭类型检查。
+
 ## unknown
 
 `unknown`可以看作是更安全的`any`，它也表示任何类型，但是有着更多的限制。

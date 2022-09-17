@@ -5,6 +5,14 @@
 它相当于其他语言中的类型转换，但类型断言不会抛出异常，并且只用于静态检查，在运行时不做任何事情。
 
 ```typescript
+// 无编译错误
+const p0: { x: number } = { x: 0, y: 0 } as { x: number };
+  
+// 无编译错误
+const p1: { x: number } = { x: 0, y: 0 } as { x: 0; y: 0 };
+```
+
+```typescript
 const data: object = ['a', 'b', 'c']; // (A)
 
 // @ts-expect-error: Property 'length' does not exist on type 'object'.

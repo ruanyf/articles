@@ -45,6 +45,16 @@ type FunctionType2 = (string, number) => number;
 // (string: any, number: any) => number
 ```
 
+类型里面的参数名与实际参数名不一致，是可以的。
+
+```typescript
+let f: (x: number) => number;
+ 
+f = function (y:number) {
+  return y;
+};
+```
+
 （2）函数的参数要放在圆括号里面。
 
 （3）如果不指定参数类型，则表示该参数的类型为`any`。
@@ -66,6 +76,43 @@ function greeter(fn: GreetFunction) {
 
 （2）返回类型`string`使用箭头分隔，而不是使用冒号。
 
+函数类型还可以采用可执行对象的方式声明。
+
+```typescript
+let add: { (x: number, y: number): number };
+ 
+add = function (x: number, y: number): number {
+  return x + y;
+};
+```
+
+上面示例中，变量`add`的类型就是可执行函数。
+
+```typescript
+{
+  (参数列表): 返回值
+}
+```
+
+这种声明方式平时很少用，但是非常合适用在一个场合：函数本身存在属性。
+
+```typescript
+function f(x:number) {
+  console.log(x);
+}
+ 
+f.version = '1.0';
+```
+
+上面示例中，函数`f()`本身还有一个属性`foo`。这时，`f`完全就是一个对象，类型就要使用可执行对象的方式声明。
+
+```typescript
+let foo: {
+  (x: number): void;
+  version: string
+} = f;
+```
+
 函数类型也可以使用对象接口来定义，详见《对象类型》一章。
 
 ```typescript
@@ -85,25 +132,76 @@ var add:myfn = (a, b) => a + b;
 如果函数没有返回值，或者说返回值是`undefined`，TypeScript 就认为函数的返回值是 void 类型。
 
 ```typescript
-function f1(): void {
+function f1():void {
   return undefined;
 }
 ```
 
-严格地说，void 类型表示，该函数的返回值没有利用价值，或者说不应该使用该函数的返回值。所以，下面的函数返回值类型是 void，但是对于有返回值的函数并不报错。
+如果返回其他值，TypeScript 就会报错。
+
+```typescript
+function f():void {
+  return 123; // 报错
+}
+
+const f3 = function (): void {
+  return true; // 报错
+};
+```
+
+但是，如果某个位置的值是 void 函数，比如某个变量或者某个方法的参数，但是实际传入的函数却有返回值，这种情况并不会报错，TypeScript 是允许的。
 
 ```typescript
 type voidFunc = () => void;
  
-const f1: voidFunc = () => {
+const f1:voidFunc = () => {
   return true;
 };
  
-const f2: voidFunc = () => true;
+const f2:voidFunc = () => true;
  
-const f3: voidFunc = function () {
+const f3:voidFunc = function () {
   return true;
 };
+```
+
+这是因为，这时 void 类型并不是严格检查，而是表示该函数的返回值没有利用价值，或者说不应该使用该函数的返回值。
+
+这样设计是有现实意义的。举例来说，数组方法`Array.prototype.forEach(fn)`的参数`fn`是一个函数，而且这个函数应该没有返回值，即返回值类型是`void`。
+
+```typescript
+forEach(
+  callbackfn:(...) => void,
+  thisArg?:any
+): void;
+```
+
+但是，实际应用中，很多时候传入的函数是有返回值，但是它的返回值不重要，或者不产生作用。
+
+```typescript
+const src = [1, 2, 3];
+const ret = [];
+src.forEach(el => ret.push(el));
+```
+
+上面示例中，`push()`有返回值，表示新插入的元素在数组里面的位置。TypeScript 不会报错。
+
+如果没有启用`--strictNullChecks`编译选项，那么`void`返回值类型也允许返回`null`值。
+
+```typescript
+// 如果没有启用 --strictNullChecks，就不会报错
+function f0():void {
+  return null;
+}
+```
+
+除了函数，其他变量声明为`void`类型没有多大用处，因为这时只能赋值为`null`（假定没有打开strictNullChecks) 或者`undefined`。
+
+```typescript
+let unusable: void = undefined;
+
+// OK if `--strictNullChecks` is not given
+unusable = null;
 ```
 
 ## never 类型
@@ -320,7 +418,6 @@ const formatter = createFormatter(prettierConfig);
 const formatter = createFormatter(prettierConfig as PrettierConfig);
 ```
 
-
 ## 参数默认值
 
 TypeScript 函数的参数默认值写法，与 JavaScript 一致。
@@ -363,14 +460,63 @@ function f2(x = 456) {
 f2(undefined) // 456
 ```
 
+具有默认值的参数如果位于参数列表的末尾，那么该参数被视为可选参数。
+
+```typescript
+function add(x:number, y:number = 0) {
+  return x + y;
+}
+ 
+add(1)  // 1
+```
+
+具有默认值的参数如果不位于参数列表的末尾，调用时必须传入值。
+
+```typescript
+function add(x:number = 0, y:number) {
+  return x + y;
+}
+
+add(1) // 报错
+```
+
+可选参数与默认值不能同时使用。
+
+```typescript
+// 报错
+function f(x?: number = 0) {
+  // ... 
+}
+```
+
 ## rest 参数
 
-rest 参数表示函数所有的剩余参数，它的类型是一个数组。该数组的所有成员必须类型相同，也需要指定类型。
+rest 参数表示函数剩余的所有参数，类型有两种可能。
+
+一种可能为数组（剩余参数类型相同）。
 
 ```typescript
 function joinNumbers(...nums: number[]): string {
   return nums.join('-');
 }
+```
+
+另一种可能为元组（剩余参数类型不同）。
+
+```typescript
+function f(...args:[boolean, number]) {}
+```
+
+元组需要声明每一个剩余参数的类型，也可以使用可选参数。
+
+```typescript
+function f(...args: [boolean, string?]) {}
+```
+
+rest 参数甚至可以嵌套。
+
+```typescript
+function f(...args: [boolean, ...string[]]) {}
 ```
 
 下面是另一个例子。
@@ -423,6 +569,26 @@ function reverse<T>(stringOrArray: string | T[]): string | T[] {
 
 上面示例中，前两行类型描述列举了重载的各种情况。第三行是函数本身的类型描述，必须与所有指定的重载情况兼容。
 
+在其他一些编程语言中允许存在多个函数实现，并且在调用重载函数时编程语言负责选择合适的函数实现执行。在TypeScript中，重载函数只存在一个函数实现，开发者需要在这个唯一的函数实现中实现所有函数重载的功能。这就需要开发者自行去检测参数的类型及数量，并根据判断结果去执行不同的操作。
+
+```typescript
+function add(x: number, y: number): number;
+function add(x: any[], y: any[]): any[];
+function add(x: number | any[], y: number | any[]): any {
+    if (typeof x === 'number' && typeof y === 'number') {
+         return x + y;
+    }
+ 
+     if (Array.isArray(x) && Array.isArray(y)) {
+         return [...x, ...y];
+     }
+}
+```
+
+TypeScript 不支持为不同的函数重载分别定义不同的函数实现。
+
+注意，重载的类型描述与函数的具体实现之间，不能有其他代码，否则报错。每一个重载函数只允许有一个函数实现，并且它必须位于所有函数重载语句之后，否则将产生编译错误。
+
 如果函数可以接受多种数目的参数，可以为每一种数目指定一个类型签名。
 
 ```typescript
@@ -459,6 +625,8 @@ function len(x: any[] | string) {
   return x.length;
 }
 ```
+
+虽然函数的具体实现里面，有类型描述。但是，函数的实际调用类型，以类型签名为准。
 
 函数的类型签名不能与其他签名，或者函数的实现有冲突。
 
@@ -504,9 +672,40 @@ assert.equal(
   sb.toString(), 'I can see 3 monkeys!')
 ```
 
+重载签名的排序很重要，类型最宽的声明应该放在最后面。
+
+```typescript
+function f(x: any): number;   // <- 函数重载1
+function f(x: string): 0 | 1; // <- 函数重载2
+function f(x: any): any {
+     // ...
+}
+ 
+const a: 0 | 1 = f('hi');
+//    ~
+//    编译错误！类型 'number' 不能赋值给类型 '0 | 1'
+
+// 正确的声明方式
+function f(x: string): 0 | 1;
+function f(x: any): number;
+function f(x: any): any {
+     // ...
+}
+ 
+const a: 0 | 1 = f('hi');  // 正确
+```
+
 ## 参数解构
 
 函数参数如果存在变量解构，类型写法如下。
+
+```typescript
+function f0([x, y]: [number, number]) {}
+f0([0, 1]);
+ 
+function f1({ x, y }: { x: number; y: number }) {}
+f1({ x: 0, y: 1 });
+```
 
 ```typescript
 function sum({ a, b, c }: { a: number; b: number; c: number }) {
@@ -564,6 +763,25 @@ function doSomething(fn: DescribableFunction) {
 构造函数用来生成实例对象，必须使用`new`命令调用。构造函数的类型，必须添加`new`。
 
 ```typescript
+let ErrorConstructor: new (message?: string) => Error;
+```
+
+构造函数也可以采用可执行对象的方式声明，实际上就是采用类的方式声明。
+
+```typescript
+let Dog: { new (name: string): object };
+ 
+ Dog = class {
+     private name: string;
+     constructor(name: string) {
+         this.name = name;
+  }
+};
+ 
+let dog = new Dog('huahua');
+```
+
+```typescript
 type SomeConstructor = {
   new (s: string): SomeObject;
 };
@@ -578,11 +796,13 @@ var BankAccount: new() => BankAccount;
 
 圆括号前面要加上`new`。
 
-有些构造函数，加不加 new 都可以调用（比如`Date()`），这时它的类型两种方式都要声明。
+有一些函数被设计为既可以作为普通函数使用，同时又可以作为构造函数来使用。例如，JavaScript内置的“Number()”函数和“String()”函数等都属于这类函数。
+
+有些函数即可以当作构造函数，也可以当作普通函数使用，即加不加 new 都可以调用，比如`Date()`、`Number()`、`String()`等。它们的类型就要同时写构造函数和普通函数两种。
 
 ```typescript
-interface CallOrConstruct {
-  new (s: string): Date;
-  (n?: number): number;
+{
+  new (x:number): Number;  // <- 构造签名
+  (x:number): number;      // <- 调用签名
 }
 ```

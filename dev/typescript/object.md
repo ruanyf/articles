@@ -274,6 +274,44 @@ const o1:t1 = o2; // 正确
 
 上面示例中，对象`o2`的类型是`t2`，对象`o1`的类型是`t1`，两者并不是同一个类型。但是`o2`可以赋值给`o1`，并不会报错，原因就是类型`t2`兼容类型`t1`。
 
+## 严格字面量检查
+
+如果对象使用字面量表示，会触发 TypeScript 的严格字面量检查（strict object literal checking）。
+
+它的目的是防止拼写错误，如果字面量的属性名称跟类型定义的不一样，或者多出了未定义的属性，就会报错。
+
+```typescript
+const point:{
+  x:number;
+  y:number;
+} = {
+  x: 1,
+  y: 1,
+  z: 1 // 报错
+}
+```
+
+上面示例中，TypeScript 会对赋值号右边的对象字面量，进行多余属性检查，发现一个多余的属性`z`导致报错。
+
+参数如果不是字面量，就不会触发严格字面量检查，因此就不会报错。这个检查只针对字面量的原因是，函数调用时，参数写成字面量，多出来的属性几乎都是用不到的，或者拼写错误，或者误用了 API。
+
+可以使用编译设置`--suppressExcessPropertyErrors`在`tsconfig.json`文件里面关闭多余属性检查。
+
+```typescript
+{
+  "compilerOptions": {
+    "suppressExcessPropertyErrors": true
+  }
+}
+```
+
+如果允许字面量有多余属性，可以像下面这样在类型里面定义一个通用属性。
+
+```typescript
+let x: { foo: number, [x: string]: any };
+x = { foo: 1, baz: 2 };  // Ok
+```
+
 ## 空对象
 
 空对象是 TypeScript 的一种特殊类型。
