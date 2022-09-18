@@ -80,7 +80,7 @@ function doSomething(x: string | null) {
 
 ## strictPropertyInitialization
 
---strictPropertyInitialization 实例的属性都需要在构造函数里面初始化。
+--strictPropertyInitialization 实例的属性必须有初始值，可以在声明时赋值，也可以在构造函数里面赋值。
 
 ```typescript
 // 报错
@@ -97,7 +97,9 @@ class GoodGreeter {
 }
 ```
 
-如果确实打算在其他地方初始化，可以使用赋值断言运算符。
+如果打开该设置，需要同时打开`--strictNullChecks`。
+
+如果确实打算在其他地方初始化，可以使用赋值断言运算符（`!`）。属性名后面加上感叹号，表示该属性非空。
 
 ```typescript
 class OKGreeter {
@@ -105,7 +107,7 @@ class OKGreeter {
 }
 ```
 
-这一项有时很烦人，可以把它关闭掉。
+这个设置有时很烦人，因为有时不一定需要初始值，也不一定会在构造函数里面赋值。所以，如果必要的话，可以把它关掉。
 
 ```javascript
 "strictPropertyInitialization": false

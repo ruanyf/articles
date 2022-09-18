@@ -1333,44 +1333,6 @@ function printCoord(pt: Point) {
 printCoord({ x: 100, y: 100 });
 ```
 
-### interface 与 type 的区别
-
-interface 与 type 很大程度上，作用是相同的，可以换用。唯一的区别是， type 定义的类型别名，无法添加属性，而 interface 可以扩展。
-
-（1）扩展新类型
-
-interface 扩展的例子。
-
-```typescript
-interface Animal {
-  name: string
-}
-
-interface Bear extends Animal {
-  honey: boolean
-}
-
-const bear = getBear() 
-bear.name
-bear.honey
-```
-
-type 定义的类型别名想要扩展，只能重新定义一个新的别名。
-
-```typescript
-type Animal = {
-  name: string
-}
-
-type Bear = Animal & { 
-  honey: boolean 
-}
-
-const bear = getBear();
-bear.name;
-bear.honey;
-```
-
 ## 类
 
 类的类型可以在类的内部描述。

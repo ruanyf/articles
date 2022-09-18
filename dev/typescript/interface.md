@@ -1,5 +1,7 @@
 # interface 接口
 
+## 简介
+
 interface 是一种类型约定，中文译为“接口”。变量指定为某个接口，就表示遵守约定。
 
 很多面向对象的编程语言都有 interface 语法结构，用来表示对象必须实现的属性和方法。TypeScript 也提供了 interface 命令。
@@ -24,6 +26,136 @@ const p:Persion = {
 };
 ```
 
+interface 是一种表达能力很强的语法，它的成员可以有5种形式。
+
+- 属性签名
+- 调用签名
+- 构造签名
+- 方法签名
+- 索引签名
+
+属性签名。
+
+```typescript
+interface Point {
+  x: number;
+  y: number;
+}
+```
+
+如果属性是可选的，就在属性名后面加一个问号。
+
+```typescript
+interface Foo {
+  x?: string;
+  y?(): number;
+}
+```
+
+如果属性是只读的，需要加上`readonly`修饰符。
+
+```typescript
+interface A {
+  readonly a: string;
+}
+```
+
+字符串索性签名。
+
+```typescript
+interface A {
+  [prop: string]: number;
+}
+```
+
+一个接口中最多只能定义一个字符串索引签名。字符串索引签名会约束该对象类型中所有属性的类型。例如，下例中的字符串索引签名定义了索引值的类型为number类型。那么，该接口中所有属性的类型必须能够赋值给number类型。
+
+```typescript
+interface B {
+  [prop: string]: number;
+ 
+  a: boolean;      // 编译错误
+  b: () => number; // 编译错误
+  c(): number;     // 编译错误
+}
+```
+
+数值索引签名，也就是数组。
+
+```typescript
+interface A {
+  [prop: number]: string;
+}
+ 
+const obj: A = ['a', 'b', 'c'];
+```
+
+一个接口中最多只能定义一个数值索引签名。数值索引签名约束了数值属性名对应的属性值的类型。
+
+若接口中同时存在字符串索引签名和数值索引签名，那么数值索引签名的类型必须能够赋值给字符串索引签名的类型。因为在JavaScript中，对象的属性名只能为字符串（或Symbol）。虽然JavaScript也允许使用数字等其他值作为对象的索引，但最终它们都会被转换为字符串类型。因此，数值索引签名能够表示的属性集合是字符串索引签名能够表示的属性集合的子集。
+
+```typescript
+interface A {
+    [prop: string]: number;
+    [prop: number]: string; // 编译错误
+}
+```
+
+方法签名。
+
+```typescript
+// 写法一
+interface A {
+  f(x: boolean): string;       // 方法签名
+}
+
+// 写法二
+interface C {
+  f: (x: boolean) => string;   // 属性签名和函数类型字面量
+}
+
+// 写法三
+interface B {
+  f: { (x: boolean): string }; // 属性签名和对象类型字面量
+}
+```
+
+属性表达式。
+
+```typescript
+const f = 'f';
+ 
+interface A {
+  [f](x: boolean): string;
+}
+```
+
+类型方法可以重载。
+
+```typescript
+interface A {
+  f(): number;
+  f(x: boolean): boolean;
+  f(x: string, y: string): string;
+}
+```
+
+调用签名
+
+```typescript
+interface ErrorConstructor {     
+  (message?: string): Error;
+}
+```
+
+构造签名
+
+```typescript
+interface ErrorConstructor {
+  new (message?: string): Error;
+}
+```
+
 ## 数组接口
 
 接口也可以表示数组。
@@ -46,16 +178,92 @@ agelist[2]="nine" // Error
 
 ## 接口继承
 
-接口可以继承，子接口使用`extends`关键字继承父接口。
+接口可以继承其他类型，能够继承的其他类型有下面这些。
+
+- 接口。
+- 对象类型的类型别名。
+- 类。
+- 对象类型的交叉类型。
+
+子接口使用`extends`关键字继承父接口。
 
 ```typescript
-Child_interface extends super_interface
+interface Shape {
+   name: string;
+}
+ 
+interface Circle extends Shape {
+  radius: number;
+}
 ```
 
 接口允许多重继承。
 
 ```typescript
-Child_interface extends s1_interface,s1_interface,…,sN_interface
+interface Style {
+  color: string;
+}
+ 
+interface Shape {
+   name: string;
+}
+ 
+interface Circle extends Style, Shape {
+  radius: number;
+}
+```
+
+如果子接口与父接口之间存在同名的类型成员，那么子接口中的类型成员具有更高的优先级。同时，子接口与父接口中的同名类型成员必须是类型兼容的。也就是说，子接口中同名类型成员的类型需要能够赋值给父接口中同名类型成员的类型，否则将产生编译错误。
+
+```typescript
+interface Style {
+  color: string;
+}
+ 
+interface Shape {
+    name: string;
+}
+ 
+interface Circle extends Style, Shape {
+    name: 'circle';
+
+    color: number;
+//  ~~~~~~~~~~~~~
+//  编译错误：'color' 类型不兼容，
+//  'number' 类型不能赋值给 'string' 类型
+}
+```
+
+如果仅是多个父接口之间存在同名的类型成员，而子接口本身没有该同名类型成员，那么父接口中同名类型成员的类型必须是完全相同的，否则将产生编译错误。
+
+```typescript
+interface Style {
+  draw(): { color: string };
+}
+
+interface Shape {
+    draw(): { x: number; y: number };
+}
+ 
+interface Circle extends Style, Shape {}
+//        ~~~~~~
+//        编译错误
+```
+
+解决这个问题的一个办法是，在Circle接口中定义一个同名的draw方法。这样Circle接口中的draw方法会拥有更高的优先级，从而取代父接口中的draw方法。这时编译器将不再进行类型合并操作，因此也就不会发生合并冲突。但是要注意，Circle接口中定义的draw方法一定要与所有父接口中的draw方法是类型兼容的。
+
+```typescript
+interface Style {
+  draw(): { color: string };
+}
+ 
+interface Shape {
+  draw(): { x: number; y: number };
+}
+ 
+interface Circle extends Style, Shape {
+  draw(): { color: string; x: number; y: number };
+}
 ```
 
 ```typescript
@@ -153,4 +361,42 @@ interface Document {
   createElement(tagName: string): HTMLElement;
   createElement(tagName: any): Element;
 }
+```
+
+## interface 与 type 的区别
+
+interface 与 type 很相似，很多类型可以用 interface 表示，也可以用 type 表示。很多时候，两者可以换用。
+
+区别之一，type 能够表示非对象类型，而 interface 只能表示对象类型。
+
+区别之二，接口可以继承其他的接口、类等对象类型，相当于添加属性，而 type 不支持继承，无法添加属性。
+
+```typescript
+interface Animal {
+  name: string
+}
+
+interface Bear extends Animal {
+  honey: boolean
+}
+
+const bear = getBear() 
+bear.name
+bear.honey
+```
+
+type 定义的类型别名想要扩展，只能重新定义一个新的别名。
+
+```typescript
+type Animal = {
+  name: string
+}
+
+type Bear = Animal & { 
+  honey: boolean 
+}
+
+const bear = getBear();
+bear.name;
+bear.honey;
 ```

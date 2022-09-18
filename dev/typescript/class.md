@@ -2,19 +2,23 @@
 
 ## 概述
 
-类的内部先给出实例的类型注释，然后再定义方法。
+类（class）是面向对象编程的基本构件，TypeScript 给予了全面支持。
+
+声明 class 的时候，class 内部必须给出每个成员的类型描述。
 
 ```typescript
 class Point {
-    x: number;
-    y: number;
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-    }
-    add(point: Point) {
-        return new Point(this.x + point.x, this.y + point.y);
-    }
+  x: number;
+  y: number;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+
+  add(point: Point) {
+    return new Point(this.x + point.x, this.y + point.y);
+  }
 }
 ```
 
@@ -55,7 +59,7 @@ class Color {
 
 这个类定义创建了两件事。
 
-首先，一个名为Color（可以通过调用new）的构造函数：
+首先，一个名为 Color（可以通过调用new）的构造函数：
 
 ```typescript
 assert.equal(
@@ -187,6 +191,34 @@ class Point3D extends Point {
 ```
 
 上面示例中，实例属性`z`是`Point3D`新增的属性，所以需要给出类型注释。实例属性`x`和`y`是继承的属性，不用重复给出类型注释了。
+
+## 存取器
+
+存取器指的是某个属性（假定为`p`）的赋值方法`set p()`和取值方法`get p()`
+
+如果一个类属性同时定义了get方法和set方法，那么get方法的返回值类型必须与set方法的参数类型一致，否则将产生错误。
+
+```typescript
+class C {
+   /**
+    * 正确
+    */
+   private _foo: number = 0;
+   get foo(): number {
+       return this._foo;
+   }
+   set foo(value: number) {}
+
+   /**
+    * 错误！'get' 和 'set' 存取器必须具有相同的类型
+     */
+  private _bar: string = '';
+  get bar(): string {
+        return this._bar;
+  }
+  set bar(value: number) {}
+}
+```
 
 ## class 类型
 
