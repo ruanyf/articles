@@ -30,7 +30,7 @@ function f<T>(x:T):T {
 
 上面示例中，函数名`f`后面有一个尖括号，里面列出了这个函数需要的类型参数，即这个函数的类型需要依靠参数决定。本例只有一个类型参数`T`。
 
-类型参数的名字可以随便取，通常使用`T`（type 的第一个字母）。后面的代码很好懂，函数参数`x`的类型为`T`，返回值的类型也为`T`，这就准确表示了这个函数的类型。
+类型参数必须为合法的标识符，名字可以随便取，通常使用大写字母，或者以大写字母开头，比如使用`T`（type 的第一个字母），以及后续的`U`、`V`等字母。后面的代码很好懂，函数参数`x`的类型为`T`，返回值的类型也为`T`，这就准确表示了这个函数的类型。
 
 总之，泛型可以理解成一段类型逻辑，输入值和输出值都是类型，可以接受多种类型的输入，但是输入类型和输出类型之间存在一一对应的关系。
 
@@ -54,7 +54,7 @@ f(2) // 正确
 
 类型推断虽然写起来方便，但是有些复杂的使用场景，TypeScript 可能推断不出参数的类型，这时就只能手动注明参数的具体类型了。
 
-类型参数允许设置默认值。这样的话，调用时不给出具体的类型，就会使用默认值。
+类型参数允许设置类型默认值。这样的话，调用时不给出具体的类型，就会使用默认值。
 
 ```typescript
 function f<T = number>(x:T):T {
@@ -64,7 +64,17 @@ function f<T = number>(x:T):T {
 
 上面示例中，类型参数`T`的默认值为`number`，调用时不给出`T`的值，就会默认`f()`的参数类型为`number`。
 
+一旦类型参数有默认值，就表示它是可选参数。如果有多个类型参数，可选参数必须在必选参数之后。
+
+```typescript
+<T = boolean, U> // 错误
+
+<T, U = boolean> // 正确
+```
+
 不过，即使`f()`的参数不是数值（比如`f('abc')`），编译也不会报错，因为 TypeScript 检查类型时，发现参数是字符串，就会设定`T`的值为字符串。
+
+类型参数可有多个，统一放在尖括号（`<>`）里面，各个参数之间使用逗号“,”分隔。
 
 泛型主要用在三个场合：函数、接口和类。
 
@@ -310,9 +320,62 @@ function doStuff(
 
 所以，如果看到一个函数的参数是`ReadonlyArray`类型，就不用担心它在函数内部会被改变。
 
+## 类型参数的约束条件
+
+类型参数可以加上约束条件。
+
+```typescript
+<TypeParameter extends ConstraintType>
+```
+
+上面语法表示，类型参数必须属于某个类型，即属于该类型的子类型。
+
+```typescript
+interface Point {
+    x: number;
+    y: number;
+}
+
+function identity<T extends Point>(x: T): T {
+    return x;
+}
+
+// 正确
+identity({ x: 0, y: 0 });
+identity({ x: 0, y: 0, z: 0 });
+
+identity({ x: 0 });
+//       ~~~~~~~~
+//       编译错误！类型 '{ x: number; }' 不能赋值给类型 Point
+```
+
+类型参数可以同时定义泛型约束和默认类型，但默认类型必须满足泛型约束。
+
+```typescript
+<TypeParameter extends ConstraintType = DefaultType>
+
+// 实例
+<T extends number = 0|1>
+```
+
+如果有多个类型参数，一个参数可以引用其他参数。
+
+```typescript
+<T, U extends T>
+// 或者
+<T extends U, U>
+```
+
+但是，不能引用自身。
+
+```typescript
+<T extends T>               // 错误
+<T extends U, U extends T>  // 错误
+```
+
 ## 泛型接口
 
-接口定义可以使用泛型。
+泛型除了用来定义函数，也可以用来定义接口。
 
 ```typescript
 interface Comparator<T> {
@@ -333,35 +396,37 @@ class Triangle implements Comparator<Triangle> {
 }
 ```
 
-## 泛型函数
+## 泛型别名
 
-前面已经给出了泛型函数的例子。
+泛型也可以用在`type`别名。
 
 ```typescript
-function f<T>(x:T):T {
-  return x;
-}
+type Nullable<T> = T | undefined | null; 
 ```
 
-箭头函数的写法如下。
+下面是另一个例子。
 
 ```typescript
-const f = <T>(x:T):T => x;
+type Container<T> = { value: T };
+
+const a: Container<number> = { value: 0 };
+
+const b: Container<string> = { value: 'b' };
 ```
 
-对象方法的类型变量写法如下。
+下面是定义树形结构的例子。
 
 ```typescript
-const obj = {
-  identity<Arg>(arg: Arg): Arg {
-    return arg;
-  },
+type Tree<T> = {
+    value: T;
+    left: Tree<T> | null;
+    right: Tree<T> | null;
 };
 ```
 
 ## 泛型类
 
-泛型也可以用在类（class）上面。
+泛型也可以用在类（class）上面。在泛型类定义中，形式类型参数列表紧随类名之后。
 
 ```typescript
 class Pair<K, V> {
@@ -395,6 +460,17 @@ class B extends A<any> {
 ```
 
 上面示例中，类`A`有一个类型参数`T`，使用时必须将`T`替换成具体的类型，所以类`B`的定义里面，给出了父类`A`的类型参数`any`。
+
+泛型也可以用在类表达式。
+
+```typescript
+const Container = class<T> {
+  constructor(private readonly data: T) {}
+};
+
+const a = new Container<boolean>(true);
+const b = new Container<number>(0);
+```
 
 下面是一个链表的例子。
 
@@ -470,20 +546,17 @@ function createInstance<T>(
 }
 ```
 
-## 范型变量的默认值
-
-范型的类型变量可以设置默认值。
+泛型类描述的是类的实例，所以不包括类的静态属性，因为静态属性定义在类的本身。因此，在类的静态成员中不允许引用类型参数。
 
 ```typescript
-declare namespace React {
-  class Component<Props = any, State = any> {
-    props: Props;
-    state: State;
-  }
+class Container<T> {
+    static version: T;
+     //              ~
+    //              编译错误！静态成员不允许引用类型参数
+
+  constructor(private readonly data: T) {}
 }
 ```
-
-上面示例中，范型变量`Props`和`State`的默认值，都是`any`类型。
 
 ## 变量继承
 

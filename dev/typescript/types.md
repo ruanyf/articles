@@ -800,9 +800,9 @@ type Coordinates = [number, number];
 type Callback = (data: string) => void;
 ```
 
-## 类型并集（Union）
+## 联合类型（Union）
 
-TypeScript 允许多种类型的联合，可以使用`|`运算符将这些类型组成一个并集（union）。
+TypeScript 允许多种类型的联合，可以使用`|`运算符将这些类型组成一个并集（union）。联合类型表示一个值的类型可以为若干种类型之一。
 
 ```typescript
 let x:string|number;
@@ -828,6 +828,29 @@ let gender:'male'|'female';
 
 ```typescript
 let rainbowColor:'赤'|'橙'|'黄'|'绿'|'青'|'蓝'|'紫';
+```
+
+改变成员类型的顺序不影响联合类型的结果类型。
+
+```typescript
+type T0 = string | number;
+type T1 = number | string;
+```
+
+对部分类型成员使用分组运算符不影响联合类型的结果类型。
+
+```typescript
+type T0 = (boolean | string) | number;
+type T1 = boolean | (string | number);
+```
+
+联合类型的成员类型可以进行化简。假设有联合类型“U = T0 | T1”，如果T1是T0的子类型，那么可以将类型成员T1从联合类型U中消去。最后，联合类型U的结果类型为“U = T0”。例如，有联合类型“boolean | true | false”。其中，true类型和false类型是boolean类型的子类型，因此可以将true类型和false类型从联合类型中消去。最终，联合类型“boolean | true | false”的结果类型为boolean类型。
+
+```typescript
+type T0 = boolean | true | false;
+
+// 所以T0等同于 T1
+type T1 = boolean;
 ```
 
 如果一个变量有多种类型，处理该变量时，往往需要进行类型缩小，逐一区分该值属于哪一种类型，再进行处理。
@@ -858,15 +881,225 @@ function printId(id:number|string) {
 
 “类型缩小”是 TypeScript 处理类型并集的标准方法，凡是遇到可能为多种类型的场合，都需要逐一缩小类型进行处理。实际上，可以把并集看成是一种“类型放大”（type widening），处理时就需要“类型缩小”（type narrowing）。
 
+下面是另一个例子。
 
-## 类型交集
+```typescript
+interface Circle {
+    area: number;
+    radius: number;
+}
 
-除了类型联合，TypeScript 还有类型交集：
+interface Rectangle {
+    area: number;
+    width: number;
+    height: number;
+}
+
+type Shape = Circle | Rectangle;
+declare const s: Shape;
+
+s.area; // number
+s.radius; // 错误
+s.width;  // 错误
+s.height; // 错误
+```
+
+联合类型如果存在同名属性，则该属性的类型也是联合类型。
+
+```typescript
+interface Circle {
+    area: bigint;
+}
+
+interface Rectangle {
+    area: number;
+}
+
+declare const s: Circle | Rectangle;
+
+s.area;   // bigint | number
+```
+
+如果同名属性是可选的，那么该属性的类型也是可选的。
+
+```typescript
+interface Circle {
+    area: bigint;
+}
+
+interface Rectangle {
+    area?: number;
+}
+
+declare const s: Circle | Rectangle;
+
+s.area; // bigint | number | undefined
+```
+
+## 交叉类型
+
+交叉类型表示一个值同时具有多种类型。
+
+```typescript
+interface Clickable {
+    click(): void;
+}
+interface Focusable {
+    focus(): void;
+}
+
+type T = Clickable & Focusable;
+```
+
+上面示例中，类型`T`表示即可以点击，也可以获得焦点的对象。
+
+交叉类型通常与对象类型一起使用。虽然在交叉类型中也允许使用原始类型成员，但结果类型将成为never类型，因此在实际代码中并不常见。
+
+```typescript
+type T = boolean & number & string;
+```
+
+上面示例中，类型`T`为 never。
+
+如果交叉类型中存在多个相同的成员类型，那么相同的成员类型将被合并为单一成员类型。
+
+```typescript
+type T0 = boolean;
+type T1 = boolean & boolean;
+type T2 = boolean & boolean & boolean;
+```
+
+上面示例中，T0、T1和T2都表示同一种类型boolean。
+
+改变成员类型的顺序不影响交叉类型的结果类型。
+
+```typescript
+interface Clickable {
+    click(): void;
+}
+interface Focusable {
+    focus(): void;
+}
+
+type T0 = Clickable & Focusable;
+type T1 = Focusable & Clickable;
+```
+
+注意，当交叉类型涉及调用签名重载或构造签名重载时便失去了“加法交换律”的性质。因为交叉类型中成员类型的顺序将决定重载签名的顺序，进而将影响重载签名的解析顺序。
+
+```typescript
+interface Clickable {
+    register(x: any): void;
+}
+interface Focusable {
+    register(x: string): boolean;
+}
+
+type ClickableAndFocusable = Clickable & Focusable;
+type FocusableAndFocusable = Focusable & Clickable;
+
+function foo(
+    clickFocus: ClickableAndFocusable,
+    focusClick: FocusableAndFocusable
+) {
+    let a: void = clickFocus.register('foo');
+    let b: boolean = focusClick.register('foo');
+}
+```
+
+此例第8行和第9行使用不同的成员类型顺序定义了两个交叉类型。第15行，调用“register()”方法的返回值类型为void，说明在ClickableAndFocusable类型中，Clickable接口中定义的“register()”方法具有更高的优先级。第16行，调用“register()”方法的返回值类型为boolean，说明FocusableAndFocusable类型中Focusable接口中定义的“register()”方法具有更高的优先级。此例也说明了调用签名重载的顺序与交叉类型中成员类型的定义顺序是一致的。
+
+对部分类型成员使用分组运算符不影响交叉类型的结果类型。
+
+```typescript
+interface Clickable {
+  click(): void;
+}
+interface Focusable {
+  focus(): void;
+}
+interface Scrollable {
+  scroll(): void;
+}
+
+type T0 = (Clickable & Focusable) & Scrollable;
+type T1 = Clickable & (Focusable & Scrollable);
+```
+
+上面示例的T0和T1类型是同一种类型。
 
 ```typescript
 type Combined = { a: number } & { b: string };
 type Conflicting = { a: number } & { a: string };
 ```
+
+只要交叉类型I中任意一个成员类型包含了属性签名M，那么交叉类型I也包含属性签名M。
+
+```typescript
+interface A {
+    a: boolean;
+}
+
+interface B {
+    b: string;
+}
+
+// 交叉类型如下
+{
+    a: boolean;
+    b: string;
+}
+```
+
+若交叉类型的属性签名M在所有成员类型中都是可选属性，那么该属性签名在交叉类型中也是可选属性。否则，属性签名M是一个必选属性。
+
+```typescript
+interface A {
+    x: boolean;
+    y?: string;
+}
+interface B {
+    x?: boolean;
+    y?: string;
+}
+
+// 交叉类型如下
+{
+    x: boolean;
+    y?: string;
+}
+```
+
+`&`的优先级高于`|`。
+
+```typescript
+A & B | C & D
+// 该类型等同于如下类型：
+(A & B) | (C & D)
+```
+
+分配律
+
+```typescript
+A & (B | C) 
+// 等同于
+(A & B) | (A & C)
+```
+
+一个稍微复杂的类型等式。
+
+```typescript
+(A | B) & (C | D) ≡ A & C | A & D | B & C | B & D
+```
+
+```typescript
+T = (string | 0) & (number | 'a');
+T = (string & number) | (string & 'a') | (0 & number) | (0 & 'a');
+
+T = never | 'a' | 0 | never;
+T = 'a' | 0;
+```
+
 
 ```typescript
 function extend<T extends object, U extends object>(first: T, second: U): T & U {

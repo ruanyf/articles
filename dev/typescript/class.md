@@ -192,6 +192,31 @@ class Point3D extends Point {
 
 上面示例中，实例属性`z`是`Point3D`新增的属性，所以需要给出类型注释。实例属性`x`和`y`是继承的属性，不用重复给出类型注释了。
 
+## 构造函数
+
+构造函数不允许定义返回值类型，因为构造函数的返回值类型永远为类的实例类型。
+
+```typescript
+class B {
+  constructor(): object {}
+    //             ~~~~~~~
+    //             编译错误！不允许指定构造函数的返回值类型
+}
+```
+
+构造函数也支持重载。
+
+```typescript
+class A {
+    constructor(x: number, y: number);
+    constructor(s: string);
+    constructor(xs: number | string, y?: number) {}
+}
+ 
+const a = new A(0, 0);
+const b = new A('foo');
+```
+
 ## 存取器
 
 存取器指的是某个属性（假定为`p`）的赋值方法`set p()`和取值方法`get p()`
@@ -312,6 +337,28 @@ obj instanceof Person // false
 ```
 
 上面示例中，运算符`instanceof`确认变量`obj`不是 Person 的实例，但是两者的类型是相同的。
+
+如果某个接口跟类的结构一致，类的实例也可以赋值给接口类型。
+
+```typescript
+class Circle {
+   radius: number;
+   area(): number {
+       return Math.PI * this.radius * this.radius;
+    }
+}
+
+interface CircleType {
+    radius: number;
+    area(): number;
+}
+
+// 正确
+const a: Circle = new Circle();
+
+// 正确
+const b: CircleType = new Circle();
+```
 
 ## 使用 inteface
 
@@ -593,6 +640,26 @@ DataContainer.create()
 
 上面示例中，所有实例都通过静态方法`DataContainer.create()`生成。
 
+构造函数上也可以使用可访问性修饰符。它描述的是在何处允许使用该类来创建实例对象。在默认情况下，构造函数是公有的。如果将构造函数设置成私有的，则只允许在类的内部创建该类的对象。
+
+```typescript
+class Singleton {
+    private static instance?: Singleton;
+ 
+     private constructor() {}
+ 
+     static getInstance() {
+         if (!Singleton.instance) {
+             // 允许访问
+             Singleton.instance = new Singleton();
+         }
+         return Singleton.instance;
+  }
+}
+ 
+new Singleton(); // 编译错误
+```
+
 ### protected
 
 `protected`也是私有属性，实例无法读取该属性，但是子类可以读取。
@@ -741,6 +808,49 @@ class Foo {
 }
 ```
 
+### 参数属性
+
+TypeScript 提供了一种简洁语法，将构造函数的形式参数声明为类的成员变量，它叫作参数属性。
+
+为形式参数添加任何一个可访问性修饰符或者readonly修饰符，该形式参数就成了类的属性。
+
+```typescript
+class A {
+  constructor(public x: number) {}
+}
+ 
+const a = new A(0);
+a.x; // 值为0
+```
+
+上面示例中，此例在类A的构造函数中，参数x是一个参数成员，因此会在类A中声明一个public的成员变量x。第5行，使用实际参数0来实例化类A时会自动将成员变量x的值初始化为0，
+
+```typescript
+class A {
+02     constructor(
+03         public x: number,
+04         protected y: number,
+05         private z: number
+06     ) {}
+07 }
+08 
+09 class B {
+10     constructor(readonly x: number) {}
+11 }
+```
+
+readonly 可以与可访问性修饰符，一起使用。
+
+```
+class A {
+  constructor(
+         public readonly x: number,
+         protected readonly y: number,
+         private readonly z: number
+   ) {}
+}
+```
+
 ## 方法重载
 
 如果存在方法重载（method overloading），方法的每种使用形式都必须给出单独的类型定义。
@@ -773,7 +883,49 @@ prodService.getProducts();
 
 TypeScript 允许在类定义的前面，加上关键字`abstract`，表示该类不能被实例化，只能当作其他类的模板。这种类就叫做“抽象类”（abastract class）。
 
+```typescript
+abstract class A {}
+
+const a = new A(); // 报错
+```
+
+抽象类的作用是作为基类使用，派生类可以继承抽象类。
+
+```typescript
+abstract class Base {}
+
+class Derived extends Base {}
+
+const derived = new Derived();
+```
+
+抽象类也可以继承其他抽象类。
+
+```typescript
+abstract class Base {}
+
+abstract class Derived extends Base {}
+```
+
 抽象类的内部可以有实现好的方法，也可以有抽象方法，即方法定义前加上关键字`abstract`，表示该方法需要继承该类的类来实现。
+
+```typescript
+abstract class Base {
+  abstract a: string;
+  b: string = '';
+}
+```
+
+注意，抽象成员不允许包含具体实现代码。
+
+如果一个具体类继承了抽象类，那么在具体的派生类中必须实现抽象类基类中的所有抽象成员。因此，抽象类中的抽象成员不能声明为private，否则将无法在派生类中实现该成员。声明为 public 和 protected 是可以的。
+
+```typescript
+abstract class Base {
+  private abstract a: string; // 报错
+  b: string = '';
+}
+```
 
 `abstrct`也是一个修饰符，不仅可以用于类的成员，也可以用于类本身。
 
@@ -937,6 +1089,8 @@ class Derived extends Base {
 }
 ```
 
+上面示例会报错，因为派生类是基类的子类型，重写基类的成员时需要保证子类型兼容性。
+
 如果 A 类包含 B 类的所有属性，TypeScript 会认为它们的类型是相同的。
 
 ```typescript
@@ -985,6 +1139,36 @@ fn({});
 fn(fn);
 ```
 
+若派生类重写了基类中的受保护成员，则可以将该成员的可访问性设置为受保护的或公有的。也就是说，在派生类中只允许放宽基类成员的可访问性。
+
+```typescript
+class Base {
+    protected x: string = '';
+    protected y: string = '';
+    protected z: string = '';
+}
+
+class Derived extends Base {
+    // 正确
+    public x: string = '';
+
+    // 正确
+    protected y: string = '';
+
+    // 错误！派生类不能够将基类的受保护成员重写为更严格的可访问性
+    private z: string = '';
+}
+```
+
+虽然一个类只允许继承一个基类，但是可以实现一个或多个接口。在定义类时，使用implements语句能够声明类所实现的接口。当实现多个接口时，接口名之间使用逗号“,”分隔。
+
+```typescript
+interface A {}
+interface B {}
+ 
+class C implements A, B {}
+```
+
 ## extends
 
 `extends`本身也是一个运算符，用来确定两个类型有无继承关系。
@@ -1006,6 +1190,8 @@ type Matched = Username extends 'foo' ? true : false
 
 ## 静态属性
 
+类的内部可以使用`staic`关键字，定义静态属性。
+
 类的静态属性也可以使用 public、private、protected 修饰符。
 
 ```typescript
@@ -1013,6 +1199,25 @@ class MyClass {
   private static x = 0;
 }
 console.log(MyClass.x); // 报错
+```
+
+类的public静态成员和protected静态成员也可以被继承。
+
+```typescript
+class Base {
+    public static x: string = '';
+    protected static y: string = '';
+}
+
+class Derived extends Base {
+    b() {
+        // 继承了基类的静态成员 x
+        Derived.x;
+
+        // 继承了基类的静态成员 y
+        Derived.y;
+    }
+}
 ```
 
 ## 泛型类
@@ -1041,7 +1246,9 @@ class Box<Type> {
 
 ## this 问题
 
-如果函数的第一个参数是 this，TypeScript 编译时会去除这个参数。
+TypeScript提供了一个“--noImplicitThis”编译选项。当启用了该编译选项时，如果this值默认获得了any类型，那么将产生编译错误。
+
+TypeScript支持在函数形式参数列表中定义一个特殊的this参数来描述该函数中this值的类型。如果函数的第一个参数是 this，TypeScript 编译时会去除这个参数。
 
 ```typescript
 // 编译前
@@ -1053,6 +1260,17 @@ function fn(this: SomeType, x: number) {
 function fn(x) {
   /* ... */
 }
+```
+
+第一个`this`参数，可以声明函数内部`this`的类型。
+
+```typescript
+function foo(this: { name: string }) {
+  this.name = 'Patrick';
+  this.name = 0; // 报错
+}
+
+foo.call({ name: 123 }); // 报错
 ```
 
 这主要是为了编译检查时，确保类的内部方法正确引用了 this。这个 this 是写给编译器看的，保证该方法只能在实例上调用，不能单独调用。
@@ -1073,44 +1291,32 @@ const g = c.getName;
 console.log(g());
 ```
 
-this 也是一个特殊类型，表示当前类。
+this 也是一个特殊类型，表示当前类，可以在类的非静态成员的类型注解中使用this类型。
 
 ```typescript
-class Box {
-  contents: string = "";
-  // 类型签名：Box.set(value: string): this
-  set(value: string) {
-    this.contents = value;
-    return this;
-  }
-}
+class Counter {
+  private count: number = 0;
 
-// 参数类型为 this
-class Box {
-  content: string = "";
-  sameAs(other: this) {
-    return other.content === this.content;
+  public add(): this {
+     this.count++;
+      return this;
   }
+  public subtract(): this {
+      this.count--;
+      return this;
+  }
+    public getResult(): number {
+      return this.count;
+    }
 }
 ```
 
-这跟指定为`other: Box`不一样，主要发生在子类继承的情况。
+注意，this类型不允许应用于类的静态成员。
 
 ```typescript
-class Box {
-  content: string = "";
-  sameAs(other: this) {
-    return other.content === this.content;
-  }
+class A {
+  static a: this;
+  //        ~~~~
+  //        编译错误！ 'this' 类型只能用于类的非静态成员
 }
- 
-class DerivedBox extends Box {
-  otherContent: string = "?";
-}
- 
-const base = new Box();
-const derived = new DerivedBox();
-derived.sameAs(base); // 报错
 ```
-
-上面示例中，参数 base 不等于子类的 this，导致报错。

@@ -806,3 +806,56 @@ var BankAccount: new() => BankAccount;
   (x:number): number;      // <- 调用签名
 }
 ```
+
+## 局部类型
+
+函数内部允许声明其他类型，该类型只在函数内部生效，称为局部类型。
+
+```typescript
+function f<T>() {
+    enum E {
+        A,
+        B,
+    }
+
+    class C {
+        x: string | undefined;
+    }
+
+    // 允许带有泛型参数
+    interface I<T> {
+        x: T;
+    }
+
+    // 可以引用其他局部类型
+    type A = E.A | E.B;
+}
+```
+
+上面示例中，出现了下面几种局部类型。
+
+- 局部枚举类型。
+- 局部类类型。
+- 局部接口类型。
+- 局部类型别名。、
+
+局部类型拥有块级作用域。例如，下例中在if分支和else支持中均声明了接口T，它们仅在各自所处的块级作用域内生效。因此，这两个接口T不会相互影响，并且if分支中的代码也无法引用else分支中的接口T。
+
+```typescript
+function f(x: boolean) {
+    if (x) {
+        interface T {
+            x: number;
+        }
+
+        const v: T = { x: 0 };
+
+    } else {
+        interface T {
+            x: string;
+        }
+
+        const v: T = { x: 'foo' };
+    }
+}
+```

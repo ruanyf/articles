@@ -298,6 +298,43 @@ var Iobj:Child={
 console.log("value 1: "+ Iobj.v1 +" value 2: " + Iobj.v2)
 ```
 
+inteface 除了继承另一个 interface,还可以继承 class，继承该类中所有成员。
+
+```typescript
+class A {
+    x: string = '';
+
+    y(): boolean {
+        return true;
+    }
+}
+
+interface B extends A {}
+
+declare const b: B;
+
+b.x;   // 类型为string
+b.y(); // 类型为boolean
+```
+
+在接口继承类时，接口不但会继承基类的公有成员类型，还会继承基类的受保护成员类型和私有成员类型。如果接口从基类继承了非公有成员，那么该接口只能由基类的子类来实现。
+
+```typescript
+class A {
+    private x: string = '';
+    protected y: string = '';
+}
+
+// 接口 I 能够继承 A 的私有属性和受保护属性
+interface I extends A {}
+
+// 正确，B 可以实现接口 I，因为私有属性和受保护属性源自同一个类 A
+class B extends A implements I {}
+ 
+// 错误！C 不是 A 的子类，无法实现 A 的有属性和受保护属性
+class C implements I {}
+```
+
 ## 接口合并
 
 多个同名接口会合并成一个接口。
