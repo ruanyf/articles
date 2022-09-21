@@ -129,24 +129,50 @@ var add:myfn = (a, b) => a + b;
 
 ## void 类型
 
-如果函数没有返回值，或者说返回值是`undefined`，TypeScript 就认为函数的返回值是 void 类型。
+void 类型表示函数没有返回值。
 
 ```typescript
-function f1():void {
-  return undefined;
+function f():void {
+  console.log('hello');
 }
 ```
 
-如果返回其他值，TypeScript 就会报错。
+上面示例中，函数`f`没有返回值，类型就要写成`void`。
+
+如果返回其他值，就会报错。
 
 ```typescript
 function f():void {
   return 123; // 报错
 }
+```
 
-const f3 = function (): void {
-  return true; // 报错
-};
+上面示例中，函数`f`的返回值类型是`void`，但是实际返回了一个数值，编译时就报错了。
+
+void 类型允许返回`undefined`或`null`。
+
+```typescript
+function f():void {
+  return undefined; // 正确
+}
+
+function f():void {
+  return null; // 正确
+}
+```
+
+如果打开了`--strictNullChecks`编译选项，那么 void 类型只允许返回`undefined`。如果返回`null`，就会报错。
+
+```typescript
+// --strictNullChecks=true
+
+function f():void {
+  return undefined; // 正确
+}
+
+function f():void {
+  return null; // 报错
+}
 ```
 
 但是，如果某个位置的值是 void 函数，比如某个变量或者某个方法的参数，但是实际传入的函数却有返回值，这种情况并不会报错，TypeScript 是允许的。

@@ -1,271 +1,28 @@
-# TypeScript 的数据类型
+# TypeScript 的类型系统
 
-## any 类型
+## 基本类型
 
-any 类型是 TypeScript 提供的一种基本类型，表示这个值可能是任意类型。
-
-```typescript
-let x:any;
-
-x = 1;
-x = 'foo';
-
-let value: any;
-
-value = true; // OK
-value = 42; // OK
-value = "Hello World"; // OK
-value = []; // OK
-value = {}; // OK
-value = Math.random; // OK
-value = null; // OK
-value = undefined; // OK
-value = new TypeError(); // OK
-value = Symbol("type"); // OK
-```
-
-上面示例中，变量`x`的类型是`any`，表示它的值可以是任意类型，赋值为数值或字符串，都不会报错。
-
-`any`类型的变量，不仅可以接受任何类型的值，也可以赋值给其他任何类型的变量。
-
-```typescript
-let x:any = 'hello';
-
-let y:number;
-y = x; // 不会报错
-```
-
-上面示例中，变量`x`是`any`类型，赋值给数值类型的`y`并不会报错，哪怕`x`的值是一个字符串。
-
-`any`类型的值可以赋值给其他类型的变量，也就是说，其他所有类型实际上都包含了 any 类型。它可以看作是 TypeScript 其他所有类型的父类型，或者其他所有类型都是`any`的子类型。
-
-如果变量的类型是`any`，该变量可以作为对象使用，访问它的任意属性，也可以作为函数使用，直接调用它。
-
-```typescript
-let x:any = 'hello';
-
-x.foo(); // 不会报错 
-x(); // 不会报错
-x.bar = 100; // 不会报错
-```
-
-上面代码不会报错的原因是，将变量类型设为`any`，实际上会关闭对它的类型检查。只要没有句法错误，无论代码怎么写，TypeScript 都不会出现编译错误。
-
-TypeScript 假设，开发者自己知道怎么使用`any`类型的值，所以不对`any`类型进行任何限制，怎么使用都可以。
-
-```typescript
-let value: any;
-
-value.foo.bar; // OK
-value.trim(); // OK
-value(); // OK
-new value(); // OK
-value[0][1]; // OK
-```
-
-`any`的其他使用注意点如下。
-
-（1）类型设为`any`等于不设类型，失去了使用 TypeScript 的意义，完全不建议使用，除非是为以前的复杂 JavaScript 代码做类型适配。
-
-（2）如果开发者不指定变量类型，并且 TypeScript 不能从上下文推断出变量类型时，编译器就会默认该变量类型为`any`。
-
-```typescript
-// 等同于 y:any;  
-var y;
-
-// 等同于 z:{ a:any; b:any; };
-var z: { a; b; };
-
-// 等同于 f(x:any):void
-function f(x) {   
-  console.log(x);  
-}
-```
-
-注释指令`// @ts-ignore`也可以关闭类型检查。
-
-## unknown
-
-`unknown`可以看作是更安全的`any`，它也表示任何类型，但是有着更多的限制。
-
-一般来说，可以设为`any`的地方，都应该优先考虑设为`unknown`。
-
-所有类型的值都可以分配给 unknown 类型的变量。
-
-```typescript
-let value: unknown;
-
-value = true; // OK
-value = 42; // OK
-value = "Hello World"; // OK
-value = []; // OK
-value = {}; // OK
-value = Math.random; // OK
-value = null; // OK
-value = undefined; // OK
-value = new TypeError(); // OK
-value = Symbol("type"); // OK
-```
-
-然后，你要使用这个值时，都必须进行类型缩小，明确它到底是什么类型，才能读取。
-
-（1）unknown 类型不能赋值给其他类型，只有`unknown`本身和`any`类型除外。
-
-```typescript
-let value: unknown;
-
-let value1: unknown = value; // OK
-let value2: any = value; // OK
-let value3: boolean = value; // Error
-let value4: number = value; // Error
-let value5: string = value; // Error
-let value6: object = value; // Error
-let value7: any[] = value; // Error
-let value8: Function = value; // Error
-```
-
-与`any`相比，这样就保证了不确定类型的值，只会局限在`unknown`类型的变量，不会扩散到其他类型的变量。
-
-使用判断语句，明确 unknown 变量的类型以后，就可以将它赋值给其他变量。
-
-```typescript
-let value: unknown;
-
-if (typeof value === 'number') {
-  let value4: number = value;
-}
-```
-
-（2）不能调用它的方法和属性。
-
-TypeScript 对`unknown`类型非常严格，假设它不存在任何属性和方法，也不能调用。这导致下面的操作都会报错。
-
-```typescript
-let value: unknown;
-
-value.foo.bar; // Error
-value.trim(); // Error
-value(); // Error
-new value(); // Error
-value[0][1]; // Error
-```
-
-这导致使用 unknown 类型之前，开发者必须手动检查它的值是什么类型，然后才能用。
-
-```typescript
-function isString(v:unknown):string {
-  if (typeof v === 'string') {
-    return v;
-  }
-  return 'not string';
-}
-```
-
-也就是说，必须先进行类型检查，然后再使用`unknown`。
-
-```typescript
-function func(value: unknown) {
-  // 报错
-  value.toFixed(2);
-
-  // 正确
-  (value as number).toFixed(2); // OK
-}
-
-function func(value: unknown) {
-  // 报错
-  value * 5;
-
-  if (value === 123) { // 正确
-    value * 5; // OK
-  }
-}
-
-function func(value: unknown) {
-  // 报错
-  value.length;
-
-  if (typeof value === 'string') { 
-    // 正确
-    value.length; // OK
-  }
-}
-```
-
-上面示例中，如果直接使用`unknown`类型的变量就会报错，进行类型检查以后再使用，就不会报错。
-
-在联合类型中，unknown吸收所有类型。这意味着如果任何组成类型是unknown，则联合类型的计算结果为unknown。
-
-```typescript
-type UnionType1 = unknown | null; // unknown
-type UnionType2 = unknown | undefined; // unknown
-type UnionType3 = unknown | string; // unknown
-type UnionType4 = unknown | number[]; // unknown
-```
-
-该规则的一个例外是any。如果至少有一种构成类型是any，则联合类型的计算结果为any：
-
-```typescript
-type UnionType5 = unknown | any; // any
-```
-
-在交叉类型中，每种类型都吸收unknown. 这意味着与任何类型相交unknown不会改变结果类型：
-
-```typescript
-type IntersectionType1 = unknown & null; // null
-type IntersectionType2 = unknown & undefined; // undefined
-type IntersectionType3 = unknown & string; // string
-type IntersectionType4 = unknown & number[]; // number[]
-type IntersectionType5 = unknown & any; // any
-```
-
-`unknown`类型不能用作大多数运算符的操作数，因为如果不知道值的类型，大多数运算符不太可能产生有意义的结果。`unknows`类型值唯一可以使用的运算符是四个相等和不相等运算符。
-
-```typescript
-===
-==
-!==
-!=
-```
-
-除非使用`as`断言，首先缩小类型`unknows`类型的范围，然后才可以用于其他类型。
-
-```typescript
-const value: unknown = "Hello World";
-const someString: string = value as string;
-const otherString = someString.toUpperCase(); // "HELLO WORLD"
-```
-
-## TypeScript 的类型系统
+### 概述
 
 JavaScript 语言（注意，不是 TypeScript）将数据分成8种类型。
 
-- Undefined: the set with the only element undefined
-- Null: the set with the only element null
-- Boolean: the set with the two elements false and true
-- Number: the set of all numbers
-- BigInt: the set of all arbitrary-precision integers
-- String: the set of all strings
-- Symbol: the set of all symbols
-- Object: the set of all objects (which includes functions and arrays)
-
-TypeScript 在 JavaScript 之上又加了一层“静态类型”，在编译时（或类型检查时）对所有数据和存储位置进行分类。所以，TypeScript 的类型系统不同于 JavaScript 的类型系统。
-
-- primitive types
-- object types：包括 class、interface、array、tuple、function、构造函数。
-- union types：值可能是多种类型中的一种。
-- intersection types：值可能同时有一种以上的类型。
-- type parameters
-
-原始类型有以下几种。
-
-- Number
 - Boolean
 - String
+- Number
+- BigInt
 - Symbol
-- Void：表示没有值，比如没有返回值的函数。
-- Null
+- Object
 - Undefined
+- Null
+
+TypeScript 延续了 JavaScript 的类型设计，以上8种类型可以看作 TypeScript 的基本类型。
+
+注意，上面所有类型的名称都是小写字母，首字母大写的`Number`、`String`、`Boolean`都是语言内置的对象，而不是类型名称。
+
+注意，undefined 和 null 既可以作为值，也可以作为类型，取决于在哪里使用它们。
+
+上面的基本类型，还可以组合成复杂类型。
+
 
 针对JavaScript中的每一种原始数据类型，TypeScript都提供了对应的类型：
 
@@ -305,304 +62,198 @@ const s2:string = String('hello');
 
 由于大多数使用原始值的场合，都不是使用原始值的包装对象，因此平时主要使用的是`string`类型。
 
-## 基本类型
+### boolean 类型
 
-TypeScript 提供的数据类型，可以分成两大类。
+`boolean`类型只有`true`和`false`两个值。
 
-一类是 JavaScript 原有的类型。TypeScript 提供了8个内置的基本类型，基本上与 JavaScript 的数据类型一致。
+```typescript
+const x:boolean = true;
+const y:boolean = false;
+```
 
-- number：数值，包括整数和浮点数。
-- string：字符串
-- boolean：布尔值，包括`true`和`false`两个值
-- bigint
-- symbol
-- null
-- undefined
-- object
+上面示例中，变量`x`和`y`就属于 boolean 类型。
 
-注意，上面所有类型的名称都是小写字母，首字母大写的`Number`、`String`、`Boolean`都是语言内置的对象，而不是类型名称。
+### string 类型
 
-另一类是 TypeScript 特有的类型，比如下面这些。
+`string`类型包含所有字符串。
 
-- any (the type of all values)
-- unknown（确保有人使用这种类型声明类型是什么）
-- never（这种类型不可能发生）
-- void：函数返回 undefined 或者没有返回值
+```typescript
+const x:string = 'hello';
+const y:string = `${x} world`;
+```
 
-注意，undefined 和 null 既可以作为值，也可以作为类型，取决于在哪里使用它们。
+上面示例中，普通字符串和模板字符串都属于 string 类型。
 
-上面的基本类型，还可以组合成复杂类型。
+### number 类型
+
+`number`类型包含所有整数和浮点数。
+
+```typescript
+const x:number = 123;
+const y:number = 3.14;
+const z:number = 0xffff;
+```
+
+上面示例中，整数、浮点数和非十进制数都属于 number 类型。
+
+### bigint 类型
+
+bigint 类型包含所有的大整数。
+
+```typescript
+const x:bigint = 123n;
+const y:bigint = 0xffffn;
+```
+
+上面示例中，变量`x`和`y`就属于 bigint 类型。
+
+注意，bigint 类型是 ES2020 标准引入的。如果使用这个类型，TypeScript 编译的目标语法版本不能低于 ES2020。
+
+### symbol 类型
+
+symbol 类型包含所有的 Symbol 值。
+
+```typescript
+const x:symbol = Symbol();
+```
+
+上面示例中，`Symbol()`函数的返回值就是 symbol 类型。
+
+symbol 类型的详细介绍，参见《Symbol》一章。
+
+### object 类型
+
+根据 JavaScript 的设计，object 类型包含了所有对象、数组和函数。
+
+```typescript
+const x:object = { foo: 123 };
+const y:object = [1, 2, 3];
+const z:object = (n:number) => n + 1;
+```
+
+上面示例中，对象、数组、函数都属于 object 类型。
+
+### undefined 类型
+
+undefined 类型只有一个值`undefined`，表示未定义（即还来不及定义，以后可能会有定义）。
+
+```typescript
+let x:undefined = undefined;
+```
+
+上面示例中，变量`x`就属于 undefined 类型。
+
+### null 类型
+
+null 类型只有一个值`null`，表示为空（即此处没有值）。
+
+```typescript
+const x:null = null;
+```
+
+上面示例中，变量`x`就属于 null 类型。
 
 ## 值类型
 
-单个值也视为一种类型。
+TypeScript 规定，单个值也是一种类型，称为“值类型”。
 
 ```typescript
-let x: "hello" = "hello";
-// 正确
-x = "hello";
-// 报错
-x = "howdy";
+let x:'hello';
+
+x = 'hello'; // 正确
+x = 'world'; // 报错
 ```
 
-`const`命令声明的变量，TypeScript 推断出来的类型就是一个值。
+上面示例中，变量`x`的类型是字符串`hello`，导致它只能赋值为这个字符串，赋值为其他字符串就会报错。
+
+`const`命令用来声明常量，TypeScript 遇到`const`命令声明的常量，如果代码没有注明类型，就会推断该变量的类型是一个值。
 
 ```typescript
-// 推断类型是 “https”，不是 string
-const stringLiteral = "https"; // Type "https"
+// 推断 x 的类型是 “https”，不是 string
+const x = 'https';
 
-// 推断类型是 42，不是 number
-const numericLiteral = 42; // Type 42
+// 推断 y 的类型是 42，不是 number
+const y = 42;
 
-// 推断类型是 true,不是 boolean
-const booleanLiteral = true; // Type true
+// 推断 z 的类型是 true,不是 boolean
+const z = true;
 ```
 
-它在某个变量只能取若干个特定值时很有用。
+上面代码中，TypeScript 推断变量`x`、`y`、`z`的类型，都是它们所被赋予的值，而不是这些变量的基本类型。
+
+由于值类型（比如`hello`）同时也是它的基础类型（比如`string`）的子类型，所以值类型可以赋值给对应的基础类型。
 
 ```typescript
-function printText(s: string, alignment: "left" | "right" | "center") {
+const x:'hello' = 'hello';
+let y:string = x;
+```
+
+上面示例中，变量`y`的类型是 string，但可以赋值为值类型的变量`x`，原因就是`hello`是 string 的子类型。
+
+值类型在变量只能取若干个特定值时很有用。
+
+```typescript
+function printText(
+  s: string,
+  alignment: 'left'|'right'|'center'
+) {
   // ...
 }
-printText("Hello, world", "left");
-printText("G'day, mate", "centre");
 ```
 
-单个数值也是类型。
+上面示例中，函数参数`alignment`的取值只能是 left、right、center 这三个字符串中的一个。它们之间竖线`|`表示联合类型，详见下文的介绍。
+
+下面是另一个例子。
 
 ```typescript
-function compare(a: string, b: string): -1 | 0 | 1 {
-  return a === b ? 0 : a > b ? 1 : -1;
-}
-```
-
-下面是用数值类型限定端口的例子。
-
-```typescript
-function getPort(scheme: "http" | "https"): 80 | 443 {
+function getPort(
+  scheme: 'http'|'https'
+): 80|443 {
   switch (scheme) {
-    case "http":
+    case 'http':
       return 80;
-    case "https":
+    case 'https':
       return 443;
   }
 }
 ```
 
+上面示例中，函数的参数`scheme`和返回值，都是值类型。
 
+## undefined 和 null 的特殊性
 
-值类型可以与 interface 结合使用。
-
-```typescript
-interface Options {
-  width: number;
-}
-function configure(x: Options | "auto") {
-  // ...
-}
-configure({ width: 100 });
-configure("auto");
-
-// 报错
-configure("automatic");
-```
-
-最后，布尔值类型 boolean 本身就是两个布尔值 union 类型`true | false`的别名。
-
-## Object 类型
-
-Object 类型有一个特点，那就是除了undefined值和 null值外，其他任何值都可以赋值给Object类型。
+TypeScript 规定，任何其他类型的变量都可以赋值为`undefind`或`null`。
 
 ```typescript
-let obj: Object;
- 
-// 正确
-obj = { x: 0 };
-obj = true;
-obj = 'hi';
-obj = 1;
- 
-// 编译错误
-obj = undefined;
-obj = null;
+let age:number = 24;
+age = null;      // 正确
+age = undefined; // 正确
 ```
 
-字符串之所以可以赋值给`Object`类型，是因为字符串可以自动转为对象。
+上面代码中，变量`age`的类型是数值，但是赋值为`null`或`undefined`并不报错。
+
+这样设计的原因是，JavaScript 语言的设计是，如果等于`undefined`就表示还没有赋值，如果等于`null`就表示值为空。为了符合 JavaScript 的这种行为，TypeScript 允许`null`或`undefined`这两个值，总是可以赋值给其他类型的变量。
+
+但是有时候，这并不是开发者想要的行为，也不利于发挥类型系统的优势。
 
 ```typescript
-'str'.valueOf()
+const obj:object = undefined;
+obj.toString() // 错误，但能通过编译
 ```
 
-## Object 与 object 的区别
+上面示例中，变量`obj`等于`undefined`，实际执行时，调用`obj.toString()`会报错，因为`undefined`上面没有这个方法。但是，这段代码可以通过编译，TypeScript 不会检查出错误，原因就在于它允许 object 类型等于 undefined。
+
+为了避免这种情况，TypeScript 提供了一种严格模式。只要打开编译器的`--strictNullChecks`选项，其他类型的变量（除了`any`类型和`unknown`类型）就不能赋值为`null`或`undefined`。
 
 ```typescript
-let x:Object;
-let y:object;
+// --strictNullChecks=true
+
+let age:number = 24;
+age = null;      // 报错
+age = undefined; // 报错
 ```
 
-类型声明为`Object`（大写），表示`x`是`Object`的实例。
-
-`Object`是一个接口。
-
-```typescript
-interface ObjectConstructor {
-  new(value?: any): Object;
-  readonly prototype: Object;
-  // ...
-}
-
-declare var Object: ObjectConstructor;
-```
-
-Object 对应 JavaScript 语言视为对象的值，这包括字符串、数值、布尔值等原始类型，也被认为符合 Object 类型。
-
-这显然很容易混淆，TypeScript 2.2版本就新增了一个新的`object`类型表示非原始类型，即对应那些狭义的真正为对象的值。
-
-```typescript
-// 正确
-const a:Object = 1;
-
-// 报错
-const b:object = 1;
-```
-
-Object 类型和 object 类型都只能表示原生提供的属性，用户自定义的属性都不存在于这两个类型。
-
-```typescript
-const o1:Object = { foo: 0 };
-const o2:object = { foo: 0 };
-
-// 报错
-o1.foo
-// 正确
-o1.toString()
-
-// 报错
-o2.foo
-// 正确
-o2.toString()
-```
-
-上面示例中，`foo`是自定义属性，访问就会报错。`toString()`是对象的原生方法，可以正确访问。
-
-JavaScript 存在一些对象，不属于`Object`的实例。
-
-```javascript
-const obj = Object.create(null);
-Object.getPrototypeOf(obj2) // null
-
-typeof obj2 // object
-obj2 instanceof Object // false
-```
-
-上面示例中，对象`object`的类型是对象，但不是`Object`的实例，因为它的原型对象不是`Object.prototype`。
-
-类型设为`Object`的一个问题是，原始类型也符合`Object`类型。
-
-```typescript
-function func1(x: Object) { }
-func1('abc');  // 正确
-```
-
-上面示例不报错，这是因为字符串、数值、布尔值都会自动转为对象，成为 Object 的实例。
-
-```typescript
-'abc'.hasOwnProperty === Object.prototype.hasOwnProperty
-// true
-```
-
-类型设为`object`（小写）则表示一切`typeof`运算符返回值为`object`的值，也就是所有非原始类型的值（undefined, null, booleans, numbers, bigints, strings）。
-
-而且，原始类型也不符合`object`。
-
-```typescript
-function func1(x:object) { }
-func1('abc');  // 报错
-```
-
-第三个问题是，类型设为`Object`（大写）时，不方便自定义原生方法。
-
-```typescript
-// 报错
-const obj1: Object = { toString() { return 123 } };
-```
-
-上面代码报错是因为`toString()`是一个原生方法，它已经有类型定义了，必须返回一个字符串，而不能返回数值。
-
-但是，类型设为`object`就没有这个问题。
-
-```typescript
-// 正确
-const obj2: object = { toString() { return 123 } };
-```
-
-由于`object`的适用范围大于`Object`，所以建议总是使用`object`（小写），而不是`Object`（大写）。
-
-有了`object`以后，有些场合就能精确表示类型了。比如，`Object.create()`方法的参数不能是原始类型值，只能是对象或`null`。
-
-```typescript
-Object.create(123) // 报错
-```
-
-如果没有`object`，就没办法精确表示参数类型，只能写成`any`。现在，参数类型就可以写成下面这样。
-
-```typescript
-interface ObjectConstructor {
-  create(o: object|null, ...):any;
-}
-```
-
-## 特殊类型
-
-### unknown 
-
-unknown 类似于 any，表示无法确定变量类型。区别是不能对该值进行任何操作。
-
-```typescript
-function f1(a: any) {
-  a.b(); // OK
-}
-function f2(a: unknown) {
-  a.b(); // 报错
-}
-```
-
-## null，undefined
-
-null 和 undefined 是 JavaScript 的两个特殊值，`null`表示空（即该处没有值），`undefined`表示未定义（即该处的值还未定义）。
-
-由于 TypeScript 允许单个值就是一个类型，所以 null 和 undefined 本身也能作为类型。但是，如果用它们作为类型，变量就不能再赋予其他值了。
-
-```typescript
-let foo:null;
-
-foo = null; // 正确
-foo = undefined; // 报错
-foo = 123; // 报错
-
-let bar:undefined;
-
-bar = undefined; // 正确
-bar = null; // 报错
-bar = 123; // 报错
-```
-
-上面示例中，变量`foo`的类型是`null`，只能赋值为`null`；变量`bar`的类型是`undefined`，只能赋值为`undefined`。它们赋予其他值都会报错。
-
-注意，TypeScript 规定，`null`和`undefined`可以赋值给任意其他类型。也就是说，TypeScript 的所有其他类型除了本类型的值以外，总是可以赋值为`null`或`undefined`这两个值。
-
-```typescript
-let age: number;
-age = 24;        // OK
-age = null;      // OK
-age = undefined; // OK
-```
-
-上面代码中，变量`age`的类型是数值，但是可以赋值为`null`或`undefined`。
-
-这是为了适应 JavaScript 语言允许变量值为空的情况，但有时不是 TypeScript 开发者想要的行为，因此 TypeScript 提供了一个编译器的`strictNullChecks`设置，只要打开它，其他类型的变量（除了`any`类型和`unknown`类型）就不能赋值为`null`或`undefined`。
-
-下面在配置文件`tsconfig.json`打开这个设置。
+配置文件`tsconfig.json`打开`strictNullChecks`的写法如下。
 
 ```json
 {
@@ -613,192 +264,27 @@ age = undefined; // OK
 }
 ```
 
-这时，`null`或`undefined`赋值给其他类型（除了`any`类型和`unknown`类型）就会报错。
+打开`--strictNullChecks`以后，undefined 和 null 这两种值也不能混用。
 
 ```typescript
-let age: number;
-age = 24;        // OK
-age = null;      // 报错
-age = undefined; // 报错
+// --strictNullChecks=true
+
+let x:undefined = null; // 报错
+let y:null = undefined; // 报错
 ```
 
-这时，如果某个类型需要包括空值，可以使用联合类型的写法。
+上面示例中，`undefined`类型的变量赋值为`null`，或者`null`类型的变量赋值为`undefind`，都会报错。
+
+总之，开启严格模式后，除了`any`类型、`unknown`类型和自身，`undefined`或`null`赋值给其他类型就会报错。
 
 ```typescript
-let name: string | null;
-name = "Marius";  // OK
-name = null;      // OK
+// --strictNullChecks=true
+
+let x:any     = undefined; // 正确
+let y:unknown = null; // 正确
 ```
 
-上面示例中，变量`name`的值可以是字符串，也可以是`null`。
-
-### :void
-
-`:void`类型只用来表示函数没有返回值。
-
-```typescript
-function log(message): void {
-  console.log(message);
-}
-```
-
-## type 命令
-
-类型定义时支持模板字符串。
-
-```typescript
-type World = "world";
-
-// 等同于 type Greeting = "hello world"
-type Greeting = `hello ${World}`;
-```
-
-如果类型是多个值的联合，甚至可以产生插值的效果。
-
-```typescript
-type EmailLocaleIDs = "welcome_email" | "email_heading";
-type FooterLocaleIDs = "footer_title" | "footer_sendoff";
-
-// 等同于 type AllLocaleIDs = "welcome_email_id" | "email_heading_id" | "footer_title_id" | "footer_sendoff_id"
-type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
-```
-
-## typeof 运算符
-
-typeof 运算符是一个 JavaScript 运算符，返回一个字符串，代表参数值的类型。
-
-JavaScript 的`typeof`运算符，可能返回八种值。
-
-```javascript
-typeof undefined; // "undefined"
-typeof true; // "boolean"
-typeof 1337; // "number"
-typeof "foo"; // "string"
-typeof {}; // "object"
-typeof parseInt; // "function"
-typeof Symbol(); // "symbol"
-typeof 127n // "bigint"
-```
-
-如果没有明确标注类型，typeof 会返回一个具体的值作为类型。
-
-```typescript
-const str:string = 'abc';
-
-// %inferred-type: "string"
-type Result = typeof str;
-
-const x:Result = "bc";
-
-const str = 'abc';
-
-// %inferred-type: "abc"
-type Result = typeof str;
-```
-
-在 TypeScript 中，如果`typeof`运算符出现在值的位置（比如等号的右边），那么用法与 JavaScript 的用法完全一样。
-
-```typescript
-// 编译前
-var numberType: string = typeof 1337;
-
-// 编译后
-var numberType = typeof 1337;
-```
-
-上面示例中，编译后就是把类型删掉了，`typeof`运算符没有任何变化。
-
-但是，`typeof`运算符也可以用在 TypeScript 类型注释里面。这时，它返回的不是字符串，而是参数值对应的 TypeScript 类型。
-
-```typescript
-let r1 = { width: 100, height: 200 };
-let r2: typeof r1;
-
-// 等同于
-let r1 = { width: 100, height: 200 };
-type R = typeof r1;
-let r2: R;
-```
-
-上面示例中，`typeof`返回的是变量`r1`的 TypeScript 类型，即一个对象，该对象包含属性`width`和属性`height`。
-
-## readonly 修饰符
-
-readonly 修饰符表示一个变量不可以修改。
-
-```typescript
-let x: readonly string[] = [];
-let y: string[] = [];
- 
-x = y; 
-y = x; // 报错
-
-const values: readonly string[] = ["a", "b", "c"];
-```
-
-只读数组不能赋值给普通数组。
-
-readonly 也可以用来定义元组。
-
-```typscript
-const point: readonly [number, number] = [0, 0];
-
-point[0] = 1; // Type error
-point.push(0); // Type error
-point.pop(); // Type error
-point.splice(1, 1); // Type error
-```
-
-## 非空断言运算符
-
-后缀`!`是非空断言运算符，即保证该值不是nullor undefined：
-
-```typescript
-function liveDangerously(x?: number | null) {
-  // No error
-  console.log(x!.toFixed());
-}
-```
-
-## 类型声明
-
-脚本的头部，声明类型定义。
-
-```typescript
-class Foo {};
-interface Bar {};
-type Bas = {};
-```
-
-声明了类型以后，就可以在类型注释中，使用该类型。
-
-```typescript
-var foo: Foo;
-var bar: Bar;
-var bas: Bas;
-```
-
-
-
-## 类型别名
-
-`type`命令可以用来为现有类型指定别名，使用`type SomeName = someValidTypeAnnotation`的形式。
-
-```typescript
-type Age = number;
-const age: Age = 82;
-```
-
-上面示例中，`Age`就是类型`number`的别名。
-
-type 命令可以为任何类型起别名。
-
-```typescript
-type ID = number | string;
-type Text = string | { text: string };
-type Coordinates = [number, number];
-type Callback = (data: string) => void;
-```
+上面示例中，严格模式下，any 类型和 unknown 类型的变量，可以赋值为`undefined`和`null`。
 
 ## 联合类型（Union）
 
@@ -829,6 +315,34 @@ let gender:'male'|'female';
 ```typescript
 let rainbowColor:'赤'|'橙'|'黄'|'绿'|'青'|'蓝'|'紫';
 ```
+
+上一节说过，开启严格模式后，其他类型的变量不能赋值为`undefined`或`null`。这时，如果某个变量需要包含空值，就可以使用联合类型的写法。
+
+```typescript
+let name: string | null;
+name = "Marius";  // OK
+name = null;      // OK
+```
+
+上面示例中，变量`name`的值可以是字符串，也可以是`null`。
+
+值类型可以与 interface 结合使用。
+
+```typescript
+interface Options {
+  width: number;
+}
+function configure(x: Options | "auto") {
+  // ...
+}
+configure({ width: 100 });
+configure("auto");
+
+// 报错
+configure("automatic");
+```
+
+最后，布尔值类型 boolean 本身就是两个布尔值 union 类型`true | false`的别名。
 
 改变成员类型的顺序不影响联合类型的结果类型。
 
@@ -1117,6 +631,330 @@ function extend<T extends object, U extends object>(first: T, second: U): T & U 
 }
 
 const x = extend({ a: 'hello' }, { b: 42 });
+```
+
+## Object 类型
+
+Object 类型有一个特点，那就是除了undefined值和 null值外，其他任何值都可以赋值给Object类型。
+
+```typescript
+let obj: Object;
+ 
+// 正确
+obj = { x: 0 };
+obj = true;
+obj = 'hi';
+obj = 1;
+ 
+// 编译错误
+obj = undefined;
+obj = null;
+```
+
+字符串之所以可以赋值给`Object`类型，是因为字符串可以自动转为对象。
+
+```typescript
+'str'.valueOf()
+```
+
+## Object 与 object 的区别
+
+```typescript
+let x:Object;
+let y:object;
+```
+
+类型声明为`Object`（大写），表示`x`是`Object`的实例。
+
+`Object`是一个接口。
+
+```typescript
+interface ObjectConstructor {
+  new(value?: any): Object;
+  readonly prototype: Object;
+  // ...
+}
+
+declare var Object: ObjectConstructor;
+```
+
+Object 对应 JavaScript 语言视为对象的值，这包括字符串、数值、布尔值等原始类型，也被认为符合 Object 类型。
+
+这显然很容易混淆，TypeScript 2.2版本就新增了一个新的`object`类型表示非原始类型，即对应那些狭义的真正为对象的值。
+
+```typescript
+// 正确
+const a:Object = 1;
+
+// 报错
+const b:object = 1;
+```
+
+Object 类型和 object 类型都只能表示原生提供的属性，用户自定义的属性都不存在于这两个类型。
+
+```typescript
+const o1:Object = { foo: 0 };
+const o2:object = { foo: 0 };
+
+// 报错
+o1.foo
+// 正确
+o1.toString()
+
+// 报错
+o2.foo
+// 正确
+o2.toString()
+```
+
+上面示例中，`foo`是自定义属性，访问就会报错。`toString()`是对象的原生方法，可以正确访问。
+
+JavaScript 存在一些对象，不属于`Object`的实例。
+
+```javascript
+const obj = Object.create(null);
+Object.getPrototypeOf(obj2) // null
+
+typeof obj2 // object
+obj2 instanceof Object // false
+```
+
+上面示例中，对象`object`的类型是对象，但不是`Object`的实例，因为它的原型对象不是`Object.prototype`。
+
+类型设为`Object`的一个问题是，原始类型也符合`Object`类型。
+
+```typescript
+function func1(x: Object) { }
+func1('abc');  // 正确
+```
+
+上面示例不报错，这是因为字符串、数值、布尔值都会自动转为对象，成为 Object 的实例。
+
+```typescript
+'abc'.hasOwnProperty === Object.prototype.hasOwnProperty
+// true
+```
+
+类型设为`object`（小写）则表示一切`typeof`运算符返回值为`object`的值，也就是所有非原始类型的值（undefined, null, booleans, numbers, bigints, strings）。
+
+而且，原始类型也不符合`object`。
+
+```typescript
+function func1(x:object) { }
+func1('abc');  // 报错
+```
+
+第三个问题是，类型设为`Object`（大写）时，不方便自定义原生方法。
+
+```typescript
+// 报错
+const obj1: Object = { toString() { return 123 } };
+```
+
+上面代码报错是因为`toString()`是一个原生方法，它已经有类型定义了，必须返回一个字符串，而不能返回数值。
+
+但是，类型设为`object`就没有这个问题。
+
+```typescript
+// 正确
+const obj2: object = { toString() { return 123 } };
+```
+
+由于`object`的适用范围大于`Object`，所以建议总是使用`object`（小写），而不是`Object`（大写）。
+
+有了`object`以后，有些场合就能精确表示类型了。比如，`Object.create()`方法的参数不能是原始类型值，只能是对象或`null`。
+
+```typescript
+Object.create(123) // 报错
+```
+
+如果没有`object`，就没办法精确表示参数类型，只能写成`any`。现在，参数类型就可以写成下面这样。
+
+```typescript
+interface ObjectConstructor {
+  create(o: object|null, ...):any;
+}
+```
+
+## 特殊类型
+
+### unknown 
+
+unknown 类似于 any，表示无法确定变量类型。区别是不能对该值进行任何操作。
+
+```typescript
+function f1(a: any) {
+  a.b(); // OK
+}
+function f2(a: unknown) {
+  a.b(); // 报错
+}
+```
+
+### :void
+
+`:void`类型只用来表示函数没有返回值。
+
+```typescript
+function log(message): void {
+  console.log(message);
+}
+```
+
+## type 命令
+
+类型定义时支持模板字符串。
+
+```typescript
+type World = "world";
+
+// 等同于 type Greeting = "hello world"
+type Greeting = `hello ${World}`;
+```
+
+如果类型是多个值的联合，甚至可以产生插值的效果。
+
+```typescript
+type EmailLocaleIDs = "welcome_email" | "email_heading";
+type FooterLocaleIDs = "footer_title" | "footer_sendoff";
+
+// 等同于 type AllLocaleIDs = "welcome_email_id" | "email_heading_id" | "footer_title_id" | "footer_sendoff_id"
+type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
+```
+
+## typeof 运算符
+
+typeof 运算符是一个 JavaScript 运算符，返回一个字符串，代表参数值的类型。
+
+JavaScript 的`typeof`运算符，可能返回八种值。
+
+```javascript
+typeof undefined; // "undefined"
+typeof true; // "boolean"
+typeof 1337; // "number"
+typeof "foo"; // "string"
+typeof {}; // "object"
+typeof parseInt; // "function"
+typeof Symbol(); // "symbol"
+typeof 127n // "bigint"
+```
+
+如果没有明确标注类型，typeof 会返回一个具体的值作为类型。
+
+```typescript
+const str:string = 'abc';
+
+// %inferred-type: "string"
+type Result = typeof str;
+
+const x:Result = "bc";
+
+const str = 'abc';
+
+// %inferred-type: "abc"
+type Result = typeof str;
+```
+
+在 TypeScript 中，如果`typeof`运算符出现在值的位置（比如等号的右边），那么用法与 JavaScript 的用法完全一样。
+
+```typescript
+// 编译前
+var numberType: string = typeof 1337;
+
+// 编译后
+var numberType = typeof 1337;
+```
+
+上面示例中，编译后就是把类型删掉了，`typeof`运算符没有任何变化。
+
+但是，`typeof`运算符也可以用在 TypeScript 类型注释里面。这时，它返回的不是字符串，而是参数值对应的 TypeScript 类型。
+
+```typescript
+let r1 = { width: 100, height: 200 };
+let r2: typeof r1;
+
+// 等同于
+let r1 = { width: 100, height: 200 };
+type R = typeof r1;
+let r2: R;
+```
+
+上面示例中，`typeof`返回的是变量`r1`的 TypeScript 类型，即一个对象，该对象包含属性`width`和属性`height`。
+
+## readonly 修饰符
+
+readonly 修饰符表示一个变量不可以修改。
+
+```typescript
+let x: readonly string[] = [];
+let y: string[] = [];
+ 
+x = y; 
+y = x; // 报错
+
+const values: readonly string[] = ["a", "b", "c"];
+```
+
+只读数组不能赋值给普通数组。
+
+readonly 也可以用来定义元组。
+
+```typscript
+const point: readonly [number, number] = [0, 0];
+
+point[0] = 1; // Type error
+point.push(0); // Type error
+point.pop(); // Type error
+point.splice(1, 1); // Type error
+```
+
+## 非空断言运算符
+
+后缀`!`是非空断言运算符，即保证该值不是nullor undefined：
+
+```typescript
+function liveDangerously(x?: number | null) {
+  // No error
+  console.log(x!.toFixed());
+}
+```
+
+## 类型声明
+
+脚本的头部，声明类型定义。
+
+```typescript
+class Foo {};
+interface Bar {};
+type Bas = {};
+```
+
+声明了类型以后，就可以在类型注释中，使用该类型。
+
+```typescript
+var foo: Foo;
+var bar: Bar;
+var bas: Bas;
+```
+
+## 类型别名
+
+`type`命令可以用来为现有类型指定别名，使用`type SomeName = someValidTypeAnnotation`的形式。
+
+```typescript
+type Age = number;
+const age: Age = 82;
+```
+
+上面示例中，`Age`就是类型`number`的别名。
+
+type 命令可以为任何类型起别名。
+
+```typescript
+type ID = number | string;
+type Text = string | { text: string };
+type Coordinates = [number, number];
+type Callback = (data: string) => void;
 ```
 
 ## 缩小类型

@@ -2,7 +2,7 @@
 
 ## keyof
 
-keyof 是一个键名查询运算符，列出了对象类型或接口的所有属性名。
+keyof 是一个键名查询运算符，列出了对象类型或接口的所有属性名组成的联合类型，属性名之间使用`|`分隔。
 
 ```typescript
 interface Person {
@@ -13,6 +13,17 @@ interface Person {
 type propNames = keyof Person; // "name" | "age"
 
 type propTypes = Person[propNames]; // string | number
+```
+
+```typescript
+interface T {
+    0: boolean;
+    a: string;
+    b(): void;
+}
+
+// 0 | 'a' | 'b'
+type KeyofT = keyof T;
 ```
 
 ```typescript
@@ -45,6 +56,44 @@ keyof 运算符可以返回这个对象的所有键名。
 type TodoKeys = keyof Todo; // "id" | "text" | "due"
 ```
 
+由于 JavaScript 键名只能是字符串和 Symbol 值，对于数组还有数值类型。所以，键名的联合类型就是`string | number |symbol`。
+
+```typescript
+type KeyofT = keyof any;       // string | number | symbol
+
+interface T {
+    [prop: number]: number;
+}
+
+// number
+type KeyofT = keyof T;
+
+interface T {
+    [prop: string]: number;
+}
+
+// string | number
+type KeyofT = keyof T;
+```
+
+顺便提一下，对unknown类型使用索引类型查询时，结果类型固定为never类型。
+
+```typescript
+type KeyofT = keyof unknown;  // never
+```
+
+注意，如果想要在对象类型中声明属性名为symbol类型的属性，那么属性名的类型必须为“unique symbol”类型，而不允许为symbol类型。
+
+```typescript
+const s: unique symbol = Symbol();
+interface T {
+    [s]: boolean;
+}
+
+// typeof s
+type KeyofT = keyof T;
+```
+
 元组的返回结果可能出人意料。
 
 ```typescript
@@ -52,6 +101,28 @@ type TodoKeys = keyof Todo; // "id" | "text" | "due"
 
 // number | "0" | "1" | "2" | "length" | "pop" | "push" | ···
 type Result = keyof ['a', 'b', 'c'];
+```
+
+对于联合类型，keyof 返回共有的键名。
+
+```typescript
+type A = { a: string; z: boolean };
+type B = { b: string; z: boolean };
+
+type KeyofT = keyof (A | B);  // 'z'
+```
+
+对于交叉类型，返回所有键名。
+
+```typescript
+type A = { a: string; x: boolean };
+type B = { b: string; y: number };
+
+type KeyofT = keyof (A & B); // 'a' | 'x' | 'b' | 'y'
+
+
+// 相当于
+keyof (A & B) ≡ keyof A | keyof B
 ```
 
 下面是交集类型和联合类型的 keyof 差异。
@@ -66,6 +137,19 @@ type Result1 = keyof (A & B);
 // %inferred-type: "shared"
 type Result2 = keyof (A | B);
 ```
+
+keyof 运算符的一个作用，就是取出某个属性的类型。
+
+```typescript
+function getProperty<T, K extends keyof T>(
+  obj: T,
+  key: K
+): T[K] {
+  return obj[key];
+}
+```
+
+上面示例中，`K extends keyof T`表示`K`是`T`的一个属性名，函数`getProperty()`的返回值`T[K]`就表示`K`这个属性值的类型。
 
 下面是一个例子。
 
