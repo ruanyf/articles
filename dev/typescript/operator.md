@@ -449,7 +449,7 @@ type Age = Person[key];
 T extends U ? X : Y
 ```
 
-上面式子中的`extends`用来判断，类型`T`是否继承了类型`U`。这里的`T`和`U`可以是任意类型。
+上面式子中的`extends`用来判断，类型`T`是否继承了类型`U`，即是否属于类型`U`。这里的`T`和`U`可以是任意类型。
 
 举例来说，有两个类`Cat`和`Animal`，它们的关系是`class Cat extends Animal`，那么`Cat extends Animal`就为真，而`Animal extends Cat`就为伪。
 
