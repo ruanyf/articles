@@ -181,6 +181,20 @@ const z = true;
 
 上面代码中，TypeScript 推断变量`x`、`y`、`z`的类型，都是它们所被赋予的值，而不是这些变量的基本类型。
 
+任何一个值都可以当作值类型使用，所以可以写出来一些很奇怪的代码。
+
+```typescript
+const x:5 = 4 + 1;
+```
+
+上面代码中，变量`x`的类型是数字`5`，这是允许的，也就是说`x`只能等于`5`，不能等于其他值。但是上面的代码实际会报错，原因是 TypeScript 编译器由于不会允许代码，所以不知道`4 + 1`等于`5`，只知道`4 + 1`的类型是`number`，等号两边的类型不一样，从而报错。
+
+解决这个问题的方法，就是使用类型断言（详见《类型断言》一章）在`4 + 1`后面加上`as 5`，就是告诉编译器，这个表达式的类型肯定是`5`，这样的话就不会报错了。
+
+```typescript
+const x:5 = 4 + 1 as 5;
+```
+
 由于值类型（比如`hello`）同时也是它的基础类型（比如`string`）的子类型，所以值类型可以赋值给对应的基础类型。
 
 ```typescript
@@ -190,7 +204,7 @@ let y:string = x;
 
 上面示例中，变量`y`的类型是 string，但可以赋值为值类型的变量`x`，原因就是`hello`是 string 的子类型。
 
-值类型在变量只能取若干个特定值时很有用。
+如果一个变量设为值类型，那么除了这个值，变量就不能等于其他值。所以，如果值类型如果只包含一个值，作用并不是很大。实际应用中，往往将多个值作为联合类型使用。
 
 ```typescript
 function printText(
@@ -824,7 +838,11 @@ type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
 
 ## typeof 运算符
 
-typeof 运算符是一个 JavaScript 运算符，返回一个字符串，代表参数值的类型。
+typeof 运算符是一个 JavaScript 语言的一元运算符，返回一个字符串，代表操作数的类型。
+
+```javascript
+typeof 'foo'; // 'string'
+```
 
 JavaScript 的`typeof`运算符，可能返回八种值。
 
@@ -837,6 +855,25 @@ typeof {}; // "object"
 typeof parseInt; // "function"
 typeof Symbol(); // "symbol"
 typeof 127n // "bigint"
+```
+
+TypeScript 对 JavaScript中的typeof运算符进行了扩展，使其能够在表示类型的位置上使用。当在表示类型的位置上使用typeof运算符时，它能够获取操作数的类型，我们称之为类型查询。
+
+```typescript
+typeof TypeQueryExpression
+```
+
+下面是一些用法实例。
+
+```typescript
+const a = { x: 0 };
+function b(x: string, y: number): boolean {
+    return true;
+}
+
+type T0 = typeof a;   // { x: number }
+type T1 = typeof a.x; // number
+type T2 = typeof b;   // (x: string, y: number) => boolean
 ```
 
 如果没有明确标注类型，typeof 会返回一个具体的值作为类型。
@@ -853,6 +890,14 @@ const str = 'abc';
 
 // %inferred-type: "abc"
 type Result = typeof str;
+```
+
+unique symbol 是一个值，如果想获取它代表的类型。若想要获取特定的“unique symbol”值的类型，则需要使用typeof类型查询，否则将无法引用其类型。
+
+```typescript
+const a: unique symbol = Symbol();
+
+const b: typeof a = a;
 ```
 
 在 TypeScript 中，如果`typeof`运算符出现在值的位置（比如等号的右边），那么用法与 JavaScript 的用法完全一样。
@@ -1018,6 +1063,72 @@ function getScore(value: number|string): number {
   }
 }
 ```
+
+第三种方法是instanceof运算符。它能够检测实例对象与构造函数之间的关系。instanceof运算符的左操作数为实例对象，右操作数为构造函数，若构造函数的prototype属性值存在于实例对象的原型链上，则返回true；否则，返回false。
+
+```typescript
+function f(x: Date | RegExp) {
+    if (x instanceof Date) {
+        x; // Date
+    }
+
+    if (x instanceof RegExp) {
+        x; // RegExp
+    }
+}
+```
+
+instanceof类型守卫同样适用于自定义构造函数，并对其实例对象进行类型细化。
+
+```typescript
+class A {}
+class B {}
+
+function f(x: A | B) {
+   if (x instanceof A) {
+       x; // A
+   }
+
+   if (x instanceof B) {
+       x; // B
+  }
+}
+```
+
+第四种方法是使用in运算符。in运算符是JavaScript中的关系运算符之一，用来判断对象自身或其原型链中是否存在给定的属性，若存在则返回true，否则返回false。in运算符有两个操作数，左操作数为待测试的属性名，右操作数为测试对象。
+
+in类型守卫根据in运算符的测试结果，将右操作数的类型细化为具体的对象类型。
+
+```typescript
+interface A {
+    x: number;
+}
+interface B {
+    y: string;
+}
+
+function f(x: A | B) {
+    if ('x' in x) {
+        x; // A
+    } else {
+        x; // B
+    }
+}
+```
+
+类型细化的一种特殊情况是，声明变量x时没有使用类型注解，因此编译器仅根据变量x被赋予的值进行类型细化。但如果在变量或参数声明中包含了类型注解，那么在进行类型细化时同样会参考变量声明的类型。
+
+```typescript
+let x: boolean | 'x';
+
+x = 'x';
+x; // 'x'
+
+x = true;
+x; // true
+```
+
+在变量x的类型注解中使用了boolean类型。当给x赋予了true值之后，类型细化的结果是true类型，而不是boolean类型。因为在6.3节中我们介绍过，boolean类型等同于“true | false”联合类型，因此变量x声明的类型等同于联合类型“true | false | 'x'”，那么细化后的类型为true类型也就不足为奇了。
 
 缩小类型的前提是，需要先获取类型。获取类型的几种方法如下。
 

@@ -449,7 +449,49 @@ type Age = Person[key];
 T extends U ? X : Y
 ```
 
-上面式子中的`extends`用来判断，类型`T`是否继承了类型`U`，即是否属于类型`U`。这里的`T`和`U`可以是任意类型。
+上面式子中的`extends`用来判断，类型`T`是否继承了类型`U`，即是否能够赋值给类型`U`。这里的`T`和`U`可以是任意类型。
+
+如果`T`能够赋值给类型`U`，表达式的结果为类型`X`，否则结果为类型`Y`。
+
+```typescript
+// string
+type T0 = true extends boolean ? string : number;
+
+// number
+type T1 = string extends boolean ? string : number;
+```
+
+条件类型实际意义很小，因为条件类型中的所有类型都是固定的，因此结果类型也是固定的。实际应用中，条件类型通常与类型参数结合使用。
+
+```typescript
+type TypeName<T> = T extends string
+    ? 'string'
+    : T extends number
+    ? 'number'
+    : T extends boolean
+    ? 'boolean'
+    : T extends undefined
+    ? 'undefined'
+    : T extends Function
+    ? 'function'
+    : 'object';
+
+type T0 = TypeName<'a'>;         // 'string'
+type T1 = TypeName<0>;           // 'number'
+type T2 = TypeName<true>;        // 'boolean'
+type T3 = TypeName<undefined>;   // 'undefined'
+type T4 = TypeName<() => void>;  // 'function'
+type T5 = TypeName<string[]>;    // 'object'
+```
+
+如果实际类型参数T是联合类型“A | B”，那么分布式条件类型会被展开。示例如下：
+
+```typescript
+T ≡ A | B
+
+T extends U ? X : Y
+    ≡ (A extends U ? X : Y) | (B extends U ? X : Y)
+```
 
 举例来说，有两个类`Cat`和`Animal`，它们的关系是`class Cat extends Animal`，那么`Cat extends Animal`就为真，而`Animal extends Cat`就为伪。
 
@@ -516,6 +558,59 @@ type Result1 = LiteralTypeName<123n>;
 // %inferred-type: "string" | "number" | "boolean"
 type Result2 = LiteralTypeName<true | 1 | 'a'>;
 ```
+
+## is 命令
+
+TypeScript允许自定义类型守卫函数。类型守卫函数是指在函数返回值类型中使用了类型谓词的函数。
+
+```typescript
+x is T
+```
+
+在该语法中，x为类型守卫函数中的某个形式参数名；T表示任意的类型。从本质上讲，类型谓词相当于boolean类型。
+
+类型谓词表示一种类型判定，即判定x的类型是否为T。当在if语句中或者逻辑表达式中使用类型守卫函数时，编译器能够将x的类型细化为T类型。
+
+```typescript
+type A = { a: string };
+type B = { b: string };
+
+function isTypeA(x: A | B): x is A {
+   return (x as A).a !== undefined;
+}
+
+function isTypeB(x: A | B): x is B {
+   return (x as B).b !== undefined;
+}
+```
+
+在类型谓词“x is T”中，x可以为关键字this，这时它叫作this类型守卫。this类型守卫主要用于类和接口中，它能够将方法调用对象的类型细化为T类型。
+
+```typescript
+class Teacher {
+    isStudent(): this is Student {
+        return false;
+    }
+}
+
+class Student {
+    grade: string;
+
+    isStudent(): this is Student {
+        return true;
+    }
+}
+
+function f(person: Teacher | Student) {
+    if (person.isStudent()) {
+        person.grade; // Student
+    }
+}
+```
+
+此例中，isStudent方法是this类型守卫，能够判定this对象是否为Student类的实例对象。第16行，在if语句中使用了this类型守卫后，编译器能够将if分支中person对象的类型细化为Student类型。
+
+注意，类型谓词“this is T”只能作为函数和方法的返回值类型，而不能用作属性或存取器的类型。
 
 ## 工具函数
 

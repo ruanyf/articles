@@ -285,6 +285,24 @@ function sing():never {
 
 总之，`never`表示不可能出现的值，除了函数返回值，有一些场景，代码运行不到，但是有一个类型来表示，这时也可以使用`never`。
 
+如果一个函数抛出了异常或者陷入了死循环，那么该函数无法正常返回一个值，因此该函数的返回值类型为never类型。如果程序中调用了一个返回值类型为never的函数，那么就意味着程序会在该函数的调用位置终止，永远不会继续执行后续的代码。
+
+类似于对断言函数的分析，编译器同样能够分析出返回值类型为never类型的函数对控制流的影响以及对变量或参数等类型的影响。例如，在下例的函数f中，编译器能够推断出在if语句之外的参数x的类型为string类型。因为如果x的类型为undefined类型，那么函数将“终止”于第7行。
+
+```typescript
+function neverReturns(): never {
+    throw new Error();
+}
+
+function f(x: string | undefined) {
+    if (x === undefined) {
+        neverReturns();
+    }
+
+    x; // string
+}
+```
+
 ## 函数的赋值
 
 函数的赋值指的是将某个函数赋值给指定类型的变量。
