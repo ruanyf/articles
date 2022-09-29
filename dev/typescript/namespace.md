@@ -4,7 +4,22 @@ namespace（名称空间）是一个将相关代码组织在一起的方式。
 
 ## 基本用法
 
-namespace 用来定一个名称空间，其内部的所有变量和函数，都必须在这个名称空间里面使用。如果要在命名空间以外使用，就必须用`export`命令在内部指定接口。
+namespace 用来定一个名称空间，其内部的所有变量和函数，都必须在这个名称空间里面使用。
+
+```typescript
+namespace Utils {
+    function isString(value: any) {
+        return typeof value === 'string';
+    }
+
+    // 正确
+    isString('yes');
+}
+
+Utils.isString('no'); // 报错
+```
+
+如果要在命名空间以外使用，就必须用`export`命令在内部指定接口。
 
 ```typescript
 namespace Utility {
@@ -34,6 +49,24 @@ Utility.error('maybe!');
 ```
 
 也就是说，namespace 其实相当于 JavaScript 的一个对象，内部的变量是对象的属性，内部的方法是对象的方法。
+
+namespace 内部可以使用`import`语句为命名空间的导出声明起一个别名。当命名空间名字比较长时，使用别名能够有效地简化代码。
+
+```typescript
+namespace Utils {
+    export function isString(value: any) {
+        return typeof value === 'string';
+    }
+}
+
+namespace App {
+    import isString = Utils.isString;
+
+    isString('yes');
+
+    Utils.isString('yes');
+}
+```
 
 注意，namespace 既是一种类型，也是一个指，会保留在编译后的 JavaScript 代码里面。
 
@@ -118,7 +151,7 @@ import * as shapes from "./shapes";
 let t = new shapes.Triangle();
 ```
 
-## 合并
+## 命名空间的合并
 
 多个同名的 namespace 也会自动合并。
 
@@ -140,6 +173,107 @@ namespace Animals {
   }
   export class Zebra {}
   export class Dog {}
+}
+```
+
+同名的命名空间声明分布在不同的文件中，TypeScript 最终会将它们合并在一起。
+
+在合并命名空间声明时，命名空间中的非导出成员不会被合并，它们只能在各自的命名空间中使用。
+
+```typescript
+namespace NS {
+    const a = 0;
+
+    export function foo() {
+        a;  // 正确
+    }
+}
+
+namespace NS {
+    export function bar() {
+        foo(); // 正确
+
+        a;  // 编译错误：找不到 'a'
+    }
+}
+```
+
+同名的命名空间声明与函数声明可以进行合并，但是要求函数声明必须位于命名空间声明之前，这样做能够确保先创建出一个函数对象。函数与命名空间合并就相当于给函数对象添加额外的属性。
+
+```typescript
+function f() {
+    return f.version;
+}
+
+namespace f {
+    export const version = '1.0';
+}
+
+f();   // '1.0'
+f.version; // '1.0'
+```
+
+同名的命名空间声明与类声明可以进行合并，但是要求类声明必须位于命名空间声明之前，这样做能够确保先创建出一个构造函数对象。命名空间与类的合并提供了一种创建内部类的方式。
+
+```typescript
+class Outer {
+    inner: Outer.Inner = new Outer.Inner();
+}
+
+namespace Outer {
+    export class Inner {}
+}
+```
+
+```typescript
+class A {
+    foo: string = A.bar;
+}
+
+namespace A {
+    export let bar = 'A';
+    export function create() {
+        return new A();
+    }
+}
+
+const a: A = A.create();
+a.foo; // 'A'
+A.bar; // 'A'
+```
+
+同名的命名空间声明与枚举声明可以进行合并。这相当于将枚举成员与命名空间的导出成员进行合并。
+
+```typescript
+enum E {
+    A,
+    B,
+    C,
+}
+
+namespace E {
+    export function foo() {
+        E.A;
+        E.B;
+        E.C;
+    }
+}
+
+E.A;
+E.B;
+E.C;
+E.foo();
+```
+
+注意，枚举成员名与命名空间导出成员名不允许出现同名的情况。
+
+```typescript
+enum E {
+    A,                     // 编译错误！重复的标识符 A
+}
+
+namespace E {
+    export function A() {} // 编译错误！重复的标识符 A
 }
 ```
 

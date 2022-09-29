@@ -42,8 +42,74 @@ TypeScript 还允许使用 `import type`，指明输入的是类型。
 export type Cat = { breed: string; yearOfBirth: number };
 export type Dog = { breeds: string[]; yearOfBirth: number };
 
+export type { Type }
+
+export type { Type } from 'mod';
+
 import type { Cat, Dog } from "./animal.ts";
 ```
+
+导入默认模块。
+
+```typescript
+import type DefaultType from 'mod';
+```
+
+从模块中导入命名类型的语法。
+
+```typescript
+import type { Type } from 'mod';
+```
+
+从模块中导入所有导出的命名类型的语法如下所示：
+
+```typescript
+import type * as TypeNS from 'mod';
+```
+
+```typescript
+class Point {
+    x: number;
+    y: number;
+}
+
+export type { Point };
+```
+
+TypeScript中的类既能表示一个值，又能表示一种类类型。此例中，我们只导出了Point类表示的类型。
+
+```typescript
+import type { Point } from './utils';
+
+const p: Point = { x: 0, y: 0 };
+```
+
+需要注意的是，若将Point当作一个值来使用，则会产生编译错误。
+
+```typescript
+import type { Point } from './utils';
+
+const p = new Point(); // 报错
+```
+
+就算在“index.ts“文件中不是使用“import type”来导入Point，而是使用常规的import语句，也不能将Point作为一个值来使用，因为我们在“utils.ts”模块中只导出了Point类型（export type），而没有导出Point值。
+
+```typescript
+import { Point } from './utils';
+
+const p = new Point();
+//            ~~~~~
+//            编译错误：'Point' 不能作为值来使用，
+//            因为它是由'export type'语句导出的
+```
+
+在编译生成JavaScript代码时，编译器一定会删除“import type”和“export type”语句，因为能够完全确定它们只与类型相关。
+
+对于常规的import语句，编译器提供了`--importsNotUsedAsValues`编译选项来精确控制在编译时如何处理import type 语句。该编译选项接受以下三个可能的值：
+
+- "remove"（默认值）。该选项是编译器的默认行为，它自动删除只和类型相关的import语句。
+- "preserve"。该选项会保留所有import语句。
+- "error"。该选项会保留所有import语句，发现可以改写为“import type”的import语句时会报错。
 
 import 加载接口时，接口还可以使用`type`前缀，区分加载的是变量，还是类型。
 

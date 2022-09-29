@@ -1,12 +1,59 @@
 # d.ts 类型声明文件
 
+TypeScript中的“.d.ts”声明文件主要有以下几种来源：
+
+- TypeScript语言内置的声明文件。
+- 安装的第三方声明文件。
+- 自定义的声明文件。
+
+## 内置声明文件
+
+当我们在计算机中安装了TypeScript语言后，同时也安装了一些语言内置的声明文件，它们位于TypeScript语言安装目录下的lib文件夹中。下面列举了部分内置的声明文件：
+
+- lib.d.ts
+- lib.dom.d.ts
+- lib.es2015.d.ts
+- lib.es2016.d.ts
+- lib.es2017.d.ts
+- lib.es2018.d.ts
+- lib.es2019.d.ts
+- lib.es2020.d.ts
+- lib.es5.d.ts
+- lib.es6.d.ts
+
+TypeScript语言内置的声明文件统一使用“lib.[description].d.ts”命名方式，其中，description部分描述了该声明文件的内容。在这些声明文件中，既定义了标准的JavaScript API，如Array API、Math API以及Date API等，也定义了特定于某种JavaScript运行环境的API，如DOM API和Web Workers API等。
+
+TypeScript编译器在编译代码时能够自动加载内置的声明文件。因此，我们可以在代码中直接使用那些标准API，而不需要进行特殊的配置。
+
+## 第三方声明文件
+
+如果我们的工程中使用了某个第三方代码库，例如jQuery，通常我们也想要安装该代码库的声明文件。这样，TypeScript编译器就能够对代码进行类型检查，同时代码编辑器也能够根据声明文件中的类型信息来提供代码自动补全等功能。
+
+在尝试安装某个第三方代码库的声明文件时，可能会遇到以下三种情况，下面以jQuery为例：
+
+- 在安装jQuery时，jQuery的代码包中已经内置了它的声明文件。
+- 在安装jQuery时，jQuery的代码包中没有内置的声明文件，但是在DefinitelyTyped网站上能够找到jQuery的声明文件。
+- 通过以上方式均找不到jQuery的声明文件，需要自定义jQuery的声明文件。
+
+通常来讲，若代码库的安装目录中包含“.d.ts”文件，则说明该代码库提供了内置的声明文件。
+
+你的代码加载第三方模块时，编译器能够自动导入类型声明，正确地进行类型检查并提供智能提示功能。
+
 TypeScript 项目有时需要引入第三方的 JavaScript 库，这些库很可能没有类型注释，是单纯的 JavaScript 库。这时就需要一个类型声明文件（type definition file）。
 
 类型声明文件的作用是，给出当前库的 API 的类型描述。
 
 根据约定，类型声明文件的文件名为`[vendor].d.ts`的形式。这里的`vendor`表示第三方库的名称，`d`表示 declaration（声明）。比如，jQuery 的类型声明文件就是`jQuery.d.ts`。
 
+## DefinitelyTyped
+
 第三方库如果没有提供原生的类型描述文件，可以去 [DefinitelyTyped 仓库](https://github.com/DefinitelyTyped/DefinitelyTyped)找找看。这个仓库是 TypeScript 社区维护的类型描述文件仓库。
+
+DefinitelyTyped（https://definitelytyped.org/）是一个公开的集中式的TypeScript声明文件代码仓库，该仓库中包含了数千个代码库的声明文件。DefinitelyTyped托管在GitHub网站上，由开源社区和TypeScript开发团队共同维护。
+
+DefinitelyTyped仓库中的所有声明文件都会发布到npm的“@types”空间下。jQuery的声明文件被安装到了“C:\app\node_modules\@types\jquery”目录下，该目录下的“index.d.ts”文件就是jQuery的声明文件。
+
+你的代码加载 jQuery，编译器能够从安装的声明中获取jQuery的类型信息并正确地进行类型检查。
 
 TypeScript 社区在 `@types`名称空间下，发布类型声明文件的 NPM 软件包。只要安装软件包，就可以加载某个库的类型声明文件，比如 jquery 的类型软件包就是`@types/jquery`，它的安装命令如下。
 
@@ -137,16 +184,51 @@ process.exitWithLogging = function() {
 };
 ```
 
-## declare
+## package.json
 
-`declare`命令用于声明当前文件使用的某个变量的类型是由其它文件定义的。
+TypeScript扩展了“package.json”文件，增加了typings属性和types属性。虽然两者的名字不同，但是作用相同，它们都用于指定当前npm包提供的声明文件。
 
 ```typescript
-declare var foo: any;
-foo = 123; // allowed
+{
+    "name": "my-package",
+    "version": "1.0.0",
+    "main": "index.js",
+    "typings": "index.d.ts"
+}
 ```
 
-你可以把这些定义放在一个单独的 ts 文件里面，后缀名一般使用 d.ts。
+此例中，使用typings属性定义了“my-package”包的声明文件为“index.d.ts”文件。当TypeScript编译器进行模块解析时，将会读取该属性的值并使用指定的“index.d.ts”文件作为声明文件。这里我们也可以将typings属性替换为types属性，两者是等效的。
+
+如果一个npm包的声明文件为“index.d.ts”且位于npm包的根目录下，那么在“package.json”文件中也可以省略typings属性和types属性，因为编译器在进行模块解析时，若在“package.json”文件中没有找到typings属性和types属性，则将默认使用名为“index.d.ts”的文件作为声明文件。
+
+在TypeScript 3.1版本中，编译器能够根据当前安装的TypeScript版本来决定使用的声明文件，该功能是通过“package.json”文件中的typesVersions属性来实现的。
+
+```javascript
+{
+    "name": "my-package",
+    "version": "1.0.0",
+    "main": "index.js",
+    "typings": "index.d.ts",
+    "typesVersions": {
+        ">=3.7": {
+            "*": ["ts3.7/*"]
+        },
+        ">=3.1": {
+            "*": ["ts3.1/*"]
+        }
+    }
+}
+```
+
+此例中，我们定义了两个声明文件匹配规则：
+
+▪第7行，当安装了TypeScript 3.7及以上版本时，将使用“ts3.7”目录下的声明文件。
+
+▪第10行，当安装了TypeScript 3.1及以上版本时，将使用“ts3.1”目录下的声明文件。
+
+需要注意的是，typesVersions中的声明顺序很关键，编译器将从第一个声明（此例中为">=3.7"）开始尝试匹配，若匹配成功，则应用匹配到的值并退出。因此，若将此例中的两个声明调换位置，则会产生不同的结果。
+
+此外，如果typesVersions中不存在匹配的版本，如当前安装的是TypeScript 2.0版本，那么编译器将使用typings属性和types属性中定义的声明文件。
 
 ## @types
 
@@ -164,6 +246,36 @@ $ npm install @types/jquery --save-dev
 
 ```typescript
 import * as $ from "jquery";
+```
+
+## 自定义声明文件
+
+如果使用的第三方代码库没有提供内置的声明文件，而且在DefinitelyTyped仓库中也没有对应的声明文件，那么就需要开发者自己编写一个声明文件。
+
+如果我们不想编写一个详尽的声明文件，而只是想要跳过对某个第三方代码库的类型检查，则可以使用下面介绍的方法。
+
+如果为 jQuery 创建一个“.d.ts”声明文件，例如“jquery.d.ts”。“jquery.d.ts”声明文件的内容如下：
+
+```typescript
+declare module 'jquery';
+```
+
+此例中的代码是外部模块声明，该声明会将jquery模块的类型设置为any类型。jquery模块中所有成员的类型都成了any类型，这等同于不对jQuery进行类型检查。
+
+“typings.d.ts”文件的内容如下：
+
+```typescript   
+declare module 'mod' {
+  export function add(x: number, y: number): number;
+}
+```
+
+在“a.ts”文件中，可以使用非相对模块导入语句来导入外部模块“mod”。示例如下：
+
+```typescript
+import * as Mod from 'mod';
+
+Mod.add(1, 2);
 ```
 
 ## es6-shim.d.ts 

@@ -445,58 +445,13 @@ SomeNameSpaceName.SomeClassName;
 
 这个网页具有支持完整的 IDE 支持，具有自动语法提示、还能显示静态类型错误。而且，它支持把代码片段和编译器设置保存到 URL，便于分享给他人。
 
-## ts-node
-
-[ts-node](https://github.com/TypeStrong/ts-node) 是基于 Node.js 的一个软件包，可以直接运行 TypeScript 代码。
-
-使用时，可以全局安装这个软件包。
-
-```bash
-$ npm install -g ts-node
-```
-
-安装后，就可以直接运行 TS 脚本。
-
-```bash
-$ ts-node script.ts
-```
-
-上面命令运行了 TypeScript 脚本`script.ts`，给出结果。
-
-如果不安装 ts-node，也可以通过 npx 调用它，再运行 TypeScript 脚本。
-
-```bash
-$ npx ts-node script.ts
-```
-
-上面命令中，`npx`会在线调用 ts-node 软件包，从而在不安装的情况下，运行`script.ts`。
-
-如果执行 ts-node 时不带有任何参数，它会提供一个 TypeScript 的命令行 REPL 运行环境，你可以在这个环境中输入 TypeScript 代码，逐行执行。
-
-```bash
-$ ts-node
->
-```
-
-上面示例中，单独运行`ts-node`命令，会给出一个大于符号，这就是 TypeScript 的命令行提示符，可以逐行输入代码运行。
-
-```bash
-$ ts-node
-> const twice = (x: string) => x + x;
-> twice('abc')
-'abcabc'
-> 
-```
-
-上面示例中，在 TypeScript 命令行 REPL 环境中，先输入一个函数`twice`，然后调用该函数，就会得到结果。
-
-要推出这个 REPL 环境，可以按下 Ctrl + d，或者输入`.exit`。
-
 ## tsc 编译器
 
 TypeScript 提供 tsc 编译器，将 TypeScript 脚本编译成 JavaScript 脚本。
 
-安装时，可以全局安装 typescript 这个软件包。
+本机运行 TypeScript 代码，需要先安装 tsc。安装 tsc 的前提条件是先安装 Node.js。
+
+假定你已经安装好了 Node.js，就可以全局安装 typescript 这个软件包。
 
 ```bash
 $ npm install -g typescript
@@ -510,6 +465,22 @@ $ tsc -v
 Version 4.6.2
 ```
 
+`-v`或`--version`参数，表示输出 tsc 的版本。
+
+`-h`或`--help`输出帮助信息。
+
+```bash
+$ tsc -h
+```
+
+在默认情况下，“--help”选项仅会显示基本的帮助信息。我们可以使用额外的“--all”选项来查看完整的帮助信息。
+
+```bash
+$ tsc --help --all
+```
+
+安装了TypeScript之后，就可以使用tsc命令来编译TypeScript工程了。
+
 `tsc`命令后面，加上 TypeScript 脚本文件，就可以将其转换成 JavaScript 脚本。
 
 ```bash
@@ -518,7 +489,7 @@ $ tsc app.ts
 
 上面命令会在当前目录下，生成一个`app.js`脚本文件，这个脚本就完全是编译后的 JavaScript 代码。
 
-`tsc`命令也可以同时转换多个 TypeScript 文件。
+`tsc`命令也可以编译多个 TypeScript 文件。
 
 ```bash
 $ tsc file1.ts file2.ts file3.ts
@@ -583,3 +554,50 @@ $ tsc --target es2015 hello.ts
 
 - noImplicitAny：类型推断一旦出现`any`变量，就报错，即变量必须可以推断为某种明确的类型。因为`any`类型的变量越少，类型系统的收益越大。
 - strictNullChecks
+
+## ts-node
+
+[ts-node](https://github.com/TypeStrong/ts-node) 是基于 Node.js 的一个软件包，可以直接运行 TypeScript 代码。
+
+使用时，可以全局安装这个软件包。
+
+```bash
+$ npm install -g ts-node
+```
+
+安装后，就可以直接运行 TS 脚本。
+
+```bash
+$ ts-node script.ts
+```
+
+上面命令运行了 TypeScript 脚本`script.ts`，给出结果。
+
+如果不安装 ts-node，也可以通过 npx 调用它，再运行 TypeScript 脚本。
+
+```bash
+$ npx ts-node script.ts
+```
+
+上面命令中，`npx`会在线调用 ts-node 软件包，从而在不安装的情况下，运行`script.ts`。
+
+如果执行 ts-node 时不带有任何参数，它会提供一个 TypeScript 的命令行 REPL 运行环境，你可以在这个环境中输入 TypeScript 代码，逐行执行。
+
+```bash
+$ ts-node
+>
+```
+
+上面示例中，单独运行`ts-node`命令，会给出一个大于符号，这就是 TypeScript 的命令行提示符，可以逐行输入代码运行。
+
+```bash
+$ ts-node
+> const twice = (x: string) => x + x;
+> twice('abc')
+'abcabc'
+> 
+```
+
+上面示例中，在 TypeScript 命令行 REPL 环境中，先输入一个函数`twice`，然后调用该函数，就会得到结果。
+
+要推出这个 REPL 环境，可以按下 Ctrl + d，或者输入`.exit`。

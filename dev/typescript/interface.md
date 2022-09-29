@@ -339,8 +339,6 @@ class C implements I {}
 
 多个同名接口会合并成一个接口。
 
-每个接口的非函数成员应该是唯一的。如果它们不是唯一的，则必须属于同一类型。如果接口都声明了同名但类型不同的非函数成员，编译器将发出错误。
-
 ```typescript
 interface Box {
   height: number;
@@ -350,6 +348,18 @@ interface Box {
   scale: number;
 }
 let box: Box = { height: 5, width: 6, scale: 10 };
+```
+
+每个接口的非函数成员应该是唯一的。如果它们不是唯一的，则必须属于同一类型。如果接口都声明了同名但类型不同的非函数成员，编译器将发出错误。
+
+```typescript
+interface A {
+    a: number;
+}
+
+interface A {
+    a: string; // 编译错误
+}
 ```
 
 如果有同名函数，接口合并后，每个同名函数都被视为描述同一函数的重载。注意，后面的接口比前面的接口具有更高的优先级。
@@ -376,6 +386,24 @@ interface Cloner {
 ```
 
 但是，如果参数的类型是单个具体的值，那么接口合并后，这些单个值类型的接口会冒泡到最上方。
+
+合并重载签名的基本原则是后声明的重载签名具有更高优先级。但也存在一个例外，若重载签名的参数类型中包含字面量类型，则该重载签名具有更高的优先级。例如，下例中尽管第2行的方法签名f是先声明的，但在接口合并后仍具有更高的优先级，因为它的函数签名中带有字面量类型。
+
+```typescript
+interface A {
+    f(x: 'foo'): boolean;
+}
+
+interface A {
+    f(x: any): void;
+}
+
+interface MergedA {
+    f(x: 'foo'): boolean;
+    f(x: any): void;
+}
+```
+
 
 ```typescript
 interface Document {

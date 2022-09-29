@@ -25,6 +25,7 @@ $ tsc --module commonjs Test.ts
 - system
 - umd
 - es2015
+- es2020
 - esnext
 
 ## --module noImplicitAny
@@ -44,6 +45,16 @@ $ tsc -p src/client/tsconfig.client.json
 $ tsc -p src/server/tsconfig.server.json
 ```
 
+## --preserveWatchOutput
+
+在观察模式（watch）下，编译器每次编译文件之前都会清空命令行窗口中的历史输出信息。如果我们想保留每一次编译的输出信息，则可以使用“--preserveWatchOutput”编译选项。
+
+需要打开 watch 选项。
+
+```typescript
+$ tsc index.ts --watch --preserveWatchOutput
+```
+
 ## --removeComments
 
 在输出文件中移除代码注释。
@@ -58,7 +69,9 @@ $ tsc -p src/server/tsconfig.server.json
 
 ## --watch
 
-监视文件变动，自动重新编译。
+TypeScript编译器提供了一种特殊的编译模式，即观察模式。在观察模式下，编译器会监视文件的修改并自动重新编译文件。观察模式通过“--watch”（简写为“-w”）编译选项来启用。
+
+文件如果修改后再保存，就会自动重新编译。
 
 ## strictNullChecks
 
@@ -74,6 +87,36 @@ function doSomething(x: string | null) {
     console.log("Hello, " + x.toUpperCase());
   }
 }
+```
+
+启用编译选项`--strictNullChecks`，或者在`tsconfig.json`中打开。
+
+```javascript
+{
+    "compilerOptions": {
+        "strictNullChecks": false
+    }
+}
+```
+
+没有打开时，`undefined`类型和`null`类型会被放宽为any类型。
+
+```typescript
+let a = undefined;   // any
+const b = undefined; // any
+
+let c = null;        // any
+const d = null;      // any
+```
+
+打开以后，编译器不再放宽undefined类型和null类型，它们将保持各自的类型。
+
+```typescript
+let a = undefined;   // undefined
+const b = undefined; // undefined
+
+let c = null;        // null
+const d = null;      // null
 ```
 
 --noImplicitAny：当无法推断一个变量时发出一个错误（或者只能推断为一个隐式的 any 类型），你可以通过显式添加 :any 的类型注解，来让它成为一个 any 类型。
@@ -242,6 +285,14 @@ $ tsc --showConfig
 
 `--strict`参数会打开严格模式。它会启用下面八个编译器选项。
 
+- `--noImplicitAny`
+- `--strictNullChecks`
+- `--strictFunctionTypes`
+- `--strictBindCallApply`
+- `--strictPropertyInitialization`
+- `--noImplicitThis`
+- `--alwaysStrict`
+
 - --alwaysStrict：Use JavaScript’s strict mode whenever possible.
 - --strictBindCallApply
 - --strictFunctionTypes: enables stronger checks for function types.
@@ -258,6 +309,12 @@ $ tsc --showConfig
   "strict": true,
   "alwaysStrict": false
 }
+```
+
+在实际工程中，我们可以先启用“--strict”编译选项，然后再根据需求禁用不需要的某些严格类型检查编译选项。这样做有一个优点，那就是在TypeScript语言发布新版本时可能会引入新的严格类型检查编译选项，如果启用了“--strict”编译选项，那么就会自动应用新引入的严格类型检查编译选项。
+
+```bash
+$ tsc --strict
 ```
 
 ## traceResolution

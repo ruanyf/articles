@@ -1169,7 +1169,9 @@ interface B {}
 class C implements A, B {}
 ```
 
-## extends
+
+
+## extends 
 
 `extends`本身也是一个运算符，用来确定两个类型有无继承关系。
 
@@ -1319,4 +1321,48 @@ class A {
   //        ~~~~
   //        编译错误！ 'this' 类型只能用于类的非静态成员
 }
+```
+
+## 类的兼容
+
+在确定两个类类型之间的子类型关系时仅检查类的实例成员类型，类的静态成员类型以及构造函数类型不进行检查。
+
+```typescript
+class Point {
+    x: number;
+    y: number;
+    static t: number;
+    constructor(x: number) {}
+}
+
+class Position {
+    x: number;
+    y: number;
+    z: number;
+    constructor(x: string) {}
+}
+
+const point: Point = new Position('');
+```
+
+此例中，Position是Point的子类型，在确定子类型关系时仅检查x和y属性。
+
+如果类中存在私有成员或受保护成员，那么在确定类类型间的子类型关系时要求私有成员和受保护成员来自同一个类，这意味着两个类需要存在继承关系。
+
+## 类与接口的合并
+
+TypeScript不支持合并同名的类声明，但是外部类声明可以与接口声明进行合并，合并后的类型为类类型。
+
+```typescript
+declare class C {
+    x: string;
+}
+
+interface C {
+    y: number;
+}
+
+let c: C = new C();
+c.x;
+c.y;
 ```
