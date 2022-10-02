@@ -2,6 +2,24 @@
 
 tsc 可以使用配置文件`tsconfig.json`，自动读取当前目录下的这个配置文件。
 
+## --build
+
+TypeScript提供了一种新的构建模式来配合工程引用的使用，它就是“--build”模式（简写为“-b”）。在该模式下，编译器能够进行增量构建。
+
+当使用该命令构建TypeScript工程时，编译器会执行如下操作：
+
+▪查找当前工程所引用的工程。
+
+▪检查当前工程和引用的工程是否有更新。
+
+▪若工程有更新，则根据依赖顺序重新构建它们；若没有更新，则不进行重新构建。
+
+```bash
+$ tsc --build
+```
+
+在“C:\app\src”工程中还生成了“tsconfig.tsbuildinfo”文件，它保存了该工程本次构建的详细信息，编译器正是通过查看该文件来判断当前工程是否需要重新编译。
+
 ## --declaration
 
 生成一个`.d.ts`类型声明文件。
@@ -66,6 +84,34 @@ $ tsc index.ts --watch --preserveWatchOutput
 ## --target
 
 指定编译后输出代码的 JavaScript 版本。
+
+可选择的值为：
+
+▪ES3（默认值）
+
+▪ES5
+
+▪ES6 / ES2015
+
+▪ES2016
+
+▪ES2017
+
+▪ES2018
+
+▪ES2019
+
+▪ES2020
+
+▪ESNext
+
+如果我们将“--target”编译选项设置为“ES5”，那么编译器会自动将适用于“ES5”的内置声明文件添加到编译文件列表。示例如下：
+
+- lib.d.ts
+- lib.es5.d.ts
+- lib.dom.d.ts
+- lib.webworker.importscripts.d.ts
+- lib.scripthost.d.ts
 
 ## --watch
 
@@ -156,13 +202,37 @@ class OKGreeter {
 "strictPropertyInitialization": false
 ```
 
-## allowJs
+## --allowJs
+
+在一个工程中可能既存在TypeScript代码也存在JavaScript代码。例如，一个Type-Script工程依赖于某个JavaScript代码库，又或者一个工程正在从JavaScript向TypeScript进行迁移。如果TypeScript工程中的JavaScript程序也是工程的一部分，那么就需要使用“--allowJs”编译选项来配置TypeScript编译器。
+
+在默认情况下，编译器只会将“.ts”和“.tsx”文件添加到编译文件列表，而不会将“.js”和“.jsx”文件添加到编译文件列表。如果想要让编译器去编译JavaScript文件，那么就需要启用“--allowJs”编译选项。在启用了“--allowJs”编译选项后，工程中的“.js”和“.jsx”文件也会被添加到编译文件列表。
 
 参数`--allowJs`允许 TS 脚本加载 JS 脚本。同时，编译器会将源码里面的 JS 文件，拷贝到编译结果的目录。
 
 使用选项--allowJs，TypeScript 编译器将输入目录中的 JavaScript 文件复制到输出目录。
 
-## checkJs
+```bash
+$ tsc src/index.js --allowJs --outDir dist
+```
+
+在启用了“--allowJs”编译选项后，编译器能够像编译TypeScript文件一样去编译JavaScript文件。此例中，我们还必须指定一个除“C:\app\src”之外的目录作为输出文件目录，否则编译器将报错。因为如果在“C:\app\src”目录下生成编译后的“index.js”文件，那么它将会覆盖源“index.js”文件，这是不允许的。
+
+如果 target 指定为 es5，`--allowJs`还能起到转译 JavaScript 代码版本。
+
+```bash
+$ tsc index.js --target ES5 --allowJs --outFile index.out.js
+```
+
+## --checkJs
+
+在默认情况下，TypeScript编译器不会对JavaScript文件进行类型检查。就算启用了“--allowJs”编译选项，编译器依然不会对JavaScript代码进行类型检查。
+
+TypeScript 2.3提供了一个“--checkJs”编译选项。当启用了该编译选项时，编译器能够对“.js”和“.jsx”文件进行类型检查。“--checkJs”编译选项必须与“--allowJs”编译选项一起使用。
+
+```typescript
+$ tsc src/index.js --allowJs --checkJs --outDir dist
+```
 
 参数`--checkJs`可以让编译器对 JavaScript 文件进行类型检查，前提是必须同时使用参数`--allowJs`。它等同于在 JS 脚本头部加上`// @ts-check`的指令。
 
@@ -235,6 +305,8 @@ import * as config from "./config.json";
 ```
 
 ## showConfig
+
+先介绍一下“--showConfig”编译选项。在使用该编译选项后，编译器将显示出编译工程时使用的所有配置信息。当我们在调试工程配置的时候，该编译选项是非常有帮助的。
 
 `--showConfig`检验tsconfig.json文件的有效性，并将其打印到控制台。这对于调试配置问题很有用，尤其是与tsconfig.json文件extends中的属性一起使用时。
 

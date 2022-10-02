@@ -246,35 +246,74 @@ function draw({ shape: Shape, xPos: number = 100 /*...*/ }) {
 
 上面示例中，参数解构里面的冒号，作用不是指定类型，而是为对应的参数名指定变量。所以，不存在 shape 变量，而是 shape 属性的值被赋值给了变量 Shape。
 
-## 类型的兼容
+## 结构类型原则，子类型
 
-类型只是规定了，本类型的值必须具有的特征。如果类型 A 满足类型 B 的特征，TypeScript 就认为前者兼容后者，或者说类型 A 是类型 B 的子类型（subtyping）。
+只要对象 B 满足 对象 A 的结构，TypeScript 就认为对象 B 兼容对象 A 的类型，这称为“结构类型”原则（structual typing）。
 
 ```typescript
-interface t1 {
-  foo: number;
-}
+const A = {
+  x: number;
+};
 
-interface t2 {
-  foo: number;
-  bar: number;
+const B = {
+  x: number;
+  y: number;
+};
+```
+
+上面示例中，对象`A`只有一个属性`x`，类型为`number`。对象`B`满足这个特征，因此兼容对象`A`，只要可以使用`A`的地方，就可以使用`B`。
+
+```typescript
+const B = {
+  x: 1,
+  y: 1
+};
+
+const A:{ x:number } = B; // 正确
+```
+
+上面示例中，`A`和`B`并不是同一个类型，但是`B`可以赋值给`A`，因为`B`满足`A`的结构特征。
+
+根据“结构类型”原则，TypeScript 检查某个值是否符合指定类型时，并不是检查这个值所属的类型，而是检查这个值的结构是否符合要求。
+
+TypeScript 之所以这样设计，是为了符合 JavaScript 的行为。JavaScript 并不关心对象是否严格相似，只要某个对象具有所要求的属性，就可以正确运行。
+
+如果类型 B 可以赋值给类型 A，TypeScript 就认为 B 是 A 的子类型（subtyping），A 是 B 的父类型。子类型满足父类型的所有结构特征，同时还具有自己的特征。凡是可以使用父类型的地方，都可以使用子类型，即子类型兼容父类型。
+
+这种设计有时会导致令人惊讶的结果。
+
+```typescript
+type myObj = {
+  x: number,
+  y: number,
+};
+
+function getSum(obj:myObj) {
+  let sum = 0;
+
+  for (const n of Object.keys(obj)) {
+    const v = obj[n]; // 报错
+    sum += Math.abs(v);
+  }
+
+  return sum;
 }
 ```
 
-上面示例中，类型`t1`必须具有属性`foo`，类型`t2`必须具有属性`foo`和`bar`，可以看到`t2`满足`t1`的特征。这时就可以说`t2`兼容`t1`，或者`t2`是`t1`的子类型。
-
-TypeScript 采用“结构类型”原则（structural typing），即两个对象只要结构相同，就认为它们的类型相同，即这两个对象是类型兼容的。也就是说，检查一个值是否符合某种类型的时候，不是检查这个值本身的类型名，而是检查这个值的结构是否符合要求。
-
-兼容类型的值，可以赋值给另一个类型。
+上面示例中，`const v = obj[n]`这一行会报错，原因是 TypeScript 认为`v`的类型是`any`，而不是`number`。虽然函数`getSum()`要求传入参数的类型是`myObj`，但是实际上所有与`myObj`兼容的对象都可以传入，这会导致`obj[n]`取出的属性值不一定是数值，从而`v`的类型只能是`any`。如果写成下面这样，就不会报错。
 
 ```typescript
-const o2:t2 = { foo: 1, bar: 2};
-const o1:t1 = o2; // 正确
+type myObj = {
+  x: number,
+  y: number,
+};
+
+function getSum(obj:myObj) {
+  return Math.abs(obj.x) + Math.abs(obj.y); // 正确
+}
 ```
 
-上面示例中，对象`o2`的类型是`t2`，对象`o1`的类型是`t1`，两者并不是同一个类型。但是`o2`可以赋值给`o1`，并不会报错，原因就是类型`t2`兼容类型`t1`。
-
-任何使用父类型的地方，都可以用子类型替换，并且在替换后代码行为保持不变。
+上面示例就不会报错，原因是不管传入什么对象，只要与`myObj`兼容，就能保证`obj.x`和`obj.y`肯定是数值。
 
 ## 严格字面量检查
 

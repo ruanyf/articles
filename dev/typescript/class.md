@@ -245,7 +245,7 @@ class C {
 }
 ```
 
-## class 类型
+## class 类型，类的兼容
 
 class 可以作为类型使用。
 
@@ -329,6 +329,21 @@ const p:Person = obj; // 正确
 ```
 
 上面示例中，对象`obj`并不是`Person`的实例，但是赋值给变量`p`不会报错，TypeScript 认为`obj`也属于`Person`类型，因为它们的属性相同。
+
+下面是另一个例子。
+
+```typescript
+class C {
+  foo: string;
+  constructor(foo: string) {
+    this.foo = foo;
+  }
+}
+
+const obj:C = { foo: 'object literal' }; // 正确
+```
+
+上面示例中，对象`obj`的类型是`C`类的实例，但是只要满足实例属性的结构，任何对象都可以赋值给`obj`。
 
 由于这种情况，运算符`instanceof`不适用于判断某个对象是否跟某个 class 属于同一类型。
 
@@ -1346,6 +1361,8 @@ const point: Point = new Position('');
 ```
 
 此例中，Position是Point的子类型，在确定子类型关系时仅检查x和y属性。
+
+只要对象满足类的属性要求，TypeScript 就认为对象兼容这个类。
 
 如果类中存在私有成员或受保护成员，那么在确定类类型间的子类型关系时要求私有成员和受保护成员来自同一个类，这意味着两个类需要存在继承关系。
 

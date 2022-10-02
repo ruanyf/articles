@@ -466,25 +466,72 @@ declare namespace D3 {
 
 ## 三斜杠指令
 
-三斜杠指令（`///`）是一个编译器指令，只能用在文件的头部，如果用在其他地方，会被当作普通的注释。
+三斜杠指令（`///`）是一个编译器指令，只能用在文件的头部，如果用在其他地方，会被当作普通的注释。若一个文件中使用了三斜线指令，那么在三斜线指令之前只允许使用单行注释、多行注释和其他三斜线指令。
+
+### `/// <reference path="" />`
+
+该指令用于声明TypeScript源文件之间的依赖关系。在编译一个文件时，编译器会同时将该文件中使用“/// <reference path="" />”三斜线指令引用的文件添加到编译文件列表。
 
 `/// <reference path="..." />`
 
 上面的三斜杠指令表示编译时的依赖文件。编译器会在预处理阶段，就找出所有三斜杠引用指令，并将指定文件添加到编译中，然后再一起编译。
 
-如果打开了编译器的`noResolve`属性，则忽略三斜杠指令。
+在“/// <reference path="" />”三斜线指令中，“path”属性定义了依赖文件的路径。若指定的路径是一个相对路径，则相对于的是当前文件的路径。
+
+在使用“/// <reference path="" />”三斜线指令时，有以下两个注意事项：
+
+- “path”属性必须指向一个存在的文件，若文件不存在则会报错。
+- “path”属性不允许指向当前文件。
+
+```typescript
+/// <reference path="lib.ts" />
+
+let count = add(1, 2);
+```
+
+上面示例中，编译index.ts，还会同时编译 lib.ts，编译出 index.js 和 lib.js。
+
+使用“--outFile”编译选项能够将编译生成的“.js”文件合并为一个文件。但需要注意的是，该编译选项不支持合并使用了CommonJS模块和ES6模块模式的代码，只有将“--module”编译选项设置为None、System或AMD时才有效。
+
+如果打开了编译器的`noResolve`属性，则忽略三斜杠指令。将其当作一般的注释，原样保留在编译产物中。
+
+### `/// <reference types="" />`
+
+该三斜线指令用来定义对某个DefinitelyTyped声明文件的依赖，或者说是对安装在“node_modules/@types”目录下的某个声明文件的依赖。在“/// <reference types="" />”三斜线指令中，“types”属性的值是声明文件安装包的名称，也就是安装到“node_modules/@types”目录下的文件夹的名字。
 
 `/// <reference types="..." />`
 
 上面的三斜杠指令表示编译时依赖某个模块，作用类似于`import`命令。比如，`/// <reference types="node" />`表示会添加`@types/node/index.d.ts`。
 
+```typescript
+/// <reference types="jquery" />
+
+declare var settings: JQuery.AjaxSettings;
+```
+
 仅在需要手动写`d.ts`文件时，才需要写这个指令。
 
+注意，我们应该只在声明文件（.d.ts）中使用“/// <reference types="" />”三斜线指令，而不应该在“.ts”文件中使用该指令。在.ts文件中，我们应该使用“--types”编译选项和“--typeRoots”编译选项来设置引用的声明文件。
+
 对于编译时生成的文件，编译器会自动添加`/// <reference types="..." />`。
+
+### `/// <reference lib="" />`
 
 `/// <reference lib="..." />`
 
 该指令允许脚本文件显式包含内置 lib 库。
+
+该三斜线指令用于定义对语言内置的某个声明文件的依赖。在前文介绍过，当我们在计算机中安装TypeScript语言时，也会同时安装一些内置的声明文件。这些声明文件位于TypeScript安装目录下的lib文件夹中，它们描述了JavaScript语言的标准API。
+
+该列表并不是固定的，它会随着TypeScript版本的升级而更新。
+
+在“/// <reference lib="" />”三斜线指令中，“lib”属性的值是内置声明文件的名称。内置声明文件统一使用“lib.[description].d.ts”命名方式，而“/// <reference lib="" />”指令中“lib”属性的值就是文件名中的“description”这部分。
+
+例如，对于内置的“lib.es2015.symbol.wellknown.d.ts”声明文件，应使用如下方式进行引用：
+
+```typescript
+/// <reference lib="es2015.symbol.wellknown" />
+```
 
 `/// <reference no-default-lib="true"/>`
 

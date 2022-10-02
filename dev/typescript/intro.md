@@ -2,19 +2,50 @@
 
 ## 概述
 
-TypeScript（简称“TS”）是微软公司发明的一种编程语言。
+TypeScript（简称“TS”）是微软公司发明的一种基于 JavaScript （简称为“JS”）语言的编程语言。
 
-它并不是一种独立的全新编程语言，而是在 JavaScript 语言（简称为“JS”）的基础上添加了类型系统，可以看成是 JavaScript 的衍生语言。
+它的目的并不是创造一种全新语言，而是增强 JavaScript 的功能，使其更适合开发多人合作的企业级项目。TypeScript 可以看成是 JavaScript 的衍生语言。
 
-### TypeScript 与 JavaScript 的关系
+它继承了 JavaScript 的语法，所有 JavaScript 脚本都可以看作 TypeScript 脚本。后者只是在前者基础上，额外再增加了一些语法功能。所以，人们常常说，TypeScript 是 JavaScript 的超集（superset）。
 
-具体来说，TypeScript 沿用了 JavaScript 的所有语法，并添加了一些类型相关的新语法，属于 JavaScript 的超集。
+TypeScript 增加的最主要功能，也是这门语言的主要目的，就是为 JavaScript 添加一个独立的类型系统。
 
-“超集”指的是，JavaScript 代码都属于合法的 TyepScript 代码，可以被 TypeScript 引擎理解。
+## 类型的概念
 
-但是，反过来就不行，TypeScript 代码不能被 JavaScript 引擎理解，必须通过编译器，编译成 JavaScript 代码，才能在 JavaScript 引擎运行。
+类型（type）指的是一组具有相同特征的值。如果两个值具有某个共同的特征，就可以说，它们属于同一种类型。
 
-由于 TypeScript 可以编译成 JavaScript，所以凡是可以使用 JavaScript 的地方，都可以使用 TypeScript。
+举例来说，123 和 456 这两个值，共同特征是都能进行数学运算，所以都属于“数值”（number）这个类型。
+
+一旦确定某个值属于某种类型，就意味着这个值具有该类型的所有特征。凡是适用该类型的地方，都可以使用这个值；凡是不适用该类型的地方，使用这个值都会报错。
+
+**类型是人为添加的一种编程约束和用法提示。** 主要目的是在软件开发过程中，让编译器和开发工具提供更多的验证和帮助，帮助提高代码质量，减少错误。
+
+下面是一段简单的 TypeScript 代码，演示一下类型系统的作用。
+
+```typescript
+function addOne(n:number) {
+  return n + 1;
+}
+```
+
+上面示例中，函数`addOne()`有一个参数`n`，类型为数值（number），表示这个位置只能使用数值，传入其他类型的值就会报错。
+
+```typescript
+addOne('hello') // 报错
+```
+
+上面示例对函数`addOne()`传入了一个字符串`hello`，TypeScript 编译器就会报错，指出这个位置只能传入数值，不能传入字符串。
+
+JavaScript 语言就没有这个功能，默认不限制参数的类型，任何类型的值都可以传入函数`addOne()`，不适合的值在运行时就会报错。
+
+作为比较，TypeScript 是在开发阶段报错，有利于提早发现错误，避免用户使用时遇到错误。而且，函数定义里面加入类型，具有提示作用，可以告诉开发者这个函数怎么用。
+
+## 动态类型与静态类型
+
+如果你学过 JavaScript，就会知道它本身有一个类型系统，比如`123`和`Hello world`在 JavaScript 里面是两种不同的类型（数值 vs 字符串）。但是，它的类型系统非常弱，而且没有什么使用限制，JavaScript 属于动态类型语言。
+
+TypeScript 引入了一个强大的类型系统，具有非常严格的类型限制，属于静态类型语言。
+
 
 下面是一个最简单的例子，演示一下 TypeScript 和 JavaScript 的差异。
 
@@ -47,7 +78,7 @@ let x:number = 'hello'; // 报错
 
 变量一旦设定了类型，就只能存放这个类型的值，不能存放其它类型的值。这就叫做静态类型。
 
-### 学习途径
+## 学习途径
 
 学习 TypeScript，必须先了解 JavaScript 的语法。本书假定读者已经掌握了 JavaScript 语言，就不再介绍它的语法了，只介绍 TypeScript 引入的静态类型系统。
 
@@ -78,13 +109,7 @@ JavaScript 语法可以参考[《JavaScript 教程》](https://wangdoc.com/javas
 
 另外，TypeScript 是一个开源项目，接受社区的参与，核心的编译器采用 Apache 2.0 许可证。
 
-## 类型的概念
 
-类型（type）就是一组具有相同特征的值。如果一组值具有共同的特征，就可以说，它们属于同一种类型。
-
-指定某个值属于某种类型，就等于在说，该值具有该种类型的特征。如果该值不具有该种特征，就可以认定发生了错误。
-
-类型是人为添加的一种编程约束，主要目的是在软件开发过程中，让编译器和开发工具可以提供更多的验证和帮助，帮助提高代码质量，减少错误。
 
 ## 静态类型的优点
 
@@ -180,6 +205,8 @@ TypeScript 的设计目的，只是 JavaScript 的类型注释，所以做了两
 - TypeScript 不会在出现类型错误时，阻止代码转换成 JavaScript。因此，你可以逐步为以前的 JavaScript 代码添加 TypeScript 类型注释。 
 
 ### 编译
+
+TypeScript 脚本文件使用`.ts`后缀名，JavaScript 脚本文件使用`.js`后缀名。
 
 TypeScript 不提供代码的运行环境，只提供代码的转换工具，将 TS 代码转为 JS 代码，然后再在 JS 环境运行。这种代码转换，称为“编译”（compile）。
 

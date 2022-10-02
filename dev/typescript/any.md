@@ -84,6 +84,42 @@ function f(x) {
 
 注释指令`// @ts-ignore`也可以关闭类型检查。
 
+### --noImplicitAny 编译选项
+
+前一章说过，对于不写类型的标识符，TypeScript 会推断类型。但是，并非所有场合都能推断出类型，这时 TypeScript 就会认为类型是 `any`。
+
+```typescript
+function add(a, b) {
+  return a + b;
+}
+```
+
+上面示例中，函数`add()`的参数`a`和`b`没有注明类型，TypeScript 就会去推断类型，但是这个例子无法推断出来，TypeScript 就认为`a`和`b`的类型是`any`。
+
+一旦类型设为`any`，TypeScript 就放弃对其进行类型检查，这就失去使用 TypeScript 的意义了。为了避免这种情况，TypeScript 提供了一个编译选项`--noImplicitAny`，只要打开这个选项，推断不出类型就会报错。
+
+```bash
+$ tsc --noImplicitAny myScript.ts
+```
+
+上面命令就使用了`--noImplicitAny`编译选项进行编译，这时上面的函数`add()`就会报错。
+
+这时，如果想避免报错，就必须设置`a`和`b`的类型。
+
+```typescript
+function add(a:number, b:number) {
+  return a + b;
+}
+```
+
+当然，`a`和`b`显式设为类型`any`，也能避免报错，但是不要使用这种写法。
+
+```typescript
+function add(a:any, b:any) {
+  return a + b;
+}
+```
+
 ## unknown
 
 `unknown`可以看作是更安全的`any`，它也表示任何类型，但是有着更多的限制。

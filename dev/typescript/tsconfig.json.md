@@ -4,6 +4,11 @@
 
 它是一个 JSON 对象，可以只放置一个空对象`{}`。
 
+在编写好“tsconfig.json”配置文件之后，有以下两种方式来使用它：
+
+- 运行tsc命令时，让编译器自动搜索“tsconfig.json”配置文件。
+- 运行tsc命令时，使用“--project”或“-p”编译选项指定使用的“tsconfig.json”配置文件。
+
 使用`tsc`命令编译代码时，它会在当前目录和所有父目录里面寻找 tsconfig.json 文件。也可以使用`-p`参数指定`tsconfig.json`所在的目录。
 
 ```bash
@@ -54,6 +59,16 @@ $ tsc -p ./path-to-project-directory
     ]
 }
 ```
+
+在运行tsc命令时，若没有使用“--project”或“-p”编译选项，那么编译器将在tsc命令的运行目录下查找是否存在文件名为“tsconfig.json”的配置文件。若存在“tsconfig.json”配置文件，则使用该配置文件来编译工程；若不存在，则继续在父级目录下查找“tsconfig.json”配置文件，直到搜索到系统根目录为止；如果最终也未能找到一个可用的“tsconfig.json”配置文件，那么就会停止编译工程。
+
+TypeScript提供了一个“--init”编译选项，在命令行上运行tsc命令并使用“--init”编译选项会初始化一个“tsconfig.json”配置文件。
+
+```bash
+$ tsc --init
+```
+
+tsc命令的运行结果是在当前目录下新生成了一个“tsconfig.json”配置文件，里面有一些默认配置。
 
 ## compileOptions
 
@@ -111,6 +126,35 @@ ECMAScript 5引入了一个称为严格模式[1]的新特性。在全局JavaScri
 
 此例中，将baseUrl设置为当前目录“./”，参照的是“tsconfig.json”配置文件所在的目录。
 
+### declarationMap
+
+“--declarationMap”是推荐启用的编译选项。如果启用了该选项，那么在生成“.d.ts”声明文件时会同时生成对应的“Source Map”文件。
+
+```javascript
+{
+    "compilerOptions": {
+        "declaration": true,
+        "declarationMap": true
+    }
+}
+```
+
+### listFiles
+
+`listFiles`表示在编译工程时，编译器将打印出参与本次编译的文件列表。
+
+```javascript
+{
+    "compilerOptions": {
+        "listFiles": true,
+        "strict": true,
+        "target": "ES5"
+    }
+}
+```
+
+它会打印出，除了编译的源脚本以外，还会包含 TypeScript 内置的一些声明文件。
+
 ### outDir
 
 `outDir`参数的值为字符串，指定编译产物 JavaScript 文件目录。
@@ -138,6 +182,16 @@ Node模块解析策略是TypeScript 1.6版本中引入的，它因模仿了Node.
 ### noImplicitAny
 
 若一个表达式没有明确的类型注解并且编译器又无法推断出一个具体的类型时，那么它将被视为any类型。编译器不会对any类型进行类型检查，因此可能存在潜在的错误。
+
+`noImpicitAny`禁止了这种行为，如果推断不出类型就会报错。
+
+```javascript
+{
+  "compilerOptions": {
+    "noImplicitAny": true
+  }
+}
+```
 
 ### noImplicitThis
 
@@ -301,6 +355,8 @@ f.call(window, false);
 ### strictNullChecks
 
 若没有启用“--strictNullChecks”编译选项，编译器在类型检查时将忽略undefined值和null值。
+
+这个编译选项可以防止 JavaScript 的大部分`undefined is not an object`错误，即避免了调用对象的属性或方法时，该对象可能是`undefined`或`null`。
 
 ### strictPropertyInitialization
 
@@ -553,7 +609,25 @@ class Point {
 
 注意，使用该属性的前提是，必须设置`--strictNullChecks`。
 
+## exclude
+
+“exclude”属性需要与“include”属性一起使用，它的作用是从“include”属性匹配到的文件列表中去除指定的文件。“exclude”属性也支持和“include”属性相同的通配符。
+
+```typescript
+{
+    "compilerOptions": {
+        "listFiles": true
+    },
+    "include": ["**/*"],
+    "exclude": ["**/*.spec.ts"]
+}
+```
+
 ## extends
+
+一个“tsconfig.json”配置文件可以继承另一个“tsconfig.json”配置文件中的配置。当一个项目中包含了多个TypeScript工程时，我们可以将工程共同的配置提取到“tsconfig.base.json”配置文件中，其他的“tsconfig.json”配置文件继承“tsconfig.base.json”配置文件中的配置。这种方式避免了重复配置同一属性并且能够增强可维护性，当需要修改某一共通属性时，仅需要修改一处即可。
+
+在“tsconfig.json”配置文件中，使用顶层的“extends”属性来设置要继承的“tscon-fig.json”配置文件。在“extends”属性中指定的路径既可以是相对路径，也可以是绝对路径，但路径解析规则有所不同。
 
 `extends`可以指定当前 tsconfig.json 文件，所继承的原始配置文件。
 
@@ -568,7 +642,23 @@ class Point {
 }
 ```
 
+```typescript
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "strict": true
+    },
+    "files": ["./src/index.ts"]
+}
+```
+
+若“extends”属性指定的路径不是以“./”或“../”作为起始的，那么编译器将在“node_modules”目录下查找指定的配置文件。
+
+编译器首先在“tsconfig.json”配置文件所在目录的“node_modules”子目录下查找，若该目录下包含了指定的配置文件，则使用该配置文件；否则，继续在父级目录下的“node_modules”子目录下查找，直到搜索到系统根目录为止。若最终未能找到指定的配置文件，则产生编译错误。
+
 ## files
+
+顶层的“files”属性能够定义编译文件列表。“files”属性的值是由待编译文件路径所构成的数组。
 
 一个数组，指定所要编译的文件。数组中排在前面的文件，会先编译。
 
@@ -583,6 +673,27 @@ class Point {
 }
 ```
 
+在使用“files”属性设置编译文件列表时必须逐一地列出每一个文件，该属性不支持进行模糊的文件匹配。因此，“files”属性适用于待编译文件数量较少的情况。当待编译文件数量较多时，使用“include”和“exclude”属性是更好的选择。
+
+## include
+
+顶层的“include”属性能够定义编译文件列表。“include”属性的功能包含了“files”属性的功能，它既支持逐一地列出每一个待编译的文件，也支持使用通配符来模糊匹配待编译的文件。
+
+“include”属性支持使用三种通配符来匹配文件，
+
+- ? 单个字符
+- * 任意字符，不含路径分隔符
+- ** 任意目录层级
+
+```typescript
+{
+    "include": ["foo/*.spec.ts"]
+}
+
+"include": ["foo/?.ts"]
+"include": ["bar/**/*.ts"]
+```
+
 ## inlineSources
 
 `--inlineSources true`生成的 SourceMap 文件里面包含了 TypeScript 源码，即两者在同一个文件里面。
@@ -593,6 +704,29 @@ class Point {
 
 `lib`: TypeScript 应该注意哪些平台特性？可能性包括 ECMAScript 标准库和浏览器的 DOM。
 
+“--lib”编译选项与“/// <reference lib="" />”三斜线指令有着相同的作用，都是用来引用语言内置的某个声明文件。
+
+如果将“--target”设置为“ES6”，但是我们想使用ES2017环境中才开始支持的“pad-Start()”函数。那么，我们就需要引用内置的“lib.es2017.string.d.ts”声明文件，否则编译器将产生编译错误。
+
+```javascript
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "lib": ["ES6", "ES2017.String"]
+    }
+}
+```
+
+上例中，我们不但要传入“ES2017.String”，还要传入“ES6”，否则编译器将仅包含“ES2017.String”这一个内置声明文件，
+
+使用“/// <reference lib="" />”三斜线指令，示例如下：
+
+```typescript
+/// <reference lib="ES2017.String" />
+```
+
+需要注意的是，在将“lib.es2017.string.d.ts”内置声明文件添加到编译文件列表后，虽然编译器允许使用“padStart()”方法，但是实际的JavaScript运行环境可能不支持该方法。因为该方法是在ES2017标准中定义的，而JavaScript运行环境可能仍处于一个较旧的版本，因此不支持这个新方法。这样就会导致程序可以成功地编译，但是在运行时出错，因为找不到“padStart()”方法的定义。
+
 ## module
 
 `module`：指定编译输出的格式。
@@ -600,6 +734,36 @@ class Point {
 ## outDir
 
 `outDir`：字符串，编译结果的存放位置。
+
+## references
+
+“tsconfig.json”配置文件有一个顶层属性“references”。它的值是对象数组，用于设置引用的工程。
+
+某些项目代码依赖于另一个项目。
+
+```javascript
+{
+    "references": [
+        { "path": "../pkg1" },
+        { "path": "../pkg2/tsconfig.release.json" },
+    ]
+}
+```
+
+其中，“path”的值既可以是指向含有“tsconfig.json”配置文件的目录，也可以直接指向某一个配置文件，此时配置文件名可以不为“tsconfig.json”。此例中的工程引用了两个工程。
+
+同时，父项目的tsconfig.json配置文件中将“--composite”编译选项设置为true。
+
+```javascript
+{
+    "compilerOptions": {
+        "composite": true,
+        "declarationMap": true
+    }
+}
+```
+
+父工程由于启用了“--composite”编译选项，它会自动启用“--declaration”编译选项，因此编译后生成了index.d.ts声明文件。
 
 ## rootDir
 
@@ -612,6 +776,42 @@ class Point {
 ## target
 
 `target`: 字符串，编译所针对的 ECMAScript 的目标版本。
+
+## typeRoots
+
+“--typeRoots”编译选项用来设置声明文件的根目录。当配置了“--typeRoots”编译选项时，只有该选项指定的目录下的声明文件会被添加到编译文件列表，而“node_modules/@types”目录下的声明文件将不再被默认添加到编译文件列表。
+
+```typescript
+{
+    "compilerOptions": {
+        "listFiles": true,
+        "typeRoots": ["./typings"]
+    }
+}
+
+{
+    "compilerOptions": {
+        "listFiles": true,
+        "typeRoots": [
+            "./node_modules/@types",
+            "./typings"
+        ]
+    }
+}
+```
+
+## types
+
+types”编译选项也能够用来指定使用的声明文件。“--typeRoots”编译选项配置的是含有声明文件的目录，而“--types”编译选项则配置的是具体的声明文件。
+
+```javascript
+{
+    "compilerOptions": {
+        "listFiles": true,
+        "types": ["jquery"]
+    }
+}
+```
 
 ## 参考链接
 
