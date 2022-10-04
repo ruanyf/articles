@@ -1,4 +1,4 @@
-# TypeScript 数组
+# TypeScript 的数组类型
 
 ## 简介
 
@@ -9,6 +9,8 @@ TypeScript 的数组指的是相同类型数据的列表，即所有成员都是
 TypeScript 的元组指的是不同类型数据的列表，即成员的类型可以不同，但是成员数量是固定的，需要事先指定。
 
 下面先介绍数组，后面再介绍元组。
+
+## 数组类型的写法
 
 TypeScript 数组有两种类型写法。
 
@@ -192,17 +194,18 @@ const arr:readonly Array<number> = [0, 1]; // 报错
 
 `readonly`关键字会生成一种单独的类型，比如`readonly number[]`跟`number[]`是不一样的类型，前者是后者的子类型。
 
-由于子类型继承了父类型的所有特征，并加上了自己的特性，所以父类型可以赋值给子类型，反过来就不行。
+由于只读数组没有`pop()`、`push()`之类会改变原数组的方法，所以`number[]`的能力强于`readonly number[]`，这意味着前者其实是后者的子类型。
+
+子类型继承了父类型的所有特征，并加上了自己的特征，所以子类型`number[]`可以用于所有使用父类型的场合，反过来就不行。
 
 ```typescript
-const a1:number[] = [0, 1];
-const a2:readonly number[] = a1; // 正确
+let a1:number[] = [0, 1];
+let a2:readonly number[] = a1; // 正确
 
-const a3:readonly number[] = [0, 1];
-const a4:number[] = a3; // 报错
+a1 = a2; // 错误
 ```
 
-上面示例中，父类型`number[]`可以赋值给子类型`readonly number[]`，但是反过来就不行。
+上面示例中，子类型`number[]`可以赋值给父类型`readonly number[]`，但是反过来就会报错。
 
 除了使用`readonly`关键字，只读数组的声明还可以使用工具类型`Readonly<T>`和`ReadonlyArray<T>`。
 
@@ -257,6 +260,20 @@ const s:[string, string, boolean]
 
 元组的声明正好与数组相反，数组是类型写在方括号外面（`number[]`），元组是类型写在方括号里面（`[number]`）。
 
+元组类型也可以包含不定数量的成员，请看下面的例子。
+
+```typescript
+type NamedNums = [
+  string,
+  ...number[]
+];
+
+const a:NamedNums = ['A', 1, 2];
+const b:NamedNums = ['B', 1, 2, 3];
+```
+
+上面示例中，元组类型`NamedNums`的第一个成员是字符串，后面的成员使用扩展运算符展开一个数组，从而实现了不定数量的成员。
+
 下面的例子是数组的成员是一个元组。
 
 ```typescript
@@ -270,6 +287,19 @@ const entries = Object.entries({ a: 1, b: 2 });
 ```typescript
 let point:[number, number] = [7, 5];
 ```
+
+元组类型也可以通过`interface`命令定义。
+
+```typescript
+interface Tuple {
+ 0: number;
+ 1: number;
+ length: 2;
+}
+const t:Tuple = [10, 20]; // 正确
+```
+
+上面示例中，`interface`命令定义了一个元组，成员包括从`0`开始的每个数字键，以及`length`属性。但是，这样会丢失所有数组方法（比如`concat()`），所以不建议这样使用。
 
 元组成员的读取跟数组是一样的，也是通过方括号读取。
 
@@ -291,6 +321,15 @@ function doSomething(pair: [string, number]) {
  
 doSomething(["hello", 42]);
 ```
+
+由于元组也是 JavaScript 的数组，所以它也可以数值键读取。
+
+```typescript
+type Tuple = [string, number, Date];
+type TupleEl = Tuple[number];  // 类型是 string|number|Date
+```
+
+上面示例中，`Tuple[number]`表示元组`Tuple`的每个数字键的类型，所以返回`string|number|Date`。
 
 元祖也可以声明成只读元组。
 

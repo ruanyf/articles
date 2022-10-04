@@ -23,7 +23,6 @@ TypeScript 延续了 JavaScript 的类型设计，以上8种类型可以看作 T
 
 上面的基本类型，还可以组合成复杂类型。
 
-
 针对JavaScript中的每一种原始数据类型，TypeScript都提供了对应的类型：
 
 - boolean
@@ -152,6 +151,76 @@ const x:null = null;
 ```
 
 上面示例中，变量`x`就属于 null 类型。
+
+## 包装对象类型
+
+JavaScript 的八种类型之中，`undefined`和`null`其实是两种特殊值，`object`属于复合类型，只有剩下的五种属于原始类型（primitive value），即最基本的、不可再分的值。
+
+- boolean
+- string
+- number
+- bigint
+- symbol
+
+这五种原始类型的值都有对应的包装对象（wrapper object），即在需要时，会自动转为对象。
+
+```javascript
+'hello'.charAt(1) // 'e'
+```
+
+上面示例中，字符串`hello`有实例方法`charAt()`，但是只有对象才有方法，原始类型的值本身没有方法。这行代码之所以可以运行，就是因为在调用方法时，字符串会自动转为包装对象。这样就很方便，免去了将原始类型手动转成对象实例的麻烦。
+
+五种包装对象之中，symbol 类型和 bigint 类型无法直接获取它们的包装对象，但是剩下三种可以。
+
+JavaScript 提供了三个构造函数，可以直接获取对应的原始类型的包装对象。
+
+- `Boolean()`
+- `String()`
+- `Number()`
+
+这三个构造函数使用`new`命令，就可以返回原始类型的包装对象实例。
+
+```javascript
+const s = new String('hello');
+typof s // 'object'
+s.charAt(1) // 'l'
+```
+
+上面示例中，`s`就是字符串`hello`的包装对象，它的类型是`object`，不是`string`，但是本质上还是字符串，可以使用所有的字符串方法。
+
+为了区分原始类型和它的包装对象，TypeScript 对五种原始类型分别提供了大写和小写两种类型。
+
+- Boolean 和 boolean
+- String 和 string
+- Number 和 number
+- BigInt 和 bigint
+- Symbol 和 symbol
+
+这五组类型之中，大写类型指的是包装对象，小写类型指的是原型类型的字面量，不包含包装对象。由于字面量可以自动转为包装对象，所以大写类型也可以用于字面量。
+
+```typescript
+const s1:String = 'hello'; // 正确
+const s2:String = new String('hello'); // 正确
+
+const s3:string = 'hello'; // 正确
+const s4:string = new String('hello'); // 报错
+```
+
+上面示例中，`String`类型可以赋值为字符串的字面量，也可以赋值为包装对象。但是，`string`类型只能赋值为字面量，赋值为包装对象就会报错。
+
+建议只使用小写类型，不使用大写类型。因为绝大部分使用原始类型的场合，都是使用字面量，不使用包装对象。而且，TypeScript 对内置方法都使用小写类型进行定义，使用大写类型会导致报错。
+
+```typescript
+const n1:number = 1;
+const n2:Number = 1;
+
+Math.abs(n1) // 1
+Math.abs(n2) // 报错
+```
+
+上面示例中，`Math.abs()`方法的参数类型是`number`，传入`Number`类型的值就会报错。
+
+注意，`Symbol()`和`BigInt()`这两个函数不能当作构造函数使用，所以没有办法直接获得 symbol 类型和 bigint 类型的包装对象，因此`Symbol`和`BigInt`这两个类型完全没有使用的理由。
 
 ## 值类型
 

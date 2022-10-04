@@ -1,4 +1,4 @@
-# interface 接口
+# TypeScript 的 interface 接口
 
 ## 简介
 
@@ -176,7 +176,7 @@ agelist["John"]=15 // Ok
 agelist[2]="nine" // Error
 ```
 
-## 接口继承
+## interface 的继承
 
 接口可以继承其他类型，能够继承的其他类型有下面这些。
 
@@ -184,6 +184,8 @@ agelist[2]="nine" // Error
 - 对象类型的类型别名。
 - 类。
 - 对象类型的交叉类型。
+
+### interface 继承 interface
 
 子接口使用`extends`关键字继承父接口。
 
@@ -298,6 +300,8 @@ var Iobj:Child={
 console.log("value 1: "+ Iobj.v1 +" value 2: " + Iobj.v2)
 ```
 
+### interface 继承 class
+
 inteface 除了继承另一个 interface,还可以继承 class，继承该类中所有成员。
 
 ```typescript
@@ -335,6 +339,86 @@ class B extends A implements I {}
 class C implements I {}
 ```
 
+### interface 继承 type
+
+interface 可以继承`type`命令定义的对象类型。
+
+```typescript
+type Country = {
+ name: string;
+ capital: string;
+}
+
+interface CountryWithPop extends Country {
+  population: number;
+}
+```
+
+上面示例中，`CountryWithPop`继承了`type`命令定义的`Country`对象，并且新增了一个`Country`属性。
+
+注意，如果`type`命令定义的类型不是对象，interface 就无法继承。
+
+## 子接口引用
+
+如果子接口不是扩充父接口，而是引用父接口。也就是说，子接口是父接口的一部分，那么有一种简便写法。
+
+```typescript
+interface State {
+  userId:string;
+  pageTitle:string;
+  recentFiles:string[];
+  pageContents:string;
+}
+
+interface SubState {
+  userId:string;
+  pageTitle:string;
+  recentFiles:string[];
+}
+```
+
+上面示例中，`SubState`是`State`的子接口，除了少了一个`pageContents`属性，其他都一样。
+
+这时，如果两个接口像上面这样声明，除了重复声明，还会丢失两者之间的联系。更好的写法是像下面这样。
+
+```typescript
+type SubState = {
+  userId:State['userId'];
+  pageTitle:State['pageTitle'];
+  recentFiles:State['recentFiles'];
+};
+```
+
+上面示例中，`SubState`的每个属性值的类型，都是引用`State`的同名属性，这样就明确表示了两者之间的联系。
+
+上面的写法还可以进一步简化。
+
+```typescript
+type TopNavState = {
+  [k in 'userId'|'pageTitle'|'recentFiles']: State[k]
+};
+```
+
+上面示例中，属性名表达式是一个映射，`in`运算符表示属性名依次等于后面三个值之一，详见《映射》一章。
+
+如果结合联合类型，子接口可以引用多个父接口。
+
+```typescript
+interface SaveAction {
+  type: 'save';
+}
+interface LoadAction {
+  type: 'load';
+}
+
+type Action = SaveAction|LoadAction;
+
+// 类型为 "save"|"load"
+type ActionType = Action['type']; 
+```
+
+上面示例中，`ActionType`同时是`SaveAction`和`LoadAction`的子接口，这时可以使用联合类型写一个中间类型`Action`，简化`ActionType`的写法。
+
 ## 接口合并
 
 多个同名接口会合并成一个接口。
@@ -349,6 +433,8 @@ interface Box {
 }
 let box: Box = { height: 5, width: 6, scale: 10 };
 ```
+
+这样的设计主要是为了方便 JavaScript 开发者扩充外部函数库。在外部库的基础上，添加自己的方法是通行的做法，有了 interface 自动合并，扩展外部类型就会非常方便。
 
 每个接口的非函数成员应该是唯一的。如果它们不是唯一的，则必须属于同一类型。如果接口都声明了同名但类型不同的非函数成员，编译器将发出错误。
 
@@ -430,27 +516,34 @@ interface Document {
 
 ## interface 与 type 的区别
 
-interface 与 type 很相似，很多类型可以用 interface 表示，也可以用 type 表示。很多时候，两者可以换用。
+从作用上看，`interface`命令与`type`命令很相似。很多类型即可以用 interface 表示，也可以用 type 表示。很多时候，两者可以换用。
 
-区别之一，type 能够表示非对象类型，而 interface 只能表示对象类型。
-
-区别之二，接口可以继承其他的接口、类等对象类型，相当于添加属性，而 type 不支持继承，无法添加属性。
+它们的相同之处，在于都能为类型起名。
 
 ```typescript
-interface Animal {
-  name: string
+type Country = {
+ name: string;
+ capital: string;
 }
-
-interface Bear extends Animal {
-  honey: boolean
+interface Coutry {
+ name: string;
+ capital: string;
 }
-
-const bear = getBear() 
-bear.name
-bear.honey
 ```
 
-type 定义的类型别名想要扩展，只能重新定义一个新的别名。
+上面示例是`type`命令和`interface`命令，分别定义同一个类型。
+
+`class`命令也有类似作用，通过定义一个类，同时定义一个类型。但是，它会创造一个值，编译后依然存在。如果只是单纯想要一个类型，应该使用`type`或`interface`。
+
+它们的区别有下面几点。
+
+（1）`type`能够表示非对象类型，而`interface`只能表示对象类型（包括数组、函数等）。
+
+任何类型都用`type`命令定义别名，但是只有对象类型才能用`interface`定义。
+
+（2）`interface`可以继承其他类型，`type`不支持继承。
+
+继承的主要作用是添加属性，`type`定义的对象类型如果想要添加属性，只能使用`&`运算符，重新定义一个类型。
 
 ```typescript
 type Animal = {
@@ -460,8 +553,55 @@ type Animal = {
 type Bear = Animal & { 
   honey: boolean 
 }
-
-const bear = getBear();
-bear.name;
-bear.honey;
 ```
+
+上面示例中，类型`Bear`在`Animal`的基础上添加了一个属性`honey`。
+
+作为比较，`interface`添加属性，采用的是继承的写法。
+
+```typescript
+interface Animal {
+  name: string
+}
+
+interface Bear extends Animal {
+  honey: boolean
+}
+```
+
+（3）`interface`无法表达某些复杂类型（比如交叉类型和联合类型），但是`type`可以。
+
+```typescript
+type A = { /* ... */ };
+type B = { /* ... */ };
+
+type AorB = A | B;
+type AorBwithName = AorB & { name: string };
+```
+
+上面示例中，类型`AorB`是一个联合类型，`AorBwithName`则是为`AorB`添加一个属性。这两种运算，`interface`都没法表达。
+
+（4）同名`interface`会自动合并，同名`type`则会报错。也就是说，TypeScript 不允许使用`type`多次定义同一个类型。
+
+```typescript
+type A = { foo:number }; // 报错
+type A = { bar:number }; // 报错
+```
+
+上面示例中，`type`两次定义了类型`A`，导致两行都会报错。
+
+作为比较，`interface`则会自动合并。
+
+```typescript
+interface A { foo:number };
+interface A { bar:number };
+
+const obj:A = {
+  foo: 1,
+  bar: 1
+};
+```
+
+上面示例中，`interface`把类型`A`的两个定义合并在一起。
+
+（5）总结：如果有复杂的类型运算，没有选择只有使用`type`；如果需要扩充类型或自动合并，那么可以使用`interface`。

@@ -1,18 +1,75 @@
-# 函数的类型注释
+# TypeScript 的函数类型
 
-## 基本用法
+## 类型写法
 
-函数的类型写法是，同时给出参数类型和返回值类型。
+### 基本写法
+
+函数类型的基本写法，是在定义函数的时候，同时给出参数类型和返回值类型。
 
 ```typescript
-function hello(txt: string):void {
+function hello(txt:string):void {
   console.log('hello ' + txt);
 }
 ```
 
-上面示例中，参数类型（`txt: string`）写在参数名的后面，返回值类型写在参数括号的后面，`void`表示没有返回值。
+上面示例中，函数`hello()`的参数`txt`，类型是字符串（string），参数列表括号后面用冒号注明返回值类型，本例的`void`表示没有返回值。
 
-如果参数是一个函数，使用箭头函数的形式，表示整个函数的类型。
+通常，返回值类型可以不写，因为 TypeScript 会自己推断出来。
+
+```typescript
+function hello(txt:string) {
+  console.log('hello ' + txt);
+}
+```
+
+上面示例中，由于没有`return`语句，TypeScript 会推断出函数`hello()`没有返回值。
+
+如果不使用`function`语句，而是使用函数表达式来定义一个函数，就要用箭头函数表示类型。
+
+```typescript
+const hello:
+  (txt:string) => void
+= function (txt) {
+  console.log('hello ' + txt);
+};
+```
+
+上面示例中，变量`hello`的值是一个函数表达式，它的类型就用箭头函数表达，写在变量名后面。
+
+但是，这种写法不够清晰，如果有多个变量是同一种类型的函数，写起来也很麻烦。因此，往往用`type`命令定义一个类型别名。
+
+```typescript
+type MyFunc = (txt:string) => void;
+
+const hello:MyFunc = function (txt) {
+  console.log('hello ' + txt);
+};
+```
+
+上面示例中，`type`命令为函数类型定义了一个别名，后面使用就很方便。
+
+如果一个函数要套用另一个函数的类型，有一个小技巧，就是使用`typeof`运算符。
+
+```typescript
+function add(
+  x:number,
+  y:number
+) {
+  return x + y;
+}
+
+const myAdd:typeof add = function (x, y) {
+  return x + y;
+}
+```
+
+上面示例中，函数`myAdd()`的类型与函数`add()`是一样的，那么就可以定义成`typeof add`。因为函数名`add`本身不是类型，而不是一个值，所以要用`typeof`运算符返回它的类型。
+
+这是一个很有用的技巧，任何需要类型的地方，都可以使用`typeof`运算符从一个值获取类型。
+
+### 箭头函数
+
+如果是箭头函数，类型写成下面这样。
 
 ```typescript
 const repeat2 = (str: string, times: number): string => {
@@ -35,6 +92,32 @@ greeter(hello);
 ``` 
 
 上面示例中，`(a: string) => void`表示该函数有一个参数`a`，类型为`string`，返回值的类型是`void`，即没有返回值。
+
+箭头函数的参数要写在括号里面，返回值类型用冒号跟在参数括号后面。
+
+```typescript
+type Persion = { name: string };
+
+const people = ['alice', 'bob', 'jan'].map(
+ (name):Person => ({name})
+); // people 的类型是 Person[]
+```
+
+上面示例中，`map()`方法的参数是一个箭头函数`(name):Person => ({name})`，这个函数的返回值类型是`Person`，所以变量`people`的类型是`Person[]`。
+
+至于箭头后面的`({name})`，表示返回一个对象，属性名为`name`，属性值为变量`name`的值。`({name})`的圆括号是必须的，否则`(name):Person => {name}`的大括号表示函数体，即函数体内有一行语句`name`，同时由于没有`return`语句，这个函数不会返回任何值。
+
+注意，下面两种写法都是不对的。
+
+```typescript
+// 错误
+(name:Person) => ({name})
+
+// 错误
+name:Person => ({name})
+```
+
+上面的两种写法在本例中都是错的。第一种写法表示，箭头函数的参数`name`的类型是`Person`，同时没写函数返回值的类型，让 TypeScript 自己去推断。第二种写法表示，`name`的类型是一个箭头函数`Person => ({name})`。
 
 这里有几个注意点。
 
@@ -126,6 +209,19 @@ var add:myfn = (a, b) => a + b;
 上面示例中，interface 命令定义了接口`myfn`，这个接口的类型是一个对象，但是该对象可调用，因此也就是一个函数。
 
 这种写法类似于方法的类型定义，但是不用写方法名。
+
+### readonly 参数
+
+如果函数内部不能修改某个参数，那么可以在函数定义时，在参数的类型前面加上`readonly`关键字，表示这是只读参数。
+
+```typescript
+function arraySum(arr:readonly number[]) {
+  // ...
+  arr[0] = 0; // 报错
+}
+```
+
+上面示例中，参数`arr`的类型是`readonly number[]`表示为只读参数，如果函数体内部修改这个数组，就会报错。
 
 ## void 类型
 

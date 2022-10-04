@@ -544,6 +544,28 @@ type T6 = ReturnType<boolean>;   // 编译错误
 type T7 = ReturnType<Function>;  // 编译错误
 ```
 
+它可以从某个函数实现，提取返回值类型。
+
+```typescript
+function getUserInfo(userId: string) {
+  // ...
+  return {
+    userId,
+    name,
+    age,
+    height,
+    weight,
+    favoriteColor,
+  };
+}
+
+type UserInfo = ReturnType<typeof getUserInfo>;
+```
+
+上面示例中，`getUserInfo()`是一个现有的函数实现，如果想拿到它的返回值类型，可以先使用`typeof getUserInfo`获取它的类型，再用`ReturnType<T>`提取出返回值类型。
+
+注意，不能写成`ReturnType<getUserInfo>`，因为其中的`getUserInfo`是一个值，不是一个类型，而`ReturnType<T>`只接受类型作为参数。
+
 ```typescript
 // type T0 = string 
 type T0 = ReturnType<() => string>;

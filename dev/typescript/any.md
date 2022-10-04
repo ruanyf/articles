@@ -1,4 +1,4 @@
-# any 类型，unknown 类型
+# any 类型，unknown 类型，never 类型
 
 ## any 类型
 
@@ -271,3 +271,17 @@ const value: unknown = "Hello World";
 const someString: string = value as string;
 const otherString = someString.toUpperCase(); // "HELLO WORLD"
 ```
+
+## never 类型
+
+类型也可能是空集，即不包含任何类型，TypeScript 把这种情况也当作一种类型，叫做`never`类型。
+
+`never`类型表示不可能的类型，也就是不可能有任何值属于这个类型。
+
+```typescript
+let x: never;
+```
+
+上面示例中，变量`x`的类型是`never`，就不可能赋给它任何值，都会报错。
+
+`never`类型的使用场景，主要是在一些类型运算之中，保证类型运算的完整性，详见后面章节。

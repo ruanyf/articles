@@ -1,46 +1,81 @@
-# Object 的类型
+# TypeScript 的 object 类型
 
-## 基本用法
+## object 类型的写法
 
-对象的类型可以用大括号直接描述。
+### 基本写法
+
+object 类型表示对象，可以用大括号直接描述它的类型。
 
 ```typescript
-const obj: {  
-  x: number;
-  y: number;  
+const obj:{  
+  x:number;
+  y:number;  
 } = { x: 1, y: 1 };
 ```
 
-上面示例中，对象`obj`的类型就是在大括号里面，注明每个属性的类型。
+上面示例中，对象`obj`的类型就写在变量名后面，使用大括号描述，内部注明每个属性的属性名和类型。
 
-属性的类型可以用分号结尾，也可以用逗号结尾。最后一个属性后面，可以写分号或逗号，也可以不写。
-
-对象赋值时，不能有多余的属性。
+对象属性的类型可以用分号结尾，也可以用逗号结尾。
 
 ```typescript
-const obj: {  
-  x: number;
-  y: number;  
+// 属性类型以分号结尾
+type MyObj = {
+  x:number;
+  y:number;
+};
+
+// 属性类型以逗号结尾
+type MyObj = {
+  x:number,
+  y:number,
+};
+```
+
+最后一个属性后面，可以写分号（或逗号），也可以不写。
+
+一旦声明了类型，对象赋值时，就不能有多余的属性。
+
+```typescript
+const obj:{  
+  x:number;
+  y:number;  
 } = { x: 1, y: 1, z: 1 }; // 报错
 ```
 
 上面示例中，变量`obj`的类型定义里面，只有`x`和`y`两个属性。如果赋值时有多余的属性（比如`z`），就会报错。
 
-读写多余的属性也会报错。
+读写多出来的属性也会报错。
 
 ```typescript
-const obj: {  
-  x: number;
-  y: number;  
+const obj:{  
+  x:number;
+  y:number;  
 } = { x: 1, y: 1 };
 
 console.log(obj.z); // 报错
 obj.z = 1; // 报错
 ```
 
-上面示例中，读写多余的属性`z`都会报错。
+上面示例中，读写多出来的属性`z`都会报错。
 
-如果某个属性是可选的，需要在属性名后面加一个问号。
+对象的类型可以提炼为一个对象接口，使用`interface`命令来定义。这样非常简洁，还可以复用。
+
+```typescript
+interface myObj {
+  x: number;
+  y: number;
+}
+
+const obj:myObj = { x: 1, y: 1 }; 
+```
+
+上面示例中，`interface`关键字定义了一个类型接口`myObj`，变量就可以直接指定为该类型。
+
+`interface`命令和`type`命令都可以用来声明对象类型，写法和作用相似，它们的区别详见《Interface》一章。
+
+### 可选属性
+
+如果某个属性是可选的（即可以忽略），需要在属性名后面加一个问号。
 
 ```typescript
 const obj: {  
@@ -51,13 +86,14 @@ const obj: {
 
 上面示例中，属性`y`是可选的。
 
-如果对象的属性可以等于`undefined`，就表示这个属性可以省略，等同在于属性名后面加一个问号（`?`）。
+可选属性等同于允许赋值为`undefined`，下面两种写法是等效的。
 
 ```typescript
 type User = {
   firstName: string;
   lastName: string | undefined;
 };
+
 // 等同于
 type User = {
   firstName: string;
@@ -65,15 +101,81 @@ type User = {
 };
 ```
 
-上面示例中，类型`User`是一个对象，它的属性`lastName`可以是字符串，也可以是`undefined`，就表示该属性可以省略不写。
+上面示例中，类型`User`的`lastName`属性可以是字符串，也可以是`undefined`，就表示该属性可以省略不写。
 
-`readonly`表示属性是只读属性。
+### 只读属性
+
+属性名前面加上`readonly`关键字，表示这个属性是只读属性，即不能修改。
 
 ```typescript
 interface MyInterface {
   readonly prop: number;
 }
 ```
+
+上面示例中，`prop`属性是只读属性，不能修改它的值。
+
+### 字符串索引属性名
+
+如果对象的属性非常多，一个个声明类型就很麻烦，而且有些时候，无法事前知道对象会有多少属性。这时 TypeScript 允许采用属性名表达式的写法来描述类型，称为“字符串索引属性名”。
+
+```typescript
+type MyObj = {
+  [property: string]: string
+};
+
+const obj:MyObj = {
+  foo: 'a',
+  bar: 'b',
+  baz: 'c',
+}; 
+```
+
+上面示例中，类型`MyObj`的属性名类型就采用了属性名表达式，写在方括号里面。`[property: string]`的`property`表示属性名，这个是可以随便起的，它的类型是`string`，后面第二个`string`是属性值的类型。也就是说，不管这个对象有多少属性，只要属性名为字符串，且属性值也是字符串，都是合法的。
+
+但是，这种字符串索引属性名，类型的声明太宽泛，约束太少，建议谨慎使用。正常情况下，使用可选属性或者其他写法会更好。
+
+```typescript
+type MyObj = {
+  foo: string,
+  bar?: string,
+  baz?: string,
+};
+
+const obj:MyObj = {
+  foo: 'a',
+  bar: 'b',
+  baz: 'c',
+}; 
+```
+
+上面示例中，类型`MyObj`的`foo`属性是必选的，`bar`属性和`baz`属性都是可有可无，这就比字符串索引的约束强了很多。
+
+### 数值索引属性名
+
+JavaScript 数组是一种特殊的对象，可以用数值作为属性名，取出对应位置上的属性值。比如，`arr[0]`表示数组`arr`在0号位置上的属性值，但是实质上`arr`是对象，`0`是属性名。
+
+既然数组是对象，就可以用对象的类型写法描述数组类型。
+
+```typescript
+type MyArr = {
+  [n:number]: number;
+};
+
+const arr:MyArr = [1, 2, 3];
+// 等同于
+const arr:MyArr = {
+  0: 1,
+  1: 2,
+  2: 3,
+};
+```
+
+上面示例中，对象类型`MyArr`的属性名是数值，就表示这是数组。`[n:number]`的这种写法就叫做数值索引属性名。
+
+但是，这样写的话，就不能使用各种数组方法，因为类型里面没有定义方法，所以完全不建议这样描述数组类型。
+
+### 其他
 
 注意，TypeScript 不区分对象自身的属性和继承的属性，一律视为对象的属性。
 
@@ -89,35 +191,6 @@ const obj: MyInterface = { // 正确
 ```
 
 上面示例中，`obj`只写了`prop`属性，但是不报错。
-
-`interface`关键字可以把类型描述提炼成一个接口。这样就很简洁，还可以复用。
-
-```typescript
-interface myObj {
-  x: number;
-  y: number;
-}
-
-const obj:myObj = { x: 1, y: 1 }; 
-```
-
-上面示例中，`interface`关键字定义了一个类型接口`myObj`，变量就可以直接指定为该类型。
-
-对象类型的每个属性后面，可以使用分号结尾，也可以使用逗号结尾。
-
-```typescript
-// 正确
-interface Point {
-  x: number;
-  y: number;
-}
-
-// 正确
-interface Point {
-  x: number,
-  y: number,
-}
-```
 
 对象的方法使用函数类型描述。
 
@@ -336,6 +409,46 @@ const point:{
 
 参数如果不是字面量，就不会触发严格字面量检查，因此就不会报错。这个检查只针对字面量的原因是，函数调用时，参数写成字面量，多出来的属性几乎都是用不到的，或者拼写错误，或者误用了 API。
 
+这条规则可以防止手写对象字面量时，出现拼写错误。
+
+```typescript
+type Options = {
+  title:string;
+  darkMode?:boolean;
+};
+
+const Obj:Options = {
+  title: '我的网页',
+  darkmode: true, // 报错
+};
+```
+
+上面示例中，属性`darkMode`拼写错了，成了`darkmode`。如果没有严格字面量规则，就不会报错，只要有`title`属性，不管有没有其他属性，都认为符合`Options`类型。
+
+但是，只要使用一个中间变量，就可以规避这条规则。
+
+```typescript
+let myOptions = {
+  title: '我的网页',
+  darkmode: true,
+};
+
+const Obj:Options = myOptions;
+```
+
+上面示例中，创建了一个中间变量`myOptions`，就不会触发严格字面量规则，因为这时变量`obj`的赋值，不属于直接字面量赋值。
+
+如果你确认字面量没有错误，可以使用类型断言规避这条规则。
+
+```typescript
+const Obj:Options = {
+  title: '我的网页',
+  darkmode: true, 
+} as Options;
+```
+
+上面示例使用类型断言`as Options`，告诉编译器，字面量符合 Options 类型，就能规避这条规则。
+
 可以使用编译设置`--suppressExcessPropertyErrors`在`tsconfig.json`文件里面关闭多余属性检查。
 
 ```typescript
@@ -352,6 +465,36 @@ const point:{
 let x: { foo: number, [x: string]: any };
 x = { foo: 1, baz: 2 };  // Ok
 ```
+
+## 最小可选属性规则
+
+如果一个对象的所有属性都是可选的，会触发最小可选属性规则。
+
+```typescript
+type Options = {
+  a?:number;
+  b?:number;
+  c?:number;
+};
+
+const obj:Options = {
+  d: 123 // 报错
+};
+```
+
+上面示例中，类型`Options`是一个对象，它的所有属性都是可选的，这导致任何对象实际都符合`Options`类型。
+
+为了避免这种情况，TypeScript 添加了最小可选属性规则，规定这时属于`Options`类型的对象，必须至少存在一个可选属性，不能所有可选属性都不存在。这就是为什么上例的`myObj`对象会报错的原因。
+
+这条规则无法通过中间变量规避。
+
+```typescript
+const myOptions = { d: 123 };
+
+const obj:Options = myOptions; // 报错
+```
+
+上面示例中，即使使用了中间变量`myOptions`，由于存在最小可选属性规则，依然会报错。
 
 ## 空对象
 
