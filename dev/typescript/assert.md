@@ -193,7 +193,47 @@ const a = 1 as unknown as number;
 const a = 1 as any as number;
 ```
 
-## const 断言
+## as const 断言
+
+TypeScript 有时会有一些出乎意料的报错。
+
+```typescript
+type Language = 
+  |'JavaScript'
+  |'TypeScript'
+  |'Python';
+
+function setLang(
+  language: Language
+) {
+  /* ... */
+}
+
+let language = 'JavaScript';
+setLang(language); // 报错
+```
+
+上面示例最后一行报错，原因在于函数`setLang()`的参数类型与变量`language`的类型不符。前者是一个联合类型，后者则是 TypeScript 推断的`string`类型。
+
+为了解决两者类型不一致，至少有三种方法。
+
+```typescript
+// 方法一
+let language:Language = 'JavaScript';
+setLang(language);
+
+// 方法二
+const language = 'JavaScript';
+setLang(language);
+
+// 方法三
+let language = 'JavaScript' as const;
+setLang(language);
+```
+
+上面示例中，方法一是修改变量`language`的类型，方法二是将变量`language`变为常量，但是这样就无法再修改变量`language`了。方法三则是将`JavaScript`这个值的推断类型从`string`变为常量。
+
+`as const`这种写法，跟在一个值后面，起到断言作用，告诉 TypeScript，推断类型时，可以将这个值推断为常量。
 
 如果`const`声明的对象属性是文字表达式，这些属性的类型是`string`，而不是文字表达式的值。断言可以使得这些属性的类型变为所声明的值。
 
@@ -211,9 +251,11 @@ expr as const
 - string字面量。
 - number字面量。
 - bigint字面量。
-- 枚举成员字面量。
+- Enum 成员字面量。
 - 数组字面量。
 - 对象字面量。
+
+注意，`as const`只能用在字面量后面，不能用在变量后面。
 
 ```typescript
 let a1 = true;          
@@ -222,7 +264,33 @@ let a2 = true as const;
 a2 = false; // 报错
 ```
 
-const类型断言会将expr表达式的类型转换为不可变类型。
+const类型断言会将expr表达式的类型转换为不可变类型，会缩小成 TypeScript 允许的最小类型。
+
+```typescript
+const v1 = {
+ x: 1,
+ y: 2,
+}; // Type is { x: number; y: number; }
+
+const v2 = {
+ x: 1 as const,
+ y: 2,
+}; // Type is { x: 1; y: number; }
+
+const v3 = {
+ x: 1,
+ y: 2,
+} as const; // Type is { readonly x: 1; readonly y: 2; }
+```
+
+上面示例中，第二种写法是对`1`缩小类型，第三种写法是对`x: 1`缩小类型。
+
+如果是数组，类型会变成只读元组。
+
+```typescript
+const a1 = [1, 2, 3]; // Type is number[]
+const a2 = [1, 2, 3] as const; // Type is readonly [1, 2, 3]
+```
 
 如果expr为boolean字面量、string字面量、number字面量、bigint字面量或枚举成员字面量，那么转换后的结果类型为对应的字面量类型。
 

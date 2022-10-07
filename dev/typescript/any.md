@@ -120,13 +120,15 @@ function add(a:any, b:any) {
 }
 ```
 
-## unknown
+## unknown 类型
 
 `unknown`可以看作是更安全的`any`，它也表示任何类型，但是有着更多的限制。
 
 一般来说，可以设为`any`的地方，都应该优先考虑设为`unknown`。
 
 所有类型的值都可以分配给 unknown 类型的变量。
+
+使用`unknown`类型的值之前，必须缩小类型，防止出现随意调用的现象。
 
 ```typescript
 let value: unknown;

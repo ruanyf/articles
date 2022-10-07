@@ -24,6 +24,8 @@ const element = document.getElementById(123); // 错误语句
 
 ## JSDoc
 
+很多编译器会自动读取 JSDoc 样式的注释，所以对于一些重要的方法，可以使用 JSDoc 编写注释。
+
 在使用JSDoc时，有以下两个基本要求：
 
 - 代码注释必须以“/**”开始，其中星号（*）的数量必须为两个。若使用了“/*”“/***”或其他形式的多行注释，则JSDoc会忽略该条注释。
@@ -41,6 +43,24 @@ function sayHello(somebody) {
 ```
 
 TypeScript编译器既能够自动推断出大部分JavaScript代码的类型信息，也能够从JSDoc中提取类型信息。接下来，我们将介绍TypeScript编译器支持的部分JSDoc标签。
+
+```typescript
+/**
+ * Generate a greeting.
+ * @param name Name of the person to greet
+ * @param salutation The person's title
+ * @returns A greeting formatted for human consumption.
+ */
+function greetFullTSDoc(name: string, title: string) {
+ return `Hello ${title} ${name}`;
+}
+```
+
+If your project already has JSDoc-style comments, TypeScript will
+begin checking them when you flip on @ts-check. 
+
+You can get much of the TypeScript experience in a JavaScript
+project using JSDoc annotations and @ts-check. 
 
 ### @typedef
 

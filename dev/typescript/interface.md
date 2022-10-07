@@ -436,6 +436,18 @@ let box: Box = { height: 5, width: 6, scale: 10 };
 
 这样的设计主要是为了方便 JavaScript 开发者扩充外部函数库。在外部库的基础上，添加自己的方法是通行的做法，有了 interface 自动合并，扩展外部类型就会非常方便。
 
+网页编程经常会在`windows`对象和`document`对象添加自定义属性，但是 TypeScript 会报错。解决方法就是把自定义属性，用 interface 合并的形式，添加到原始定义里面。
+
+```typescript
+interface Document {
+  foo: string;
+}
+
+document.foo = 'hello'; 
+```
+
+上面示例中，接口`Document`增加了一个自定义属性`foo`，从而就可以在`document`对象上使用自定义属性。
+
 每个接口的非函数成员应该是唯一的。如果它们不是唯一的，则必须属于同一类型。如果接口都声明了同名但类型不同的非函数成员，编译器将发出错误。
 
 ```typescript

@@ -351,6 +351,29 @@ type T6 = Parameters<string>;
 type T7 = Parameters<Function>;
 ```
 
+`Parameters<T>`可以提取某个模块内部没有输出的接口类型。
+
+```typescript
+interface SecretName {
+ first: string;
+ last: string;
+}
+interface SecretSanta {
+ name: SecretName;
+ gift: string;
+}
+export function getGift(name: SecretName, gift: string): SecretSanta {
+ // ...
+}
+```
+
+上面示例中，该模块只输出了`getGift()`，没有输出接口`SecretName`和`SecretSanta`。这时可以通过`Parameters<T>`和`ReturnType<T>`，拿到这两个接口的类型。
+
+```typescript
+type MySanta = ReturnType<typeof getGift>; // SecretSanta
+type MyName = Parameters<typeof getGift>[0]; // SecretName
+```
+
 ## `Partial<T>`
 
 `Partial`是一个泛型，表示当前类型是类型变量的一个子集。

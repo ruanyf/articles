@@ -175,6 +175,26 @@ const arr:MyArr = {
 
 但是，这样写的话，就不能使用各种数组方法，因为类型里面没有定义方法，所以完全不建议这样描述数组类型。
 
+### 解构赋值
+
+解构赋值用于直接从对象中提取属性。
+
+```typescript
+const {id, name, price} = product;
+```
+
+上面语句从对象`product`提取了三个属性，并声明属性名的同名变量。
+
+解构赋值的类型写法，等同于为对象声明类型。
+
+```typescript
+const {id, name, price}:{
+  id: string;
+  name: string;
+  price: number 
+} = product;
+```
+
 ### 其他
 
 注意，TypeScript 不区分对象自身的属性和继承的属性，一律视为对象的属性。
@@ -498,7 +518,7 @@ const obj:Options = myOptions; // 报错
 
 ## 空对象
 
-空对象是 TypeScript 的一种特殊类型。
+空对象是 TypeScript 的一种特殊值，也是一种特殊类型。
 
 ```typescript
 const obj = {};
@@ -516,21 +536,63 @@ const obj:{} = {};
 空对象没有自定义属性，所以对自定义属性赋值就会报错。空对象只能使用继承的属性，即继承自原型对象`Object.prototype`的属性。
 
 ```typescript
-obj.toString()
+obj.toString() // 正确
 ```
 
 上面示例中，`toString()`方法是一个继承自原型对象的方法，TypeScript 允许在空对象上使用。
 
-由于 TypeScript 采用结构子类型（ structural subtyping），只要兼容空对象的结构，就会认为符合空对象类型。
+回到本节开始的例子，这种写法其实在 JavaScript 很常见：先声明一个空对象，然后向空对象添加属性。但是，TypeScript 不允许动态添加属性，所以对象不能分步生成，必须生成时一次性声明所有属性。
 
-所以，任何对象都可以赋值给空对象类型，因为任何对象都可以看作“空对象 + 属性”，在结构上兼容空对象属性。
+```typescript
+// 错误
+const pt = {};
+pt.x = 3;
+pt.y = 4;
+
+// 正确
+const pt = {
+  x: 3,
+  y: 4
+};
+```
+
+如果确实需要分步声明，一个比较好的方法是，使用扩展运算符（`...`）合成一个新对象。
+
+```typescript
+const pt0 = {};
+const pt1 = { x: 3 };
+const pt2 = { y: 4 };
+
+const pt = {
+  ...pt0, ...pt1, ...pt2
+};
+```
+
+上面示例中，对象`pt`是三个部分合成的，这样既可以分步声明，也符合 TypeScript 静态声明的要求。
+
+前面说过，TypeScript 采用结构类型原则，只要兼容空对象的结构，就会认为符合空对象类型。
+
+所以，几乎任何对象都可以视为空对象的子类型，赋值给空对象类型，只要这些对象符合“空对象 + 属性”的结构。
 
 ```typescript
 const obj:{} = { foo: 123 };
 console.log(obj.foo) // 报错
 ```
 
-上面示例的第一行代码不会报错，因为`{ foo: 123 }`在结构上兼容空对象。但是，第二行代码会报错，因为空对象类型没有自定义属性。
+上面示例中，第一行代码不报错，因为`{ foo: 123 }`在结构上兼容空对象。但是，第二行代码报错，因为空对象类型没有自定义属性。
+
+另一方面，反过来，空对象也不能赋值给其他对象类型。
+
+```typescript
+interface Point { 
+  x: number;
+  y: number;
+}
+
+const pt:Point = {}; // 报错
+```
+
+上面示例中，变量`pt`是`Point`类型，赋值为空对象，就会报错，因为没有`x`属性和`y`属性。
 
 空对象属于`Object`的子类型，所以任何属于`Object`类型的值，都可以赋值给空对象类型。
 
