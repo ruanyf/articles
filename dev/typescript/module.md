@@ -3,6 +3,17 @@
 TypeScript 模块允许输出类型。
 
 ```typescript
+import { type TypeOne, value } from "my-example-types";
+
+import type { TypeTwo } from "my-example-types";
+
+import type DefaultType from "my-example-types";
+
+export { type TypeOne, value };
+export type { DefaultType, TypeTwo };
+```
+
+```typescript
 export type SomeType = {
   foo: string;
 };

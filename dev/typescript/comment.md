@@ -18,6 +18,16 @@ const element = document.getElementById(123); // 错误语句
 
 如果一个JavaScript文件中添加了“// @ts-check”注释指令，那么编译器将对该Java-Script文件进行类型检查，不论是否启用了“--checkJs”编译选项。
 
+```javascript
+// @ts-check
+let myQuote = "Each person must live their life as a model for others.";
+
+console.log(quote);
+//
+ ~~~~~~~
+// Error: Cannot find name 'quote'. Did you mean 'myQuote'?
+```
+
 ## `// @ts-ignore`
 
 “// @ts-ignore”注释指令的作用是忽略对某一行代码进行类型检查。当在代码中使用“// @ts-ignore”注释指令时，编译器不会对与该指令相邻的后面一行代码进行类型检查。此外，该指令也可以在TypeScript文件中使用。

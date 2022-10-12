@@ -106,6 +106,15 @@ const y:bigint = 0xffffn;
 
 上面示例中，变量`x`和`y`就属于 bigint 类型。
 
+bigint 与 number 类型不兼容。
+
+```typescript
+const x:bigint = 123; // 报错
+const y:bigint = 3.14; // 报错
+```
+
+上面示例中，`bigint`类型赋值为整数和小数，都会报错。
+
 注意，bigint 类型是 ES2020 标准引入的。如果使用这个类型，TypeScript 编译的目标语法版本不能低于 ES2020。
 
 ### symbol 类型
@@ -222,6 +231,62 @@ Math.abs(n2) // 报错
 
 注意，`Symbol()`和`BigInt()`这两个函数不能当作构造函数使用，所以没有办法直接获得 symbol 类型和 bigint 类型的包装对象，因此`Symbol`和`BigInt`这两个类型完全没有使用的理由。
 
+## Object 类型与 object 类型
+
+对象类型也有大写和小写之分，大写是`Object`类型，小写是`object`类型。
+
+大写的`Object`类型代表 JavaScript 语言里面广义的对象，即所有可以转成对象的值，都可以是`Object`类型，其中就包含那些会自动转成对象的原始类型值。
+
+```typescript
+let obj:Object;
+ 
+obj = true; // 正确
+obj = 'hi'; // 正确
+obj = 1; // 正确
+```
+
+上面示例中，原始类型的布尔值、字符串和数值，都可以赋值给`Object`类型。
+
+事实上，除了`undefined`和`null`这两个值不能转为对象，其他任何值都可以赋值给`Object`类型。
+
+```typescript
+let obj:Object;
+
+obj = undefined; // 报错
+obj = null; // 报错
+```
+
+上面示例中，`undefined`和`null`赋值给`Object`类型，就会报错。
+
+小写的`object`类型代表 JavaScript 里面狭义的对象，即可以用字面量表示的对象，不包含那些原始类型的值。
+
+```typescript
+let a:Object = { foo: 123 }; // 正确
+let b:object = { foo: 123 }; // 正确
+
+a = 123; // 正确
+b = 123; // 报错
+```
+
+上面类型中，对象字面量赋值给大写的`Object`类型和小写的`object`类型，都是可以的。但是，原始类型的值只能赋值给大写类型，赋值给小写类型就会报错。
+
+大多数时候，我们使用对象类型，都是希望表示对象的字面量，不希望包括原始类型，所以建议总是使用小写类型`object`，不使用大写类型`Object`。
+
+需要注意的是，无论是大写的`Object`类型，还是小写的`object`类型，都只能表示 JavaScript 原生的对象属性，用户自定义的属性都不存在于这两个类型。
+
+```typescript
+const o1:Object = { foo: 0 };
+const o2:object = { foo: 0 };
+
+o1.toString() // 正确
+o1.foo // 报错
+
+o2.toString() // 正确
+o2.foo // 报错
+```
+
+上面示例中，`toString()`是对象的原生方法，可以正确访问。`foo`是自定义属性，访问就会报错。如何描述对象的自定义属性，详见《对象类型》一章。
+
 ## 值类型
 
 TypeScript 规定，单个值也是一种类型，称为“值类型”。
@@ -253,7 +318,7 @@ const z = true;
 任何一个值都可以当作值类型使用，所以可以写出来一些很奇怪的代码。
 
 ```typescript
-const x:5 = 4 + 1;
+const x:5 = 4 + 1; // 报错
 ```
 
 上面代码中，变量`x`的类型是数字`5`，这是允许的，也就是说`x`只能等于`5`，不能等于其他值。但是上面的代码实际会报错，原因是 TypeScript 编译器由于不会允许代码，所以不知道`4 + 1`等于`5`，只知道`4 + 1`的类型是`number`，等号两边的类型不一样，从而报错。
@@ -305,7 +370,7 @@ function getPort(
 
 ## undefined 和 null 的特殊性
 
-TypeScript 规定，任何其他类型的变量都可以赋值为`undefind`或`null`。
+TypeScript 规定，任何其他类型的变量都可以赋值为`undefined`或`null`。
 
 ```typescript
 let age:number = 24;
@@ -369,9 +434,9 @@ let y:unknown = null; // 正确
 
 上面示例中，严格模式下，any 类型和 unknown 类型的变量，可以赋值为`undefined`和`null`。
 
-## 联合类型（Union）
+## 联合类型
 
-TypeScript 允许多种类型的联合，可以使用`|`运算符将这些类型组成一个并集（union）。联合类型表示一个值的类型可以为若干种类型之一。
+联合类型（union types）指的是一个值可以是若干种类型之一。它可以是类型`A`，也可以是类型`B`，使用`A|B`表示。
 
 ```typescript
 let x:string|number;
@@ -379,23 +444,15 @@ x = 123; // 正确
 x = 'abc'; // 正确
 ```
 
-上面示例中，变量`x`可以是字符串，也可以是数值，只要赋值为这两个类型，都不会报错。
+上面示例中，变量`x`可以是字符串，也可以是数值。只要赋值为这两个类型之一，都不会报错。
 
-类型并集对于一个变量有多种类型的情况，非常有用。比如，布尔值变量就可以写成下面的形式，非常简洁明了。
+联合类型表示一个变量有多种类型，非常有用，下面是一些例子。
 
 ```typescript
 let setting:true|false;
-```
 
-性别变量则可以写成下面这样。
-
-```typescript
 let gender:'male'|'female';
-```
 
-彩虹色可以写成七种颜色的并集。
-
-```typescript
 let rainbowColor:'赤'|'橙'|'黄'|'绿'|'青'|'蓝'|'紫';
 ```
 
@@ -535,7 +592,26 @@ s.area; // bigint | number | undefined
 
 ## 交叉类型
 
-交叉类型表示一个值同时具有多种类型。
+交叉类型（intersection types）指的是一个值同时具有多种类型，既满足类型`A`，也满足类型`B`，使用`A&B`表示。
+
+```typescript
+let x:number & string;
+```
+
+上面示例中，变量`x`同时是数值和字符串，这当然是不可能的，所以 TypeScript 会认为`x`的类型实际是`never`。
+
+交叉类型的主要用途是表示对象的合成。
+
+```typescript
+let obj:{ foo: string } & { bar: string };
+
+obj = {
+  foo: 'hello',
+  bar: 'world'
+};
+```
+
+上面示例中，变量`obj`同时具有属性`foo`和属性`bar`。
 
 ```typescript
 interface Clickable {
@@ -716,186 +792,50 @@ function extend<T extends object, U extends object>(first: T, second: U): T & U 
 const x = extend({ a: 'hello' }, { b: 42 });
 ```
 
-## Object 类型
-
-Object 类型有一个特点，那就是除了undefined值和 null值外，其他任何值都可以赋值给Object类型。
-
-```typescript
-let obj: Object;
- 
-// 正确
-obj = { x: 0 };
-obj = true;
-obj = 'hi';
-obj = 1;
- 
-// 编译错误
-obj = undefined;
-obj = null;
-```
-
-字符串之所以可以赋值给`Object`类型，是因为字符串可以自动转为对象。
-
-```typescript
-'str'.valueOf()
-```
-
-## Object 与 object 的区别
-
-```typescript
-let x:Object;
-let y:object;
-```
-
-类型声明为`Object`（大写），表示`x`是`Object`的实例。
-
-`Object`是一个接口。
-
-```typescript
-interface ObjectConstructor {
-  new(value?: any): Object;
-  readonly prototype: Object;
-  // ...
-}
-
-declare var Object: ObjectConstructor;
-```
-
-Object 对应 JavaScript 语言视为对象的值，这包括字符串、数值、布尔值等原始类型，也被认为符合 Object 类型。
-
-这显然很容易混淆，TypeScript 2.2版本就新增了一个新的`object`类型表示非原始类型，即对应那些狭义的真正为对象的值。
-
-`object`类型只包括对象，不包括原始类型的值。
-
-```typescript
-// 正确
-const a:Object = 1;
-
-// 报错
-const b:object = 1;
-```
-
-Object 类型和 object 类型都只能表示原生提供的属性，用户自定义的属性都不存在于这两个类型。
-
-```typescript
-const o1:Object = { foo: 0 };
-const o2:object = { foo: 0 };
-
-// 报错
-o1.foo
-// 正确
-o1.toString()
-
-// 报错
-o2.foo
-// 正确
-o2.toString()
-```
-
-上面示例中，`foo`是自定义属性，访问就会报错。`toString()`是对象的原生方法，可以正确访问。
-
-JavaScript 存在一些对象，不属于`Object`的实例。
-
-```javascript
-const obj = Object.create(null);
-Object.getPrototypeOf(obj2) // null
-
-typeof obj2 // object
-obj2 instanceof Object // false
-```
-
-上面示例中，对象`object`的类型是对象，但不是`Object`的实例，因为它的原型对象不是`Object.prototype`。
-
-类型设为`Object`的一个问题是，原始类型也符合`Object`类型。
-
-```typescript
-function func1(x: Object) { }
-func1('abc');  // 正确
-```
-
-上面示例不报错，这是因为字符串、数值、布尔值都会自动转为对象，成为 Object 的实例。
-
-```typescript
-'abc'.hasOwnProperty === Object.prototype.hasOwnProperty
-// true
-```
-
-类型设为`object`（小写）则表示一切`typeof`运算符返回值为`object`的值，也就是所有非原始类型的值（undefined, null, booleans, numbers, bigints, strings）。
-
-而且，原始类型也不符合`object`。
-
-```typescript
-function func1(x:object) { }
-func1('abc');  // 报错
-```
-
-第三个问题是，类型设为`Object`（大写）时，不方便自定义原生方法。
-
-```typescript
-// 报错
-const obj1: Object = { toString() { return 123 } };
-```
-
-上面代码报错是因为`toString()`是一个原生方法，它已经有类型定义了，必须返回一个字符串，而不能返回数值。
-
-但是，类型设为`object`就没有这个问题。
-
-```typescript
-// 正确
-const obj2: object = { toString() { return 123 } };
-```
-
-由于`object`的适用范围大于`Object`，所以建议总是使用`object`（小写），而不是`Object`（大写）。
-
-有了`object`以后，有些场合就能精确表示类型了。比如，`Object.create()`方法的参数不能是原始类型值，只能是对象或`null`。
-
-```typescript
-Object.create(123) // 报错
-```
-
-如果没有`object`，就没办法精确表示参数类型，只能写成`any`。现在，参数类型就可以写成下面这样。
-
-```typescript
-interface ObjectConstructor {
-  create(o: object|null, ...):any;
-}
-```
-
-## 特殊类型
-
-### unknown 
-
-unknown 类似于 any，表示无法确定变量类型。区别是不能对该值进行任何操作。
-
-```typescript
-function f1(a: any) {
-  a.b(); // OK
-}
-function f2(a: unknown) {
-  a.b(); // 报错
-}
-```
-
-### :void
-
-`:void`类型只用来表示函数没有返回值。
-
-```typescript
-function log(message): void {
-  console.log(message);
-}
-```
-
 ## type 命令
 
-类型定义时支持模板字符串。
+`type`命令用来生成一个类型的别名。
+
+```typescript
+type Age = number;
+
+let age:Age = 55;
+```
+
+上面示例中，`type`命令为`number`类型生成一个别名`Age`。这样就能像使用`number`一样，使用`Age`当作类型。
+
+别名可以让一些复杂类型用起来更方便，也能增加代码的可读性。
+
+别名不允许有重名。
+
+```typescript
+type Color = 'red';
+type Color = 'blue'; // 报错
+```
+
+上面示例中，同一个别名`Color`声明了两次，就报错了。
+
+别名的作用域是块级作用域。这意味着，代码块内部定义的别名，影响不到外部。
+
+```typescript
+type Color = 'red';
+
+if (Math.random() < 0.5) {
+  type Color = 'blue';
+}
+```
+
+上面示例中，`if`代码块内部的类型别名`Color`，跟外部的`Color`是不一样的。
+
+别名支持使用表达式，也可以在定义一个别名时，使用另一个别名。
 
 ```typescript
 type World = "world";
-
-// 等同于 type Greeting = "hello world"
 type Greeting = `hello ${World}`;
 ```
+
+上面示例中，别名`Greeting`使用了字符串模板，并且需要读取另一个别名`World`。
+
 
 如果类型是多个值的联合，甚至可以产生插值的效果。
 

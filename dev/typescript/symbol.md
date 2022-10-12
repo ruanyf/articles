@@ -1,45 +1,64 @@
 # Symbol
 
-Symbol 是一种原始类型的值，类似于字符串，但是每个值都是不同的。
-
-TypeScript 里面，Symbol 的类型使用`symbol`表示。
+Symbol 是一种原始类型的值，类似于字符串，通过`Symbol()`函数生成，得到的每个值都是独一无二的。在 TypeScript 里面，Symbol 的类型使用`symbol`表示。
 
 ```typescript
-let sym1: symbol = Symbol();
+let x:symbol = Symbol();
+let y:symbol = Symbol();
+
+x === y // false
 ```
 
-为了突出每个 Symbol 值都是独一无二的，`symbol`有一个子类型`unique symbol`，通常使用这个子类型。
+上面示例中，变量`x`和`y`的类型就是`symbol`，它们是不相等的。
+
+`symbol`类型包含所有 Symbol 值，如果要写出一个类型，表示某一个具体的 Symbol 值就很困难，因为 Symbol 值不存在字面量，必须通过变量来引用。比如，类型`5`只包含单个数值`5`，但是写不出这种只包含单个 Symbol 值的类型。
+
+为了解决这个问题，TypeScript 设计了`symbol`的一个子类型`unique symbol`，表示单个的、指定的 Symbol 值。
 
 ```typescript
-declare const sym1: unique symbol;
+const x:unique symbol = Symbol(); // 正确
+let y:unique symbol = Symbol(); // 报错
 ```
 
-注意，`unique symbol`类型的变量，必须是`const`变量，或者只用于类的`readonly static`属性。
+上面示例中，`unique symbol`类型表示某个特定的 Symbol 值，只能使用`const`命令赋值，如果使用`let`命令赋值，就会报错。
+
+`const`命令赋值时，变量类型默认就是`unique symbol`，所以类型可以省略不写。
 
 ```typescript
-// 正确
-const sym2: unique symbol = Symbol();
+const x:unique symbol = Symbol(); 
+// 等同于
+const x = Symbol();
+```
 
-// 报错
-let sym2: unique symbol = Symbol();
+注意，两个`unique symbol`的值属于不同类型，不能互相比较。
 
-// 正确
+```typescript
+const x:unique symbol = Symbol();
+const y:unique symbol = Symbol();
+
+x === y // 报错
+```
+
+上面示例中，变量`x`和`y`虽然类型都写成`unique symbol`，但是其实属于不一样的类型。类型不同，就不能互相比较，所以就报错了。可以参考下面的例子来理解。
+
+```typescript
+const x:'hello' = 'hello';
+const y:'world' = 'world';
+
+x === y // 报错
+```
+
+上面示例中，变量`x`和`y`都是字符串，但是类型都是单个值，所以它们的类型不同，不能互相比较。这跟`unique symbol`类型不能互相比较，是一个原因。
+
+`unique symbol`类型除了用在`const`变量的赋值，还可以用在类的`readonly static`属性。
+
+```typescript
 class C {
-  static readonly StaticSymbol: unique symbol = Symbol();
+  static readonly foo:unique symbol = Symbol();
 }
 ```
 
-如果直接比较两个 Symbol 值，TypeScript 会报错，因为它们肯定是不相等的。
-
-```typescript
-const sym2 = Symbol();
-const sym3 = Symbol();
- 
-// 报错
-if (sym2 === sym3) {
-  // ...
-}
-```
+上面示例中，静态只读属性`foo`的类型就是`unique symbol`。注意，这时`static`和`readonly`两个限定符缺一不可。
 
 ## symbol 类型
 

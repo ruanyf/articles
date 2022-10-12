@@ -161,7 +161,7 @@ const angle = Math.atan2(...args);
 
 ## 只读数组，const 断言
 
-只读数组的成员不能改变，可以在声明数组时，加上`readonly`关键字。
+TypeScript 允许声明只读数组，即数组的成员不能改变。方法是在声明数组时，在类型前面加上`readonly`关键字。
 
 ```typescript
 let arr:readonly number[] = [0, 1];
@@ -170,12 +170,12 @@ delete arr[0]; // 报错
 arr[1] = 2; // 报错
 arr.push(3); // 报错
 
-arr = [1,2]; // 不报错
+arr = [1, 2]; // 正确
 ```
 
 上面示例中，`arr`是一个只读数组，删除、修改、新增数组成员都会报错。但是，变量`arr`赋值为另一个数组并不报错。
 
-如果要禁止修改变量`arr`赋值为另一个数组，可以从`const`声明。
+如果要禁止变量赋值为另一个数组，可以用`const`声明。
 
 ```typescript
 const arr:readonly number[] = [0, 1];
@@ -191,6 +191,15 @@ const arr:readonly Array<number> = [0, 1]; // 报错
 ```
 
 上面示例中，`readonly`与泛型声明法一起使用，就会报错。
+
+除了使用`readonly`关键字，TypeScript 还提供了两个泛型类型，也能生成只读数组。
+
+```typescript
+type Arr = ReadonlyArray<string>;
+type Arr = Readonly<string[]>;
+```
+
+上面示例中，泛型`ReadonlyArray<T>`和`Readonly<T[]>`都可以用来生成只读数组。
 
 `readonly`关键字会生成一种单独的类型，比如`readonly number[]`跟`number[]`是不一样的类型，前者是后者的子类型。
 
@@ -247,6 +256,61 @@ const booleanAndString1 = [true, 'abc'] as const;
 const booleanAndString2 = [true, 'abc'];
 ```
 
+## 多维数组
+
+TypeScript 允许`T[][]`的形式，表示二维数组，`T`是最底层数组成员的类型。
+
+```typescript
+var multi: number[][]=[[1,2,3],[23,24,25]]
+```
+
+```typescript
+var trilogies: string[][] = [
+["An Unexpected Journey", "The Desolation of Smaug", "There and Back Again"],
+["The Fellowship Of the Ring", "The Two Towers", "The Return Of The King"]
+];
+```
+
+下面是一个多重数组的例子。
+
+```typescript
+const fields:Fields = [
+  ['first', 'string', true],
+  ['last', 'string', true],
+  ['age', 'number', false],
+];
+```
+
+上面例子是一个数组，内部有三个成员，每个成员是一个元组。内部元组的第一个成员是一个字符串，第二个成员是一个固定值（字符串`string`或`number`），第三个成员是布尔值。
+
+上面这个多重数组的类型，有多种写法。下面的写法都是对的。
+
+```typescript
+type Fields = Array<[string, string, boolean]>;
+
+type Fields = Array<[string, ('string'|'number'), boolean]>;
+
+type Fields = Array<Array<string|boolean>>;
+
+type Fields = [
+  [string, string, boolean],
+  [string, string, boolean],
+  [string, string, boolean],
+];
+
+type Fields = [
+  [string, 'string', boolean],
+  [string, 'string', boolean],
+  [string, 'number', boolean],
+];
+
+type Fields = [
+  Array<string|boolean>,
+  Array<string|boolean>,
+  Array<string|boolean>,
+];
+```
+
 ## Tuple
 
 元组（tuple）是 TypeScript 独有的数据类型，代表了成员类型不同的 JavaScript 数组。
@@ -260,7 +324,21 @@ const s:[string, string, boolean]
 
 元组的声明正好与数组相反，数组是类型写在方括号外面（`number[]`），元组是类型写在方括号里面（`[number]`）。
 
-元组类型也可以包含不定数量的成员，请看下面的例子。
+```typescript
+let a:[number] = [1];
+```
+
+上面示例中，变量`a`是一个元组，只有一个成员，类型是`number`。
+
+元组也可以有可选成员。
+
+```typescript
+let a:[number, number?] = [1];
+```
+
+上面示例中，元组`a`的第二个成员就是可选的。
+
+元组也可以使用扩展运算符（`...`），包含不定数量的成员。
 
 ```typescript
 type NamedNums = [
@@ -282,19 +360,17 @@ type Tuple = [...any[]];
 
 上面示例中，元组`Tuple`可以放置任意数量和类型的成员。但是这样写，也就失去了使用元组和 TypeScript 的意义。
 
-下面的例子是数组的成员是一个元组。
+元组也可以是只读的，不允许修改，有两种写法。
 
 ```typescript
-// entries 的类型推断为 [string, number][]
-// entries 的值为  [[ 'a', 1 ], [ 'b', 2 ]]
-const entries = Object.entries({ a: 1, b: 2 });
+// 写法一
+type t = readonly [number, string]
+
+// 写法二
+type t = Readonly<[number, string]>
 ```
 
-一般来说，元组成员的类型不同，但是也允许所有成员的类型的类型相同。
-
-```typescript
-let point:[number, number] = [7, 5];
-```
+上面示例中，两种写法都可以得到只读元组，其中写法二是一个泛型，用到了工具类型`Readonly<T>`。
 
 元组类型也可以通过`interface`命令定义。
 
@@ -460,59 +536,4 @@ const nums: number[] = point; // 正确
 const t: [number, number] = [0, 0];
 const rt: readonly [number, number] = t; 
 const rar:readonly number[] = rt;
-```
-
-## 多维数组
-
-TypeScript 允许`T[][]`的形式，表示二维数组，`T`是最底层数组成员的类型。
-
-```typescript
-var multi: number[][]=[[1,2,3],[23,24,25]]
-```
-
-```typescript
-var trilogies: string[][] = [
-["An Unexpected Journey", "The Desolation of Smaug", "There and Back Again"],
-["The Fellowship Of the Ring", "The Two Towers", "The Return Of The King"]
-];
-```
-
-下面是一个多重数组的例子。
-
-```typescript
-const fields:Fields = [
-  ['first', 'string', true],
-  ['last', 'string', true],
-  ['age', 'number', false],
-];
-```
-
-上面例子是一个数组，内部有三个成员，每个成员是一个元组。内部元组的第一个成员是一个字符串，第二个成员是一个固定值（字符串`string`或`number`），第三个成员是布尔值。
-
-上面这个多重数组的类型，有多种写法。下面的写法都是对的。
-
-```typescript
-type Fields = Array<[string, string, boolean]>;
-
-type Fields = Array<[string, ('string'|'number'), boolean]>;
-
-type Fields = Array<Array<string|boolean>>;
-
-type Fields = [
-  [string, string, boolean],
-  [string, string, boolean],
-  [string, string, boolean],
-];
-
-type Fields = [
-  [string, 'string', boolean],
-  [string, 'string', boolean],
-  [string, 'number', boolean],
-];
-
-type Fields = [
-  Array<string|boolean>,
-  Array<string|boolean>,
-  Array<string|boolean>,
-];
 ```

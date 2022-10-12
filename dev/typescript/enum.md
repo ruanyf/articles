@@ -20,6 +20,8 @@ enum Color {
 
 ```typescript
 let color = Color.Green; // 1 
+// 等同于
+let color = Color['Green']; // 1
 ```
 
 上面示例展示了 Enum 结构的基本用法。JavaScript 内部把 Enum 成员当作数值处理，这说明 Enum 不仅是类型，还是实际的功能代码。

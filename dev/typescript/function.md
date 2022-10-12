@@ -631,20 +631,23 @@ function f(x?: number = 0) {
 
 ## rest 参数
 
-rest 参数表示函数剩余的所有参数，类型有两种可能。
-
-一种可能为数组（剩余参数类型相同）。
+rest 参数表示函数剩余的所有参数，它可以是数组（剩余参数类型相同），也可能是元组（剩余参数类型不同）。
 
 ```typescript
-function joinNumbers(...nums: number[]): string {
-  return nums.join('-');
+// rest 参数为数组
+function joinNumbers(
+  ...nums: number[]
+) {
+  // ...
 }
-```
 
-另一种可能为元组（剩余参数类型不同）。
+// rest 参数为元组
 
-```typescript
-function f(...args:[boolean, number]) {}
+function f(
+  ...args:[boolean, number]
+) {
+  // ...
+}
 ```
 
 元组需要声明每一个剩余参数的类型，也可以使用可选参数。
@@ -725,6 +728,7 @@ function add(x: number | any[], y: number | any[]): any {
 }
 ```
 
+
 TypeScript 不支持为不同的函数重载分别定义不同的函数实现。
 
 注意，重载的类型描述与函数的具体实现之间，不能有其他代码，否则报错。每一个重载函数只允许有一个函数实现，并且它必须位于所有函数重载语句之后，否则将产生编译错误。
@@ -745,6 +749,29 @@ const d1 = makeDate(12345678);
 const d2 = makeDate(5, 5, 5);
 // 报错
 const d3 = makeDate(1, 3);
+```
+
+下面是使用`type`命令描述函数重载。
+
+```typescript
+type CreateElement = {
+(tag: 'a'): HTMLAnchorElement
+(tag: 'canvas'): HTMLCanvasElement
+(tag: 'table'): HTMLTableElement
+(tag: string): HTMLElement
+}
+
+// 等同于
+function createElement(tag: 'a'): HTMLAnchorElement
+function createElement(tag: 'canvas'): HTMLCanvasElement
+function createElement(tag: 'table'): HTMLTableElement
+function createElement(tag：string): HTMLElement {
+  // ...
+}
+
+let createElement: CreateElement = (tag: string): HTMLElement => {
+// ...
+}
 ```
 
 函数的参数类型不同。

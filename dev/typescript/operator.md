@@ -293,6 +293,46 @@ type User = {
 type User = Concrete<MaybeUser>;
 ```
 
+## in 运算符
+
+in 运算符遍历 Union 类型里面的每一个类型。
+
+```typescript
+interface DataEntry<T> {
+key: T;
+value: string;
+}
+type DataKey = "location" | "name" | "year";
+type DataEntryGetters = {
+[K in DataKey as `get${Capitalize<K>}`]: () => DataEntry<K>;
+};
+// Equivalent to:
+// {
+//
+ getLocation: () => DataEntry<"location">;
+//
+ getName: () => DataEntry<"name">;
+//
+ getYear: () => DataEntry<"year">;
+// }
+```
+
+```typescript
+type DataKey = "location" | "name" | "year";
+type ExistenceChecks = {
+[K in `check${Capitalize<DataKey>}`]: () => boolean;
+};
+// Equivalent to:
+// {
+//
+ checkLocation: () => boolean;
+//
+ checkName: () => boolean;
+//
+ checkYear: () => boolean;
+// }
+```
+
 ## typeof 运算符
 
 `typeof`运算符可以用于定义类型。它接受一个值作为参数，这个值可以是各类类型的值，typeof 会返回值的类型。

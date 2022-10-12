@@ -1,14 +1,50 @@
 # d.ts 类型声明文件
 
-TypeScript中的“.d.ts”声明文件主要有以下几种来源：
+## 简介
 
-- TypeScript语言内置的声明文件。
-- 安装的第三方声明文件。
-- 自定义的声明文件。
+项目的类型定义可以写在一个单独的文件，这个文件就叫类型声明文件（declaration file），里面只有类型代码，没有具体的代码实现。
 
-## 内置声明文件
+它的文件名固定为`[文件名].d.ts`的形式，其中的`d`表示 declaration（声明）。
 
-当我们在计算机中安装了TypeScript语言后，同时也安装了一些语言内置的声明文件，它们位于TypeScript语言安装目录下的lib文件夹中。下面列举了部分内置的声明文件：
+类型声明文件一般有两个作用。
+
+（1）正确处理 JavaScript 项目的类型。这对于导入 npm 模块很重要，因为 npm 模块都是 JavaScript 代码。
+
+（2）正确使用 JavaScript 语言接口和外部环境 API（比如浏览器环境和 Node.js 环境）。
+
+下面是一个简单例子，有一个类型声明文件`types.d.ts`。
+
+```typescript
+// types.d.ts
+export interface Character {
+  catchphrase?: string;
+  name: string;
+}
+```
+
+然后，就可以在 TypeScript 脚本里面导入该文件声明的类型。
+
+```typescript
+// index.ts
+import { Character } from "./types.d.ts";
+
+export const character:Character = {
+  catchphrase: "Yee-haw!",
+  name: "Sandy Cheeks",
+};
+```
+
+类型声明文件主要有以下三种来源。
+
+- TypeScript 语言内置的类型声明文件。
+- 第三方类型声明文件，需要自己安装。
+- 自己编写的类型声明文件。
+
+### 内置声明文件
+
+安装 TypeScript 语言时，会同时安装一些内置声明文件，主要是 JavaScript 语言接口和运行环境 API 的类型声明。
+
+这些内置声明文件位于 TypeScript 语言安装目录的`lib`文件夹内，数量大概有几十个，下面是其中一些主要文件。
 
 - lib.d.ts
 - lib.dom.d.ts
@@ -21,47 +57,39 @@ TypeScript中的“.d.ts”声明文件主要有以下几种来源：
 - lib.es5.d.ts
 - lib.es6.d.ts
 
-TypeScript语言内置的声明文件统一使用“lib.[description].d.ts”命名方式，其中，description部分描述了该声明文件的内容。在这些声明文件中，既定义了标准的JavaScript API，如Array API、Math API以及Date API等，也定义了特定于某种JavaScript运行环境的API，如DOM API和Web Workers API等。
+这些内置声明文件的文件名统一为“lib.[description].d.ts”的形式，其中`description`部分描述了文件内容。比如，`lib.dom.d.ts`这个文件就描述了 DOM 结构的类型。
 
-TypeScript编译器在编译代码时能够自动加载内置的声明文件。因此，我们可以在代码中直接使用那些标准API，而不需要进行特殊的配置。
+TypeScript 编译器会自动加载这些内置声明文件，所以不需要特别的配置。
 
-## 第三方声明文件
+### 第三方声明文件
 
-如果我们的工程中使用了某个第三方代码库，例如jQuery，通常我们也想要安装该代码库的声明文件。这样，TypeScript编译器就能够对代码进行类型检查，同时代码编辑器也能够根据声明文件中的类型信息来提供代码自动补全等功能。
+如果项目中使用了外部的某个第三方代码库，那么就需要这个库的类型声明文件。
 
-在尝试安装某个第三方代码库的声明文件时，可能会遇到以下三种情况，下面以jQuery为例：
+这时又分成三种情况。
 
-- 在安装jQuery时，jQuery的代码包中已经内置了它的声明文件。
-- 在安装jQuery时，jQuery的代码包中没有内置的声明文件，但是在DefinitelyTyped网站上能够找到jQuery的声明文件。
-- 通过以上方式均找不到jQuery的声明文件，需要自定义jQuery的声明文件。
+（1）这个库自带了类型声明文件。
 
-通常来讲，若代码库的安装目录中包含“.d.ts”文件，则说明该代码库提供了内置的声明文件。
+（2）这个库没有自带，但是可以找到社区制作的类型声明文件。
 
-你的代码加载第三方模块时，编译器能够自动导入类型声明，正确地进行类型检查并提供智能提示功能。
+（3）找不到类型声明文件，需要自己写。
 
-TypeScript 项目有时需要引入第三方的 JavaScript 库，这些库很可能没有类型注释，是单纯的 JavaScript 库。这时就需要一个类型声明文件（type definition file）。
+一般来说，如果这个库的源码包含了`[vendor].d.ts`文件，那么就自带了类型声明文件。其中的`vendor`表示这个库的名字，比如`moment`这个库就自带`moment.d.ts`。
 
-类型声明文件的作用是，给出当前库的 API 的类型描述。
+### DefinitelyTyped 社区
 
-根据约定，类型声明文件的文件名为`[vendor].d.ts`的形式。这里的`vendor`表示第三方库的名称，`d`表示 declaration（声明）。比如，jQuery 的类型声明文件就是`jQuery.d.ts`。
+第三方库如果没有提供类型声明文件，社区往往会提供。TypeScript 社区主要使用 [DefinitelyTyped 仓库](https://github.com/DefinitelyTyped/DefinitelyTyped)，各种类型声明文件都会提交到那里，已经包含了几千个第三方库。
 
-## DefinitelyTyped
+TypeScript 官网有 DefinitelyTyped 的搜索入口，需要第三方声明文件的时候，就可以去 [www.typescriptlang.org/dt/search](https://www.typescriptlang.org/dt/search) 搜搜看。
 
-第三方库如果没有提供原生的类型描述文件，可以去 [DefinitelyTyped 仓库](https://github.com/DefinitelyTyped/DefinitelyTyped)找找看。这个仓库是 TypeScript 社区维护的类型描述文件仓库。
-
-DefinitelyTyped（https://definitelytyped.org/）是一个公开的集中式的TypeScript声明文件代码仓库，该仓库中包含了数千个代码库的声明文件。DefinitelyTyped托管在GitHub网站上，由开源社区和TypeScript开发团队共同维护。
-
-DefinitelyTyped仓库中的所有声明文件都会发布到npm的“@types”空间下。jQuery的声明文件被安装到了“C:\app\node_modules\@types\jquery”目录下，该目录下的“index.d.ts”文件就是jQuery的声明文件。
-
-你的代码加载 jQuery，编译器能够从安装的声明中获取jQuery的类型信息并正确地进行类型检查。
-
-TypeScript 社区在 `@types`名称空间下，发布类型声明文件的 NPM 软件包。只要安装软件包，就可以加载某个库的类型声明文件，比如 jquery 的类型软件包就是`@types/jquery`，它的安装命令如下。
+这些声明文件都会发布到 npm 的`@types`名称空间之下。比如，jQuery 的类型声明文件就放在`@types/jquery`这个库，安装这个库就可以了。
 
 ```bash
-$ npm install @types/jquery -D
+$ npm install @types/jquery --save-dev
 ```
 
-同时，在`tsconfig.json`文件里面加上类型声明文件的位置。
+执行上面的命令，`@types/jquery`这个库就安装到项目的`node_modules/@types/jquery`目录，里面的`index.d.ts`文件就是 jQuery 的类型声明文件。
+
+然后，在`tsconfig.json`文件里面加上类型声明文件的位置。
 
 ```javascript
 {
@@ -71,7 +99,61 @@ $ npm install @types/jquery -D
 }
 ```
 
-上面代码中，`compilerOptions.types`属性是一个数组，成员是所要加载的类型声明文件，要加载几个文件，就有几个成员。它们的默认位置是子目录`node_modules/@types`。
+上面设置中，`types`属性是一个数组，成员是所要加载的类型声明文件，要加载几个文件，就有几个成员，每个成员在子目录`node_modules/@types`下面都有一个自己的目录。
+
+这样的话，你的项目加载 jQuery 时，编译器就会正确加载它的类型声明文件。
+
+## declare 命令
+
+`declare`为已经存在的变量声明类型，不能用来声明新的变量。declare 语句不会出现在编译后的文件里面。
+
+`declare`命令用来声明类型。因为有些情况下，TypeScript 不能单独声明类型。
+
+```typescript
+declare let foo:string; 
+```
+
+上面语句声明`foo`变量的类型是字符串。
+
+`declare`只能用来声明类型，不能有具体的实现，也不能有赋值。
+
+```typescript
+// 报错
+declare let foo:string = 'hello'; 
+```
+
+上面的`declare`语句有具体的赋值，就会报错。
+
+类型声明文件里面，变量的类型声明语句必须使用`declare`命令，否则会报错。
+
+而且，类型声明文件声明的变量是全局的。
+
+interface 类型有没有`declare`都可以。
+
+```typescript
+interface Foo {} // 正确
+declare interface Foo {} // 正确
+```
+
+declare 文件里面可以声明全局作用域。
+
+```typescript
+declare global {
+// (global context)
+}
+```
+
+类型声明文件里面，可以使用`export`命令。
+
+```typescript
+export interface Data {
+  version: string;
+}
+```
+
+有了类型声明文件，可以使用三斜杠语法进行加载。
+
+## 自定义类型声明文件
 
 有时实在没有第三方库的类型声明文件，你可以告诉 TypeScript 相关对象的类型是`any`。比如，使用 jQuery 的脚本可以写成下面这样。
 
@@ -81,7 +163,7 @@ declare var $: any
 
 上面代码表示，jQuery 的`$`对象是外部引入的，类型是`any`，也就是 TypeScript 不用对它进行类型检查。
 
-有些库自带类型声明文件，比如`moment`自带`moment.d.ts`。
+
 
 为了描述不是用 TypeScript 编写的库的形状，我们需要声明库公开的 API。通常，这些是在.d.ts文件中定义的。如果您熟悉 C/C++，您可以将这些视为.h文件。
 

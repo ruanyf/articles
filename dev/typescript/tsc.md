@@ -2,6 +2,18 @@
 
 tsc 可以使用配置文件`tsconfig.json`，自动读取当前目录下的这个配置文件。
 
+## --all
+
+输出所有可用的参数。
+
+## allowJs
+
+编译时处理 JS 文件。
+
+```bash
+$ tsc --allowJs
+```
+
 ## --build
 
 TypeScript提供了一种新的构建模式来配合工程引用的使用，它就是“--build”模式（简写为“-b”）。在该模式下，编译器能够进行增量构建。
@@ -20,13 +32,45 @@ $ tsc --build
 
 在“C:\app\src”工程中还生成了“tsconfig.tsbuildinfo”文件，它保存了该工程本次构建的详细信息，编译器正是通过查看该文件来判断当前工程是否需要重新编译。
 
+## checkJs
+
+checkJs 对 JS 脚本文件进行类型检查。
+
+- Defaulting allowJs to true if it wasn’t already
+- Enabling the type checker on .js and .jsx files
+
+```bash
+$ tsc --checkJs
+```
+
 ## --declaration
 
 生成一个`.d.ts`类型声明文件。
 
+## -declarationMap
+
+为类型声明文件`.d.ts`生成 sourcemap 文件。
+
 ## --help
 
 显示帮助信息。
+
+## --init
+
+`--init`创建一个全新的`tsconfig.json`文件。
+
+```bash
+$ tsc --init
+```
+
+## --lib
+
+指定使用何种运行环境的类型声明文件。
+
+```bash
+$ tsc --lib es2020
+$ tsc --lib dom,es2021
+```
 
 ## --module
 
@@ -46,15 +90,19 @@ $ tsc --module commonjs Test.ts
 - es2020
 - esnext
 
-## --module noImplicitAny
+## --moduleResolution
 
-类型推测不允许出现 any 类型。
+决定模块解析策略。
+
+## --noEmit
+
+不生成新文件，只用来进行类型检查。
 
 ## --out
 
 将多个原始脚本编译成单个文件。
 
-## -p
+## -p，--project
 
 `-p`指定配置文件。如果配置文件不是当前目录的`tsconfig.json`文件，那么就需要使用`-p`参数指定配置文件。
 
@@ -73,13 +121,68 @@ $ tsc -p src/server/tsconfig.server.json
 $ tsc index.ts --watch --preserveWatchOutput
 ```
 
+## --pretty
+
+tsc 默认就是`--pretty`模式输出（带有颜色和格式），但是可以把`--pretty`关闭。
+
+```bash
+$ tsc index.ts --pretty false
+```
+
 ## --removeComments
 
 在输出文件中移除代码注释。
 
+## --skipLibCheck
+
+跳过`.d.ts`类型声明文件的类型检查。一个原因是项目可能安装了同一个依赖的两个版本，两个版本的类型声明文件会造成冲突。
+
+关闭类型声明文件的检查，可以加快编译速度。
+
+```bash
+$ tsc --skipLibCheck
+```
+
 ## --sourcemap
 
 生成一个 sourcemap 文件(.map 文件)。
+
+## --strict
+
+`--strict`参数会打开严格模式。它会启用下面八个编译器选项。
+
+```bash
+$ tsc --strict
+```
+
+- `--noImplicitAny`
+- `--strictNullChecks`
+- `--strictFunctionTypes`
+- `--strictBindCallApply`
+- `--strictPropertyInitialization`
+- `--noImplicitThis`
+- `--alwaysStrict`
+
+- --alwaysStrict：Use JavaScript’s strict mode whenever possible.
+- --strictBindCallApply
+- --strictFunctionTypes: enables stronger checks for function types.
+- --strictNullChecks: null is not part of any type (other than its own type, null) and must be explicitly mentioned if it is a acceptable value.
+- --strictPropertyInitialization: Properties in class definitions must be initialized, unless they can have the value undefined.
+- --noImplicitAny：如果 TypeScript 无法自己推导出类型，开发者必须注明类型。如果设为 false，推断不出，就一律设为 any。
+- --noImplicitThis：Complain if the type of this isn’t clear.
+- --useUnknownInCatchVariables
+
+在打开`--strict`的同时，上面这些属性也可以关闭其中一项或几项。
+
+```bash
+$ tsc --strict --noImplicitAny false
+```
+
+在实际工程中，我们可以先启用“--strict”编译选项，然后再根据需求禁用不需要的某些严格类型检查编译选项。这样做有一个优点，那就是在TypeScript语言发布新版本时可能会引入新的严格类型检查编译选项，如果启用了“--strict”编译选项，那么就会自动应用新引入的严格类型检查编译选项。
+
+```bash
+$ tsc --strict
+```
 
 ## --target
 
@@ -113,7 +216,7 @@ $ tsc index.ts --watch --preserveWatchOutput
 - lib.webworker.importscripts.d.ts
 - lib.scripthost.d.ts
 
-## --watch
+## -w, --watch
 
 TypeScript编译器提供了一种特殊的编译模式，即观察模式。在观察模式下，编译器会监视文件的修改并自动重新编译文件。观察模式通过“--watch”（简写为“-w”）编译选项来启用。
 
@@ -352,42 +455,6 @@ $ tsc --showConfig
 注意，上面添加了`files`属性，tsconfig.json 并没有这个属性。这是 TypeScript 根据`include`属性，计算出来这个配置文件所针对的 TypeScript 脚本。
 
 注意，`--showConfig`在 tsconfig.json 文件里面设置无效，只能用于命令行。
-
-## strict
-
-`--strict`参数会打开严格模式。它会启用下面八个编译器选项。
-
-- `--noImplicitAny`
-- `--strictNullChecks`
-- `--strictFunctionTypes`
-- `--strictBindCallApply`
-- `--strictPropertyInitialization`
-- `--noImplicitThis`
-- `--alwaysStrict`
-
-- --alwaysStrict：Use JavaScript’s strict mode whenever possible.
-- --strictBindCallApply
-- --strictFunctionTypes: enables stronger checks for function types.
-- --strictNullChecks: null is not part of any type (other than its own type, null) and must be explicitly mentioned if it is a acceptable value.
-- --strictPropertyInitialization: Properties in class definitions must be initialized, unless they can have the value undefined.
-- --noImplicitAny：如果 TypeScript 无法自己推导出类型，开发者必须注明类型。如果设为 false，推断不出，就一律设为 any。
-- --noImplicitThis：Complain if the type of this isn’t clear.
-- --useUnknownInCatchVariables
-
-在打开`--strict`的同时，上面这些属性也可以关闭其中一项或几项。
-
-```json
-{
-  "strict": true,
-  "alwaysStrict": false
-}
-```
-
-在实际工程中，我们可以先启用“--strict”编译选项，然后再根据需求禁用不需要的某些严格类型检查编译选项。这样做有一个优点，那就是在TypeScript语言发布新版本时可能会引入新的严格类型检查编译选项，如果启用了“--strict”编译选项，那么就会自动应用新引入的严格类型检查编译选项。
-
-```bash
-$ tsc --strict
-```
 
 ## traceResolution
 
