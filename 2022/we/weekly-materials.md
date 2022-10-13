@@ -1,5 +1,31 @@
 # 备用材料
 
+1、[冻干细胞克隆小鼠](https://www.france24.com/en/live-news/20220705-freeze-dried-mice-how-a-new-technique-could-help-conservation)
+
+如何保存濒危物种？目前的方法是采集它们的精子和卵细胞，进行冷冻保存，做起来并不方便。
+
+日本科学家想知道，如果冷冻保存普通的干细胞，有没有效果？结果，他们成功从冷冻的干细胞，克隆出了75只小鼠。
+
+![](https://cdn.beekka.com/blogimg/asset/202207/bg2022070601.webp)
+
+有了这项技术，以后只要能够得到动物的普通细胞，冷冻保存就可以。需要的时候，可能就可以克隆出该种动物的活体。
+
+1、[喷绘成衣](https://wired.me/technology/all-you-need-to-know-about-the-technology-behind-bella-hadids-spray-on-dress/)
+
+巴黎时装周演示了“喷绘成衣”。
+
+![](https://cdn.beekka.com/blogimg/asset/202210/bg2022101104.webp)
+
+工作人员将一种无毒的特殊溶液喷在模特身上，溶液会紧贴皮肤迅速风干，形成一层无纺布纤维层。
+
+![](https://cdn.beekka.com/blogimg/asset/202210/bg2022101105.webp)
+
+下面是[现场视频](https://v.qq.com/x/page/c3358nkznm6.html)。
+
+<iframe frameborder="0" src="https://v.qq.com/txp/iframe/player.html?vid=c3358nkznm6" allowFullScreen="true" width="600" height="400"></iframe>
+
+一家英国公司发明了这种喷涂织物，可以用于工业喷雾器和3D 打印。
+
 1、[Adobe 为什么高价收购 Figma？](https://staysaasy.com/product/2022/09/16/why-figma-is-special.html)
 
 人们谣传 Figma 是以 50 倍的收入被收购的，这在当今市场上是一个疯狂的价格。但是 Adob​​e 支付它是有道理的，而 Figma 接受它是有道理的：
