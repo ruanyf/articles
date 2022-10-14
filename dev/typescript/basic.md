@@ -601,3 +601,73 @@ $ ts-node
 上面示例中，在 TypeScript 命令行 REPL 环境中，先输入一个函数`twice`，然后调用该函数，就会得到结果。
 
 要推出这个 REPL 环境，可以按下 Ctrl + d，或者输入`.exit`。
+
+## 设计思想
+
+TypeScript 的设计目的，只是 JavaScript 的类型注释，所以做了两个设计决定。
+
+- 它的类型注释是可选的，你也可以不加，依然是有效的 TypeScript 代码。因此，所有 JavaScript 代码都是合法的 TypeScript 代码。
+
+- TypeScript 不会在出现类型错误时，阻止代码转换成 JavaScript。因此，你可以逐步为以前的 JavaScript 代码添加 TypeScript 类型注释。 
+
+### 编译
+
+TypeScript 脚本文件使用`.ts`后缀名，JavaScript 脚本文件使用`.js`后缀名。
+
+TypeScript 不提供代码的运行环境，只提供代码的转换工具，将 TS 代码转为 JS 代码，然后再在 JS 环境运行。这种代码转换，称为“编译”（compile）。
+
+代码转换时，转换器会将添加的类型注释删除，并将 TS 特有的语法转为 JS 语法。因此，TS 的类型检查只是编译时的类型检查，而不是运行时的类型检查。一旦代码编译为 JS，运行时就不再检查类型了。
+
+TypeScript 统一使用`.ts`作为 TypeScript 脚本的后缀名。
+
+安装
+
+```bash
+$ npm install -g typescript
+```
+
+## 类型的表达
+
+TS 对每一个值的存储位置（变量、属性等），都要求有明确的类型。
+
+TS 提供两种方法，获得存储位置的类型：类型注释和类型推断。
+
+### 类型注释
+
+在所有需要注明类型的地方，TypeScript 都允许使用`:TypeAnnotation`的形式说明类型。
+
+最常见的，就是在声明变量时，在变量名后面使用冒号，添加类型注释，表示该变量的类型。
+
+```typescript
+let x: number;
+```
+
+上面代码中，变量`x`的类型是数值（number）。
+
+声明函数的时候，也可以注明类型。
+
+```typescript
+var num: number = 123;
+function identity(num: number): number {
+    return num;
+}
+```
+
+如果学过 JS，你可能知道没有初始化的变量，值一律等于`undefined`。那么，undefined 是否会违反静态类型`number`呢？TS 规定变量赋值之前不能读取，从而解决了这个问题。
+
+### 类型推断
+
+对于没有提供类型注释的变量和属性，TS 会自动推断它们的类型，这叫做“类型推断”。
+
+```typescript
+let myNumber = 123;
+```
+
+上面代码中，变量`myNumber`没有类型注释，TypeScript 会自行推断该变量的类型为数值，后面就不能改成其他类型的值了。
+
+```typescript
+let myNumber = 123;
+myNumber = 'hello'; // 报错
+```
+
+上面示例中，变量`myNumber`的类型推断为数值，再赋值为字符串就会报错。
