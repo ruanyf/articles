@@ -1,163 +1,119 @@
 # any 类型，unknown 类型，never 类型
 
+本章介绍 TypeScript 的三种特殊类型，它们可以作为学习 TypeScript 类型系统的起点。
+
 ## any 类型
 
-any 类型是 TypeScript 提供的一种基本类型，表示这个值可能是任意类型。
+### 基本含义
+
+any 类型表示该位置不限制类型，任意类型的值都可以使用。
 
 ```typescript
 let x:any;
 
-x = 1;
-x = 'foo';
-
-let value: any;
-
-value = true; // OK
-value = 42; // OK
-value = "Hello World"; // OK
-value = []; // OK
-value = {}; // OK
-value = Math.random; // OK
-value = null; // OK
-value = undefined; // OK
-value = new TypeError(); // OK
-value = Symbol("type"); // OK
+x = 1; // 正确
+x = 'foo'; // 正确
+x = true; // 正确
 ```
 
-上面示例中，变量`x`的类型是`any`，表示它的值可以是任意类型，赋值为数值或字符串，都不会报错。
+上面示例中，变量`x`的类型是`any`，就可以被赋值为任意类型的值。
 
-`any`类型的变量，不仅可以接受任何类型的值，也可以赋值给其他任何类型的变量。
+变量类型一旦设为`any`，TypeScript 实际上会关闭它的类型检查，只要句法正确，即使有明显的类型错误，也不会报错。
 
 ```typescript
 let x:any = 'hello';
-
-let y:number;
-y = x; // 不会报错
+x(1) // 正确
+x.foo = 100; // 正确
 ```
 
-上面示例中，变量`x`是`any`类型，赋值给数值类型的`y`并不会报错，哪怕`x`的值是一个字符串。
+上面示例中，变量`x`的值是一个字符串，但是把它当作函数调用，或者当作对象读取任意属性，TypeScript 编译时都不报错。原因就是`x`的类型是`any`，TypeScript 就不对其进行类型检查。
 
-`any`类型的值可以赋值给其他类型的变量，也就是说，其他所有类型实际上都包含了 any 类型。它可以看作是 TypeScript 其他所有类型的父类型，或者其他所有类型都是`any`的子类型。
+由于这个原因，应该尽量避免使用`any`类型，否则就失去了使用 TypeScript 的意义了。
 
-如果变量的类型是`any`，该变量可以作为对象使用，访问它的任意属性，也可以作为函数使用，直接调用它。
+这个类型的主要设计目的，是为了适配以前老的 JavaScript 项目的迁移。有些年代很久的大型 JavaScript 项目，尤其是别人的代码，很难为每一行适配正确的类型，这时你为那些类型复杂的变量加上`any`，TypeScript 编译时就不会报错。不过，这大概是`any`唯一的适用场合。
 
-```typescript
-let x:any = 'hello';
+总之，TypeScript 认为，只要开发者使用了`any`类型，就表示开发者想要自己来处理这些代码，所以就不对`any`类型进行任何限制，怎么使用都可以。
 
-x.foo(); // 不会报错 
-x(); // 不会报错
-x.bar = 100; // 不会报错
-```
+### 类型推断问题
 
-上面代码不会报错的原因是，将变量类型设为`any`，实际上会关闭对它的类型检查。只要没有句法错误，无论代码怎么写，TypeScript 都不会出现编译错误。
-
-TypeScript 假设，开发者自己知道怎么使用`any`类型的值，所以不对`any`类型进行任何限制，怎么使用都可以。
+`any`类型的另一个出现场景是，对于那些开发者没有指定类型、TypeScript 必须自己推断类型的变量，如果这时无法推断出类型，TypeScript 就会认为该变量的类型是`any`。
 
 ```typescript
-let value: any;
-
-value.foo.bar; // OK
-value.trim(); // OK
-value(); // OK
-new value(); // OK
-value[0][1]; // OK
-```
-
-`any`的其他使用注意点如下。
-
-（1）类型设为`any`等于不设类型，失去了使用 TypeScript 的意义，完全不建议使用，除非是为以前的复杂 JavaScript 代码做类型适配。
-
-（2）如果开发者不指定变量类型，并且 TypeScript 不能从上下文推断出变量类型时，编译器就会默认该变量类型为`any`。
-
-```typescript
-// 等同于 y:any;  
-var y;
-
-// 等同于 z:{ a:any; b:any; };
-var z: { a; b; };
-
-// 等同于 f(x:any):void
-function f(x) {   
-  console.log(x);  
+function add(x, y) {
+  return x + y;
 }
+
+add(1, [1, 2, 3]) // 正确
 ```
 
-注释指令`// @ts-ignore`也可以关闭类型检查。
+上面示例中，函数`add()`的参数变量`x`和`y`，都没有足够的信息，TypeScript 无法推断出它们的类型，就会认为这些变量的类型是`any`。以至于后面就不再对函数`add()`进行类型检查了，怎么用都可以。
 
-### --noImplicitAny 编译选项
+这显然是很糟糕的情况，所以对于那些类型不明显的变量，一定要明确声明类型，防止推断为`any`。
 
-前一章说过，对于不写类型的标识符，TypeScript 会推断类型。但是，并非所有场合都能推断出类型，这时 TypeScript 就会认为类型是 `any`。
-
-```typescript
-function add(a, b) {
-  return a + b;
-}
-```
-
-上面示例中，函数`add()`的参数`a`和`b`没有注明类型，TypeScript 就会去推断类型，但是这个例子无法推断出来，TypeScript 就认为`a`和`b`的类型是`any`。
-
-一旦类型设为`any`，TypeScript 就放弃对其进行类型检查，这就失去使用 TypeScript 的意义了。为了避免这种情况，TypeScript 提供了一个编译选项`--noImplicitAny`，只要打开这个选项，推断不出类型就会报错。
+TypeScript 提供了一个编译选项`--noImplicitAny`，只要打开这个选项，推断不出类型就会报错。
 
 ```bash
-$ tsc --noImplicitAny myScript.ts
+$ tsc --noImplicitAny app.ts
 ```
 
 上面命令就使用了`--noImplicitAny`编译选项进行编译，这时上面的函数`add()`就会报错。
 
-这时，如果想避免报错，就必须设置`a`和`b`的类型。
+### 污染问题
+
+`any`类型除了关闭类型检查，还有一个很大的问题，就是它会“污染”其他变量。
 
 ```typescript
-function add(a:number, b:number) {
-  return a + b;
-}
+let x:any = 'hello';
+let y:number;
+
+y = x; // 正确
+
+y * 123 // 正确
+y.toFixed() // 正确
 ```
 
-当然，`a`和`b`显式设为类型`any`，也能避免报错，但是不要使用这种写法。
+上面示例中，变量`x`的类型是`any`，实际的值是一个字符串，赋值给数值类型的`y`并不会报错。然后，变量`y`继续进行各种数值运算，TypeScript 也检查不出错误，问题就这样要留到运行时才会暴露。
 
-```typescript
-function add(a:any, b:any) {
-  return a + b;
-}
-```
+污染其他具有正确类型的变量，把错误留到运行时，这就是不宜使用`any`类型的另一个主要原因。
+
+### 顶端类型
+
+综上所述，`any`类型不仅可以被赋值为任何类型的值，也可以赋值给任何类型的变量。
+
+在 TypeScript 语言中，如果类型`A`可以被赋值为类型`B`，那么类型`A`称为父类型，类型`B`称为子类型。TypeScript 的一个规则是，凡是可以使用父类型的地方，都可以使用子类型。由于任何值都可以赋值给`any`类型，所以`any`类型是 TypeScript 所有其他类型的父类型，或者说，所有其他类型都是`any`的子类型。
+
+所以，`any`类型是 TypeScript 的一个基础类型，包含了一切可能的值。所有其他类型都可以看成是它的衍生类型，它又被称为顶端类型（top type）。
 
 ## unknown 类型
 
-为了解决`any`类型“污染”其他变量的问题，TypeScript 引入了`unknown`类型。它与`any`含义相同，表示类型不确定，但是使用上有一些限制。
+为了解决`any`类型“污染”其他变量的问题，TypeScript 3.0 引入了[`unknown`类型](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html#new-unknown-top-type)。它与`any`含义相同，表示类型不确定，但是使用上有一些限制，可以视为严格版的`any`。
 
-首先，所有类型的值都可以分配给`unknown`类型。
+`unknown`跟`any`的相似之处，在于所有类型的值都可以分配给`unknown`类型。
 
 ```typescript
-let value:unknown;
+let x:unknown;
 
-value = true;
-value = 42;
-value = 'Hello World';
-value = [];
-value = {};
-value = Math.random; 
-value = null;
-value = undefined;
+x = true; // 正确
+x = 42; // 正确
+x = 'Hello World'; // 正确
 ```
 
 上面示例中，变量`value`的类型是`unknown`，可以赋值为各种类型的值。这与`any`的行为一致。
 
-但是，`unknown`类型不能赋值给其他类型的变量（`any`类型和`unknown`类型除外）。
+`unknown`类型跟`any`类型的不同之处在于，它不能直接使用。主要有以下几个限制。
+
+首先，`unknown`类型的变量，不能直接赋值给其他类型的变量（除了`any`类型和`unknown`类型）。
 
 ```typescript
 let v:unknown = 123;
 
-let v1:unknown = v; // 正确
-let v2:any = v; // 正确
-
-let v3:boolean = v; // 报错
-let v4:number = v; // 报错
-let v5:string = v; // 报错
-let v6:object = v; // 报错
+let v1:boolean = v; // 报错
+let v2:number = v; // 报错
 ```
 
-上面示例中，只有`any`类型和`unknown`类型的变量（`v1`和`v2`）可以赋值为变量`v`，其他类型的变量赋值为`v`都会报错。这就保证了`unknown`类型的值，只会局限在本类型的变量，不会扩散到其他类型的变量，从而克服了`any`的最大缺点。
+上面示例中，变量`v`是`unknown`类型，赋值给`any`和`unknown`以外类型的变量都会报错，这就避免了污染问题，从而克服了`any`类型的一大缺点。
 
-其次，不能调用`unknows`类型的方法和属性，否则会报错。
+另外，也不能直接调用`unknown`类型变量的方法和属性。
 
 ```typescript
 let v1:unknown = { foo: 123 };
@@ -166,63 +122,58 @@ v1.foo  // 报错
 let v2:unknown = 'hello';
 v2.trim() // 报错
 
-let v3:unknown = n => n + 1;
+let v3:unknown = (n = 0) => n + 1;
 v3() // 报错
 ```
 
-上面示例中，调用`unknown`类型的属性和方法，或者直接执行`unknown`类型，都会报错。
+上面示例中，直接调用`unknown`类型变量的属性和方法，或者直接当作函数执行，都会报错。
 
-再次，`unknown`类型能够进行的运算是有限的，只有比较运算（运算符`==`、`===`、`!=`、`!==`、`||`、`&&`、`?`）、取反运算（运算符`!`）、`typeof`运算符和`instanceof`运算符这几种，其他运算都会报错。
+再次，`unknown`类型变量能够进行的运算是有限的，只能进行比较运算（运算符`==`、`===`、`!=`、`!==`、`||`、`&&`、`?`）、取反运算（运算符`!`）、`typeof`运算符和`instanceof`运算符这几种，其他运算都会报错。
 
 ```typescript
 let a:unknown = 1;
-let b:unknown = a + 1; // 报错
-let c:boolean = (a === 1); // 正确
+
+a + 1 // 报错
+a === 1 // 正确
 ```
 
-上面示例中，`unknown`类型的变量`a`进行加法运算会报错，因为这是不允许的运算。但是进行比较运算就是可以的。
+上面示例中，`unknown`类型的变量`a`进行加法运算会报错，因为这是不允许的运算。但是，进行比较运算就是可以的。
 
-最后，只要经过“类型细化”（refine），`unknown`类型就可以赋值给其他类型。
+那么，怎么才能使用`unknown`类型变量呢？
+
+答案是只有经过“类型细化”（refine），`unknown`类型变量才可以使用。所谓“类型细化”，就是缩小`unknown`变量的类型范围，确保不会出错。
 
 ```typescript
 let a:unknown = 1;
 
 if (typeof a === 'number') {
-  let d = a + 10; // 正确
+  let r = a + 10; // 正确
 }
 ```
 
-上面示例中，`unknown`类型的变量`a`经过`typeof`运算以后，能够确定实际类型是`number`，就能用于加法运算了。这就叫“类型细化”，就是将一个不确定的类型细化为更明确的类型。
-
-这样设计的目的是，只有明确`unknown`变量的实际类型，才允许使用它，防止像`any`那样可以随意乱用，“污染”其他变量。
+上面示例中，`unknown`类型的变量`a`经过`typeof`运算以后，能够确定实际类型是`number`，就能用于加法运算了。这就是“类型细化”，即将一个不确定的类型细化为更明确的类型。
 
 下面是另一个例子。
 
 ```typescript
-function f1(value:unknown) {
-  value * 5; // 报错
+let s:unknown = 'hello';
 
-  if (value === 123) {
-    value * 5; // 正确
-  }
-}
-
-function f2(value:unknown) {
-  value.length;  // 报错
-
-  if (typeof value === 'string') { 
-    value.length; // 正确
-  }
+if (typeof s === 'string') {
+  s.length; // 正确
 }
 ```
 
-上面示例中，直接使用`unknown`类型的变量就会报错，类型细化以后再使用，就不会报错。
+上面示例中，确定变量`s`的类型为字符串以后，才能调用它的`length`属性。
+
+这样设计的目的是，只有明确`unknown`变量的实际类型，才允许使用它，防止像`any`那样可以随意乱用，“污染”其他变量。类型细化以后再使用，就不会报错。
 
 总之，`unknown`可以看作是更安全的`any`，凡是需要设为`any`的地方，通常都应该优先考虑设为`unknown`。
 
+由于`unknown`类型的变量可以被赋值为任意其他类型，所以其他类型（除了`any`）都可以视为它的子类型。它和`any`一样都属于 TypeScript 的顶端类型。
+
 ## never 类型
 
-类型也可能是空集，即不包含任何类型，TypeScript 把这种情况也当作一种类型，叫做`never`类型。
+类型也可能是空集，即不包含任何类型。为了逻辑的完整性，TypeScript 把这种情况也当作一种类型，叫做`never`类型。
 
 `never`类型表示不可能的类型，也就是不可能有任何值属于这个类型。
 
@@ -232,4 +183,20 @@ let x: never;
 
 上面示例中，变量`x`的类型是`never`，就不可能赋给它任何值，都会报错。
 
-`never`类型的使用场景，主要是在一些类型运算之中，保证类型运算的完整性，详见后面章节。
+`never`类型的使用场景，主要是在一些类型运算之中，保证类型运算的完整性，详见后面章节。另外，不可能返回值的函数，返回值的类型就可以写成`never`，详见《函数》一章。
+
+任何类型的变量都可以赋值为`never`类型。
+
+```typescript
+function f():never {
+  throw new Error('Error');
+}
+
+let v1:number = f(); // 正确
+let v2:string = f(); // 正确
+let v3:string = f(); // 正确
+```
+
+上面示例中，函数`f()`会抛错，所以返回值类型可以写成`never`，即不可能返回任何值。各种其他类型的变量都可以赋值为`f()`的运行结果（`never`类型）。
+
+前面说过，在 TypeScript 中，如果类型`A`可以被赋值为类型`B`，那么类型`B`就称为类型`A`的子类型。所以，`never`类型可以视为所有其他类型的子类型，表示不包含任何可能的值，这种情况叫做“尾端类型”（bottom type），`never`是 TypeScript 唯一的尾端类型。

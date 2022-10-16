@@ -22,6 +22,36 @@ type RedOrBlue = OnlyStrings<"red" | "blue" | 0 | false>;
 在联合类型中，unknown吸收所有类型。这意味着如果任何组成类型是unknown，则联合类型的计算结果为unknown。
 
 ```typescript
+// In an intersection everything absorbs unknown
+type T00 = unknown & null; // null
+type T01 = unknown & undefined; // undefined
+type T02 = unknown & null & undefined; // null & undefined (which becomes never)
+type T03 = unknown & string; // string
+type T04 = unknown & string[]; // string[]
+type T05 = unknown & unknown; // unknown
+type T06 = unknown & any; // any
+// In a union an unknown absorbs everything
+type T10 = unknown | null; // unknown
+type T11 = unknown | undefined; // unknown
+type T12 = unknown | null | undefined; // unknown
+type T13 = unknown | string; // unknown
+type T14 = unknown | string[]; // unknown
+type T15 = unknown | unknown; // unknown
+type T16 = unknown | any; // any
+// Type variable and unknown in union and intersection
+type T20<T> = T & {}; // T & {}
+type T21<T> = T | {}; // T | {}
+type T22<T> = T & unknown; // T
+type T23<T> = T | unknown; // unknown
+// unknown in conditional types
+type T30<T> = unknown extends T ? true : false; // Deferred
+type T31<T> = T extends unknown ? true : false; // Deferred (so it distributes)
+type T32<T> = never extends T ? true : false; // true
+type T33<T> = T extends never ? true : false; // Deferred
+```
+
+
+```typescript
 type UnionType1 = unknown | null; // unknown
 type UnionType2 = unknown | undefined; // unknown
 type UnionType3 = unknown | string; // unknown

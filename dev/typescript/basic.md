@@ -1,20 +1,18 @@
-# TypeScript 基本语法
+# TypeScript 基本用法
 
-本章介绍 TypeScript 的一些最基本的语法和概念。
+本章介绍 TypeScript 的一些最基本的语法和用法。
 
 ## 类型声明
 
-TypeScript 代码简单说就是在 JavaScript 代码的基础上，为变量和存储位置加上类型声明。
-
-类型声明的写法，就是在变量或存储位置的后面加上“:[类型]”。
+TypeScript 代码最明显的特征，就是为 JavaScript 变量加上了类型声明。
 
 ```typescript
 let foo:string;
 ```
 
-上面示例是一行变量声明语句，变量名`foo`后面的`:string`就是类型声明，表示变量`foo`的类型是`string`（字符串）。
+上面示例中，变量`foo`的后面使用冒号，声明了它的类型为`string`。
 
-除了变量声明，定义函数时，也要给出参数和返回值的类型声明。
+类型声明的写法，一律为在标识符后面添加“冒号 + 类型”。函数参数和返回值，也是这样来声明类型。
 
 ```typescript
 function toString(num:number):string {
@@ -22,20 +20,29 @@ function toString(num:number):string {
 }
 ```
 
-上面示例中，函数`toString()`的参数`num`的类型是`number`，返回值的类型是`string`。注意，返回值类型需要写在参数括号的后面。
+上面示例中，函数`toString()`的参数`num`的类型是`number`。参数列表的圆括号后面，声明了返回值的类型是`string`。更详细的介绍，参见《函数》一章。
 
-变量的值应该与声明的类型一致，如果不一致，TypeScript 在编译时就会报错。
+注意，变量的值应该与声明的类型一致，如果不一致，TypeScript 就会报错。
 
 ```typescript
 // 报错
 let foo:string = 123;
 ```
 
-上面示例中，变量`foo`声明的类型是字符串，但是赋值为数值`123`，TypeScript 就会报错。
+上面示例中，变量`foo`的类型是字符串，但是赋值为数值`123`，TypeScript 就报错了。
+
+另外，TypeScript 规定，变量只有赋值后才能使用，否则就会报错。
+
+```typescript
+let x:number;
+console.log(x) // 报错
+```
+
+上面示例中，变量`x`没有赋值就被读取，导致报错。而 JavaScript 允许这种行为，不会报错，没有赋值的变量会返回`undefined`。
 
 ## 类型推断
 
-变量和存储位置并不要求都有类型声明，如果没有，TypeScript 会尝试自己推断类型。
+类型声明并不是必需的，如果没有，TypeScript 会自己推断类型。
 
 ```typescript
 let foo = 123;
@@ -43,14 +50,14 @@ let foo = 123;
 
 上面示例中，变量`foo`并没有类型声明，TypeScript 就会推断它的类型。由于它被赋值为一个数值，因此 TypeScript 推断它的类型为`number`。
 
-如果变量`foo`的值后面更改为其他类型，TypeScript 就会报错。
+后面，如果变量`foo`更改为其他类型的值，跟推断的类型不一致，TypeScript 就会报错。
 
 ```typescript
 let foo = 123;
 foo = 'hello'; // 报错
 ```
 
-上面示例中，变量`foo`的类型推断为`number`，后面赋值为字符串，TypeScript 就会报错。
+上面示例中，变量`foo`的类型推断为`number`，后面赋值为字符串，TypeScript 就报错了。
 
 TypeScript 也可以推断函数的返回值。
 
@@ -60,446 +67,113 @@ function toString(num:number) {
 }
 ```
 
-上面示例中，函数`toString()`没有声明返回值的类型，但是 TypeScript 推断返回的是字符串。
+上面示例中，函数`toString()`没有声明返回值的类型，但是 TypeScript 推断返回的是字符串。正是因为 TypeScript 的类型推断，所以函数返回值的类型通常是省略不写的。
 
-如果缺乏足够明确的信息，TypeScript 可能无法推断出某个变量或位置是什么类型。这时，TypeScript 就会将其设为`any`类型，即可能为任何类型。
+从这里可以看到，TypeScript 的设计思想是，类型声明是可选的，你可以加，也可以不加。即使不加类型声明，依然是有效的 TypeScript 代码，只是这时不能保证 TypeScript 会正确推断出类型。由于这个原因。所有 JavaScript 代码都是合法的 TypeScript 代码。
 
-很多项目采用严格设定（打开了`noImplicitAny`），不允许类型推断为`any`，这时如果 TypeScript 无法推断出类型，就会报错。
+这样设计还有一个好处，将以前的 JavaScript 项目改为 TypeScript 项目时，你可以逐步地为老代码添加类型，即使有些代码没有添加，也不会无法运行。
 
-```typescript
-// 报错
-function fn(s) {
-  console.log(s.subtr(3));
-}
-```
+## TypeScript 的编译
 
-上面示例中，TypeScript 无法推断出参数`s`的类型。如果项目不允许推断为`any`类型，就会报错。
+JavaScript 的运行环境（浏览器和 Node.js）不认识 TypeScript 代码。所以，TypeScript 项目要想运行，必须先转为 JavaScript 代码，这个代码转换的过程就叫做“编译”（compile）。
 
-## 类型不是值
+TypeScript 官方没有做运行环境，只提供编译器。编译时，会将类型声明和类型相关的代码全部删除，只留下能运行的 JavaScript 代码，并且不会改变 JavaScript 的运行结果。
 
-TypeScript 添加的类型系统，只能用于类型运行。它不是 JavaScript 的值，不能用于 JavaScript 的值运算。
-
-```typescript
-let x:any;
-console.log(any); // 报错
-```
-
-## 类型断言
-
-类型断言可以用来手动指定一个值的类型。
-
-```typescript
-<类型>值
-// or
-值 as 类型
-```
-
-```typescript
-var str = '1' 
-var str2:number = <number> <any> str   //str、str2 是 string 类型
-console.log(str2)
-```
-
-当 S 类型是 T 类型的子集，或者 T 类型是 S 类型的子集时，S 能被成功断言成 T。这是为了在进行类型断言时提供额外的安全性，完全毫无根据的断言是危险的，如果你想这么做，你可以使用 any。
-
-它之所以不被称为类型转换，是因为转换通常意味着某种运行时的支持。但是，类型断言纯粹是一个编译时语法，同时，它也是一种为编译器提供关于如何分析代码的方法。
-
-## 数据类型
-
-### any 类型
-
-any 类型的变量，它的值可以是任意类型。它的值会动态变化。
-
-```typescript
-let x: any = 1;    // 数字类型
-x = 'I am who I am';    // 字符串类型
-x = false;    // 布尔类型
-```
-
-any 类型的变量，可以跳过类型检查。所以，如果某些变量不想进行类型检查，可以把它们设为 any 类型。
-
-数组也可以设为 any 类型的数组。
-
-```typescript
-let arrayList: any[] = [1, false, 'fine'];
-arrayList[1] = 100;
-```
-
-如果一个变量是多个类型，但不是不定类型，可以使用`|`运算符指定多个类型。
-
-```typescript
-let x: number | null | undefined;
-x = 1; // 运行正确
-x = undefined;    // 运行正确
-x = null;    // 运行正确
-```
-
-## 数组类型
-
-多重数组
-
-```typescript
-var multi:number[][] = [[1,2,3],[23,24,25]];  
-```
-
-## 元组
-
-数组中元素的数据类型都一般是相同的（any[] 类型的数组可以不同），如果存储的元素数据类型不同，则需要使用元组。
-
-## Union
-
-TypeScript 联合类型
-联合类型（Union Types）可以通过管道(|)将变量设置多种类型，赋值时可以根据设置的类型来赋值。
-
-创建联合类型的语法格式如下：
-
-Type1|Type2|Type3 
-
-```javascript
-var val:string|number 
-```
-
-
-## never 类型
-
-never 代表从不会出现的值。这意味着声明为 never 类型的变量只能被 never 类型所赋值，在函数中它通常表现为抛出异常或无法执行到终止点（例如无限循环）。
-
-```typescript
-let x: never;
-let y: number;
-
-// 运行错误，数字类型不能转为 never 类型
-x = 123;
-
-// 运行正确，never 类型可以赋值给 never类型
-x = (()=>{ throw new Error('exception')})();
-
-// 运行正确，never 类型可以赋值给 数字类型
-y = (()=>{ throw new Error('exception')})();
-
-// 返回值为 never 的函数可以是抛出异常的情况
-function error(message: string): never {
-    throw new Error(message);
-}
-
-// 返回值为 never 的函数可以是无法被执行到的终止点的情况
-function loop(): never {
-    while (true) {}
-}
-```
-
-- 任意类型	any	声明为 any 的变量可以赋予任意类型的值。
-- 数字类型	number	
-双精度 64 位浮点值。它可以用来表示整数和分数。TypeScript 没有单独的整数类型。
-- 字符串类型	string
-- 布尔类型	boolean	
-表示逻辑值：true 和 false。
-- 数组类型	无	
-声明变量为数组。
-// 在元素类型后面加上[]
-let arr: number[] = [1, 2];
-
-// 或者使用数组泛型
-let arr: Array<number> = [1, 2];
-- 元组	无	
-元组类型用来表示已知元素数量和类型的数组，各元素的类型不必相同，对应位置的类型需要相同。
-- 枚举	enum	
-枚举类型用于定义数值集合。
-void	void	
-用于标识方法返回值的类型，表示该方法没有返回值。
-
-function hello(): void {
-    alert("Hello Runoob");
-}
-null	null	
-表示对象值缺失。
-
-undefined	undefined	
-用于初始化变量为一个未定义的值
-
-never	never	
-never 是其它类型（包括 null 和 undefined）的子类型，代表从不会出现的值。
-
-## interface
-
-`interface`命令用来描述对象的类型组成。
-
-```javascript
-interface User {
-  name: string;
-  id: number;
-}
-
-const user = {
-  name: "Hayes",
-  id: 0,
-};
-```
-
-下面是使用`interface`命令定义对象实例的例子。
-
-```javascript
-interface User {
-  name: string;
-  id: number;
-}
-
-class UserAccount {
-  name: string;
-  id: number;
-
-  constructor(name: string, id: number) {
-    this.name = name;
-    this.id = id;
-  }
-}
-
-const user: User = new UserAccount("Murphy", 1);
-```
-
-## 类型
-
-TypeScript 的内置类型与 JavaScript 一致。
-
-- number
-- string
-- bigint
-- boolean
-- symbol
-- null
-- undefined
-- object
-
-此外，还提供了一些特殊类型。
-
-- unknown	the top type.
-- never	the bottom type.
-- object literal	eg { property: Type }
-- void	a subtype of undefined intended for use as a return type.
-- T[]	mutable arrays, also written Array<T>
-- [T, T]	tuples, which are fixed-length but mutable
-- (t: T) => U	functions
-
-### Union
-
-Union 类型（联合）表示有多个可能的类型，或者有限的值。
-
-type 命令用来定义简单类型的变量。
-
-```javascript
-type MyBool = true | false;
-type WindowStates = "open" | "closed" | "minimized";
-type LockStates = "locked" | "unlocked";
-type OddNumbersUnderTen = 1 | 3 | 5 | 7 | 9;
-
-function getLength(obj: string | string[]) {
-  return obj.length;
-}
-```
-
-### Generics
-
-Generics（范型）用来描述数组包含的值。
-
-```javascript
-type StringArray = Array<string>;
-type NumberArray = Array<number>;
-type ObjectWithNameArray = Array<{ name: string }>;
-```
-
-泛型可以在类型里面使用变量。
-
-```javascript
-interface Backpack<Type> {
-  add: (obj: Type) => void;
-  get: () => Type;
-}
-
-declare const backpack: Backpack<string>;
-```
-
-上面代码中，`Type`就是一个变量，具体的值由声明实例时的类型决定。
-
-## 接口
-
-接口是一系列抽象方法的声明，是一些方法特征的集合，这些方法都应该是抽象的，需要由具体的类去实现，然后第三方就可以通过这组抽象方法调用，让具体的类执行具体的方法。
-
-TypeScript 接口定义如下：
-
-interface interface_name { 
-}
-实例
-以下实例中，我们定义了一个接口 IPerson，接着定义了一个变量 customer，它的类型是 IPerson。
-
-customer 实现了接口 IPerson 的属性和方法。
-
-```typeScript
-interface IPerson { 
-    firstName:string, 
-    lastName:string, 
-    sayHi: ()=>string 
-} 
- 
-var customer:IPerson = { 
-    firstName:"Tom",
-    lastName:"Hanks", 
-    sayHi: ():string =>{return "Hi there"} 
-} 
-```
-
-接口继承就是说接口可以通过其他接口来扩展自己。
-
-Typescript 允许接口继承多个接口。
-
-继承使用关键字 extends。
-
-单接口继承语法格式：
-
-Child_interface_name extends super_interface_name
-
-多接口继承语法格式：
-
-Child_interface_name extends super_interface1_name, super_interface2_name,…,super_interfaceN_name
-继承的各个接口使用逗号 , 分隔。
-
-实例
-
-```typescript
-interface Person { 
-   age:number 
-} 
- 
-interface Musician extends Person { 
-   instrument:string 
-} 
- 
-var drummer = <Musician>{}; 
-drummer.age = 27 
-```
-
-## 类
-
-```typescript
-class Car { 
-    // 字段 
-    engine:string; 
- 
-    // 构造函数 
-    constructor(engine:string) { 
-        this.engine = engine 
-    }  
- 
-    // 方法 
-    disp():void { 
-        console.log("发动机为 :   "+this.engine) 
-    } 
-}
-```
-
-类可以实现接口，使用关键字 implements，并将 interest 字段作为类的属性使用。
-
-以下实例红 AgriLoan 类实现了 ILoan 接口：
-
-TypeScript
-interface ILoan { 
-   interest:number 
-} 
- 
-class AgriLoan implements ILoan { 
-   interest:number 
-   rebate:number 
-   
-   constructor(interest:number,rebate:number) { 
-      this.interest = interest 
-      this.rebate = rebate 
-   } 
-} 
-
-## 命名空间
-
-命名空间定义了标识符的可见范围，一个标识符可在多个名字空间中定义，它在不同名字空间中的含义是互不相干的。这样，在一个新的名字空间中可定义任何标识符，它们不会与任何已有的标识符发生冲突，因为已有的定义都处于其他名字空间中。
-
-TypeScript 中命名空间使用 namespace 来定义，语法格式如下：
-
-namespace SomeNameSpaceName { 
-   export interface ISomeInterfaceName {      }  
-   export class SomeClassName {      }  
-}
-
-以上定义了一个命名空间 SomeNameSpaceName，如果我们需要在外部可以调用 SomeNameSpaceName 中的类和接口，则需要在类和接口。
-
-要在另外一个命名空间调用语法格式为：
-
-SomeNameSpaceName.SomeClassName;
-如果一个命名空间在一个单独的 TypeScript 文件中，则应使用三斜杠 /// 引用它，语法格式如下：
-
-```typescript
-/// <reference path = "SomeFileName.ts" />
-```
+因此，TypeScript 的类型检查只是编译时的类型检查，而不是运行时的类型检查。一旦代码编译为 JavaScript，运行时就不再检查类型了。
 
 ## TypeScript Playground
 
 最简单的 TypeScript 使用方法，就是使用官网的在线编译页面，叫做 [TypeScript Playground](http://www.typescriptlang.org/play/)。
 
-只要打开这个网页，把 TypeScript 代码贴进文本框，它就会自动编译出 JavaScript 代码，并且在浏览器中执行。
+只要打开这个网页，把 TypeScript 代码贴进文本框，它就会在当前页面自动编译出 JavaScript 代码，还可以在浏览器执行编译产物。如果编译报错，它也会给出详细的报错信息。
 
-这个网页具有支持完整的 IDE 支持，具有自动语法提示、还能显示静态类型错误。而且，它支持把代码片段和编译器设置保存到 URL，便于分享给他人。
+这个页面还具有支持完整的 IDE 支持，可以自动语法提示。此外，它支持把代码片段和编译器设置保存成 URL，分享给他人。
+
+本书的示例都建议放到这个页面，进行查看和编译。
 
 ## tsc 编译器
 
-TypeScript 提供 tsc 编译器，将 TypeScript 脚本编译成 JavaScript 脚本。
+TypeScript 官方提供的编译器叫做 tsc，可以将 TypeScript 脚本编译成 JavaScript 脚本。本机想要编译 TypeScript 代码，必须安装 tsc。
 
-本机运行 TypeScript 代码，需要先安装 tsc。安装 tsc 的前提条件是先安装 Node.js。
+根据约定，TypeScript 脚本文件使用`.ts`后缀名，JavaScript 脚本文件使用`.js`后缀名。
 
-假定你已经安装好了 Node.js，就可以全局安装 typescript 这个软件包。
+### 安装
+
+tsc 是一个 npm 模块，使用下面的命令安装（必须先安装 npm）。
 
 ```bash
 $ npm install -g typescript
 ```
 
-安装完，检查一下是否安装成功。
+上面命令是全局安装 tsc，也可以在项目中将 tsc 安装为一个依赖模块。
+
+安装完成后，检查一下是否安装成功。
 
 ```bash
-# 或者输入 tsc --version
+# 或者 tsc --version
 $ tsc -v
-Version 4.6.2
+Version 4.8.4
 ```
 
-`-v`或`--version`参数，表示输出 tsc 的版本。
+上面命令中，`-v`或`--version`参数可以输出当前安装的 tsc 版本。
 
-`-h`或`--help`输出帮助信息。
+### 帮助信息
+
+`-h`或`--help`参数输出帮助信息。
 
 ```bash
 $ tsc -h
 ```
 
-在默认情况下，“--help”选项仅会显示基本的帮助信息。我们可以使用额外的“--all”选项来查看完整的帮助信息。
+默认情况下，“--help”参数仅显示基本的可用选项。我们可以使用“--all”参数，查看完整的帮助信息。
 
 ```bash
-$ tsc --help --all
+$ tsc --all
 ```
 
-安装了TypeScript之后，就可以使用tsc命令来编译TypeScript工程了。
+### 编译脚本
 
-`tsc`命令后面，加上 TypeScript 脚本文件，就可以将其转换成 JavaScript 脚本。
+安装 tsc 之后，就可以编译 TypeScript 脚本了。
+
+`tsc`命令后面，加上 TypeScript 脚本文件，就可以将其编译成 JavaScript 脚本。
 
 ```bash
 $ tsc app.ts
 ```
 
-上面命令会在当前目录下，生成一个`app.js`脚本文件，这个脚本就完全是编译后的 JavaScript 代码。
+上面命令会在当前目录下，生成一个`app.js`脚本文件，这个脚本就完全是编译后生成的 JavaScript 代码。
 
-`tsc`命令也可以编译多个 TypeScript 文件。
+`tsc`命令也可以一次编译多个 TypeScript 脚本。
 
 ```bash
 $ tsc file1.ts file2.ts file3.ts
 ```
 
-上面命令会生成三个 JavaScript 脚本文件`file1.js`、`file2.js`、`file3.js`。
+上面命令会在当前目录生成三个 JavaScript 脚本文件`file1.js`、`file2.js`、`file3.js`。
 
-如果转换过程没有任何错误，`tsc`命令不会有任何显示。如果你没有看到任何提示，就表示编译成功了。
+如果想将多个 TypeScript 脚本编译成一个 JavaScript 文件，使用`--outFile`参数。
 
-如果编译过程出错，`tsc`命令会报错，但是依然会生成 JavaScript 编译产物。举例来说，下面是一个错误的 TypeScript 脚本`app.ts`。
+```bash
+$ tsc file1.ts file2.ts --outFile app.js
+```
+
+上面命令将`file1.ts`和`file2.ts`两个脚本编译成一个 JavaScript 文件`app.ts`。
+
+编译结果默认都保存在当前目录，`--outdir`参数可以指定保存到其他目录。
+
+```bash
+$ tsc app.ts --outdir dist
+```
+
+上面命令会在`dist`子目录下生成`app.js`。
+
+### 编译错误的处理
+
+编译过程中，如果没有报错，`tsc`命令不会有任何显示。所以，如果你没有看到任何提示，就表示编译成功了。
+
+如果编译报错，`tsc`命令就会显示报错信息，但是这种情况下，依然会编译生成 JavaScript 脚本。
+
+举例来说，下面是一个错误的 TypeScript 脚本`app.ts`。
 
 ```typescript
 // app.ts
@@ -507,7 +181,7 @@ let foo:number = 123;
 foo = 'abc'; // 报错
 ```
 
-上面示例中，变量`foo`是数值类型，赋值为字符串就会报错。下面用`tsc`命令编译这个脚本。
+上面示例中，变量`foo`是数值类型，赋值为字符串，`tsc`命令编译这个脚本就会报错。
 
 ```bash
 $ tsc app.ts
@@ -520,9 +194,9 @@ app.ts:2:1 - error TS2322: Type 'string' is not assignable to type 'number'.
 Found 1 error in app.ts:2
 ```
 
-上面示例中，`tsc`编译这个有错的脚本，就会报错，提示用户变量`foo`正在被赋值为字符串。
+上面示例中，`tsc`命令输出报错信息，表示变量`foo`被错误地赋值为字符串。
 
-但是这种情况下，编译产物`app.js`还是会照样生成，下面就是编译后的结果。
+这种情况下，编译产物`app.js`还是会照样生成，下面就是编译后的结果。
 
 ```javascript
 // app.js
@@ -530,69 +204,93 @@ var foo = 123;
 foo = 'abc';
 ```
 
-可以看到，尽管有错，tsc 还是会原样将 TypeScript 编译成 JavaScript 脚本。
+可以看到，尽管有错，tsc 依然原样将 TypeScript 编译成 JavaScript 脚本。
 
-这是因为 TypeScript 团队认为，编译器的作用是给出编译错误，至于怎么处理编译结果，那就是开发者自己的判断了。开发者更了解自己的代码，所以会把编译结果交给开发者，让开发者决定下一步怎么处理。
+这是因为 TypeScript 团队认为，编译器的作用只是给出编译错误，至于怎么处理这些错误，那就是开发者自己的判断了。开发者更了解自己的代码，所以不管怎样，编译产物都会生成，让开发者决定下一步怎么处理。
 
-如果希望一旦报错就停止编译，不生成编译产物，可以使用`tsc`命令的参数`--noEmitOnError`。
+如果希望一旦报错就停止编译，不生成编译产物，可以使用`--noEmitOnError`参数。
 
 ```bash
 $ tsc --noEmitOnError app.ts
 ```
 
-上面的命令在报错后，就不会生成`app.js`。
+上面命令在报错后，就不会生成`app.js`。
 
-`tsc`命令有很多参数，下面再介绍几个。
-
-`--target`参数指定编译的版本，TypeScript 默认编译出来的 JavaScript 为 ES3 版本，可以指定编译为 ES2015 版本。
+tsc 还有一个`--noEmit`参数，只检查类型是否正确，不生成 JavaScript 文件。
 
 ```bash
-$ tsc --target es2015 hello.ts
+$ tsc --noEmit app.ts
 ```
 
-`--strict`参数指定采用更严格的检查规则。
+上面命令只检查是否有编译错误，不会生成`app.js`。
 
-- noImplicitAny：类型推断一旦出现`any`变量，就报错，即变量必须可以推断为某种明确的类型。因为`any`类型的变量越少，类型系统的收益越大。
-- strictNullChecks
+tsc 命令的更多参数，详见《tsc 编译器》一章。
 
-## ts-node
+### tsconfig.json
 
-[ts-node](https://github.com/TypeStrong/ts-node) 是基于 Node.js 的一个软件包，可以直接运行 TypeScript 代码。
+TypeScript 允许将`tsc`的编译参数，写在配置文件`tsconfig.json`。只要当前目录有这个文件，`tsc`就会自动读取，所以运行时可以不写参数。
 
-使用时，可以全局安装这个软件包。
+```bash
+$ tsc file1.js file2.js --outFile dist/app.js
+```
+
+上面这个命令写成`tsconfig.json`，就是下面这样。
+
+```json
+{
+  "files": ["file1.ts", "file2.ts"],
+  "compilerOptions": {
+    "outFile": "dist/app.js"
+  }
+}
+```
+
+有了这个配置文件，编译时直接调用`tsc`命令就可以了。
+
+```bash
+$ tsc
+```
+
+`tsconfig.json`的详细介绍，参见《tsconfig.json 配置文件》一章。
+
+## ts-node 模块
+
+[ts-node](https://github.com/TypeStrong/ts-node) 是一个非官方的 npm 模块，可以直接运行 TypeScript 代码。
+
+使用时，可以先全局安装它。
 
 ```bash
 $ npm install -g ts-node
 ```
 
-安装后，就可以直接运行 TS 脚本。
+安装后，就可以直接运行 TypeScript 脚本。
 
 ```bash
 $ ts-node script.ts
 ```
 
-上面命令运行了 TypeScript 脚本`script.ts`，给出结果。
+上面命令运行了 TypeScript 脚本`script.ts`，给出运行结果。
 
-如果不安装 ts-node，也可以通过 npx 调用它，再运行 TypeScript 脚本。
+如果不安装 ts-node，也可以通过 npx 调用它来运行 TypeScript 脚本。
 
 ```bash
 $ npx ts-node script.ts
 ```
 
-上面命令中，`npx`会在线调用 ts-node 软件包，从而在不安装的情况下，运行`script.ts`。
+上面命令中，`npx`会在线调用 ts-node，从而在不安装的情况下，运行`script.ts`。
 
-如果执行 ts-node 时不带有任何参数，它会提供一个 TypeScript 的命令行 REPL 运行环境，你可以在这个环境中输入 TypeScript 代码，逐行执行。
+如果执行 ts-node 命令不带有任何参数，它会提供一个 TypeScript 的命令行 REPL 运行环境，你可以在这个环境中输入 TypeScript 代码，逐行执行。
 
 ```bash
 $ ts-node
 >
 ```
 
-上面示例中，单独运行`ts-node`命令，会给出一个大于符号，这就是 TypeScript 的命令行提示符，可以逐行输入代码运行。
+上面示例中，单独运行`ts-node`命令，会给出一个大于号，这就是 TypeScript 的 REPL 运行环境，可以逐行输入代码运行。
 
 ```bash
 $ ts-node
-> const twice = (x: string) => x + x;
+> const twice = (x:string) => x + x;
 > twice('abc')
 'abcabc'
 > 
@@ -600,74 +298,6 @@ $ ts-node
 
 上面示例中，在 TypeScript 命令行 REPL 环境中，先输入一个函数`twice`，然后调用该函数，就会得到结果。
 
-要推出这个 REPL 环境，可以按下 Ctrl + d，或者输入`.exit`。
+要退出这个 REPL 环境，可以按下 Ctrl + d，或者输入`.exit`。
 
-## 设计思想
-
-TypeScript 的设计目的，只是 JavaScript 的类型注释，所以做了两个设计决定。
-
-- 它的类型注释是可选的，你也可以不加，依然是有效的 TypeScript 代码。因此，所有 JavaScript 代码都是合法的 TypeScript 代码。
-
-- TypeScript 不会在出现类型错误时，阻止代码转换成 JavaScript。因此，你可以逐步为以前的 JavaScript 代码添加 TypeScript 类型注释。 
-
-### 编译
-
-TypeScript 脚本文件使用`.ts`后缀名，JavaScript 脚本文件使用`.js`后缀名。
-
-TypeScript 不提供代码的运行环境，只提供代码的转换工具，将 TS 代码转为 JS 代码，然后再在 JS 环境运行。这种代码转换，称为“编译”（compile）。
-
-代码转换时，转换器会将添加的类型注释删除，并将 TS 特有的语法转为 JS 语法。因此，TS 的类型检查只是编译时的类型检查，而不是运行时的类型检查。一旦代码编译为 JS，运行时就不再检查类型了。
-
-TypeScript 统一使用`.ts`作为 TypeScript 脚本的后缀名。
-
-安装
-
-```bash
-$ npm install -g typescript
-```
-
-## 类型的表达
-
-TS 对每一个值的存储位置（变量、属性等），都要求有明确的类型。
-
-TS 提供两种方法，获得存储位置的类型：类型注释和类型推断。
-
-### 类型注释
-
-在所有需要注明类型的地方，TypeScript 都允许使用`:TypeAnnotation`的形式说明类型。
-
-最常见的，就是在声明变量时，在变量名后面使用冒号，添加类型注释，表示该变量的类型。
-
-```typescript
-let x: number;
-```
-
-上面代码中，变量`x`的类型是数值（number）。
-
-声明函数的时候，也可以注明类型。
-
-```typescript
-var num: number = 123;
-function identity(num: number): number {
-    return num;
-}
-```
-
-如果学过 JS，你可能知道没有初始化的变量，值一律等于`undefined`。那么，undefined 是否会违反静态类型`number`呢？TS 规定变量赋值之前不能读取，从而解决了这个问题。
-
-### 类型推断
-
-对于没有提供类型注释的变量和属性，TS 会自动推断它们的类型，这叫做“类型推断”。
-
-```typescript
-let myNumber = 123;
-```
-
-上面代码中，变量`myNumber`没有类型注释，TypeScript 会自行推断该变量的类型为数值，后面就不能改成其他类型的值了。
-
-```typescript
-let myNumber = 123;
-myNumber = 'hello'; // 报错
-```
-
-上面示例中，变量`myNumber`的类型推断为数值，再赋值为字符串就会报错。
+如果只是想简单运行 TypeScript 代码看看结果，ts-node 不失为一个简单的方法。
