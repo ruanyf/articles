@@ -115,6 +115,29 @@ interface MyInterface {
 
 上面示例中，`prop`属性是只读属性，不能修改它的值。
 
+默认情况下，赋值命令声明的对象，默认不能增删属性，修改属性值是可以的。
+
+```typescript
+const myUser = {
+  name: "Sabrina",
+};
+
+myUser.age = 23; // 报错
+delete myUser.name // 报错
+
+myUser.name = "Cynthia"; // 正确
+```
+
+如果希望属性值是只读的，可以在赋值时，在对象后面加上类型断言`as const`。
+
+```typescript
+const myUser = {
+  name: "Sabrina",
+} as const;
+
+myUser.name = "Cynthia"; // 报错
+```
+
 ### 字符串索引属性名
 
 如果对象的属性非常多，一个个声明类型就很麻烦，而且有些时候，无法事前知道对象会有多少属性。这时 TypeScript 允许采用属性名表达式的写法来描述类型，称为“字符串索引属性名”。

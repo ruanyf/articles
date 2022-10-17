@@ -380,6 +380,40 @@ const c2: MotorVehicle = new Car();
 
 这两种写法的区别是，如果类`Car`里面部署了接口`MotoVehicle`没有的属性和方法，那么只有变量`c1`可以调用这些属性和方法。
 
+### 结构类型原则
+
+Class 也遵循“结构类型原则”。只要满足 Class 的实例结构，就认为类型兼任。
+
+```typescript
+class Empty {}
+
+function fn(arg: Empty) {
+  // do something?
+}
+ 
+// 正确
+fn({ k: 10 });
+```
+
+上面示例中，`{ k: 10 }`满足`class Empty {}`的结构，只是多了一个用不到的属性`k`。所以，可以传入函数`fn()`。
+
+两个类如果结构相同，就视为类型兼容。
+
+```typescript
+class Car {
+  drive() {
+    // hit the gas
+  }
+}
+class Golfer {
+  drive() {
+    // hit the ball far
+  }
+}
+// No error?
+let w: Car = new Golfer();
+```
+
 ## 构造函数
 
 构造函数不允许定义返回值类型，因为构造函数的返回值类型永远为类的实例类型。

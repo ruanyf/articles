@@ -191,7 +191,7 @@ TypeScript 依赖 JavaScript 生态，需要用到很多外部模块。但是，
 
 ## 如何学习
 
-学习 TypeScript，必须先了解 JavaScript 的语法。但不需要了解很深，只要基本会用就可以了。
+学习 TypeScript，必须先了解 JavaScript 的语法。因为真正的实际功能都是 JavaScript 引擎完成的，TypeScript 只是添加了一个类型系统。
 
 本书假定读者已经了解了 JavaScript 语言，就不再介绍它的语法了，只介绍 TypeScript 引入的新语法，主要是类型系统。
 

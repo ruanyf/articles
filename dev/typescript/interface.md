@@ -581,6 +581,20 @@ interface Bear extends Animal {
 }
 ```
 
+同名 interface 会合并，定义同名 type 则会报错。这表明，inteface 是开放的，可以添加属性，type 是封闭的，不能添加属性，只能定义新的 type。
+
+注意，type 和 interface 是可以换用的。
+
+接口扩展类型别名
+
+type PartialPointX = { x: number; };
+interface Point extends PartialPointX { y: number; }
+
+类型别名扩展接口
+
+interface PartialPointX { x: number; }
+type Point = PartialPointX & { y: number; };
+
 （3）`interface`无法表达某些复杂类型（比如交叉类型和联合类型），但是`type`可以。
 
 ```typescript

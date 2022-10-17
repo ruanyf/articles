@@ -466,6 +466,13 @@ name = null;      // OK
 
 上面示例中，变量`name`的值可以是字符串，也可以是`null`。
 
+```typescript
+type Shape =
+  | { kind: "circle"; radius: number }
+  | { kind: "square"; x: number }
+  | { kind: "triangle"; x: number; y: number };
+```
+
 值类型可以与 interface 结合使用。
 
 ```typescript

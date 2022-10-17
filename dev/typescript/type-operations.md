@@ -17,6 +17,8 @@ type RedOrBlue = OnlyStrings<"red" | "blue" | 0 | false>;
 // Equivalent to: "red" | "blue"
 ```
 
+范例：https://www.typescriptlang.org/play#example/conditional-types
+
 ## unknown 类型
 
 在联合类型中，unknown吸收所有类型。这意味着如果任何组成类型是unknown，则联合类型的计算结果为unknown。

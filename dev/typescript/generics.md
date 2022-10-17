@@ -262,6 +262,20 @@ type OneOrManyOrNullStrings = OneOrManyOrNull<string>;
 type OneOrManyOrNullStrings = OneOrMany<string> | null
 ```
 
+一个经验法则是，如果泛型的类型参数只是泛型体出现一次，那么可能不需要使用泛型。
+
+```typescript
+// 写法一
+function length<T extends ArrayLike<unknown>>(t: T):number {}
+
+// 写法二
+function length(t: ArrayLike<unknown>): number {}
+```
+
+上面示例中，写法一的泛型其实是不需要的，因为类型参数`T`只在泛型体出现一次，完全可以改成写法二。
+
+也就是说，只有当类型参数出现两次以上，才是泛型的适用场合。
+
 ## 数组的泛型表示
 
 数组类型可以使用泛型表示。前面的《数组》一章提到过，数组类型有两种表示方法。

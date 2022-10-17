@@ -227,6 +227,36 @@ if (value === EvidenceTypeEnum.PASSPORT){
 }
 ```
 
+不同 Enum 成员的处理逻辑，可以用 swtich 语句表示。
+
+```typescript
+enum Flower {
+  Rose,
+  Rhododendron,
+  Violet,
+  Daisy,
+}
+
+const flowerLatinName = (flower: Flower) => {
+  switch (flower) {
+    case Flower.Rose:
+      return "Rosa rubiginosa";
+    case Flower.Rhododendron:
+      return "Rhododendron ferrugineum";
+    case Flower.Violet:
+      return "Viola reichenbachiana";
+    case Flower.Daisy:
+      return "Bellis perennis";
+
+    default:
+      const _exhaustiveCheck: never = flower;
+      return _exhaustiveCheck;
+  }
+};
+```
+
+上面的示例中，每个 Enum 成员有一个自己的处理分支。并且，最后还有一个`default`分支，这个分支里面的变量要设成`never`类型。这是一个技巧，虽然`default`分支在这个例子是不可能运行的，但是 Enum 将来可能添加成员，那时`default`分支就有可能运行。如果这种情况发生，`never`类型那一行就会报错，因为`never`类型不能被赋值，所以就提示开发者，需要为新增的成员补上处理逻辑。
+
 ## 枚举合并
 
 多个同名的枚举声明会合并成一个枚举声明。在合并枚举声明时，只允许其中一个枚举声明的首个枚举成员省略初始值。：
