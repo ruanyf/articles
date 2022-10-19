@@ -34,14 +34,20 @@ jane
 
 ## 用户管理
 
-### useradd
+### useradd：新增用户
 
 `useradd`命令用于增加新用户。
 
 ```bash
 # 新增用户
 $ sudo useradd <username>
+```
 
+这个命令会修改`/etc/passwd`、`/etc/shadow`、`/etc/group/etc/gshadow`等文件，从而达到新增用户的目的。
+
+`useradd`命令的默认设置在文件`/etc/default/useradd`和文件`/etc/login.defs`。
+
+```bash
 # 定制新用户的参数
 $ useradd -u 2000 -g 5000 -c "Admin Account of SAP" -d /opt/sap -s /bin/ksh john
 $ useradd -g users -G wheel,developers nathan
@@ -62,16 +68,22 @@ $ grep john /etc/passwd
 
 - `-b` `--base-dir`：在其中创建用户主目录的默认基础目录。这通常是 /home，用户的主目录是 /home/$USER。
 - `-c` `--comment`：用户信息（Comments），一个描述该 ID 的文本字符串
-- `-d` `--home`：用户主目录（Home Directory）的目录名称
+- `-d`或`--home`：指定用户主目录（Home Directory）的目录名。
 - `-e` `--expiredate`：帐户将过期或被禁用的日期，格式为 YYYY-MM_DD。
 - `-g` `--gid`：组ID（GID），用户的初始登录组的名称或编号。该组必须存在。
 - `-G` `--groups`：用户所属的其他组的逗号分隔列表。
 - `-K` 可用于覆盖来自`/etc/login.defs`的默认值。
-- `-m` `--create-home`：创建用户主目录，如果用户的主目录不存在，则创建它。将框架文件和 /etc/skel 中的所有目录都复制到主目录。
+- `-m`或`--create-home`：创建用户主目录，并将`/etc/skel`中的内容所有目录都复制到主目录。
 - `-o` `--non-unique` 允许用户拥有一个非唯一 ID。
 - `-p` `--password` 加密的密码。如果未指定密码，默认设置是禁用该帐户。您通常将在后续步骤中使用 passwd 命令，而不是生成一个加密的密码并在 useradd 命令上指定它。
 - `-s` `--shell`：用户Shell，如果用户的登录 shell 的名称与默认登录 shell 不同，则采用用户的登录 shell 名称。
 - `-u` `--uid`：用户ID（UID） 非负的用户 ID 编号，如果未指定 -o，那么它必须是唯一的。默认设置是使用不低于 UID_MIN 且大于任何现有用户的 ID 的最小值。
+
+新增用户以后，需要设置用户密码。
+
+```bash
+$ sudo passwd [username]
+```
 
 ## 相关文件
 

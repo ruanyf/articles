@@ -799,6 +799,12 @@ function extend<T extends object, U extends object>(first: T, second: U): T & U 
 const x = extend({ a: 'hello' }, { b: 42 });
 ```
 
+可以使用交叉类型写出一些特殊类型。
+
+```typescript
+type ValidatedInputString = string & { __brand: "User Input Post Validation" };
+```
+
 ## type 命令
 
 `type`命令用来生成一个类型的别名。

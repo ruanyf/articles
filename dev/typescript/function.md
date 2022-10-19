@@ -289,6 +289,13 @@ const f3:voidFunc = function () {
 
 这是因为，这时 void 类型并不是严格检查，而是表示该函数的返回值没有利用价值，或者说不应该使用该函数的返回值。
 
+返回`void`的函数作为一种类型，可以匹配任何返回类型的函数。
+
+```typescript
+const getPI = () => 3.14;
+const f: () => void = getPI; // 正确
+```
+
 这样设计是有现实意义的。举例来说，数组方法`Array.prototype.forEach(fn)`的参数`fn`是一个函数，而且这个函数应该没有返回值，即返回值类型是`void`。
 
 ```typescript
