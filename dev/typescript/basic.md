@@ -81,6 +81,20 @@ TypeScript 官方没有做运行环境，只提供编译器。编译时，会将
 
 因此，TypeScript 的类型检查只是编译时的类型检查，而不是运行时的类型检查。一旦代码编译为 JavaScript，运行时就不再检查类型了。
 
+## 值与类型
+
+学习 TypeScript 需要分清楚“值”（value）和“类型”（type）。
+
+“类型”是针对“值”的，可以视为是后者的一个元属性。每一个值在 TypeScript 里面都是有类型的。比如，`3`是一个值，它的类型是`number`。
+
+TypeScript 代码只涉及类型，不涉及值。所有跟“值”相关的处理，都由 JavaScript 完成。
+
+这一点务必牢记。TypeScript 项目里面，其实存在两种代码，一种是底层的“值代码”，另一种是上层的“类型代码”。前者使用 JavaScript 语法，后者使用 TypeScript 新增的语法。
+
+它们是可以分离的，TypeScript 的编译过程，实际上就是把“类型代码”全部拿掉，只保留“值代码”。
+
+编写 TypeScript 项目时，不要混淆哪些是值代码，哪些是类型代码。
+
 ## TypeScript Playground
 
 最简单的 TypeScript 使用方法，就是使用官网的在线编译页面，叫做 [TypeScript Playground](http://www.typescriptlang.org/play/)。
@@ -151,6 +165,10 @@ $ tsc file1.ts file2.ts file3.ts
 
 上面命令会在当前目录生成三个 JavaScript 脚本文件`file1.js`、`file2.js`、`file3.js`。
 
+tsc 有很多参数，可以调整编译行为。
+
+**（1）--outFile**
+
 如果想将多个 TypeScript 脚本编译成一个 JavaScript 文件，使用`--outFile`参数。
 
 ```bash
@@ -159,13 +177,27 @@ $ tsc file1.ts file2.ts --outFile app.js
 
 上面命令将`file1.ts`和`file2.ts`两个脚本编译成一个 JavaScript 文件`app.ts`。
 
-编译结果默认都保存在当前目录，`--outdir`参数可以指定保存到其他目录。
+**（2）--outDir**
+
+编译结果默认都保存在当前目录，`--outDir`参数可以指定保存到其他目录。
 
 ```bash
-$ tsc app.ts --outdir dist
+$ tsc app.ts --outDir dist
 ```
 
 上面命令会在`dist`子目录下生成`app.js`。
+
+注意，`--outDir`与`--outFile`不能同时使用。
+
+**（3）--target**
+
+为了保证编译结果能在各种 JavaScript 引擎运行，tsc 默认会将 TypeScript 代码编译成很低版本的 JavaScript，即3.0版本（以`es3`表示）。这通常不是我们想要的结果。
+
+这时可以使用`--target`参数，指定编译后的 JavaScript 版本。建议使用`es2015`，或者更新版本。
+
+```bash
+$ tsc --target es2015 app.ts
+```
 
 ### 编译错误的处理
 
