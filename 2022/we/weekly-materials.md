@@ -1,5 +1,23 @@
 # 备用材料
 
+1、[Facebook、Netflix 和 Valve 的企业文化文档](https://bytepawn.com/culture-docs-facebook-netflix-and-valve.html)（英文）
+
+![](https://cdn.beekka.com/blogimg/asset/202206/bg2022062107.webp)
+
+作者先后在 Facebook、Netflix 和 Valve 上班，这三家大公司都有自己的企业文化小册子，作者就比较了一下这些宣传文档。文章有很多图片，值得一读。
+
+1、[汽车无线充电](https://www.sohu.com/a/528270025_130713)
+
+![](https://cdn.beekka.com/blogimg/asset/202203/bg2022030901.webp)
+
+电动汽车的充电，现在都需要连接充电头。瑞典沃尔沃公司最近宣布，发明了汽车的无线充电。停车位的下方埋设了充电板，当指定型号的车辆停入，就会自动开始充电，驾驶员无需下车。
+
+![](https://cdn.beekka.com/blogimg/asset/202203/bg2022030902.webp)
+
+沃尔沃公司说，充电速度可以达到每小时40度电，高于一般的交流电充电桩。这大大方便了电动车主，但是线圈感应的功率这么大，对于周边的人不知道有没有安全隐患。
+
+![](https://cdn.beekka.com/blogimg/asset/202203/bg2022030903.webp)
+
 1、[冻干细胞克隆小鼠](https://www.france24.com/en/live-news/20220705-freeze-dried-mice-how-a-new-technique-could-help-conservation)
 
 如何保存濒危物种？目前的方法是采集它们的精子和卵细胞，进行冷冻保存，做起来并不方便。

@@ -214,19 +214,24 @@ Math.abs(n2) // 报错
 
 ## Object 类型与 object 类型
 
-对象类型也有大写和小写之分，大写是`Object`类型，小写是`object`类型。
+TypeScript 的对象类型也有大写`Object`和小写`object`两种。
 
-大写的`Object`类型代表 JavaScript 语言里面广义的对象，即所有可以转成对象的值，都可以是`Object`类型，其中就包含那些会自动转成对象的原始类型值。
+### Object 类型
+
+大写的`Object`类型代表 JavaScript 语言里面的广义对象。所有可以转成对象的值，都是`Object`类型，这囊括了几乎所有的值。
 
 ```typescript
 let obj:Object;
  
-obj = true; // 正确
-obj = 'hi'; // 正确
-obj = 1; // 正确
+obj = true;
+obj = 'hi';
+obj = 1;
+obj = { foo: 123 };
+obj = [1, 2];
+obj = (a:number) => a + 1;
 ```
 
-上面示例中，原始类型的布尔值、字符串和数值，都可以赋值给`Object`类型。
+上面示例中，原始类型值、对象、数组、函数都是合法的`Object`类型。
 
 事实上，除了`undefined`和`null`这两个值不能转为对象，其他任何值都可以赋值给`Object`类型。
 
@@ -239,21 +244,43 @@ obj = null; // 报错
 
 上面示例中，`undefined`和`null`赋值给`Object`类型，就会报错。
 
-小写的`object`类型代表 JavaScript 里面狭义的对象，即可以用字面量表示的对象，不包含那些原始类型的值。
+另外，空对象`{}`是`Object`类型的简写形式，所以使用`Object`时常常用空对象代替。
 
 ```typescript
-let a:Object = { foo: 123 }; // 正确
-let b:object = { foo: 123 }; // 正确
-
-a = 123; // 正确
-b = 123; // 报错
+let obj:{};
+ 
+obj = true;
+obj = 'hi';
+obj = 1;
+obj = { foo: 123 };
+obj = [1, 2];
+obj = (a:number) => a + 1;
 ```
 
-上面类型中，对象字面量赋值给大写的`Object`类型和小写的`object`类型，都是可以的。但是，原始类型的值只能赋值给大写类型，赋值给小写类型就会报错。
+上面示例中，变量`obj`的类型是空对象`{}`，就代表`Object`类型。
 
-大多数时候，我们使用对象类型，都是希望表示对象的字面量，不希望包括原始类型，所以建议总是使用小写类型`object`，不使用大写类型`Object`。
+显然，无所不包的`Object`类型既不符合直觉，也不方便使用。
 
-需要注意的是，无论是大写的`Object`类型，还是小写的`object`类型，都只能表示 JavaScript 原生的对象属性，用户自定义的属性都不存在于这两个类型。
+### object 类型
+
+小写的`object`类型代表 JavaScript 里面的狭义对象，即可以用字面量表示的对象，包含对象、数组和函数。
+
+```typescript
+let obj:object;
+ 
+obj = true; // 报错
+obj = 'hi'; // 报错
+obj = 1; // 报错
+obj = { foo: 123 };
+obj = [1, 2];
+obj = (a:number) => a + 1;
+```
+
+上面示例中，`object`类型不包含原始类型值，只包含对象、数组和函数。
+
+大多数时候，我们使用对象类型，只希望包含对象字面量，不希望包含原始类型。所以，建议总是使用小写类型`object`，不使用大写类型`Object`。
+
+注意，无论是大写的`Object`类型，还是小写的`object`类型，都只能表示 JavaScript 原生的对象，用户自定义的属性都不存在于这两个类型之中。
 
 ```typescript
 const o1:Object = { foo: 0 };
@@ -267,6 +294,78 @@ o2.foo // 报错
 ```
 
 上面示例中，`toString()`是对象的原生方法，可以正确访问。`foo`是自定义属性，访问就会报错。如何描述对象的自定义属性，详见《对象类型》一章。
+
+## undefined 和 null 的特殊性
+
+`undefined`和`null`既是值，又是类型。
+
+作为值，它们有一个特殊的地方：任何其他类型的变量都可以赋值为`undefined`或`null`。
+
+```typescript
+let age:number = 24;
+
+age = null;      // 正确
+age = undefined; // 正确
+```
+
+上面代码中，变量`age`的类型是`number`，但是赋值为`null`或`undefined`并不报错。
+
+这并不是因为`undefined`和`null`包含在`number`类型里面，而是跟 JavaScript 的行为有关。
+
+JavaScript 语言的设计是，变量如果等于`undefined`就表示还没有赋值，如果等于`null`就表示值为空。为了符合 JavaScript 的这种行为，TypeScript 允许`null`或`undefined`这两个值，总是可以赋值给其他类型的变量。
+
+但是有时候，这并不是开发者想要的行为，也不利于发挥类型系统的优势。
+
+```typescript
+const obj:object = undefined;
+obj.toString() // 错误，但能通过编译
+```
+
+上面示例中，变量`obj`等于`undefined`，编译不会报错。但是，实际执行时，调用`obj.toString()`就报错了，因为`undefined`不是对象，没有这个方法。
+
+为了避免这种情况，TypeScript 提供了一个编译选项`--strictNullChecks`，不允许`undefined`和`null`赋值给其他类型的变量（除了`any`类型和`unknown`类型）。
+
+下面是 tsc 命令打开这个编译选项的例子。
+
+```typescript
+// tsc --strictNullChecks app.ts
+
+let age:number = 24;
+
+age = null;      // 报错
+age = undefined; // 报错
+```
+
+上面示例中，打开`--strictNullChecks`以后，`number`类型的变量`age`就不能赋值为`undefined`和`null`。
+
+这个选项在配置文件`tsconfig.json`的写法如下。
+
+```json
+{
+  "compilerOptions": {
+    "strictNullChecks": true
+    // ...
+  }
+}
+```
+
+打开`--strictNullChecks`以后，`undefined`和`null`这两种值也不能互相赋值了。
+
+```typescript
+// 打开 --strictNullChecks
+
+let x:undefined = null; // 报错
+let y:null = undefined; // 报错
+```
+
+上面示例中，`undefined`类型的变量赋值为`null`，或者`null`类型的变量赋值为`undefind`，都会报错。
+
+总之，打开`--strictNullChecks`以后，`undefined`和`null`只能赋值给自身，或者`any`类型和`unknown`类型的变量。
+
+```typescript
+let x:any     = undefined;
+let y:unknown = null;
+```
 
 ## 值类型
 
@@ -350,72 +449,6 @@ function getPort(
 ```
 
 上面示例中，函数的参数`scheme`和返回值，都是值类型。
-
-## undefined 和 null 的特殊性
-
-TypeScript 规定，任何其他类型的变量都可以赋值为`undefined`或`null`。
-
-```typescript
-let age:number = 24;
-age = null;      // 正确
-age = undefined; // 正确
-```
-
-上面代码中，变量`age`的类型是数值，但是赋值为`null`或`undefined`并不报错。
-
-这样设计的原因是，JavaScript 语言的设计是，如果等于`undefined`就表示还没有赋值，如果等于`null`就表示值为空。为了符合 JavaScript 的这种行为，TypeScript 允许`null`或`undefined`这两个值，总是可以赋值给其他类型的变量。
-
-但是有时候，这并不是开发者想要的行为，也不利于发挥类型系统的优势。
-
-```typescript
-const obj:object = undefined;
-obj.toString() // 错误，但能通过编译
-```
-
-上面示例中，变量`obj`等于`undefined`，实际执行时，调用`obj.toString()`会报错，因为`undefined`上面没有这个方法。但是，这段代码可以通过编译，TypeScript 不会检查出错误，原因就在于它允许 object 类型等于 undefined。
-
-为了避免这种情况，TypeScript 提供了一种严格模式。只要打开编译器的`--strictNullChecks`选项，其他类型的变量（除了`any`类型和`unknown`类型）就不能赋值为`null`或`undefined`。
-
-```typescript
-// --strictNullChecks=true
-
-let age:number = 24;
-age = null;      // 报错
-age = undefined; // 报错
-```
-
-配置文件`tsconfig.json`打开`strictNullChecks`的写法如下。
-
-```json
-{
-  "compilerOptions": {
-    "strictNullChecks": true
-    // ...
-  }
-}
-```
-
-打开`--strictNullChecks`以后，undefined 和 null 这两种值也不能混用。
-
-```typescript
-// --strictNullChecks=true
-
-let x:undefined = null; // 报错
-let y:null = undefined; // 报错
-```
-
-上面示例中，`undefined`类型的变量赋值为`null`，或者`null`类型的变量赋值为`undefind`，都会报错。
-
-总之，开启严格模式后，除了`any`类型、`unknown`类型和自身，`undefined`或`null`赋值给其他类型就会报错。
-
-```typescript
-// --strictNullChecks=true
-
-let x:any     = undefined; // 正确
-let y:unknown = null; // 正确
-```
-
-上面示例中，严格模式下，any 类型和 unknown 类型的变量，可以赋值为`undefined`和`null`。
 
 ## 联合类型
 
