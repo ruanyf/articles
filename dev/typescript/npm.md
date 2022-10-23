@@ -31,3 +31,57 @@ lodash 的类型描述就是`@types/lodash`的文件`index.d.ts`。
 ## TS 模块转 npm 模块
 
 TS 代码放在`ts`子目录，编译出来的 CommonJS 代码放在`dist`子目录。
+
+## 如何写 TypeScript 模块
+
+首先，创建模块目录，然后在该目录里面新建一个`tsconfig.json`。
+
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2015",
+    "declaration": true,
+    "outDir": "./dist"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
+```
+
+- `"declaration": true`：生成 .d.ts 文件，方便其他使用 TypeScript 的开发者加载你的库。
+- `"module": "commonjs"`：编译后的模块格式为`commonjs`，表示该模块供 Node.js 使用。如果供浏览器使用，则要写成`"module": "esnext"`。
+- `"target": "es2015"`：生成的 JavaScript 代码版本为 ES2015，需要 Node.js 8 以上版本。
+- `"outDir": "./dist"`：编译后的文件放在`./dist`目录。
+- `include`：指定需要编译的文件。
+
+然后，使用 TypeScript 编写仓库代码。可以在`src`子目录里面，编写一个入口文件`index.ts`。
+
+最后，编写`package.json`。
+
+```typescript
+{
+  "name": "hwrld",
+  "version": "1.0.0",
+  "description": "Can log \"hello world\" and \"goodbye world\" to the console!",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ]
+}
+```
+
+里面的`"types": "dist/index.d.ts"`字段指定类型声明文件，否则使用这个库的 TypeScript 开发者找不到类型声明文件。`files`属性指定打包进入 npm 模块的文件。
+
+然后，就是编译和发布。
+
+```bash
+$ tsc
+$ npm publish
+```
+
+## 参考链接
+
+- [How to Write a TypeScript Library](https://www.tsmean.com/articles/how-to-write-a-typescript-library/), by tsmean
