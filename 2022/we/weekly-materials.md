@@ -1,5 +1,19 @@
 # 备用材料
 
+2、[Facebook 总部大楼的标牌](https://v1.benbarry.com/project/the-facebook-sign)
+
+2012年，Facebook 搬进了新的总部大楼，那里原来是 Sun Microsystems 公司的大楼。
+
+Facebook 没有制作新的大楼标牌，而是在原来标牌的正面，涂上了自己的标志。
+
+![](https://cdn.beekka.com/blogimg/asset/202206/bg2022062110.webp)
+
+标牌的背面，仍然保留了原来 Sun 公司的标志。
+
+![](https://cdn.beekka.com/blogimg/asset/202206/bg2022062111.webp)
+
+Facebook 这样解释：背面的那家科技公司是在我们之前出现的，它提醒我们，如果我们失败了，别人就会取代我们。
+
 1、[Facebook、Netflix 和 Valve 的企业文化文档](https://bytepawn.com/culture-docs-facebook-netflix-and-valve.html)（英文）
 
 ![](https://cdn.beekka.com/blogimg/asset/202206/bg2022062107.webp)
