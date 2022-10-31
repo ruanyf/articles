@@ -263,24 +263,24 @@ obj = (a:number) => a + 1;
 
 ### object 类型
 
-小写的`object`类型代表 JavaScript 里面的狭义对象，即可以用字面量表示的对象，包含对象、数组和函数。
+小写的`object`类型代表 JavaScript 里面的狭义对象，即可以用字面量表示的对象，只包含对象、数组和函数，不包括原始类型的值。
 
 ```typescript
 let obj:object;
  
-obj = true; // 报错
-obj = 'hi'; // 报错
-obj = 1; // 报错
 obj = { foo: 123 };
 obj = [1, 2];
 obj = (a:number) => a + 1;
+obj = true; // 报错
+obj = 'hi'; // 报错
+obj = 1; // 报错
 ```
 
 上面示例中，`object`类型不包含原始类型值，只包含对象、数组和函数。
 
 大多数时候，我们使用对象类型，只希望包含对象字面量，不希望包含原始类型。所以，建议总是使用小写类型`object`，不使用大写类型`Object`。
 
-注意，无论是大写的`Object`类型，还是小写的`object`类型，都只能表示 JavaScript 原生的对象，用户自定义的属性都不存在于这两个类型之中。
+注意，无论是大写的`Object`类型，还是小写的`object`类型，都只能表示 JavaScript 内置的原型对象（即`Object.prototype`），用户自定义的属性都不存在于这两个类型之中。
 
 ```typescript
 const o1:Object = { foo: 0 };
@@ -310,9 +310,9 @@ age = undefined; // 正确
 
 上面代码中，变量`age`的类型是`number`，但是赋值为`null`或`undefined`并不报错。
 
-这并不是因为`undefined`和`null`包含在`number`类型里面，而是跟 JavaScript 的行为有关。
+这并不是因为`undefined`和`null`包含在`number`类型里面，而是故意这样设计，任何类型的变量都可以赋值为`undefined`和`null`，以便跟 JavaScript 的行为保持一致。
 
-JavaScript 语言的设计是，变量如果等于`undefined`就表示还没有赋值，如果等于`null`就表示值为空。为了符合 JavaScript 的这种行为，TypeScript 允许`null`或`undefined`这两个值，总是可以赋值给其他类型的变量。
+JavaScript 的行为是，变量如果等于`undefined`就表示还没有赋值，如果等于`null`就表示值为空。所以，TypeScript 就允许了任何类型的变量都可以赋值为这两个值。
 
 但是有时候，这并不是开发者想要的行为，也不利于发挥类型系统的优势。
 
@@ -323,7 +323,7 @@ obj.toString() // 错误，但能通过编译
 
 上面示例中，变量`obj`等于`undefined`，编译不会报错。但是，实际执行时，调用`obj.toString()`就报错了，因为`undefined`不是对象，没有这个方法。
 
-为了避免这种情况，TypeScript 提供了一个编译选项`--strictNullChecks`，不允许`undefined`和`null`赋值给其他类型的变量（除了`any`类型和`unknown`类型）。
+为了避免这种情况，及早发现错误，TypeScript 提供了一个编译选项`--strictNullChecks`。只要打开这个选项，`undefined`和`null`就不能赋值给其他类型的变量（除了`any`类型和`unknown`类型）。
 
 下面是 tsc 命令打开这个编译选项的例子。
 
@@ -380,89 +380,75 @@ x = 'world'; // 报错
 
 上面示例中，变量`x`的类型是字符串`hello`，导致它只能赋值为这个字符串，赋值为其他字符串就会报错。
 
-TypeScript 推断类型时，对于`const`命令声明的变量会推断为值类型。
-
-`const`命令用来声明常量，TypeScript 遇到`const`命令声明的常量，如果代码没有注明类型，就会推断该变量的类型是一个值。
+TypeScript 推断类型时，遇到`const`命令声明的变量，如果代码里面没有注明类型，就会推断该变量是值类型。
 
 ```typescript
-// 推断 x 的类型是 “https”，不是 string
+// x 的类型是 “https”
 const x = 'https';
 
-// 推断 y 的类型是 42，不是 number
-const y = 42;
-
-// 推断 z 的类型是 true,不是 boolean
-const z = true;
+// y 的类型是 string
+const y:string = 'https';
 ```
 
-上面代码中，TypeScript 推断变量`x`、`y`、`z`的类型，都是它们所被赋予的值，而不是这些变量的基本类型。
+上面示例中，变量`x`是`const`命令声明的，TypeScript 就会推断它的类型是值`https`，而不是`string`类型。
 
-任何一个值都可以当作值类型使用，所以可以写出来一些很奇怪的代码。
+这样推断是合理的，因为`const`命令声明的变量，一旦声明就不能改变，相当于常量。值类型就意味着不能赋为其他值。
+
+注意，`const`命令声明的变量，如果赋值为对象，并不会推断为值类型。
+
+```typescript
+// x 的类型是 { foo: number }
+const x = { foo: 1 };
+```
+
+上面示例中，变量`x`没有被推断为值类型，而是推断属性`foo`的类型是`number`。这是因为 JavaScript 里面，`const`变量赋值为对象时，属性值是可以改变的。
+
+值类型可能会出现一些很奇怪的报错。
 
 ```typescript
 const x:5 = 4 + 1; // 报错
 ```
 
-上面代码中，变量`x`的类型是数字`5`，这是允许的，也就是说`x`只能等于`5`，不能等于其他值。但是上面的代码实际会报错，原因是 TypeScript 编译器由于不会允许代码，所以不知道`4 + 1`等于`5`，只知道`4 + 1`的类型是`number`，等号两边的类型不一样，从而报错。
+上面示例中，等号左侧的类型是数值`5`，等号右侧`4 + 1`的类型，TypeScript 推测为`number`。由于`5`是`number`的子类型，子类型不能赋值为父类型的值，所以报错了。
 
-解决这个问题的方法，就是使用类型断言（详见《类型断言》一章）在`4 + 1`后面加上`as 5`，就是告诉编译器，这个表达式的类型肯定是`5`，这样的话就不会报错了。
-
-```typescript
-const x:5 = 4 + 1 as 5;
-```
-
-由于值类型（比如`hello`）同时也是它的基础类型（比如`string`）的子类型，所以值类型可以赋值给对应的基础类型。
+但是，反过来是可以的，父类型可以赋值为子类型的值。
 
 ```typescript
-const x:'hello' = 'hello';
-let y:string = x;
+let x:5 = 5;
+let y:number = 4 + 1;
+
+x = y; // 报错
+y = x; // 正确
 ```
 
-上面示例中，变量`y`的类型是 string，但可以赋值为值类型的变量`x`，原因就是`hello`是 string 的子类型。
+上面示例中，子类型`x`不能赋值为父类型`y`，但是反过来是可以的。
 
-如果一个变量设为值类型，那么除了这个值，变量就不能等于其他值。所以，如果值类型如果只包含一个值，作用并不是很大。实际应用中，往往将多个值作为联合类型使用。
+如果一定要让子类型可以赋值为父类型的值，就要用到类型断言（详见《类型断言》一章）。
 
 ```typescript
-function printText(
-  s: string,
-  alignment: 'left'|'right'|'center'
-) {
-  // ...
-}
+const x:5 = (4 + 1) as 5; // 正确
 ```
 
-上面示例中，函数参数`alignment`的取值只能是 left、right、center 这三个字符串中的一个。它们之间竖线`|`表示联合类型，详见下文的介绍。
+上面示例中，在`4 + 1`后面加上`as 5`，就是告诉编译器，可以把`4 + 1`的类型视为值类型`5`，这样就不会报错了。
 
-下面是另一个例子。
-
-```typescript
-function getPort(
-  scheme: 'http'|'https'
-): 80|443 {
-  switch (scheme) {
-    case 'http':
-      return 80;
-    case 'https':
-      return 443;
-  }
-}
-```
-
-上面示例中，函数的参数`scheme`和返回值，都是值类型。
+只包含单个值的值类型，用处不大。实际开发中，往往将多个值结合，作为联合类型使用。
 
 ## 联合类型
 
-联合类型（union types）指的是一个值可以是若干种类型之一。它可以是类型`A`，也可以是类型`B`，使用`A|B`表示。
+联合类型（union types）指的是多个类型组成的并集，某个值只要属于其中一个基础类型，就同时属于这些基础类型的联合类型。
+
+举例来说，类型`A`与类型`B`可以组成一个联合类型，用`A|B`表示。任何一个类型`A`的值或类型`B`的值，都同时属于联合类型`A|B`。
 
 ```typescript
 let x:string|number;
+
 x = 123; // 正确
 x = 'abc'; // 正确
 ```
 
-上面示例中，变量`x`可以是字符串，也可以是数值。只要赋值为这两个类型之一，都不会报错。
+上面示例中，变量`x`就是联合类型`string|number`，表示它的值既可以是字符串，也可以是数值。
 
-联合类型表示一个变量有多种类型，非常有用，下面是一些例子。
+联合类型可以与值类型相结合，表示一个变量的值有若干种可能。
 
 ```typescript
 let setting:true|false;
@@ -472,81 +458,50 @@ let gender:'male'|'female';
 let rainbowColor:'赤'|'橙'|'黄'|'绿'|'青'|'蓝'|'紫';
 ```
 
-上一节说过，开启严格模式后，其他类型的变量不能赋值为`undefined`或`null`。这时，如果某个变量需要包含空值，就可以使用联合类型的写法。
+上面的示例都是由值类型组成的联合类型，非常清晰地表达了变量的取值范围。其中，`true|false`其实就是布尔类型`boolean`。
+
+前面提到，打开编译选项`--strictNullChecks`后，其他类型的变量不能赋值为`undefined`或`null`。这时，如果某个变量确实可能包含空值，就可以采用联合类型的写法。
 
 ```typescript
-let name: string | null;
-name = "Marius";  // OK
-name = null;      // OK
+let name:string|null;
+
+name = 'John';
+name = null;
 ```
 
 上面示例中，变量`name`的值可以是字符串，也可以是`null`。
 
+联合类型的第一个成员前面，也可以加上竖杠`|`，这样便于多行书写。
+
 ```typescript
-type Shape =
-  | { kind: "circle"; radius: number }
-  | { kind: "square"; x: number }
-  | { kind: "triangle"; x: number; y: number };
+let x:
+  | 'one'
+  | 'two'
+  | 'three'
+  | 'four';
 ```
 
-值类型可以与 interface 结合使用。
+上面示例中，联合类型的第一个成员`one`前面，也可以加上竖杠。
+
+如果一个变量有多种类型，读取该变量时，往往需要进行“类型缩小”（type narrowing），区分该值到底属于哪一种类型，然后再进一步理。
 
 ```typescript
-interface Options {
-  width: number;
-}
-function configure(x: Options | "auto") {
-  // ...
-}
-configure({ width: 100 });
-configure("auto");
-
-// 报错
-configure("automatic");
-```
-
-最后，布尔值类型 boolean 本身就是两个布尔值 union 类型`true | false`的别名。
-
-改变成员类型的顺序不影响联合类型的结果类型。
-
-```typescript
-type T0 = string | number;
-type T1 = number | string;
-```
-
-对部分类型成员使用分组运算符不影响联合类型的结果类型。
-
-```typescript
-type T0 = (boolean | string) | number;
-type T1 = boolean | (string | number);
-```
-
-联合类型的成员类型可以进行化简。假设有联合类型“U = T0 | T1”，如果T1是T0的子类型，那么可以将类型成员T1从联合类型U中消去。最后，联合类型U的结果类型为“U = T0”。例如，有联合类型“boolean | true | false”。其中，true类型和false类型是boolean类型的子类型，因此可以将true类型和false类型从联合类型中消去。最终，联合类型“boolean | true | false”的结果类型为boolean类型。
-
-```typescript
-type T0 = boolean | true | false;
-
-// 所以T0等同于 T1
-type T1 = boolean;
-```
-
-如果一个变量有多种类型，处理该变量时，往往需要进行类型缩小，逐一区分该值属于哪一种类型，再进行处理。
-
-```typescript
-function printId(id:number|string) {
-  // 报错
-  console.log(id.toUpperCase());
+function printId(
+  id:number|string
+) {
+    console.log(id.toUpperCase()); // 报错
 }
 ```
 
-上面示例中，函数参数`id`可能是数值，也可能是字符串，这时直接对这个变量调用`toUpperCase()`方法会报错，因为这个方法只存在于字符串，不存在于数值。
+上面示例中，参数变量`id`可能是数值，也可能是字符串，这时直接对这个变量调用`toUpperCase()`方法会报错，因为这个方法只存在于字符串，不存在于数值。
 
-解决方法就是对参数`id`做一下类型判断，确定它的类型以后再进行处理。这在 TypeScript 里面叫做“类型缩小”（type narrowing）。
+解决方法就是对参数`id`做一下类型缩小，确定它的类型以后再进行处理。这在 TypeScript 里面叫做“类型缩小”。
 
 ```typescript
-function printId(id:number|string) {
-  if (typeof id === "string") {
-    // 只对字符串，执行 toUpperCase() 方法
+function printId(
+  id:number|string
+) {
+  if (typeof id === 'string') {
     console.log(id.toUpperCase());
   } else {
     console.log(id);
@@ -556,69 +511,33 @@ function printId(id:number|string) {
 
 上面示例中，函数体内部会判断一下变量`id`的类型，如果是字符串，就对其执行`toUpperCase()`方法。
 
-“类型缩小”是 TypeScript 处理类型并集的标准方法，凡是遇到可能为多种类型的场合，都需要逐一缩小类型进行处理。实际上，可以把并集看成是一种“类型放大”（type widening），处理时就需要“类型缩小”（type narrowing）。
+“类型缩小”是 TypeScript 处理联合类型的标准方法，凡是遇到可能为多种类型的场合，都需要先缩小类型，再进行处理。实际上，联合类型本身可以看成是一种“类型放大”（type widening），处理时就需要“类型缩小”（type narrowing）。
 
-下面是另一个例子。
-
-```typescript
-interface Circle {
-    area: number;
-    radius: number;
-}
-
-interface Rectangle {
-    area: number;
-    width: number;
-    height: number;
-}
-
-type Shape = Circle | Rectangle;
-declare const s: Shape;
-
-s.area; // number
-s.radius; // 错误
-s.width;  // 错误
-s.height; // 错误
-```
-
-联合类型如果存在同名属性，则该属性的类型也是联合类型。
+下面是“类型缩小”的另一个例子。
 
 ```typescript
-interface Circle {
-    area: bigint;
+function getPort(
+  scheme: 'http'|'https'
+) {
+  switch (scheme) {
+    case 'http':
+      return 80;
+    case 'https':
+      return 443;
+  }
 }
-
-interface Rectangle {
-    area: number;
-}
-
-declare const s: Circle | Rectangle;
-
-s.area;   // bigint | number
 ```
 
-如果同名属性是可选的，那么该属性的类型也是可选的。
-
-```typescript
-interface Circle {
-    area: bigint;
-}
-
-interface Rectangle {
-    area?: number;
-}
-
-declare const s: Circle | Rectangle;
-
-s.area; // bigint | number | undefined
-```
+上面示例中，函数体内部对参数变量`scheme`进行类型缩小，根据不同的值类型，返回不同的结果。
 
 ## 交叉类型
 
-交叉类型（intersection types）指的是一个值同时具有多种类型，既满足类型`A`，也满足类型`B`，使用`A&B`表示。
+交叉类型（intersection types）指的是多个类型的交集。某个值只有同时属于所有基础类型，才会属于这些基础类型的交叉类型。
+
+举例来说，类型`A`与类型`B`组成一个交叉类型，用`A&B`表示。
 
 ```typescript
-let x:number & string;
+let x:number&string;
 ```
 
 上面示例中，变量`x`同时是数值和字符串，这当然是不可能的，所以 TypeScript 会认为`x`的类型实际是`never`。
@@ -626,7 +545,9 @@ let x:number & string;
 交叉类型的主要用途是表示对象的合成。
 
 ```typescript
-let obj:{ foo: string } & { bar: string };
+let obj:
+  { foo: string } &
+  { bar: string };
 
 obj = {
   foo: 'hello',
@@ -636,194 +557,9 @@ obj = {
 
 上面示例中，变量`obj`同时具有属性`foo`和属性`bar`。
 
-```typescript
-interface Clickable {
-    click(): void;
-}
-interface Focusable {
-    focus(): void;
-}
-
-type T = Clickable & Focusable;
-```
-
-上面示例中，类型`T`表示即可以点击，也可以获得焦点的对象。
-
-交叉类型通常与对象类型一起使用。虽然在交叉类型中也允许使用原始类型成员，但结果类型将成为never类型，因此在实际代码中并不常见。
-
-```typescript
-type T = boolean & number & string;
-```
-
-上面示例中，类型`T`为 never。
-
-如果交叉类型中存在多个相同的成员类型，那么相同的成员类型将被合并为单一成员类型。
-
-```typescript
-type T0 = boolean;
-type T1 = boolean & boolean;
-type T2 = boolean & boolean & boolean;
-```
-
-上面示例中，T0、T1和T2都表示同一种类型boolean。
-
-改变成员类型的顺序不影响交叉类型的结果类型。
-
-```typescript
-interface Clickable {
-    click(): void;
-}
-interface Focusable {
-    focus(): void;
-}
-
-type T0 = Clickable & Focusable;
-type T1 = Focusable & Clickable;
-```
-
-注意，当交叉类型涉及调用签名重载或构造签名重载时便失去了“加法交换律”的性质。因为交叉类型中成员类型的顺序将决定重载签名的顺序，进而将影响重载签名的解析顺序。
-
-```typescript
-interface Clickable {
-    register(x: any): void;
-}
-interface Focusable {
-    register(x: string): boolean;
-}
-
-type ClickableAndFocusable = Clickable & Focusable;
-type FocusableAndFocusable = Focusable & Clickable;
-
-function foo(
-    clickFocus: ClickableAndFocusable,
-    focusClick: FocusableAndFocusable
-) {
-    let a: void = clickFocus.register('foo');
-    let b: boolean = focusClick.register('foo');
-}
-```
-
-此例第8行和第9行使用不同的成员类型顺序定义了两个交叉类型。第15行，调用“register()”方法的返回值类型为void，说明在ClickableAndFocusable类型中，Clickable接口中定义的“register()”方法具有更高的优先级。第16行，调用“register()”方法的返回值类型为boolean，说明FocusableAndFocusable类型中Focusable接口中定义的“register()”方法具有更高的优先级。此例也说明了调用签名重载的顺序与交叉类型中成员类型的定义顺序是一致的。
-
-对部分类型成员使用分组运算符不影响交叉类型的结果类型。
-
-```typescript
-interface Clickable {
-  click(): void;
-}
-interface Focusable {
-  focus(): void;
-}
-interface Scrollable {
-  scroll(): void;
-}
-
-type T0 = (Clickable & Focusable) & Scrollable;
-type T1 = Clickable & (Focusable & Scrollable);
-```
-
-上面示例的T0和T1类型是同一种类型。
-
-```typescript
-type Combined = { a: number } & { b: string };
-type Conflicting = { a: number } & { a: string };
-```
-
-只要交叉类型I中任意一个成员类型包含了属性签名M，那么交叉类型I也包含属性签名M。
-
-```typescript
-interface A {
-    a: boolean;
-}
-
-interface B {
-    b: string;
-}
-
-// 交叉类型如下
-{
-    a: boolean;
-    b: string;
-}
-```
-
-若交叉类型的属性签名M在所有成员类型中都是可选属性，那么该属性签名在交叉类型中也是可选属性。否则，属性签名M是一个必选属性。
-
-```typescript
-interface A {
-    x: boolean;
-    y?: string;
-}
-interface B {
-    x?: boolean;
-    y?: string;
-}
-
-// 交叉类型如下
-{
-    x: boolean;
-    y?: string;
-}
-```
-
-`&`的优先级高于`|`。
-
-```typescript
-A & B | C & D
-// 该类型等同于如下类型：
-(A & B) | (C & D)
-```
-
-分配律
-
-```typescript
-A & (B | C) 
-// 等同于
-(A & B) | (A & C)
-```
-
-一个稍微复杂的类型等式。
-
-```typescript
-(A | B) & (C | D) ≡ A & C | A & D | B & C | B & D
-```
-
-```typescript
-T = (string | 0) & (number | 'a');
-T = (string & number) | (string & 'a') | (0 & number) | (0 & 'a');
-
-T = never | 'a' | 0 | never;
-T = 'a' | 0;
-```
-
-
-```typescript
-function extend<T extends object, U extends object>(first: T, second: U): T & U {
-  const result = <T & U>{};
-  for (let id in first) {
-    (<T>result)[id] = first[id];
-  }
-  for (let id in second) {
-    if (!result.hasOwnProperty(id)) {
-      (<U>result)[id] = second[id];
-    }
-  }
-
-  return result;
-}
-
-const x = extend({ a: 'hello' }, { b: 42 });
-```
-
-可以使用交叉类型写出一些特殊类型。
-
-```typescript
-type ValidatedInputString = string & { __brand: "User Input Post Validation" };
-```
-
 ## type 命令
 
-`type`命令用来生成一个类型的别名。
+`type`命令用来定义一个类型的别名。
 
 ```typescript
 type Age = number;
@@ -863,28 +599,21 @@ type World = "world";
 type Greeting = `hello ${World}`;
 ```
 
-上面示例中，别名`Greeting`使用了字符串模板，并且需要读取另一个别名`World`。
+上面示例中，别名`Greeting`使用了模板字符串，需要读取另一个别名`World`。
 
-
-如果类型是多个值的联合，甚至可以产生插值的效果。
-
-```typescript
-type EmailLocaleIDs = "welcome_email" | "email_heading";
-type FooterLocaleIDs = "footer_title" | "footer_sendoff";
-
-// 等同于 type AllLocaleIDs = "welcome_email_id" | "email_heading_id" | "footer_title_id" | "footer_sendoff_id"
-type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
-```
+`type`命令属于类型相关的代码，编译成 JavaScript 的时候，会被全部删除。
 
 ## typeof 运算符
 
-typeof 运算符是一个 JavaScript 语言的一元运算符，返回一个字符串，代表操作数的类型。
+typeof 运算符是 JavaScript 语言的一元运算符，返回一个字符串，代表操作数的类型。
 
 ```javascript
 typeof 'foo'; // 'string'
 ```
 
-JavaScript 的`typeof`运算符，可能返回八种值。
+上面示例中，`typeof`运算符返回字符串`foo`的类型是`string`。
+
+JavaScript 里面，`typeof`运算符只可能返回八种值，而且都是字符串。
 
 ```javascript
 typeof undefined; // "undefined"
@@ -897,74 +626,46 @@ typeof Symbol(); // "symbol"
 typeof 127n // "bigint"
 ```
 
-TypeScript 对 JavaScript中的typeof运算符进行了扩展，使其能够在表示类型的位置上使用。当在表示类型的位置上使用typeof运算符时，它能够获取操作数的类型，我们称之为类型查询。
+上面示例是`typeof`运算符在 JavaScript 语言里面，可能返回的八种值。
 
-```typescript
-typeof TypeQueryExpression
-```
-
-下面是一些用法实例。
+TypeScript 对`typeof`运算符进行了扩展，使其能够返回某个值的 TypeScript 类型。
 
 ```typescript
 const a = { x: 0 };
-function b(x: string, y: number): boolean {
-    return true;
-}
 
 type T0 = typeof a;   // { x: number }
 type T1 = typeof a.x; // number
-type T2 = typeof b;   // (x: string, y: number) => boolean
 ```
 
-如果没有明确标注类型，typeof 会返回一个具体的值作为类型。
+上面示例中，`typeof a`表示返回变量`a`的 TypeScript 类型。注意，这时返回的不是字符串，而是只有 TypeScript 才能识别的类型（`{ x: number }`）。同理，`typeof a.x`返回的是属性`x`的类型（`number`）。
 
-```typescript
-const str:string = 'abc';
+如果`typeof`返回的是 TypeScript 类型，就只能用在代码的类型声明部分里面。
 
-// %inferred-type: "string"
-type Result = typeof str;
-
-const x:Result = "bc";
-
-const str = 'abc';
-
-// %inferred-type: "abc"
-type Result = typeof str;
-```
-
-unique symbol 是一个值，如果想获取它代表的类型。若想要获取特定的“unique symbol”值的类型，则需要使用typeof类型查询，否则将无法引用其类型。
-
-```typescript
-const a: unique symbol = Symbol();
-
-const b: typeof a = a;
-```
-
-在 TypeScript 中，如果`typeof`运算符出现在值的位置（比如等号的右边），那么用法与 JavaScript 的用法完全一样。
+也就是说，`typeof`运算符既可以用在值相关的代码里面，也可以用在类型声明相关的代码里面。它在两种代码的行为规则是不一样的，前者遵守 JavaScript 规则，后者遵守 TypeScript 规则。编译后，前者会保留，后者会被全部删除。
 
 ```typescript
 // 编译前
-var numberType: string = typeof 1337;
+let a = { x: 0 };
+let b:typeof a.x | string
+  = 'hello';
 
+if (typeof b === 'string') {
+  console.log(b);
+}
+```
+
+上面示例中，`typeof a.x | string`是类型声明相关的代码，编译后被删除；`typeof b === 'string'`是值相关的代码，编译后被保留。下面就是编译后的结果。
+
+```javascript
 // 编译后
-var numberType = typeof 1337;
+let a = { x: 0 };
+let b = 'hello';
+if (typeof b === 'string') {
+    console.log(b);
+}
 ```
 
-上面示例中，编译后就是把类型删掉了，`typeof`运算符没有任何变化。
-
-但是，`typeof`运算符也可以用在 TypeScript 类型注释里面。这时，它返回的不是字符串，而是参数值对应的 TypeScript 类型。
-
-```typescript
-let r1 = { width: 100, height: 200 };
-let r2: typeof r1;
-
-// 等同于
-let r1 = { width: 100, height: 200 };
-type R = typeof r1;
-let r2: R;
-```
-
-上面示例中，`typeof`返回的是变量`r1`的 TypeScript 类型，即一个对象，该对象包含属性`width`和属性`height`。
+上面示例中，编译后会保留原始代码的第二个`typeof`，因此这个`typeof`遵守 JavaScript 的语法。原始代码的第一个`typeof`，遵守的是 TypeScript 类型语法。
 
 ## readonly 修饰符
 
@@ -1002,44 +703,6 @@ function liveDangerously(x?: number | null) {
   // No error
   console.log(x!.toFixed());
 }
-```
-
-## 类型声明
-
-脚本的头部，声明类型定义。
-
-```typescript
-class Foo {};
-interface Bar {};
-type Bas = {};
-```
-
-声明了类型以后，就可以在类型注释中，使用该类型。
-
-```typescript
-var foo: Foo;
-var bar: Bar;
-var bas: Bas;
-```
-
-## 类型别名
-
-`type`命令可以用来为现有类型指定别名，使用`type SomeName = someValidTypeAnnotation`的形式。
-
-```typescript
-type Age = number;
-const age: Age = 82;
-```
-
-上面示例中，`Age`就是类型`number`的别名。
-
-type 命令可以为任何类型起别名。
-
-```typescript
-type ID = number | string;
-type Text = string | { text: string };
-type Coordinates = [number, number];
-type Callback = (data: string) => void;
 ```
 
 ## 数组
@@ -1415,25 +1078,6 @@ let two: Two = x;
 two = new Three();
 ```
 
-### type
-
-type 关键字可以定义一个类型，包含多种类型。
-
-```typescript
-type MyBool = true | false;
-type WindowStates = "open" | "closed" | "minimized";
-type LockStates = "locked" | "unlocked";
-type PositiveOddNumbersUnderTen = 1 | 3 | 5 | 7 | 9;
-```
-
-`type`可以用来描述数组。
-
-```typescript
-type StringArray = Array<string>;
-type NumberArray = Array<number>;
-type ObjectWithNameArray = Array<{ name: string }>;
-```
-
 ## 泛型
 
 泛型（Generics）为类型提供变量。一个常见的例子是数组。没有泛型的数组可以包含任何东西。带有泛型的数组可以描述数组包含的值。
@@ -1530,13 +1174,6 @@ interface Options {
 function configure(x: Options | "auto") {
   // ...
 }
-```
-
-## 类型修饰
-
-```typescript
-const req = { url: "https://example.com", method: "GET" } as const;
-handleRequest(req.url, req.method);
 ```
 
 ## 参考链接

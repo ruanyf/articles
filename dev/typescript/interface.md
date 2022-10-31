@@ -526,6 +526,38 @@ interface Document {
 }
 ```
 
+联合类型如果存在同名属性，则该属性的类型也是联合类型。
+
+```typescript
+interface Circle {
+    area: bigint;
+}
+
+interface Rectangle {
+    area: number;
+}
+
+declare const s: Circle | Rectangle;
+
+s.area;   // bigint | number
+```
+
+如果同名属性是可选的，那么该属性的类型也是可选的。
+
+```typescript
+interface Circle {
+    area: bigint;
+}
+
+interface Rectangle {
+    area?: number;
+}
+
+declare const s: Circle | Rectangle;
+
+s.area; // bigint | number | undefined
+```
+
 ## interface 与 type 的区别
 
 从作用上看，`interface`命令与`type`命令很相似。很多类型即可以用 interface 表示，也可以用 type 表示。很多时候，两者可以换用。

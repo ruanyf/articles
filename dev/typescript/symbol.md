@@ -22,6 +22,14 @@ let y:unique symbol = Symbol(); // 报错
 
 上面示例中，`unique symbol`类型表示某个特定的 Symbol 值，只能使用`const`命令赋值，如果使用`let`命令赋值，就会报错。
 
+unique symbol 是一个值，如果想获取它代表的类型。若想要获取特定的“unique symbol”值的类型，则需要使用typeof类型查询，否则将无法引用其类型。
+
+```typescript
+const a: unique symbol = Symbol();
+
+const b: typeof a = a;
+```
+
 `const`命令赋值时，变量类型默认就是`unique symbol`，所以类型可以省略不写。
 
 ```typescript
