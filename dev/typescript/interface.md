@@ -176,6 +176,33 @@ agelist["John"]=15 // Ok
 agelist[2]="nine" // Error
 ```
 
+第三种写法是使用`interface`声明类型，这种就很少用。
+
+```typescript
+interface StringArray {
+  [index: number]: string;
+}
+const strArr:StringArray = ['a', 'b', 'c'];
+```
+
+本质上，这种写法是声明一个对象，数组正好是一种特殊对象，键名等于数值，所以可以这样声明。
+
+这种写法也可以用来声明，除了数值键名，还有非数值键名的对象。
+
+```typescript
+interface FirstNamesAndLastName {
+  [index: number]: string;
+  lastName: string;
+}
+
+const ducks: FirstNamesAndLastName = {
+  0: 'Huey',
+  1: 'Dewey',
+  2: 'Louie',
+  lastName: 'Duck',
+};
+```
+
 ## interface 的继承
 
 接口可以继承其他类型，能够继承的其他类型有下面这些。
