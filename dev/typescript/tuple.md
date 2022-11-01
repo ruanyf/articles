@@ -2,16 +2,20 @@
 
 ## 简介
 
-元组（tuple）是 TypeScript 独有的数据类型，代表了成员类型不同的 JavaScript 数组。
+元组（tuple）是 TypeScript 新增的数据类型，代表了成员类型不同的 JavaScript 数组。
 
-元组必须明确声明每个成员的类型，以及包含多少个成员。
+元组必须明确声明每个成员的类型。
 
 ```typescript
 const s:[string, string, boolean]
   = ['a', 'b', true];
 ```
 
-元组的声明正好与数组相反，数组是类型写在方括号外面（`number[]`），元组是类型写在方括号里面（`[number]`）。
+上面示例中，元组`s`的前两个成员的类型是`string`，最后一个成员的类型是`boolean`。
+
+元组的类型写法，与上一章的数组有一个重大差异。数组的成员类型写在方括号外面（`number[]`），元组的成员类型是写在方括号里面（`[number]`）。
+
+一个窍门就是，成员类型写在方括号里面，就是元组，写在外面就是数组。
 
 ```typescript
 let a:[number] = [1];
@@ -19,15 +23,27 @@ let a:[number] = [1];
 
 上面示例中，变量`a`是一个元组，只有一个成员，类型是`number`。
 
-元组也可以有可选成员。
+元组必须有类型声明（上例的`[number]`），不能省略，否则 TypeScript 会把它推断为数组。
+
+元组成员的类型可以添加问号后缀（`?`），表示该成员是可选的。
 
 ```typescript
 let a:[number, number?] = [1];
 ```
 
-上面示例中，元组`a`的第二个成员就是可选的。
+上面示例中，元组`a`的第二个成员就是可选的，可以省略。
 
-元组也可以使用扩展运算符（`...`），包含不定数量的成员。
+注意，问号只能用于元组的尾部成员，也就是说，所有可选成员必须在必选成员之后。
+
+```typescript
+type myTuple = [number, number, number?, string?];
+```
+
+上面示例中，元组`myTuple`的最后两个成员是可选的。也就是说，两个成员、三个成员、四个成员都有可能。
+
+由于需要声明每个成员的类型，所以大多数情况下，元组的成员数量是有限的。从类型声明就可以明确知道，元组包含多少个成员。
+
+但是，可以使用扩展运算符（`...`），表示不限成员数量的元组。
 
 ```typescript
 type NamedNums = [
@@ -41,6 +57,16 @@ const b:NamedNums = ['B', 1, 2, 3];
 
 上面示例中，元组类型`NamedNums`的第一个成员是字符串，后面的成员使用扩展运算符展开一个数组，从而实现了不定数量的成员。
 
+扩展运算符用在元组的任意位置都可以。
+
+```typescript
+type t1 = [string, number, ...boolean[]];
+type t2 = [string, ...boolean[], number];
+type t3 = [...boolean[], string, number];
+```
+
+上面示例中，扩展运算符分别在元组的尾部、中部和头部。
+
 如果不确定元组成员的类型和数量，可以写成下面这样。
 
 ```typescript
@@ -48,6 +74,26 @@ type Tuple = [...any[]];
 ```
 
 上面示例中，元组`Tuple`可以放置任意数量和类型的成员。但是这样写，也就失去了使用元组和 TypeScript 的意义。
+
+元组可以通过方括号，读取成员类型。
+
+```typescript
+type Tuple = [string, number];
+type Age = Tuple[1]; // number
+```
+
+上面示例中，`Tuple[1]`返回1号位置的成员类型。
+
+由于元组的成员都是数值索引，即索引类型都是`number`，所以可以像下面这样读取。
+
+```typescript
+type Tuple = [string, number, Date];
+type TupleEl = Tuple[number];  // string|number|Date
+```
+
+上面示例中，`Tuple[number]`表示元组`Tuple`的所有数值索引的成员类型，所以返回`string|number|Date`，即这个类型有三种可能。
+
+## 只读元组
 
 元组也可以是只读的，不允许修改，有两种写法。
 
@@ -61,188 +107,140 @@ type t = Readonly<[number, string]>
 
 上面示例中，两种写法都可以得到只读元组，其中写法二是一个泛型，用到了工具类型`Readonly<T>`。
 
-元组类型也可以通过`interface`命令定义。
+跟数组一样，只读元组是元组的父类型。所以，元组可以替代只读元组，而只读元组不能替代元组。
 
 ```typescript
-interface Tuple {
- 0: number;
- 1: number;
- length: 2;
+type t1 = readonly [number, number];
+type t2 = [number, number];
+
+const x:t2 = [1, 2];
+const y:t1 = x; // 正确
+
+x = y; // 报错
+```
+
+上面示例中，类型`t1`是只读元组，类型`t2`是普通元组。`t2`类型可以赋值给`t1`类型，反过来就会报错。
+
+由于只读元组不能替代元组，所以会产生一些令人困惑的报错。
+
+```typescript
+function distanceFromOrigin(
+    [x, y]:[number, number]
+) {
+  return Math.sqrt(x**2 + y**2);
 }
-const t:Tuple = [10, 20]; // 正确
-```
 
-上面示例中，`interface`命令定义了一个元组，成员包括从`0`开始的每个数字键，以及`length`属性。但是，这样会丢失所有数组方法（比如`concat()`），所以不建议这样使用。
-
-元组成员的读取跟数组是一样的，也是通过方括号读取。
-
-```typescript
-type Tuple = [string, number]
-type Age = Tuple[1]
-```
-
-```typescript
-// 例一
-type StringNumberPair = [string, number];
-
-// 例二
-function doSomething(pair: [string, number]) {
-  const a = pair[0];    
-  const b = pair[1];
-
-}
- 
-doSomething(["hello", 42]);
-```
-
-由于元组也是 JavaScript 的数组，所以它也可以数值键读取。
-
-```typescript
-type Tuple = [string, number, Date];
-type TupleEl = Tuple[number];  // 类型是 string|number|Date
-```
-
-上面示例中，`Tuple[number]`表示元组`Tuple`的每个数字键的类型，所以返回`string|number|Date`。
-
-元祖也可以声明成只读元组。
-
-```typescript
-// 写法一
-const p1:readonly [number, number] = [0, 0];
-
-// 写法二
-const p2:Readonly<[number, number]> = [0, 0];
-```
-
-上面两种写法都声明了只读元组，修改元组成员就会报错。
-
-只读元组可以用 `as const`替代`readonly`。另外,只读的元组不能替代普通元组
-
-```typescript
 let point = [3, 4] as const;
- 
-function distanceFromOrigin([x, y]: [number, number]) {
-  return Math.sqrt(x ** 2 + y ** 2);
-}
- 
-// 报错
-distanceFromOrigin(point);
+
+distanceFromOrigin(point); // 报错
 ```
 
-元祖成员后面可以加号，表示这个成员是可选的。注意，问号只能用于元祖的尾部成员，也就是说，所有可选成员必须在必选成员之后。
+上面示例中，函数`distanceFromOrigin()`的参数是一个元组，传入只读元组就会报错，因为只读元组不能替代元组。
+
+读者可能注意到了，`[3, 4] as const`的写法，在上一章讲到生成的是只读数组，其实生成的同时也是只读元组。因为它生成的实际上是一个只读的值类型`readonly [3, 4]`，把它解读成只读数组或只读元组都可以。
+
+上面示例报错的解决方法，就是使用类型断言，详见《类型断言》一章。
 
 ```typescript
-type myTuple = [number, number, number?, string?];
+distanceFromOrigin(
+  point as [number, number]
+)
 ```
 
-上面示例中，元组`myTuple`的最后两个成员是可选的。也就是说，两个成员、三个成员、四个成员都有可能。
+## 成员数量的推断
 
-元组的成员其实也可以写成不定数量，那就是使用 扩展运算符（`...`），将不定数量的成员都用一个数组表示。
-
-```typescript
-[...T[]]
-```
-
-下面是一个例子。
+如果没有可选成员和扩展运算符，TypeScript 会推断出元组的成员数量（即元组长度）。
 
 ```typescript
-const myTuple:[number, ...string[]]
-  = [0, 'a', 'b'];
-```
-
-上面示例中，元组的第一个成员是数值，后面有多少个成员都可以，只要都是字符串。
-
-扩展运算符用在元组的任意位置都可以。
-
-```typescript
-type StringNumberBooleans = [string, number, ...boolean[]];
-type StringBooleansNumber = [string, ...boolean[], number];
-type BooleansStringNumber = [...boolean[], string, number];
-```
-
-上面示例中，扩展运算符分别在元组的尾部、中部和头部。
-
-函数的 rest 参数，就常常用这种语法来表示类型。
-
-```typescript
-function readButtonInput(
-  ...args:[string, number, ...boolean[]]
+function f(
+  point: [number, number]
 ) {
-  const [name, version, ...input] = args;
-  // ...
-}
-
-// 等同于
-function readButtonInput(
-  name: string,
-  version: number,
-  ...input: boolean[]
-) {
-  // ...
-}
-```
-
-上面示例中，函数`readButtonInput()`的参数类型完全可以用元组表示，哪怕参数数量是不确定的。
-
-如果没有可选成员和扩展运算符，TypeScript 会推断出元组的成员数量。
-
-```typescript
-function f(point: [number, number]) {
   if (point.length === 3) {  // 报错
     // ...
   }
 }
 ```
 
-上面示例会报错，原因是 TypeScript 发现元组`point`的长度是`2`，不可能等于`3`。
+上面示例会报错，原因是 TypeScript 发现元组`point`的长度是`2`，不可能等于`3`，这个判断无意义。
 
-如果包含了可选参数，TypeScript 会推断出可能的成员数量。
-
-```typescript
-const myTuple:[...string[]] = ['a', 'b', 'c'];
-console.log(typeof myTuple.length) // number
-```
-
-上面示例会报错，原因是 TypeScript 发现`myTuple.length`的类型是`1|2|3`，不可能等于`4`。
-
-如果使用了扩展运算符，TypeScript 只会推断出元组的成员数量是一个数值（number）。
+如果包含了可选成员，TypeScript 会推断出可能的成员数量。
 
 ```typescript
-const myTuple = [...string[]];
-console.log(typeof myTuple.length) // number
+function f(
+  point:[number, number?, number?]
+) {
+  if (point.length === 4) {  // 报错
+    // ...
+  }
+}
 ```
 
-TypeScript 数组是元组的子类型，所以后者可以赋值给前者，反之则不行。
+上面示例会报错，原因是 TypeScript 发现`point.length`的类型是`1|2|3`，不可能等于`4`。
+
+如果使用了扩展运算符，TypeScript 就无法推断出成员数量。
 
 ```typescript
-const point: [number, number] = [0, 0];
-const nums: number[] = point; // 正确
+const myTuple:[...string[]]
+  = ['a', 'b', 'c'];
+
+if (myTuple.length === 4) { // 正确
+  // ...  
+}
 ```
 
-只读元组是元组的子类型，只读数组是只读数组的子类型。
+上面示例中，`myTuple`只有三个成员，但是 TypeScript 推断不出它的成员数量，因为它把`myTuple`当成数组看待，而数组的成员数量是不确定的。
+
+一旦扩展运算符使得元组的成员数量无法推断，TypeScript 内部就会把该元组当成数组处理。
+
+## 扩展运算符与成员数量
+
+扩展运算符（`...`）将数组转换成一个逗号分隔的序列，这时 TypeScript 会认为这个序列的成员数量是不确定的，因为原始数组的成员数量就是不确定的。
+
+这导致如果把扩展运算符用于函数参数，可能发生参数数量与数组长度不匹配的报错。
 
 ```typescript
-const t: [number, number] = [0, 0];
-const rt: readonly [number, number] = t; 
-const rar:readonly number[] = rt;
+const arr = [1, 2];
+
+function add(
+  x:number, y:number
+){
+  // ...
+}
+
+add(...arr) // 报错
 ```
 
-## 扩展运算符
+上面示例会报错，原因是函数`add()`只能接受两个参数，但是传入的是`...arr`，TypeScript 认为转换后的参数个数是不确定的。
 
-扩展运算符（`...`）只能用于元组和 rest 数组，用于普通数组会报错。
+有些函数可以接受任意数量的参数，这时使用扩展运算符就不会报错。
 
 ```typescript
-const args = [8, 5];
-
-// 报错
-const angle = Math.atan2(...args);
+const arr = [1, 2, 3];
+console.log(...arr) // 正确
 ```
 
-最简单的解决方法如下。
+上面示例中，`console.log()`可以接受任意数量的参数，所以传入`...arr`就不会报错。
+
+解决这个问题的一个方法，就是把成员数量不确定的数组，转换成成员数量确定的元组，再使用扩展运算符。
 
 ```typescript
-// Inferred as 2-length tuple
-const args = [8, 5] as const;
-// OK
-const angle = Math.atan2(...args);
+const arr:[number, number] = [1, 2];
+
+function add(
+  x:number, y:number
+){
+  // ...
+}
+
+add(...arr) // 正确
 ```
+
+上面示例中，`arr`是一个拥有两个成员的元组，所以 TypeScript 能够确定`...arr`可以匹配函数`add()`的参数数量，就不会报错了。
+
+另一种写法是使用`as const`断言。
+
+```typescript
+const arr = [1, 2] as const;
+```
+
+上面这种写法也可以，因为 TypeScript 会认为`arr`的类型是`readonly [1, 2]`，这是一个只读的值类型，可以当作数组，也可以当作元组。

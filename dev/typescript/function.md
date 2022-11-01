@@ -210,6 +210,30 @@ var add:myfn = (a, b) => a + b;
 
 这种写法类似于方法的类型定义，但是不用写方法名。
 
+### 参数数组
+
+函数的 rest 参数，就常常用这种语法来表示类型。
+
+```typescript
+function readButtonInput(
+  ...args:[string, number, ...boolean[]]
+) {
+  const [name, version, ...input] = args;
+  // ...
+}
+
+// 等同于
+function readButtonInput(
+  name: string,
+  version: number,
+  ...input: boolean[]
+) {
+  // ...
+}
+```
+
+上面示例中，函数`readButtonInput()`的参数类型完全可以用元组表示，哪怕参数数量是不确定的。
+
 ### readonly 参数
 
 如果函数内部不能修改某个参数，那么可以在函数定义时，在参数的类型前面加上`readonly`关键字，表示这是只读参数。

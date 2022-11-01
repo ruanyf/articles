@@ -203,6 +203,21 @@ const ducks: FirstNamesAndLastName = {
 };
 ```
 
+## 元组的写法
+
+元组类型也可以通过`interface`命令定义。
+
+```typescript
+interface Tuple {
+ 0: number;
+ 1: number;
+ length: 2;
+}
+const t:Tuple = [10, 20]; // 正确
+```
+
+上面示例中，`interface`命令定义了一个元组，成员包括从`0`开始的每个数字键，以及`length`属性。但是，这样会丢失所有数组方法（比如`concat()`），所以不建议这样使用。
+
 ## interface 的继承
 
 接口可以继承其他类型，能够继承的其他类型有下面这些。

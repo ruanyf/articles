@@ -541,6 +541,15 @@ const initialData = window.__INITIAL_DATA__;
 
 ## !类型断言
 
+后缀`!`是非空断言运算符，即保证该值不是null or undefined：
+
+```typescript
+function liveDangerously(x?: number | null) {
+  // No error
+  console.log(x!.toFixed());
+}
+```
+
 TypeScript 会对下面的代码报错。
 
 ```typescript

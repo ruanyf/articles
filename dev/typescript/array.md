@@ -91,6 +91,15 @@ type Name = Names[0]; // string
 
 上面示例中，类型`Names`是字符串数组，那么`Names[0]`返回的类型就是`string`。
 
+由于数组成员的索引类型都是`number`，所以读取成员类型也可以写成下面这样。
+
+```typescript
+type Names = string[];
+type Name = Names[number]; // string
+```
+
+上面示例中，`Names[number]`表示元组`Names`所有数值索引的成员类型，所以返回`string`。
+
 ## 数组的类型推断
 
 如果数组变量没有声明类型，TypeScript 就会推断数组成员的类型。
@@ -169,6 +178,20 @@ a1 = a2; // 报错
 ```
 
 上面示例中，子类型`number[]`可以赋值给父类型`readonly number[]`，但是反过来就会报错。
+
+由于只读数组是数组的父类型，所以它不能代替数组。这一点很容易产生令人困惑的报错。
+
+```typescript
+function getSum(s:number[]) {
+  // ...
+}
+
+const arr:readonly number[] = [1, 2, 3];
+
+getSum(arr) // 报错
+```
+
+上面示例中，函数`getSum()`的参数`s`是一个数组，传入只读数组就会报错。原因就是只读数组是数组的父类型，父类型不能替代子类型。这个问题的解决方法是使用类型断言`getSum(arr as number[])`，详见《类型断言》一章。
 
 注意，`readonly`关键字不能与数组的泛型写法一起使用。
 
