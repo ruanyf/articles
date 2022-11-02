@@ -1,5 +1,17 @@
 # 备用材料
 
+![](https://cdn.beekka.com/blogimg/asset/202210/bg2022101601.webp)
+
+葡萄酒瓶的软木塞，来自软木橡树的树皮。这种橡树的外层树皮，剥了还会长出来，但是长一次需要10年。（[via](https://baike.baidu.com/item/%E6%A9%A1%E6%A0%91%E7%9A%AE/12760178)）
+
+1、
+
+社会越来越复杂，为了维持运作，政府就通过了越来越多的法律法规。但是，这些法规就像软件公司的技术债，随着时间的推移，收益开始下降，执行成本开始上升。
+
+法律法规与代码一样，不能一味增加，必须不断编辑和修改，到了一定阶段还必须部分或完全重写。
+
+-- [《复杂社会的崩溃》](https://continuations.com/post/685683226736525312/joseph-tainter-the-collapse-of-complex-societies)
+
 2、[Facebook 总部大楼的标牌](https://v1.benbarry.com/project/the-facebook-sign)
 
 2012年，Facebook 搬进了新的总部大楼，那里原来是 Sun Microsystems 公司的大楼。
