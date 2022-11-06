@@ -1,20 +1,22 @@
 # TypeScript 的函数类型
 
-## 类型写法
+## 简介
 
-### 基本写法
-
-函数类型的基本写法，是在定义函数的时候，同时给出参数类型和返回值类型。
+函数的类型声明，需要在声明函数时，给出参数的类型和返回值的类型。
 
 ```typescript
-function hello(txt:string):void {
+function hello(
+  txt:string
+):void {
   console.log('hello ' + txt);
 }
 ```
 
-上面示例中，函数`hello()`的参数`txt`，类型是字符串（string），参数列表括号后面用冒号注明返回值类型，本例的`void`表示没有返回值。
+上面示例中，函数`hello()`在声明时，需要给出参数`txt`的类型（string），以及返回值的类型（`void`），后者写在参数列表的圆括号后面。`void`类型表示没有返回值，详见后文。
 
-通常，返回值类型可以不写，因为 TypeScript 会自己推断出来。
+如果不指定参数类型（比如上例不写`txt`的类型），TypeScript 就会推断参数类型，如果缺乏足够信息，就会推断该参数的类型为`any`。
+
+返回值的类型通常可以不写，因为 TypeScript 自己会推断出来。
 
 ```typescript
 function hello(txt:string) {
@@ -24,9 +26,17 @@ function hello(txt:string) {
 
 上面示例中，由于没有`return`语句，TypeScript 会推断出函数`hello()`没有返回值。
 
-如果不使用`function`语句，而是使用函数表达式来定义一个函数，就要用箭头函数表示类型。
+不过，有时候出于文档目的，或者为了防止不小心改掉返回值，还是会写返回值的类型。
+
+如果变量被赋值为一个函数，变量的类型有两种写法。
 
 ```typescript
+// 写法一
+const hello = function (txt:string) {
+  console.log('hello ' + txt);
+}
+
+// 写法二
 const hello:
   (txt:string) => void
 = function (txt) {
@@ -34,9 +44,34 @@ const hello:
 };
 ```
 
-上面示例中，变量`hello`的值是一个函数表达式，它的类型就用箭头函数表达，写在变量名后面。
+上面示例中，变量`hello`被赋值为一个函数，它的类型有两种写法。写法一是通过等号右边的函数类型，推断出变量`hello`的类型；写法二则是使用箭头函数的形式，为变量`hello`指定类型，参数的类型写在箭头左侧，返回值的类型写在箭头右侧。
 
-但是，这种写法不够清晰，如果有多个变量是同一种类型的函数，写起来也很麻烦。因此，往往用`type`命令定义一个类型别名。
+写法二有两个地方需要注意。
+
+首先，函数的参数要放在圆括号里面，不放会报错。
+
+其次，类型里面的参数名（本例是`txt`）是必须的。有的语言的函数类型可以不写参数名（比如 C 语言），但是 TypeScript 不行。如果写成`(string) => void`，TypeScript 会理解成函数有一个名叫 string 的参数，并且这个`string`参数的类型是`any`。
+
+```typescript
+type MyFunc = (string, number) => number;
+// (string: any, number: any) => number
+```
+
+上面示例中，函数类型没写参数名，导致 TypeScript 认为参数类型都是`any`。
+
+函数类型里面的参数名与实际参数名，可以不一致。
+
+```typescript
+let f:(x:number) => number;
+ 
+f = function (y:number) {
+  return y;
+};
+```
+
+上面示例中，函数类型里面的参数名为`x`，实际的函数定义里面，参数名为`y`，两者并不相同。
+
+如果有多个变量被赋值为同一种类型的函数，写法二用起来就很麻烦。因此，往往用`type`命令为函数类型定义一个别名，便于指定给其他变量。
 
 ```typescript
 type MyFunc = (txt:string) => void;
@@ -46,9 +81,9 @@ const hello:MyFunc = function (txt) {
 };
 ```
 
-上面示例中，`type`命令为函数类型定义了一个别名，后面使用就很方便。
+上面示例中，`type`命令为函数类型定义了一个别名`MyFunc`，后面使用就很方便，变量可以指定为这个类型。
 
-如果一个函数要套用另一个函数的类型，有一个小技巧，就是使用`typeof`运算符。
+如果一个变量要套用另一个函数的类型，有一个小技巧，就是使用`typeof`运算符。
 
 ```typescript
 function add(
@@ -63,49 +98,103 @@ const myAdd:typeof add = function (x, y) {
 }
 ```
 
-上面示例中，函数`myAdd()`的类型与函数`add()`是一样的，那么就可以定义成`typeof add`。因为函数名`add`本身不是类型，而不是一个值，所以要用`typeof`运算符返回它的类型。
+上面示例中，函数`myAdd()`的类型与函数`add()`是一样的，那么就可以定义成`typeof add`。因为函数名`add`本身不是类型，而是一个值，所以要用`typeof`运算符返回它的类型。
 
 这是一个很有用的技巧，任何需要类型的地方，都可以使用`typeof`运算符从一个值获取类型。
 
-### 箭头函数
-
-如果是箭头函数，类型写成下面这样。
+函数类型还可以采用对象的写法。
 
 ```typescript
-const repeat2 = (str: string, times: number): string => {
-  return str.repeat(times);
+let add:{
+  (x:number, y:number):number
 };
-
-// 或者
-const repeat3 = (str: string, times: number): string =>
-  str.repeat(times);
-
-function hello(txt: string):void {
-  console.log('hello' + txt);
-}
-
-function greeter(fn: (a: string) => void):void {
-  fn('world');
-}
-
-greeter(hello);
-``` 
-
-上面示例中，`(a: string) => void`表示该函数有一个参数`a`，类型为`string`，返回值的类型是`void`，即没有返回值。
-
-箭头函数的参数要写在括号里面，返回值类型用冒号跟在参数括号后面。
-
-```typescript
-type Persion = { name: string };
-
-const people = ['alice', 'bob', 'jan'].map(
- (name):Person => ({name})
-); // people 的类型是 Person[]
+ 
+add = function (x, y) {
+  return x + y;
+};
 ```
 
-上面示例中，`map()`方法的参数是一个箭头函数`(name):Person => ({name})`，这个函数的返回值类型是`Person`，所以变量`people`的类型是`Person[]`。
+上面示例中，变量`add`的类型就写成了一个对象。
 
-至于箭头后面的`({name})`，表示返回一个对象，属性名为`name`，属性值为变量`name`的值。`({name})`的圆括号是必须的，否则`(name):Person => {name}`的大括号表示函数体，即函数体内有一行语句`name`，同时由于没有`return`语句，这个函数不会返回任何值。
+函数类型的对象写法如下。
+
+```typescript
+{
+  (参数列表): 返回值
+}
+```
+
+这种写法平时很少用，但是非常合适用在一个场合：函数本身存在属性。
+
+```typescript
+function f(x:number) {
+  console.log(x);
+}
+ 
+f.version = '1.0';
+```
+
+上面示例中，函数`f()`本身还有一个属性`foo`。这时，`f`完全就是一个对象，类型就要使用对象的写法。
+
+```typescript
+let foo: {
+  (x: number): void;
+  version: string
+} = f;
+```
+
+函数类型也可以使用 Interface 来声明，这种写法就是对象写法的翻版，详见《Interface》一章。
+
+```typescript
+interface myfn {
+  (a:number, b:number): number;
+}
+
+var add:myfn = (a, b) => a + b;
+```
+
+上面示例中，interface 命令定义了接口`myfn`，这个接口的类型就是一个用对象表示的函数。
+
+## 箭头函数
+
+箭头函数是普通函数的一种简化写法，它的类型写法与普通函数类似。
+
+```typescript
+const repeat = (
+  str:string,
+  times:number
+):string => str.repeat(times);
+```
+
+上面示例中，变量`repeat`被赋值为一个箭头函数，类型声明写在箭头函数的定义里面。其中，参数的类型写在参数名后面，返回值类型写在参数列表的圆括号后面。
+
+注意，类型写在箭头函数的定义里面，与使用箭头函数表示函数类型，写法有所不同。
+
+```typescript
+function greet(
+  fn:(a:string) => void
+):void {
+  fn('world');
+}
+``` 
+
+上面示例中，函数`greet()`的参数`fn`是一个函数，类型就用箭头函数表示。这时，`fn`的返回值类型要写在箭头右侧，而不是写在参数列表的圆括号后面。
+
+下面再看一个例子。
+
+```typescript
+type Person = { name: string };
+
+const people = ['alice', 'bob', 'jan'].map(
+  (name):Person => ({name})
+);
+```
+
+上面示例中，`Person`是一个类型别名，代表一个对象，该对象有属性`name`。变量`people`是数组的`map()`方法的返回值。
+
+`map()`方法的参数是一个箭头函数`(name):Person => ({name})`，该箭头函数的参数`name`的类型省略了，因为可以从`map()`的类型定义推断出来，箭头函数的返回值类型为`Person`。相应地，变量`people`的类型是`Person[]`。
+
+至于箭头后面的`({name})`，表示返回一个对象，该对象有一个属性`name`，它的属性值为变量`name`的值。这里的圆括号是必须的，否则`(name):Person => {name}`的大括号表示函数体，即函数体内有一行语句`name`，同时由于没有`return`语句，这个函数不会返回任何值。
 
 注意，下面两种写法都是不对的。
 
@@ -117,100 +206,9 @@ const people = ['alice', 'bob', 'jan'].map(
 name:Person => ({name})
 ```
 
-上面的两种写法在本例中都是错的。第一种写法表示，箭头函数的参数`name`的类型是`Person`，同时没写函数返回值的类型，让 TypeScript 自己去推断。第二种写法表示，`name`的类型是一个箭头函数`Person => ({name})`。
+上面的两种写法在本例中都是错的。第一种写法表示，箭头函数的参数`name`的类型是`Person`，同时没写函数返回值的类型，让 TypeScript 自己去推断。第二种写法中，函数参数缺少圆括号。
 
-这里有几个注意点。
-
-（1）类型里面的参数名是必须的。TypeScript 会将`(string) => void`理解成函数有一个名叫 string 的参数，并且这个`string`参数的类型是`any`。
-
-```typescript
-type FunctionType2 = (string, number) => number;
-// (string: any, number: any) => number
-```
-
-类型里面的参数名与实际参数名不一致，是可以的。
-
-```typescript
-let f: (x: number) => number;
- 
-f = function (y:number) {
-  return y;
-};
-```
-
-（2）函数的参数要放在圆括号里面。
-
-（3）如果不指定参数类型，则表示该参数的类型为`any`。
-
-比较方便的写法，是为函数指定一个类型别名。
-
-```typescript
-type Repeat = (str: string, times: number) => string;
-
-type GreetFunction = (a: string) => void;
-function greeter(fn: GreetFunction) {
-  // ...
-}
-```
-
-上面这种类型写法，有两个地方需要注意。
-
-（1）两个参数`str`和`times`的参数名需要声明。
-
-（2）返回类型`string`使用箭头分隔，而不是使用冒号。
-
-函数类型还可以采用可执行对象的方式声明。
-
-```typescript
-let add: { (x: number, y: number): number };
- 
-add = function (x: number, y: number): number {
-  return x + y;
-};
-```
-
-上面示例中，变量`add`的类型就是可执行函数。
-
-```typescript
-{
-  (参数列表): 返回值
-}
-```
-
-这种声明方式平时很少用，但是非常合适用在一个场合：函数本身存在属性。
-
-```typescript
-function f(x:number) {
-  console.log(x);
-}
- 
-f.version = '1.0';
-```
-
-上面示例中，函数`f()`本身还有一个属性`foo`。这时，`f`完全就是一个对象，类型就要使用可执行对象的方式声明。
-
-```typescript
-let foo: {
-  (x: number): void;
-  version: string
-} = f;
-```
-
-函数类型也可以使用对象接口来定义，详见《对象类型》一章。
-
-```typescript
-interface myfn {
-  (a:number, b:number): number;
-}
-
-var add:myfn = (a, b) => a + b;
-```
-
-上面示例中，interface 命令定义了接口`myfn`，这个接口的类型是一个对象，但是该对象可调用，因此也就是一个函数。
-
-这种写法类似于方法的类型定义，但是不用写方法名。
-
-### 参数数组
+## 参数数组
 
 函数的 rest 参数，就常常用这种语法来表示类型。
 
