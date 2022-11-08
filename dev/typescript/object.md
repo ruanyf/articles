@@ -1,10 +1,10 @@
-# TypeScript 的 object 类型
+# TypeScript 的对象类型
 
-## object 类型的写法
+## 简介
 
-### 基本写法
+除了原始类型，对象是 JavaScript 最基本的数据结构。TypeScript 对于对象类型有很多规则。
 
-object 类型表示对象，可以用大括号直接描述它的类型。
+对象类型的最简单声明方法，就是使用大括号表示对象，在大括号内部声明每个属性和方法的类型。
 
 ```typescript
 const obj:{  
@@ -13,9 +13,9 @@ const obj:{
 } = { x: 1, y: 1 };
 ```
 
-上面示例中，对象`obj`的类型就写在变量名后面，使用大括号描述，内部注明每个属性的属性名和类型。
+上面示例中，对象`obj`的类型就写在变量名后面，使用大括号描述，内部声明每个属性的属性名和类型。
 
-对象属性的类型可以用分号结尾，也可以用逗号结尾。
+属性的类型可以用分号结尾，也可以用逗号结尾。
 
 ```typescript
 // 属性类型以分号结尾
@@ -31,7 +31,7 @@ type MyObj = {
 };
 ```
 
-最后一个属性后面，可以写分号（或逗号），也可以不写。
+最后一个属性后面，可以写分号或逗号，也可以不写。
 
 一旦声明了类型，对象赋值时，就不能有多余的属性。
 
@@ -42,9 +42,9 @@ const obj:{
 } = { x: 1, y: 1, z: 1 }; // 报错
 ```
 
-上面示例中，变量`obj`的类型定义里面，只有`x`和`y`两个属性。如果赋值时有多余的属性（比如`z`），就会报错。
+上面示例中，变量`obj`的类型声明里面，只有`x`和`y`两个属性。如果赋值时有多余的属性（比如属性`z`），就会报错。
 
-读写多出来的属性也会报错。
+读写不存在的属性也会报错。
 
 ```typescript
 const obj:{  
@@ -56,24 +56,48 @@ console.log(obj.z); // 报错
 obj.z = 1; // 报错
 ```
 
-上面示例中，读写多出来的属性`z`都会报错。
+上面示例中，读写不存在的属性`z`都会报错。
 
-对象的类型可以提炼为一个对象接口，使用`interface`命令来定义。这样非常简洁，还可以复用。
+同样地，也不能删除类型声明中存在的属性，修改属性值是可以的。
 
 ```typescript
-interface myObj {
+const myUser = {
+  name: "Sabrina",
+};
+
+delete myUser.name // 报错
+myUser.name = "Cynthia"; // 正确
+```
+
+上面声明中，删除类型声明中存在的属性`name`会报错，但是可以修改它的值。
+
+`type`命令可以为对象类型声明一个别名，这样更简洁，也方便复用。
+
+```typescript
+type MyObj = {  
+  x:number;
+  y:number;  
+};
+
+const obj:MyObj = { x: 1, y: 1 };
+```
+
+TypeScript 还提供了`interface`命令，可以把对象类型提炼为一个接口。
+
+```typescript
+interface MyObj {
   x: number;
   y: number;
 }
 
-const obj:myObj = { x: 1, y: 1 }; 
+const obj:MyObj = { x: 1, y: 1 }; 
 ```
 
 上面示例中，`interface`关键字定义了一个类型接口`myObj`，变量就可以直接指定为该类型。
 
-`interface`命令和`type`命令都可以用来声明对象类型，写法和作用相似，它们的区别详见《Interface》一章。
+`interface`命令的详细解释，以及与`type`命令的区别，详见《Interface》一章。
 
-### 可选属性
+## 可选属性
 
 如果某个属性是可选的（即可以忽略），需要在属性名后面加一个问号。
 
@@ -91,21 +115,21 @@ const obj: {
 ```typescript
 type User = {
   firstName: string;
-  lastName: string | undefined;
+  lastName?: string;
 };
 
 // 等同于
 type User = {
   firstName: string;
-  lastName?: string;
+  lastName: string|undefined;
 };
 ```
 
-上面示例中，类型`User`的`lastName`属性可以是字符串，也可以是`undefined`，就表示该属性可以省略不写。
+上面示例中，类型`User`的属性`lastName`可以是字符串，也可以是`undefined`，就表示该属性可以省略不写。
 
-### 只读属性
+## 只读属性
 
-属性名前面加上`readonly`关键字，表示这个属性是只读属性，即不能修改。
+属性名前面加上`readonly`关键字，表示这个属性是只读属性，不能修改。
 
 ```typescript
 interface MyInterface {
@@ -115,20 +139,40 @@ interface MyInterface {
 
 上面示例中，`prop`属性是只读属性，不能修改它的值。
 
-默认情况下，赋值命令声明的对象，默认不能增删属性，修改属性值是可以的。
-
 ```typescript
-const myUser = {
-  name: "Sabrina",
-};
+const person:{
+  readonly age: number
+} = { age: 20 };
 
-myUser.age = 23; // 报错
-delete myUser.name // 报错
-
-myUser.name = "Cynthia"; // 正确
+person.age = 21; // 报错
 ```
 
-如果希望属性值是只读的，可以在赋值时，在对象后面加上类型断言`as const`。
+上面示例中，最后一行修改了只读属性`age`，就报错了。
+
+前面说过，对象类型一旦声明，增删属性都是不可以的。
+
+```typescript
+const person = {
+  age: 20;
+}
+
+person.name = '张三'; // 报错
+delete person.age // 报错
+```
+
+上面示例中，TypeScript 推断变量`person`只有一个属性`age`，增加新属性`name`或者删除`age`属性都会报错。这意味着，TypeScript 的对象类型的结构是固定的，不会改变，但是属性值默认是可以修改的。
+
+```typescript
+const person = {
+  age: 20;
+}
+
+person.age = 21;  // 正确
+```
+
+上面示例中，修改对象类型现有属性`age`的值是可以的。
+
+如果希望属性值是只读的，除了声明时加上`readonly`关键字，还有一种方法。可以在赋值时，在对象后面加上只读断言`as const`。
 
 ```typescript
 const myUser = {
@@ -138,7 +182,21 @@ const myUser = {
 myUser.name = "Cynthia"; // 报错
 ```
 
-### 字符串索引属性名
+上面示例中，对象后面加了只读断言`as const`，就变成只读对象了，不能修改属性了。
+
+注意，上面的`as const`属于 TypeScript 的类型推断，如果变量明确地声明了类型，那么 TypeScript 会以声明的类型为准。
+
+```typescript
+const myUser:{ name: string } = {
+  name: "Sabrina",
+} as const;
+
+myUser.name = "Cynthia"; // 正确
+```
+
+上面示例中，根据变量`myUser`的类型声明，`name`不是只读属性，但是赋值时又使用只读断言`as const`。这时会以声明的类型为准，因为`name`属性可以修改。
+
+## 字符串索引属性名
 
 如果对象的属性非常多，一个个声明类型就很麻烦，而且有些时候，无法事前知道对象会有多少属性，比如外部 API 返回的对象。这时 TypeScript 允许采用属性名表达式的写法来描述类型，称为“字符串索引属性名”。
 

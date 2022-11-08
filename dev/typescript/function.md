@@ -629,6 +629,22 @@ function f(
 
 上面示例中，函数`f()`的参数`x`的类型为`string|undefined`。但是，`x`类型为`undefined`时，调用了`neverReturns()`。这个函数不会返回，因此 TypeScript 可以推断出，判断语句后面的那个`x`，类型一定是`string`。
 
+## 局部类型
+
+函数内部允许声明其他类型，该类型只在函数内部有效，称为局部类型。
+
+```typescript
+function hello(txt:string) {
+  type message = string;
+  let newTxt:message = 'hello ' + txt;
+  return newTxt;
+}
+
+const newTxt:message = hello('world'); // 报错
+```
+
+上面示例中，类型`message`是在函数`hello()`内部定义的，只能在函数内部使用。在函数外部使用，就会报错。
+
 ## 高阶函数
 
 一个函数的返回值还是一个函数，那么前一个函数就称为高阶函数（higher-order function）。
@@ -780,18 +796,13 @@ function createElement(
 
 上面示例中，函数重载精确描述了参数`tag`的三个值，所对应的不同的函数返回值。
 
-## 局部类型
-
-函数内部允许声明其他类型，该类型只在函数内部有效，称为局部类型。
+这个示例的函数重载，也可以用对象表示。
 
 ```typescript
-function hello(txt:string) {
-  type message = string;
-  let newTxt:message = 'hello ' + txt;
-  return newTxt;
+type CreateElement = {
+  (tag:'a'): HTMLAnchorElement;
+  (tag:'canvas'): HTMLCanvasElement;
+  (tag:'table'): HTMLTableElement;
+  (tag:string): HTMLElement;
 }
-
-const newTxt:message = hello('world'); // 报错
 ```
-
-上面示例中，类型`message`是在函数`hello()`内部定义的，只能在函数内部使用。在函数外部使用，就会报错。
