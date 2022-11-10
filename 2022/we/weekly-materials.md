@@ -1,5 +1,11 @@
 # 备用材料
 
+8、[CogView2](https://huggingface.co/spaces/THUDM/CogView2)
+
+![](https://cdn.beekka.com/blogimg/asset/202207/bg2022070503.webp)
+
+一个从文本生成图像的工具，特点是支持中文。你在网页上输入一句中文句子，它就生成对应的图片，不过效果一般。
+
 ![](https://cdn.beekka.com/blogimg/asset/202210/bg2022101601.webp)
 
 葡萄酒瓶的软木塞，来自软木橡树的树皮。这种橡树的外层树皮，剥了还会长出来，但是长一次需要10年。（[via](https://baike.baidu.com/item/%E6%A9%A1%E6%A0%91%E7%9A%AE/12760178)）
