@@ -2,9 +2,7 @@
 
 ## 简介
 
-interface 是一种类型约定，中文译为“接口”。变量指定为某个接口，就表示遵守约定。
-
-很多面向对象的编程语言都有 interface 语法结构，用来表示对象必须实现的属性和方法。TypeScript 也提供了 interface 命令。
+interface 是对象的模板，可以看作是一种类型约定，中文译为“接口”。使用了这个模板的对象，就拥有了指定的类型结构，
 
 ```typescript
 interface Person {
@@ -14,27 +12,29 @@ interface Person {
 }
 ```
 
-上面的示例定义了一个接口`Person`，它相当于对象的模板。任何实现这个接口的对象，都必须部署接口定义的属性`firstName`、`lastName`和`age`，并且必须符合规定的类型。
+上面示例中，定义了一个接口`Person`，它指定一个对象模板，拥有三个属性`firstName`、`lastName`和`age`。任何实现这个接口的对象，都必须部署这三个属性，并且必须符合规定的类型。
 
-对象实现这个接口就很简单，只要指定对象的类型为该接口即可。
+实现该接口很简单，只要指定它作为对象的类型即可。
 
 ```typescript
-const p:Persion = {
+const p:Person = {
   firstName: 'John',
   lastName: 'Smith',
   age: 25
 };
 ```
 
-interface 是一种表达能力很强的语法，它的成员可以有5种形式。
+上面示例中，变量`p`的类型就是接口`Person`，所以必须符合`Person`指定的结构。
 
-- 属性签名
-- 调用签名
-- 构造签名
-- 方法签名
-- 索引签名
+interface 可以表示对象的各种语法，它的成员有5种形式。
 
-属性签名。
+- 对象属性
+- 对象的属性索引
+- 对象方法
+- 函数
+- 构造函数
+
+（1）对象属性
 
 ```typescript
 interface Point {
@@ -43,12 +43,15 @@ interface Point {
 }
 ```
 
+上面示例中，`x`和`y`都是对象的属性，分别使用冒号指定每个属性的类型。
+
+属性之间使用分号或逗号分隔，最后一个属性结尾的分号或逗号可以省略。
+
 如果属性是可选的，就在属性名后面加一个问号。
 
 ```typescript
 interface Foo {
   x?: string;
-  y?(): number;
 }
 ```
 
@@ -60,7 +63,7 @@ interface A {
 }
 ```
 
-字符串索性签名。
+（2）对象的属性索引
 
 ```typescript
 interface A {
@@ -68,59 +71,74 @@ interface A {
 }
 ```
 
-一个接口中最多只能定义一个字符串索引签名。字符串索引签名会约束该对象类型中所有属性的类型。例如，下例中的字符串索引签名定义了索引值的类型为number类型。那么，该接口中所有属性的类型必须能够赋值给number类型。
+上面示例中，`[prop: string]`就是属性的字符串索引，表示属性名只要是字符串，都符合类型要求。
+
+属性索引共有`string`、`number`和`symbol`三种类型。
+
+一个接口中，最多只能定义一个字符串索引。字符串索引会约束该类型中所有名字为字符串的属性。
 
 ```typescript
-interface B {
+interface MyObj {
   [prop: string]: number;
  
   a: boolean;      // 编译错误
-  b: () => number; // 编译错误
-  c(): number;     // 编译错误
 }
 ```
 
-数值索引签名，也就是数组。
+上面示例中，属性索引指定所有名称为字符串的属性，它们的属性值必须是数值（`number`）。属性`a`的值为布尔值就报错了。
+
+属性的数值索引，其实是指定数组的类型。
 
 ```typescript
 interface A {
   [prop: number]: string;
 }
  
-const obj: A = ['a', 'b', 'c'];
+const obj:A = ['a', 'b', 'c'];
 ```
 
-一个接口中最多只能定义一个数值索引签名。数值索引签名约束了数值属性名对应的属性值的类型。
+上面示例中，`[prop: number]`表示属性名的类型是数值，所以可以用数组对变量`obj`赋值。
 
-若接口中同时存在字符串索引签名和数值索引签名，那么数值索引签名的类型必须能够赋值给字符串索引签名的类型。因为在JavaScript中，对象的属性名只能为字符串（或Symbol）。虽然JavaScript也允许使用数字等其他值作为对象的索引，但最终它们都会被转换为字符串类型。因此，数值索引签名能够表示的属性集合是字符串索引签名能够表示的属性集合的子集。
+同样的，一个接口中最多只能定义一个数值索引。数值索引会约束所有名称为数值的属性。
+
+如果一个 interface 同时定义了字符串索引和数值索引，那么数值索性必须服从于字符串索引。因为在 JavaScript 中，数值属性名最终是自动转换成字符串属性名。
 
 ```typescript
 interface A {
-    [prop: string]: number;
-    [prop: number]: string; // 编译错误
+  [prop: string]: number;
+  [prop: number]: string; // 报错
+}
+
+interface B {
+  [prop: string]: number;
+  [prop: number]: number; // 正确
 }
 ```
 
-方法签名。
+上面示例中，数值索引的属性值类型与字符串索引不一致，就会报错。数值索引必须兼容字符串索引的类型声明。
+
+（3）对象的方法
+
+对象的方法共有三种写法。
 
 ```typescript
 // 写法一
 interface A {
-  f(x: boolean): string;       // 方法签名
+  f(x: boolean): string;
 }
 
 // 写法二
-interface C {
-  f: (x: boolean) => string;   // 属性签名和函数类型字面量
+interface B {
+  f: (x: boolean) => string; 
 }
 
 // 写法三
-interface B {
-  f: { (x: boolean): string }; // 属性签名和对象类型字面量
+interface C {
+  f: { (x: boolean): string };
 }
 ```
 
-属性表达式。
+属性名可以采用表达式，所以下面的写法也是可以的。
 
 ```typescript
 const f = 'f';
@@ -140,15 +158,51 @@ interface A {
 }
 ```
 
-调用签名
+interface 里面的函数重载，不需要给出实现。但是，由于对象内部定义方法时，无法使用函数重载的语法，所以需要额外在对象外部给出函数方法的实现。
 
 ```typescript
-interface ErrorConstructor {     
-  (message?: string): Error;
+interface A {
+  f(): number;
+  f(x: boolean): boolean;
+  f(x: string, y: string): string;
+}
+
+function MyFunc(): number;
+function MyFunc(x: boolean): boolean;
+function MyFunc(x: string, y: string): string;
+function MyFunc(
+  x?:boolean|string, y?:string
+):number|boolean|string {
+  if (x === undefined && y === undefined) return 1;
+  if (typeof x === 'boolean' && y === undefined) return true;
+  if (typeof x === 'string' && typeof y === 'string') return 'hello';
+  throw new Error('wrong parameters');  
+}
+
+const a:A = {
+  f: MyFunc
 }
 ```
 
-构造签名
+上面示例中，接口`A`的方法`f()`有函数重载，需要额外定义一个函数`MyFunc()`实现这个重载，然后部署接口`A`的对象`a`的属性`f`等于函数`MyFunc()`就可以了。
+
+（4）函数
+
+interface 也可以用来声明独立的函数。
+
+```typescript
+interface Add {
+  (x:number, y:number): number;
+}
+
+const myAdd:Add = (x,y) => x + y;
+```
+
+上面示例中，接口`Add`声明了一个函数类型。
+
+（5）构造函数
+
+interface 内部可以使用`new`关键字，表示构造函数。
 
 ```typescript
 interface ErrorConstructor {
@@ -156,67 +210,9 @@ interface ErrorConstructor {
 }
 ```
 
-## 数组接口
+上面示例中，接口`ErrorConstructor`内部有`new`命令，表示它是一个构造函数。
 
-接口也可以表示数组。
-
-```typescript
-interface namelist {
-  [index:number]:string
-}
-
-var list2: namelist =["John",1,"Bran"] //Error. 1 is not type string 
-
-interface ages {
-  [index:string]: number
-}
-
-var agelist: ages;
-agelist["John"]=15 // Ok
-agelist[2]="nine" // Error
-```
-
-第三种写法是使用`interface`声明类型，这种就很少用。
-
-```typescript
-interface StringArray {
-  [index: number]: string;
-}
-const strArr:StringArray = ['a', 'b', 'c'];
-```
-
-本质上，这种写法是声明一个对象，数组正好是一种特殊对象，键名等于数值，所以可以这样声明。
-
-这种写法也可以用来声明，除了数值键名，还有非数值键名的对象。
-
-```typescript
-interface FirstNamesAndLastName {
-  [index: number]: string;
-  lastName: string;
-}
-
-const ducks: FirstNamesAndLastName = {
-  0: 'Huey',
-  1: 'Dewey',
-  2: 'Louie',
-  lastName: 'Duck',
-};
-```
-
-## 元组的写法
-
-元组类型也可以通过`interface`命令定义。
-
-```typescript
-interface Tuple {
- 0: number;
- 1: number;
- length: 2;
-}
-const t:Tuple = [10, 20]; // 正确
-```
-
-上面示例中，`interface`命令定义了一个元组，成员包括从`0`开始的每个数字键，以及`length`属性。但是，这样会丢失所有数组方法（比如`concat()`），所以不建议这样使用。
+TypeScript 里面，构造函数特指具有`constructor`属性的类，详见《Class》一章。
 
 ## interface 的继承
 
@@ -705,3 +701,238 @@ const obj:A = {
 上面示例中，`interface`把类型`A`的两个定义合并在一起。
 
 （5）总结：如果有复杂的类型运算，没有选择只有使用`type`；如果需要扩充类型或自动合并，那么可以使用`interface`。
+
+## interface 命令
+
+interface 可以使用 extends 关键字继承其他接口。
+
+```typescript
+interface BasicAddress {
+  name?: string;
+  street: string;
+  city: string;
+  country: string;
+  postalCode: string;
+}
+ 
+interface AddressWithUnit extends BasicAddress {
+  unit: string;
+}
+```
+
+extends 关键字会从继承的接口里面拷贝属性类型，这样就不必重复书写。
+
+extends 关键字还可以继承多个接口。
+
+```typescript
+interface Colorful {
+  color: string;
+}
+ 
+interface Circle {
+  radius: number;
+}
+ 
+interface ColorfulCircle extends Colorful, Circle {}
+ 
+const cc: ColorfulCircle = {
+  color: "red",
+  radius: 42,
+};
+```
+
+上面示例中，ColorfulCircle 就相当于 Colorful 和 Circle 两个接口合并了。
+
+`&`运算符可以起到两个对象接口合并的作用。
+
+```typescript
+interface Colorful {
+  color: string;
+}
+interface Circle {
+  radius: number;
+}
+ 
+type ColorfulCircle = Colorful & Circle;
+
+function draw(circle: Colorful & Circle) {
+  console.log(`Color was ${circle.color}`);
+  console.log(`Radius was ${circle.radius}`);
+}
+```
+
+extends 还可以当作运算符，起到判断作用，这称为条件类型（conditional type）。
+
+```typescript
+interface Animal {
+  live(): void;
+}
+interface Dog extends Animal {
+  woof(): void;
+}
+ 
+// 等同于 type Example1 = number
+type Example1 = Dog extends Animal ? number : string;
+
+// 等同于 type Example2 = string
+type Example2 = RegExp extends Animal ? number : string;
+```
+
+上面示例中，extends 判断左侧的类型是否继承自右侧的类型。如果是的，返回 true，否则返回 false。
+
+## type 命令与 interface 命令的区别
+
+对象类型有`type`和`interface`两种定义方法。
+
+```typescript
+// Object type literal
+type ObjType1 = {
+  a: boolean,
+  b: number;
+  c: string,
+};
+
+// Interface
+interface ObjType2 {
+  a: boolean,
+  b: number;
+  c: string,
+}
+```
+
+它们都可以使用分号或逗号，作为分隔符。最后一个成员的分隔符是可选的，可以加上，也可以省略。
+
+两者作用类似，几乎所有的 interface 命令都可以改写为 type 命令。
+
+它们有几个区别。
+
+第一个区别，`type`类型可以嵌入行内，但是`interface`不可以。
+
+```typescript
+// Inlined object type literal:
+function f1(x: {prop: number}) {}
+
+// Referenced interface:
+function f2(x: ObjectInterface) {} 
+interface ObjectInterface {
+  prop: number;
+}
+```
+
+第二个区别，`type`类型不能有重名。
+
+```typescript
+// 报错
+type PersonAlias = {first: string};
+// 报错
+type PersonAlias = {last: string};
+```
+
+`interface`可以重名，TypeScript 会将它们自动合并成一个定义。
+
+```typescript
+interface PersonInterface {
+  first: string;
+}
+interface PersonInterface {
+  last: string;
+}
+const jane: PersonInterface = {
+  first: 'Jane',
+  last: 'Doe',
+};
+```
+
+第三个区别是，`interface`不能包含属性映射（mapping），`type`可以。
+
+```typescript
+interface Point {
+  x: number;
+  y: number;
+}
+
+// 正确
+type PointCopy1 = {
+  [Key in keyof Point]: Point[Key]; // (A)
+};
+
+// 报错
+interface PointCopy2 {
+   [Key in keyof Point]: Point[Key];
+};
+```
+
+第四个区别是，`this`只能用于`interface`。
+
+```typescript
+// 正确
+interface AddsStrings {
+  add(str: string): this;
+};
+
+// 报错
+type AddsStrings = {
+  add(str: string): this;
+};
+
+class StringBuilder implements AddsStrings {
+  result = '';
+  add(str: string) {
+    this.result += str;
+    return this;
+  }
+}
+```
+
+
+它们的区别主要是可扩展性。type 定义的类型别名，无法加新属性。
+
+```typescript
+type Animal = {
+  name: string
+}
+
+type Bear = Animal & { 
+  honey: boolean 
+}
+
+const bear = getBear();
+bear.name;
+bear.honey;
+```
+
+上面代码中，如果要为类型别名`Animal`添加一个属性，只能重新定义一个别名，并使用`&`运算符合并原来的别名。
+
+interface 命令则是总是可以扩展。
+
+```typescript
+interface Window {
+  title: string
+}
+
+interface Window {
+  ts: TypeScriptAPI
+}
+```
+
+上面示例中，如果要扩展接口，只要再用 interface 命令定义一次同名接口就可以了，它会自动跟原来的接口合并。
+
+如果要为扩展后的接口起一个新的名字，则可以使用 extends 关键字。
+
+```typescript
+interface Animal {
+  name: string
+}
+
+interface Bear extends Animal {
+  honey: boolean
+}
+
+const bear = getBear() 
+bear.name
+bear.honey
+```
+
+上面示例中，只要使用`extends`关键字，就能基于原来的接口进行扩展。
+
+因为 inteface 的灵活性更高，所以建议优先使用 inteface，代替 type 命令。

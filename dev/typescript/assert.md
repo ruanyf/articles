@@ -823,6 +823,36 @@ function f(x: any, y: any) {
 
 此例中，assertIsNumber断言函数用于确保传入的参数是number类型。f函数的两个参数x和y都是any类型。第8、9行还没有执行断言函数，这时参数x和y都是any类型。第14、15行，在执行了assertIsNumber断言函数后，编译器能够分析出当前位置上参数x和y的类型一定是number类型。因为如果不是number类型，那么意味着断言函数已经抛出异常并退出了f函数，不可能执行到第14和15行位置。
 
+## 类型断言
+
+类型断言用于在一个大类型之中，指定更具体的类型。
+
+它有两种写法。一种是使用 as 命令。
+
+```typescript
+const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement;
+```
+
+另一种是使用尖括号。
+
+```typescript
+const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
+```
+
+注意，类型断言只能用于将大类型断言为其内部更小的类型，不能将小类型断言为更大的类型，或者更改大类型。
+
+```typescript
+const x = "hello" as number;
+```
+
+如果要更改大类型，可以使用两次 as 命令。
+
+```typescript
+const a = (expr as any) as T;
+```
+
+上面示例中， 变量 expr 先断言为 any 类型（即取消原有的类型），然后再断言为类型 T。
+
 ## 参考链接
 
 - [Const Assertions in Literal Expressions in TypeScript](https://mariusschulz.com/blog/const-assertions-in-literal-expressions-in-typescript), Marius Schulz

@@ -439,6 +439,61 @@ const a = new A(0, 0);
 const b = new A('foo');
 ```
 
+```typescript
+export interface IBaseEntity {
+  id: string
+
+}
+
+export interface IBaseEntityClass {
+    new(_id?: string, _data?: any): IBaseEntity
+}
+
+
+class Test implements IBaseEntity {
+  id: string
+  constructor(_id?: string, _data?: any) {
+    this.id = 'MOCK_ID'
+  }
+}
+
+let baseEntityClass: IBaseEntityClass = Test; // The class test fulfills the contract of IBaseEntityClass
+
+new baseEntityClass("", {}) 
+```
+
+http://fritzthecat-blog.blogspot.com/2018/06/typescript-constructor-in-interface.html
+
+```typescript
+interface Point
+{
+    x: number;
+    y: number;
+}
+
+interface PointConstructor
+{
+    new(x: number, y: number): Point;
+}
+
+class PointImpl implements Point
+{
+    readonly x: number;
+    readonly y: number;
+    
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+function newPoint(pointConstructor: PointConstructor, x: number, y: number): Point {
+    return new pointConstructor(x, y);
+}
+
+const point: Point = newPoint(PointImpl, 1, 2);
+```
+
 ## 存取器
 
 存取器指的是某个属性（假定为`p`）的赋值方法`set p()`和取值方法`get p()`

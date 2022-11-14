@@ -569,7 +569,7 @@ let age:Age = 55;
 
 上面示例中，`type`命令为`number`类型生成一个别名`Age`。这样就能像使用`number`一样，使用`Age`当作类型。
 
-别名可以让一些复杂类型用起来更方便，也能增加代码的可读性。
+别名可以让类型的名字变得更有意义，也能增加代码的可读性，还可以使复杂类型用起来更方便，便于以后修改变量的类型。
 
 别名不允许有重名。
 
@@ -592,14 +592,14 @@ if (Math.random() < 0.5) {
 
 上面示例中，`if`代码块内部的类型别名`Color`，跟外部的`Color`是不一样的。
 
-别名支持使用表达式，也可以在定义一个别名时，使用另一个别名。
+别名支持使用表达式，也可以在定义一个别名时，使用另一个别名，即别名允许嵌套。
 
 ```typescript
 type World = "world";
 type Greeting = `hello ${World}`;
 ```
 
-上面示例中，别名`Greeting`使用了模板字符串，需要读取另一个别名`World`。
+上面示例中，别名`Greeting`使用了模板字符串，读取另一个别名`World`。
 
 `type`命令属于类型相关的代码，编译成 JavaScript 的时候，会被全部删除。
 
@@ -666,154 +666,6 @@ if (typeof b === 'string') {
 ```
 
 上面示例中，编译后会保留原始代码的第二个`typeof`，因此这个`typeof`遵守 JavaScript 的语法。原始代码的第一个`typeof`，遵守的是 TypeScript 类型语法。
-
-## 对象
-
-对象可以直接描述类型，即在声明对象变量的时候，用`:{ /*Structure*/ }`在变量名后面声明类型。写法如下。
-
-```typescript
-var sampleVariable: { bar: number }
-
-function foo(sampleParameter: { bar: number }) { }
-
-let o: { n: number; xs: object[] } = { n: 1, xs: [] };
-
-function pointToString(pt: {x: number, y: number}) {
-  return `(${pt.x}, ${pt.y})`;
-}
-```
-
-可选属性可以在属性名后加一个问号`?`。
-
-```typescript
-function printName(obj: { first: string; last?: string }) {
-  // ...
-}
-// Both OK
-printName({ first: "Bob" });
-printName({ first: "Alice", last: "Alisson" });
-```
-
-如果要复用某个对象的类型，可以使用`interface`描述。可以将`interface`看作多个类型注释的一个容器，这个容器可以有自己的名字，因此可以引用。
-
-```typescript
-interface Name {
-    first: string;
-    second: string;
-}
-
-var name: Name;
-name = {
-    first: 'John',
-    second: 'Doe'
-};
-```
-
-上面示例中，interface 建立了一个容器，名称为`Name`，里面包括两个类型注释，一个是`first`，另一个是`second`，它们的类型都是字符串。
-
-```typescript
-interface Point {
-  x: number;
-  y: number;
-}
-```
-
-属性也可以使用分号结尾。
-
-```typescript
-interface Point {
-  x: number,
-  y: number,
-}
-```
-
-下面是对象使用接口定义类型的例子。
-
-```typescript
-interface Point {
-  x: number;
-  y: number;
-}
-function pointToString(pt: Point) {
-  return `(${pt.x}, ${pt.y})`;
-}
-
-interface User {
-  name: string;
-  id: number;
-}
-
-const user: User = {
-  name: "Hayes",
-  id: 0,
-};
-```
-
-方法也可以在接口中描述。
-
-```typescript
-interface Point {
-  x: number;
-  y: number;
-  distance(other: Point): number;
-}
-```
-
-类型系统不区分方法和属性。
-
-```typescript
-interface Num1 {
-  value: number;
-  square(): number;
-}
-interface Num2 {
-  value: number;
-  square: () => number;
-}
-
-const num1 = {
-  value: 3,
-  square() {
-    return this.value ** 2;
-  }
-};
-const num2 = {
-  value: 4,
-  square: () => {
-    return num2.value ** 2;
-  }
-};
-
-const n11: Num1 = num1;
-const n21: Num2 = num1;
-const n12: Num1 = num2;
-const n22: Num2 = num2;
-```
-
-如果某个属性是可选属性，属性名后面可以加一个问号表示。
-
-```type
-interface Person {
-  name: string;
-  company?: string;
-}
-```
-
-还可以使用 type 关键字为对象起别名。
-
-```typescript
-type Point = {
-  x: number;
-  y: number;
-};
- 
-function printCoord(pt: Point) {
-  console.log(pt.x);
-  console.log(pt.y);
-}
- 
-printCoord({ x: 100, y: 100 });
-```
 
 ## 类
 
@@ -890,8 +742,6 @@ function reverse<T>(items: T[]): T[] {
 
 上面示例中，函数 reverse 的参数 items 是一个数组，数组成员的类型是 T（即`items: T[]`），这里的 T 代表 Type，你也可以使用其他字符代替。它的返回值也是一个数组，该数组的成员类型也是 T（即 reverse: T[]）。也就是说，参数收到什么类型的数组，就返回什么类型的字符，比如收到字符串数组，就返回字符串数组，收到数值数组，就返回数值数组。
 
-
-
 可以自己定义泛型。
 
 ```typescript
@@ -899,29 +749,4 @@ interface Backpack<Type> {
   add: (obj: Type) => void;
   get: () => Type;
 }
-```
-
-## 类型匹配
-
-只要对象具有相同的属性，TypeScript 就会认为它们属于相同的类型。
-
-```typescript
-interface Point {
-  x: number;
-  y: number;
-}
- 
-function logPoint(p: Point) {
-  console.log(`${p.x}, ${p.y}`);
-}
- 
-// logs "12, 26"
-const point = { x: 12, y: 26 };
-logPoint(point);
-
-const point3 = { x: 12, y: 26, z: 89 };
-logPoint(point3); // logs "12, 26"
- 
-const rect = { x: 33, y: 3, width: 30, height: 80 };
-logPoint(rect); // logs "33, 3"
 ```
