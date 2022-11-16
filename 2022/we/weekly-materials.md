@@ -1,5 +1,11 @@
 # 备用材料
 
+2、
+
+如果你忧心忡忡，那是不必要的。如果你不忧心，你需要忧心。（If you worry, you don’t have to worry. And if you don’t worry, you need to.）
+
+-- [同上](https://thehustle.co/ray-dalio-chat/)（Ray Dalio）
+
 8、[CogView2](https://huggingface.co/spaces/THUDM/CogView2)
 
 ![](https://cdn.beekka.com/blogimg/asset/202207/bg2022070503.webp)

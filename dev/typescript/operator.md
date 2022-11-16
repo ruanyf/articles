@@ -481,7 +481,26 @@ type key = "age";
 type Age = Person[key];
 ```
 
-## 条件运算
+## extends...?: 条件运算符
+
+extends 还可以当作运算符，起到判断作用，这称为条件类型（conditional type）。
+
+```typescript
+interface Animal {
+  live(): void;
+}
+interface Dog extends Animal {
+  woof(): void;
+}
+ 
+// 等同于 type Example1 = number
+type Example1 = Dog extends Animal ? number : string;
+
+// 等同于 type Example2 = string
+type Example2 = RegExp extends Animal ? number : string;
+```
+
+上面示例中，extends 判断左侧的类型是否继承自右侧的类型。如果是的，返回 true，否则返回 false。
 
 条件运算符可以根据当前类型是否符合某种条件，返回不同的类型。
 
