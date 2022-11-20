@@ -1,18 +1,23 @@
-# 类型断言
+# TypeScript 的类型断言
 
-有些时候，TypeScript 对类型的处理，可能不是开发者想要的行为，毕竟开发者比编译器更了解自己的代码，这时 TypeScript 提供了一种手段，允许开发者手动更改类型，改变编译时的行为。
+## 简介
+
+对于没有类型声明的值，TypeScript 会进行类型推断，很多时候得到的结果，未必是开发者想要的。
 
 ```typescript
 type T = 'a'|'b'|'c';
-
 let foo = 'a';
 
 let bar:T = foo; // 报错
 ```
 
-上面示例报错，原因是 TypeScript 推断 foo 的类型是`string`，而`bar`的类型是`'a'|'b'|'c'`，两者没有兼容关系。
+上面示例中，最后一行报错，原因是 TypeScript 推断变量`foo`的类型是`string`，而变量`bar`的类型是`'a'|'b'|'c'`，前者是后者的父类型。父类型不能赋值给子类型，所以就报错了。
 
-解决方法就是进行类型断言，即在该位置临时修改某个值的类型，告诉编译器，`foo`的类型以断言为准，不需要进行推断了。
+这时，TypeScript 提供了“类型断言”这样一种手段，允许开发者在代码中“断言”某个值的类型，使得该值在这一行改变类型。TypeScript 一旦发现存在类型断言，就不再对该值进行类型推断，而是直接采用断言给出的类型。
+
+这种做法的实质是，允许开发者“临时”修改某个值类型，使其能够通过类型检查，避免编译器报错。这样虽然削弱了 TypeScript 类型系统的严格性，但是为开发者带来了方便，毕竟开发者比编译器更了解自己的代码。
+
+回到上面的例子，解决方法就是进行类型断言，在赋值时临时修改变量`foo`的类型。
 
 ```typescript
 type T = 'a'|'b'|'c';
@@ -21,15 +26,91 @@ let foo = 'a';
 let bar:T = foo as T; // 正确
 ```
 
-上面示例中，最后一行的`foo as T`表示告诉编译器，在当前行不需要推断`foo`的类型，直接把它当作类型`T`。
+上面示例中，最后一行的`foo as T`表示告诉编译器，变量`foo`的类型断言为`T`，所以这一行不再需要类型推断了，编译器直接把`foo`的类型当作`T`，就不会报错了。
 
-类型断言可以用来手动指定一个值的类型。
+类型断言有两种语法。
 
 ```typescript
-<类型>值
-// or
-值 as 类型
+// 语法一：<类型>值
+<Type>value
+
+// 语法二：值 as 类型
+value as Type
 ```
+
+上面两种语法是等价的，`value`表示值，`Type`表示类型。早期只有语法一，后来因为 TypeScript 开始支持 React 的 JSX 语法（尖括号表示 HTML 元素），为了避免两者冲突，就引入了语法二。目前，推荐使用语法二。
+
+```typescript
+// 语法一
+let bar:T = <T>foo;
+
+// 语法二
+let bar:T = foo as T;
+```
+
+上面示例是两种类型断言的语法，其中的语法一因为跟 JSX 语法冲突，使用时必须关闭 TypeScript 的 React 支持，否则会无法识别。由于这个原因，现在一般都使用语法二。
+
+下面看一个例子。《对象》一章提到过，对象类型有严格字面量检查，如果存在额外的属性会报错。
+
+```typescript
+// 报错
+const p:{ x: number } = { x: 0, y: 0 };
+```
+
+上面示例中，等号右侧是一个对象字面量，多出了属性`y`，导致报错。解决方法就是使用类型断言，可以用两种不同的断言。
+
+```typescript
+// 正确
+const p0:{ x: number } =
+  { x: 0, y: 0 } as { x: number };
+  
+// 正确
+const p1:{ x: number } =
+  { x: 0, y: 0 } as { x: number; y: number };
+```
+
+上面示例中，两种类型断言都是正确的。第一种断言将类型改成与等号左边一致，第二种断言使得等号右边的类型是左边类型的子类型，子类型可以赋值给父类型，同时因为存在类型断言，就没有严格字面量检查了，所以不报错。
+
+下面是一个网页编程的实际例子。
+
+```typescript
+const username = document.getElementById('username');
+
+if (username) {
+  (username as HTMLInputElement).value; // 正确
+}
+```
+
+上面示例中，变量`username`的类型是`HTMLElement|null`，排除了`null`的情况以后，HTMLElement 类型是没有`value`属性的。如果`username`是一个输入框，那么就可以通过类型断言，将它的类型改成`HTMLInputElement`，就可以读取`value`属性。
+
+注意，类型断言不应滥用，因为它改变了 TypeScript 的类型检查，很可能埋下错误的隐患。
+
+```typescript
+const data:object = {
+  a: 1,
+  b: 2,
+  c: 3
+};
+
+data.length; // 报错
+
+(data as Array<string>).length; // 正确
+```
+
+上面示例中，变量`data`是一个对象，没有`length`属性。但是通过类型断言，可以将它的类型断言为数组，这样使用`length`属性就能通过类型检查。但是，编译后的代码在运行时依然会报错，所以类型断言可以让错误的代码通过编译。
+
+类型断言的一大用处是，指定 unknown 类型的变量的具体类型。
+
+```typescript
+const value:unknown = 'Hello World';
+
+const s1:string = value; // 报错
+const s2:string = value as string; // 正确
+```
+
+上面示例中，unknown 类型的变量`value`不能直接赋值给其他类型的变量，但是可以将它断言为其他类型，这样就可以赋值给别的变量了。
+
+## 类型断言的前提
 
 ```typescript
 var str = '1' 
@@ -41,89 +122,7 @@ console.log(str2)
 
 它之所以不被称为类型转换，是因为转换通常意味着某种运行时的支持。但是，类型断言纯粹是一个编译时语法，同时，它也是一种为编译器提供关于如何分析代码的方法。
 
-===
-
-TypeScript程序中的每一个表达式都具有某种类型，编译器可以通过类型注解或者类型推断来确定表达式的类型。但有些时候，开发者比编译器更加清楚某个表达式的类型。
-
-类型断言允许我们覆盖 TypeScript 为值计算的静态类型。这对于解决类型系统的限制很有用。
-
-它相当于其他语言中的类型转换，但类型断言不会抛出异常，并且只用于静态检查，在运行时不做任何事情。
-
-```typescript
-// 无编译错误
-const p0: { x: number } = { x: 0, y: 0 } as { x: number };
-  
-// 无编译错误
-const p1: { x: number } = { x: 0, y: 0 } as { x: 0; y: 0 };
-```
-
-```typescript
-const data: object = ['a', 'b', 'c']; // (A)
-
-// @ts-expect-error: Property 'length' does not exist on type 'object'.
-data.length; // (B)
-
-assert.equal(
-  (data as Array<string>).length, 3); // (C)
-```
-
-上面示例中，`['a', 'b', 'c']`会被 TypeScript 归类为对象，所以不能使用`length`属性。类型断言就将其指定为数组。
-
-一般来说，类型断言应该少避免，因为它改变了 TypeScript 内置规则，有可能破坏静态检查。
-
-类型推断可以暂时改变一个值的类型。
-
-```typescript
-interface Named {
-  name: string;
-}
-function getName(obj: object): string {
-  if (typeof (obj as Named).name === 'string') { // (A)
-    return (obj as Named).name; // (B)
-  }
-  return '(Unnamed)';
-}
-```
-
-使用类型断言之后，unknown 类型就可以作为所断言的类型使用。
-
-```typescript
-const value: unknown = "Hello World";
-const someString: string = value as string;
-const otherString = someString.toUpperCase(); // "HELLO WORLD"
-```
-
-请注意，TypeScript 不会执行任何特殊检查来确保类型断言确实有效。类型检查器假定您知道得更好，并相信您在类型断言中使用的任何类型都是正确的。
-
-TypeScript 对下面的代码不会报错，但是运行时会报错。
-
-```typescript
-const value: unknown = 42;
-const someString: string = value as string;
-const otherString = someString.toUpperCase(); // BOOM
-```
-
 ## `<T>`类型断言
-
-TypeScript 允许采用类型断言的方式，强制改变类型，方法是在一个值前面加上尖括号（`<typeName>`）指定类型。
-
-“<T>”类型断言的语法如下所示：
-
-```typescript
-<T>expr
-```
-
-在该语法中，T表示类型断言的目标类型；expr表示一个表达式。`<T>`类型断言尝试将expr表达式的类型转换为T类型。
-
-```typescript
-const username = document.getElementById('username');
- 
-if (username) {
-    (<HTMLInputElement>username).value; // 正确
-}
-```
-
-上面例子如果不使用断言，就会报错：属性'value'不存在于类型'HTMLElement'上。
 
 在使用<T>类型断言时，需要注意运算符的优先级。在上例中，我们必须使用分组运算符来对username进行类型断言。如果没有使用分组运算符，那么是在对username.value进行类型断言。
 
@@ -170,71 +169,44 @@ if (username) {
 
 当在TypeScript中使用JSX时，仅支持as T类型断言语法。除此之外，两种类型断言语法均可使用，开发者可以根据个人习惯或团队约定选择其一。目前主流的编码风格规范推荐使用as T类型断言语法。
 
-## 类型断言的约束
+## 类型断言的前提
 
-类型断言不允许在两个类型之间随意做转换而是需要满足一定的前提。假设有如下as T类型断言（<T>断言同理）：
+类型断言并不意味着，可以把某个值断言为任意类型。
+
+```typescript
+const n = 1;
+const m:string = n as string; // 报错
+```
+
+上面示例中，变量`n`是数值，无法把它断言成字符串，TypeScript 会报错。
+
+类型断言的使用前提是，值的实际类型与断言的类型必须满足一个条件。
 
 ```typescript
 expr as T
 ```
 
-若想要该类型断言能够成功执行，则需要满足下列两个条件之一：
+上面代码中，`expr`是实际的值，`T`是类型断言，它们必须满足下面的条件：`expr`是`T`的子类型，或者`T`是`expr`的子类型。
 
-- expr表达式的类型能够赋值给T类型。
-- T类型能够赋值给expr表达式的类型。
+也就是说，类型断言要求实际的类型与断言的类型兼容，实际类型可以断言为一个更加宽泛的类型（父类型），也可以断言为一个更加精确的类型（子类型），但不能断言为一个完全无关的类型。
 
-以上两个条件意味着，在执行类型断言时编译器会尝试进行双向的类型兼容性判定，允许将一个类型转换为更加精确的类型或者更加宽泛的类型。
-
-```typescript
-interface Point2d {
-    x: number;
-    y: number;
-}
-
-interface Point3d {
-    x: number;
-    y: number;
-    z: number;
-}
-
-const p2d: Point2d = { x: 0, y: 0 };
-const p3d: Point3d = { x: 0, y: 0, z: 0 };
-
-// 可以将'Point2d'类型转换为'Point3d'类型
-const p0 = p2d as Point3d;
-p0.x;
-p0.y;
-p0.z;
-
-// 可以将'Point3d'类型转换为'Point2d'类型
-const p1 = p3d as Point2d;
-p1.x;
-p1.y;
-```
-
-此例中，将三维的点转换为二维的点可能不会有什么问题，但是编译器也允许将二维的点转换为三维的点，这可能导致产生错误的结果，因为在Point2d类型上不存在属性z。在程序中使用类型断言时，就相当于开发者在告诉编译器“我清楚我在做什么”，因此开发者也需要对类型断言的结果负责。
-
-如果两个类型之间完全没有关联，也就是不满足上述的两个条件，那么编译器会拒绝执行类型断言。
+但是，如果真的要断言成一个完全无关的类型，也是可以做到的。那就是连续进行两次类型断言，先断言成 unknown 类型或 any 类型，然后再断言为目标类型。因为`any`类型和`unknown`类型是所有其他类型的父类型，所以可以作为两种完全无关的类型的中介。
 
 ```typescript
-// 报错
-let a: boolean = 'hello' as boolean;
-```
-
-少数情况下，在两个复杂类型之间进行类型断言时，编译器可能会无法识别出正确的类型，因此错误地拒绝了类型断言操作，又或者因为某些特殊原因而需要进行强制类型转换。那么在这些特殊的场景中可以使用如下变通方法来执行类型断言。该方法先后进行了两次类型断言，先将expr的类型转换为顶端类型unknown，而后再转换为目标类型。因为任何类型都能够赋值给顶端类型，它满足类型断言的条件，因此允许执行类型断言。
-
-```typescript
+// 或者写成 <T><unknown>expr
 expr as unknown as T
-
-// 示例
-const a = 1 as unknown as number;
 ```
 
-除了使用unknow类型外，也可以使用any类型。但因为unknown类型是更加安全的顶端类型，因此推荐优先使用unknown类型。
+上面代码中，`expr`连续进行了两次类型断言，第一次断言为`unknown`类型，第二次断言为`T`类型。这样的话，`expr`就可以断言成任意类型`T`，而不报错。
+
+下面是本小节开头那个例子的改写。
 
 ```typescript
-const a = 1 as any as number;
+const n = 1;
+const m:string = n as unknown as string; // 正确
 ```
+
+上面示例中，通过两次类型断言，变量`n`的类型就从数值，变成了完全无关的字符串，从而赋值时不会报错。
 
 ## as const 断言
 
