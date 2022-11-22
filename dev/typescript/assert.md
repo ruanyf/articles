@@ -13,11 +13,11 @@ let bar:T = foo; // 报错
 
 上面示例中，最后一行报错，原因是 TypeScript 推断变量`foo`的类型是`string`，而变量`bar`的类型是`'a'|'b'|'c'`，前者是后者的父类型。父类型不能赋值给子类型，所以就报错了。
 
-这时，TypeScript 提供了“类型断言”这样一种手段，允许开发者在代码中“断言”某个值的类型，使得该值在这一行改变类型。TypeScript 一旦发现存在类型断言，就不再对该值进行类型推断，而是直接采用断言给出的类型。
+这时，TypeScript 提供了“类型断言”这样一种手段，允许开发者在代码中“断言”某个值的类型，提示编译器此处的值是什么类型。TypeScript 一旦发现存在类型断言，就不再对该值进行类型推断，而是直接采用断言给出的类型。
 
-这种做法的实质是，允许开发者“临时”修改某个值类型，使其能够通过类型检查，避免编译器报错。这样虽然削弱了 TypeScript 类型系统的严格性，但是为开发者带来了方便，毕竟开发者比编译器更了解自己的代码。
+这种做法的实质是，允许开发者在某个位置“绕过”编译器的类型推断，使其能够通过类型检查，避免编译器报错。这样虽然削弱了 TypeScript 类型系统的严格性，但是为开发者带来了方便，毕竟开发者比编译器更了解自己的代码。
 
-回到上面的例子，解决方法就是进行类型断言，在赋值时临时修改变量`foo`的类型。
+回到上面的例子，解决方法就是进行类型断言，在赋值时断言变量`foo`的类型。
 
 ```typescript
 type T = 'a'|'b'|'c';
@@ -27,6 +27,8 @@ let bar:T = foo as T; // 正确
 ```
 
 上面示例中，最后一行的`foo as T`表示告诉编译器，变量`foo`的类型断言为`T`，所以这一行不再需要类型推断了，编译器直接把`foo`的类型当作`T`，就不会报错了。
+
+总之，类型断言并不是真的改变一个值的类型，而是提示编译器，应该如何处理这个值。
 
 类型断言有两种语法。
 
@@ -83,7 +85,9 @@ if (username) {
 
 上面示例中，变量`username`的类型是`HTMLElement|null`，排除了`null`的情况以后，HTMLElement 类型是没有`value`属性的。如果`username`是一个输入框，那么就可以通过类型断言，将它的类型改成`HTMLInputElement`，就可以读取`value`属性。
 
-注意，类型断言不应滥用，因为它改变了 TypeScript 的类型检查，很可能埋下错误的隐患。
+注意，上例的类型断言的圆括号是必需的，否则`username`会被断言成`HTMLInputElement.value`，从而报错。
+
+类型断言不应滥用，因为它改变了 TypeScript 的类型检查，很可能埋下错误的隐患。
 
 ```typescript
 const data:object = {
@@ -110,64 +114,14 @@ const s2:string = value as string; // 正确
 
 上面示例中，unknown 类型的变量`value`不能直接赋值给其他类型的变量，但是可以将它断言为其他类型，这样就可以赋值给别的变量了。
 
-## 类型断言的前提
-
-```typescript
-var str = '1' 
-var str2:number = <number> <any> str   //str、str2 是 string 类型
-console.log(str2)
-```
-
-当 S 类型是 T 类型的子集，或者 T 类型是 S 类型的子集时，S 能被成功断言成 T。这是为了在进行类型断言时提供额外的安全性，完全毫无根据的断言是危险的，如果你想这么做，你可以使用 any。
-
-它之所以不被称为类型转换，是因为转换通常意味着某种运行时的支持。但是，类型断言纯粹是一个编译时语法，同时，它也是一种为编译器提供关于如何分析代码的方法。
-
-## `<T>`类型断言
-
-在使用<T>类型断言时，需要注意运算符的优先级。在上例中，我们必须使用分组运算符来对username进行类型断言。如果没有使用分组运算符，那么是在对username.value进行类型断言。
-
-```typescript
-let str = '1';
-let str2:number = <number><any> str;
-console.log(str2) // "1"
-```
-
-上面示例中，变量`str2`的类型是数值，但是赋值为一个字符串`str`，正常情况下会报错。这时如果你确定需要这样赋值，可以强制指定`str`的类型为`<number><any>`。这样的话，TypeScript 就会认为`str`的类型是数值，尽管实际上它是一个字符串。
-
-这种语法有一个前提，就是如果将类型`T1`指定为`T2`，那么需要`T1`是`T2`的子类型，或者`T2`是`T1`的子类型。
+另外，类型断言也适合指定联合类型的值的具体类型。
 
 ```typescript
 const s1:number|string = 'hello';
-const s2:number = <number>s1; 
+const s2:number = s1 as number; 
 ```
 
-指定类型并不是真的改变一个值的类型，而是提示编译器，应该如何处理这个值。
-
-## as T 类型断言
-
-as T类型断言与<T>类型断言的功能完全相同，两者只是在语法上有所区别。
-
-```typescript
-expr as T
-```
-
-在该语法中，as是关键字；T表示类型断言的目标类型；expr表示一个表达式。as T类型断言尝试将expr表达式的类型转换为T类型。
-
-```typescript
-const username = document.getElementById('username');
-
-if (username) {
-    (username as HTMLInputElement).value; // 正确
-}
-```
-
-注意，此例中还是需要使用分组运算符，否则在访问value属性时会有语法错误。
-
-下面我们来看一看<T>断言与as T断言的比较。
-
-最初，TypeScript中只支持<T>类型断言。后来，React[1]框架开发团队在为JSX添加TypeScript支持时，发现<T>类型断言的语法与JSX的语法会产生冲突，因此，TypeScript语言添加了新的as T类型断言语法来解决两者的冲突。
-
-当在TypeScript中使用JSX时，仅支持as T类型断言语法。除此之外，两种类型断言语法均可使用，开发者可以根据个人习惯或团队约定选择其一。目前主流的编码风格规范推荐使用as T类型断言语法。
+上面示例中，变量`s1`是联合类型，可以断言其为联合类型里面的一种具体类型，再将其赋值给变量`s2`。
 
 ## 类型断言的前提
 
@@ -210,118 +164,152 @@ const m:string = n as unknown as string; // 正确
 
 ## as const 断言
 
-TypeScript 有时会有一些出乎意料的报错。
+如果没有声明变量类型，let 命令声明的变量，会被类型推断为 TypeScript 内置的基本类型之一；const 命令声明的变量，则被推断为值类型常量。
 
 ```typescript
-type Language = 
+// 类型推断为 string
+let s1 = 'JavaScript';
+
+// 类型推断为 JavaScript
+const s2 = 'JavaScript';
+```
+
+上面示例中，变量`s1`的类型被推断为`string`，变量`s2`的类型推断为值类型`JavaScript`。后者是前者的子类型，相当于 const 命令有更强的限定作用，可以缩小变量的类型范围。
+
+有些时候，let 变量会出现一些意想不到的报错，变更成 const 变量就能消除报错。
+
+```typescript
+let s = 'JavaScript';
+
+type Lang = 
   |'JavaScript'
   |'TypeScript'
   |'Python';
 
-function setLang(
-  language: Language
-) {
+function setLang(language:Lang) {
   /* ... */
 }
 
-let language = 'JavaScript';
-setLang(language); // 报错
+setLang(s); // 报错
 ```
 
-上面示例最后一行报错，原因在于函数`setLang()`的参数类型与变量`language`的类型不符。前者是一个联合类型，后者则是 TypeScript 推断的`string`类型。
+上面示例中，最后一行报错，原因是函数`setLang()`的参数`language`类型是`Lang`，这是一个联合类型。但是，传入的字符串`s`的类型被推断为`string`，属于`Lang`的父类型。父类型不能替代子类型，导致报错。
 
-为了解决两者类型不一致，至少有三种方法。
+一种解决方法就是把 let 命令改成 const 命令。
 
 ```typescript
-// 方法一
-let language:Language = 'JavaScript';
-setLang(language);
-
-// 方法二
-const language = 'JavaScript';
-setLang(language);
-
-// 方法三
-let language = 'JavaScript' as const;
-setLang(language);
+const s = 'JavaScript';
 ```
 
-上面示例中，方法一是修改变量`language`的类型，方法二是将变量`language`变为常量，但是这样就无法再修改变量`language`了。方法三则是将`JavaScript`这个值的推断类型从`string`变为常量。
+这样的话，变量`s`的类型就是值类型`JavaScript`，它是联合类型`Lang`的子类型，传入函数`setLang()`就不会报错。
 
-`as const`这种写法，跟在一个值后面，起到断言作用，告诉 TypeScript，推断类型时，可以将这个值推断为常量。
-
-如果`const`声明的对象属性是文字表达式，这些属性的类型是`string`，而不是文字表达式的值。断言可以使得这些属性的类型变为所声明的值。
-
-const类型断言是一种特殊形式的<T>类型断言和as T类型断言，它能够将某一类型转换为不可变类型。const类型断言有以下两种语法形式：
+另一种解决方法是使用类型断言。TypeScript 提供了一种特殊的类型断言`as const`，用于告诉编译器，推断类型时，可以将这个值推断为常量，即把 let 变量断言为 const 变量，从而把内置的基本类型变更为值类型。
 
 ```typescript
+let s = 'JavaScript' as const;
+setLang(s);  // 正确
+```
+
+上面示例中，变量`s`虽然是用 let 命令声明的，但是使用了`as const`断言以后，就等同于是用 const 命令声明的，变量`s`的类型会被推断为值类型`JavaScript`。
+
+使用了`as const`断言以后，let 变量就不能再改变值了。
+
+```typescript
+let s = 'JavaScript' as const;
+s = 'Python'; // 报错
+```
+
+上面示例中，let 命令声明的变量`s`，使用`as const`断言以后，就不能改变值了，否则报错。
+
+注意，`as const`断言只能用于字面量，不能用于变量。
+
+```typescript
+let s = 'JavaScript';
+setLang(s as const); // 报错
+```
+
+上面示例中，`as const`断言用于变量`s`，就报错了。
+
+另外，`as const`也不能用于表达式。
+
+```typescript
+let s = ('Java' + 'Script') as const; // 报错
+```
+
+上面示例中，`as const`用于表达式，导致报错。
+
+`as const`也可以写成前置的形式。
+
+```typescript
+// 后置形式
 expr as const
 
+// 前置形式
 <const>expr
 ```
 
-在该语法中，const是关键字，它借用了const声明的关键字；expr则要求是以下字面量中的一种：
-
-- boolean字面量。
-- string字面量。
-- number字面量。
-- bigint字面量。
-- Enum 成员字面量。
-- 数组字面量。
-- 对象字面量。
-
-注意，`as const`只能用在字面量后面，不能用在变量后面。
-
-```typescript
-let a1 = true;          
-let a2 = true as const; 
-
-a2 = false; // 报错
-```
-
-const类型断言会将expr表达式的类型转换为不可变类型，会缩小成 TypeScript 允许的最小类型。
+`as const`断言可以用于整个对象，也可以用于对象的单个属性，这时它的类型缩小效果是不一样的。
 
 ```typescript
 const v1 = {
- x: 1,
- y: 2,
-}; // Type is { x: number; y: number; }
+  x: 1,
+  y: 2,
+}; // 类型是 { x: number; y: number; }
 
 const v2 = {
- x: 1 as const,
- y: 2,
-}; // Type is { x: 1; y: number; }
+  x: 1 as const,
+  y: 2,
+}; // 类型是 { x: 1; y: number; }
 
 const v3 = {
- x: 1,
- y: 2,
-} as const; // Type is { readonly x: 1; readonly y: 2; }
+  x: 1,
+  y: 2,
+} as const; // 类型是 { readonly x: 1; readonly y: 2; }
 ```
 
-上面示例中，第二种写法是对`1`缩小类型，第三种写法是对`x: 1`缩小类型。
+上面示例中，第二种写法是对属性`x`缩小类型，第三种写法是对整个对象缩小类型。
 
-如果是数组，类型会变成只读元组。
+总之，`as const`会将字面量的类型断言为不可变类型，缩小成 TypeScript 允许的最小类型。
+
+下面是数组的例子。
 
 ```typescript
-const a1 = [1, 2, 3]; // Type is number[]
-const a2 = [1, 2, 3] as const; // Type is readonly [1, 2, 3]
+// a1 的类型推断为 number[]
+const a1 = [1, 2, 3];
+
+// a2 的类型推断为 readonly [1, 2, 3]
+const a2 = [1, 2, 3] as const;
 ```
 
-如果expr为boolean字面量、string字面量、number字面量、bigint字面量或枚举成员字面量，那么转换后的结果类型为对应的字面量类型。
+上面示例中，数组字面量使用`as const`断言后，类型推断就变成了只读元组。
+
+由于`as const`会将数组变成只读元组，所以很适合用于函数的 rest 参数。
 
 ```typescript
-let a1 = true;              // boolean
-let a2 = true as const;     // true
+function add(x: number, y: number) {
+  return x + y;
+}
 
-let b1 = 'hello';           // string
-let b2 = 'hello' as const;  // 'hello'
+const nums = [1, 2];
+const total = add(...nums); // 报错
+```
 
-let c1 = 0;                 // number
-let c2 = 0 as const;        // number
+上面示例中，变量`nums`的类型推断为`number[]`，导致使用扩展运算符`...`传入函数`add()`会报错，因为`add()`只能接受两个参数，而`...nums`并不能保证参数的个数。
 
-let d1 = 1n;                // number
-let d2 = 1n as const;       // 1n
+事实上，对于固定参数个数的函数，如果传入的参数包含扩展运算符，那么扩展运算符只能用于元组。只有当函数定义使用了 rest 参数，扩展运算符才能用于数组。
 
+解决方法就是使用`as const`断言，将数组变成元组。
+
+```typescript
+const nums = [1, 2] as const;
+const total = add(...nums); // 正确
+```
+
+上面示例中，使用`as const`断言后，变量`nums`的类型会被推断为`readonly [1, 2]`，使用扩展运算符展开后，正好符合函数`add()`的参数类型。
+
+Enum 成员也可以使用`as const`断言。
+
+```typescript
 enum Foo {
     X,
     Y,
@@ -330,502 +318,265 @@ let e1 = Foo.X;            // Foo
 let e2 = Foo.X as const;   // Foo.X
 ```
 
-如果expr为数组字面量，那么转换后的结果类型为只读元组类型。
+上面示例中，如果不使用`as const`断言，变量`e1`的类型被推断为整个 Enum 类型；使用了`as const`断言以后，变量`e2`的类型被推断为 Enum 的某个成员，这意味着它不能变更为其他成员。
+
+## 非空断言
+
+对于那些可能为空的变量（即可能等于`undefined`或`null`），TypeScript 提供了非空断言，保证这些变量不会为空，写法是在变量名后面加上感叹号`!`。
 
 ```typescript
-let a1 = [0, 0];           // number[]
-let a2 = [0, 0] as const;  // readonly [0, 0]
-```
-
-如果expr为对象字面量，那么转换后的结果类型会将对象字面量中的属性全部转换成只读属性。
-
-```typescript
-// { x: number; y: number; }
-let a1 = { x: 0, y: 0 };
-
-// { readonly x: 0; readonly y: 0; }
-let a2 = { x: 0, y: 0 } as const;
-```
-
-```typescript
-const HTTPRequestMethod = {
-  CONNECT: "CONNECT" as "CONNECT",
-  DELETE: "DELETE" as "DELETE",
-  GET: "GET" as "GET",
-  HEAD: "HEAD" as "HEAD",
-  OPTIONS: "OPTIONS" as "OPTIONS",
-  PATCH: "PATCH" as "PATCH",
-  POST: "POST" as "POST",
-  PUT: "PUT" as "PUT",
-  TRACE: "TRACE" as "TRACE",
-};
-
-// 等同于
-const HTTPRequestMethod = {
-  CONNECT: "CONNECT",
-  DELETE: "DELETE",
-  GET: "GET",
-  HEAD: "HEAD",
-  OPTIONS: "OPTIONS",
-  PATCH: "PATCH",
-  POST: "POST",
-  PUT: "PUT",
-  TRACE: "TRACE",
-} as const;
-
-// 等同于
-const HTTPRequestMethod: {
-  readonly CONNECT: "CONNECT";
-  readonly DELETE: "DELETE";
-  readonly GET: "GET";
-  readonly HEAD: "HEAD";
-  readonly OPTIONS: "OPTIONS";
-  readonly PATCH: "PATCH";
-  readonly POST: "POST";
-  readonly PUT: "PUT";
-  readonly TRACE: "TRACE";
-} = {
-  CONNECT: "CONNECT",
-  DELETE: "DELETE",
-  GET: "GET",
-  HEAD: "HEAD",
-  OPTIONS: "OPTIONS",
-  PATCH: "PATCH",
-  POST: "POST",
-  PUT: "PUT",
-  TRACE: "TRACE",
-};
-
-// 等同于
-enum HTTPRequestMethod {
-  CONNECT = "CONNECT",
-  DELETE = "DELETE",
-  GET = "GET",
-  HEAD = "HEAD",
-  OPTIONS = "OPTIONS",
-  PATCH = "PATCH",
-  POST = "POST",
-  PUT = "PUT",
-  TRACE = "TRACE",
-}
-```
-
-使用断言以后，就不能再修改属性的值了。
-
-```typescript
-HTTPRequestMethod.GET = "..."; // 报错
-```
-
-const 断言不限于字符串，其他值也可以用。
-
-```typescript
-const ORIGIN = {
-  x: 0,
-  y: 0,
-} as const;
-
-// 等同于
-const ORIGIN: {
-  readonly x: 0;
-  readonly y: 0;
-} = {
-  x: 0,
-  y: 0,
-};
-```
-
-元组或数组也可以使用 const 断言。
-
-```typescript
-const ORIGIN = [0, 0] as const;
-```
-
-下例中，若想要解决`nums`报错，只需让编译器知道nums是有两个元素的元组类型即可，使用const断言是一种简单可行的方案。
-
-```typescript
-function add(x: number, y: number) {
-  return x + y;
-}
-
-const nums = [1, 2] as const;
-//    ~~~~
-//    推断出的类型为'readonly [1, 2]'
-
-const total = add(...nums); // 正确
-```
-
-使用const断言后，推断的nums类型为包含两个元素的元组类型，因此编译器有足够的信息能够判断出add函数调用是正确的。
-
-## 添加全局变量
-
-```typescript
-window.__INITIAL_DATA__ = {
-    userID: "536891193569405430",
-  };
-
-// 报错
-const initialData = window.__INITIAL_DATA__;
-```
-
-window 没有这个属性。
-
-解决方法
-
-```typescript
-const initialData = (window as any).__INITIAL_DATA__;
-```
-
-还可以进一步对 initialData 进行断言。
-
-```typescript
-type InitialData = {
-  userID: string;
-};
-
-const initialData = (window as any).__INITIAL_DATA__ as InitialData;
-```
-
-当然，比较好的方法还是通过 interface 为 Window 类型添加属性。
-
-```typescript
-type InitialData = {
-  userID: string;
-};
-
-interface Window {
-  __INITIAL_DATA__: InitialData;
-}
-
-const initialData = window.__INITIAL_DATA__;
-```
-
-但是，上面的解决方法在模块里面不适用，必须写成下面这样。
-
-```typescript
-declare global {
-  interface Window {
-    __INITIAL_DATA__: InitialData;
-  }
-}
-
-const initialData = window.__INITIAL_DATA__;
-```
-
-## !类型断言
-
-后缀`!`是非空断言运算符，即保证该值不是null or undefined：
-
-```typescript
-function liveDangerously(x?: number | null) {
-  // No error
+function f(x?:number|null) {
   console.log(x!.toFixed());
 }
 ```
 
-TypeScript 会对下面的代码报错。
+上面示例中，变量`x`的类型是`number|null`，即可能为空。如果为空，就不存在`.toFixed()`方法，编译时会报错。但是，开发者有时可以确认，变量`x`不会为空，这时就可以使用非空断言，为函数体内部的变量`x`加上后缀`!`，编译就不会报错了。
+
+非空断言在实际编程中很有用，有时可以省去一些额外的判断。
 
 ```typescript
-const root = document.getElementById("root");
+const root = document.getElementById('root');
 
 // 报错
-// Object is possibly null
-root.addEventListener("click", e => {
+root.addEventListener('click', e => {
   /* ... */
 });
 ```
 
-上面代码中，root 变量的类型 HTMLElement | null，所以报错了。
-
-为了防止这个错误，可以使用非空断言运算符，它在调用结尾加上后缀运算符`!`。
+上面示例中，`getElementById()`有可能返回空值`null`，即变量`root`可能为空，这时对它调用`addEventListener()`方法就会报错，通不过编译。但是一般来说，开发者可以确认`root`元素肯定会在网页中存在，这时就可以使用非空断言。
 
 ```typescript
-const root = document.getElementById("root")!;
+const root = document.getElementById('root')!;
+```
 
-root.addEventListener("click", e => {
+上面示例中，`getElementById()`方法加上后缀`!`，表示这个方法肯定返回非空结果。
+
+非空断言会造成安全隐患，只有在确定一个表达式的值不为空时才能使用。比较保险的做法还是手动检查一下是否为空。
+
+```typescript
+const root = document.getElementById('root');
+
+if (root === null) {
+  throw Error('Unable to find DOM element #root');
+}
+
+root.addEventListener('click', e => {
   /* ... */
 });
 ```
 
-非空断言运算符`!`告诉 TypeScript 假设返回的值document.getElementById()是非空且非未定义的（也称为“非空值”）。TypeScript 将排除类型null和undefined。
+上面示例中，如果`root`为空会抛错，比非空断言更保险一点。
 
-非空断言表示该值可能不是`undefined`或`null`。
-
-非空类型断言运算符“!”是TypeScript特有的类型运算符，它是非空类型断言的一部分。非空类型断言能够从某个类型中剔除undefined类型和null类型。
+非空断言还可以用于赋值断言。TypeScript 有一个编译设置，要求类的属性必须初始化（即有初始值），如果不对属性赋值就会报错。
 
 ```typescript
-expr!
-```
+class Point {
+  x:number; // 报错
+  y:number; // 报错
 
-在该语法中，expr表示一个表达式，非空类型断言尝试从expr表达式的类型中剔除undefined类型和null类型。
-
-当代码中使用了非空类型断言时，相当于在告诉编译器expr的值不是undefined值和null值。
-
-```typescript
-/**
- * --strictNullChecks=true
- */
-
-function getLength(v: string | undefined) {
-    if (!isDefined(v)) {
-        return 0;
-    }
-
-    return v!.length;
-}
-
-function isDefined(value: any) {
-    return value !== undefined && value !== null;
+  constructor(x:number, y:number) {
+    // ...
+  }
 }
 ```
 
-此例第6行，我们使用工具函数isDefined来判断参数v是否为undefined值或null值。如果参数v的值为undefined或null，那么直接返回0；否则，返回v的长度。由于一些限制，编译器无法识别出第10行中v的类型为string类型，而是仍然认为v的类型为“string | undefined”。此时，需要使用非空类型断言来告诉编译器参数v的类型不是undefined类型，这样就可以避免编译器报错。
+上面示例中，属性`x`和`y`会报错，因为 TypeScript 认为它们没有初始化。
 
-当编译器遇到非空类型断言时，就会无条件地相信表达式的类型不是undefined类型和null类型。因此，不应该滥用非空类型断言，应当只在确定一个表达式的值不为空时才使用它，否则将存在安全隐患。
+这时就可以使用非空断言，表示这两个属性肯定有值，这样就不会报错了。
 
-虽然非空类型断言也允许在非“--strictNullChecks”模式下使用，但没有实际意义。因为在非严格模式下，编译器不会检查undefined值和null值。
+```typescript
+class Point {
+  x!:number; // 正确
+  y!:number; // 正确
+
+  constructor(x:number, y:number) {
+    // ...
+  }
+}
+```
+
+另外，非空断言只有在打开编译选项`strictNullChecks`时才有意义。如果不打开这个选项，编译器就不会检查某个变量是否可能为`undefined`或`null`。
+
+## 断言函数
+
+断言函数是一种特殊函数，用于保证函数参数符合某种类型。如果函数参数达不到要求，就会抛出错误，中断程序执行；如果达到要求，就不进行任何操作，让代码按照正常流程运行。
+
+```typescript
+function isString(value) {
+  if (typeof value !== 'string')
+    throw new Error('Not a string');
+}
+```
+
+上面示例中，函数`isString()`就是一个断言函数，用来保证参数`value`是一个字符串。
+
+下面是它的用法。
+
+```typescript
+const aValue:string|number = 'Hello';
+isString(aValue);
+```
+
+上面示例中，变量`aValue`可能是字符串，也可能是数组。但是，通过调用`isString()`，后面的代码就可以确定，变量`aValue`一定是字符串。
+
+断言函数的类型可以写成下面这样。
+
+```typescript
+function isString(value:unknown):void {
+  if (typeof value !== 'string')
+    throw new Error('Not a string');
+}
+```
+
+上面代码中，函数参数`value`的类型是`unknown`，返回值类型是`void`，即没有返回值。可以看到，单单从这样的类型声明，很难看出`isString()`是一个断言函数。
+
+为了更清晰地表达断言函数，TypeScript 3.7 引入了新的类型写法。
+
+```typescript
+function isString(value:unknown):asserts value is string {
+  if (typeof value !== 'string')
+    throw new Error('Not a string');
+}
+```
+
+上面示例中，函数`isString()`的返回值类型写成`asserts value is string`，其中`asserts`和`is`都是关键词，`value`是函数的参数名，`string`是函数参数的预期类型。它的意思是，该函数用来断言参数`value`的类型是`string`，如果达不到要求，程序就会在这里中断。
+
+使用了断言函数的新写法以后，TypeScript 就会自动识别，只要执行了该函数，对应的变量都为断言的类型。
+
+注意，函数返回值的断言写法，只是用来更清晰地表达函数意图，真正的检查是需要开发者自己部署的。而且，如果内部的检查与断言不一致，TypeScript 也不会报错。
+
+```typescript
+function isString(value:unknown):asserts value is string {
+  if (typeof value !== 'number')
+    throw new Error('Not a number');
+}
+```
+
+上面示例中，函数的断言是参数`value`类型为字符串，但是实际上，内部检查的却是它是否为数值，如果不是就抛错。这段代码能够正常通过编译，表示 TypeScript 并不会检查断言与实际的类型检查是否一致。
+
+另外，断言函数的`asserts`语句等同于`void`类型，所以如果返回除了`undefined`和`null`以外的值，都会报错。
+
+```typescript
+function isString(value:unknown):asserts value is string {
+  if (typeof value !== 'string')
+    throw new Error('Not a string');
+  return true; // 报错
+}
+```
+
+上面示例中，断言函数返回了`true`，导致报错。
 
 下面是另一个例子。
 
 ```typescript
-const theName = 'Jane' as (null | string);
+type AccessLevel = 'r' | 'w' | 'rw';
 
-// @ts-expect-error: Object is possibly 'null'.
-theName.length;
-
-assert.equal(
-  theName!.length, 4); // OK
-```
-
-上面示例中，变量加上感叹号后缀，表示该值非空。
-
-非空断言运算符没有任何运行时表现。也就是说，TypeScript 编译器不会发出任何验证代码来验证表达式实际上是非空的。所以，比较保险的方法是手动检查一下类型。
-
-```typescript
-const root = document.getElementById("root");
-
-if (root === null) {
-  throw Error("Unable to find DOM element #root");
+function allowsReadAccess(
+  level:AccessLevel
+):asserts level is 'r' | 'rw' {
+  if (!level.includes('r'))
+    throw new Error('Read not allowed');
 }
-
-root.addEventListener("click", e => {
-  /* ... */
-});
 ```
 
-非空断言符还可以进行赋值断言。如果打开了严格的属性初始化，有时 TypeScript 没有推断出属性初始化，就会报错。
+上面示例中，函数`allowsReadAccess()`用来断言参数`level`一定等于`r`或`rw`。
+
+如果要断言参数非空，可以使用工具类型`NonNullable<T>`。
 
 ```typescript
-class Point1 {
-  // @ts-expect-error: Property 'x' has no initializer and is not definitely
-  // assigned in the constructor.
-  x: number;
-
-  // @ts-expect-error: Property 'y' has no initializer and is not definitely
-  // assigned in the constructor.
-  y: number;
-
-  constructor() {
-    this.initProperties();
-  }
-  initProperties() {
-    this.x = 0;
-    this.y = 0;
+function assertIsDefined<T>(
+  value:T
+):asserts value is NonNullable<T> {
+  if (value === undefined || value === null) {
+    throw new Error(`${value} is not defined`)
   }
 }
 ```
 
-这时就可以使用非空断言符，进行赋值断言。
+上面示例中，工具类型`NonNullable<T>`对应类型`T`去除空类型后的剩余类型。
+
+如果要将断言函数用于函数表达式，可以采用下面的写法。
 
 ```typescript
-class Point2 {
-  x!: number; // (A)
-  y!: number; // (B)
-  constructor() {
-    this.initProperties();
-  }
-  initProperties() {
-    this.x = 0;
-    this.y = 0;
-  }
+// 写法一
+const assertIsNumber = (
+  value:unknown
+):asserts value is number => {
+    if (typeof value !== 'number')
+      throw Error('Not a number');
+};
+
+// 写法二
+type AssertIsNumber =
+  (value:unknown) => asserts value is number;
+
+const assertIsNumber:AssertIsNumber = (value) => {
+    if (typeof value !== 'number')
+      throw Error('Not a number');
+};
+```
+
+注意，断言函数与类型保护函数（type guard）是两种不同的函数。它们的区别是，断言函数不返回值，而类型保护函数总是返回一个布尔值。
+
+```typescript
+function isString(
+  value:unknown
+):value is string {
+  return typeof value === 'string';
 }
 ```
 
+上面示例就是一个类型保护函数`isString()`，作用是检查参数`value`是否为字符串。如果是的，返回`true`，否则返回`false`。该函数的返回值类型是`value is string`，其中的`is`是一个类型运算符，如果左侧的值符合右侧的类型，则返回`true`，否则返回`false`。
 
-## 断言函数
-
-在程序设计中，断言表示一种判定。如果对断言求值后的结果为false，则意味着程序出错。
-
-TypeScript 3.7引入了断言函数功能。断言函数用于检查实际参数的类型是否符合类型判定。若符合类型判定，则函数正常返回；若不符合类型判定，则函数抛出异常。基于控制流的类型分析能够识别断言函数并进行类型细化。
-
-断言函数就是起到检查的作用，没有其他作用。
-
-断言函数有以下两种形式：
+如果要断言某个参数保证为真（即不等于`false`、`undefined`和`null`），TypeScript 提供了断言函数的一种简写形式。
 
 ```typescript
-function assert(x: unknown): asserts x is T { }
-// or
-function assert(x: unknown): asserts x { }
-```
-
-在该语法中，“asserts x is T”和“asserts x”表示类型判定，它只能作为函数的返回值类型。asserts和is是关键字；x必须为函数参数列表中的一个形式参数名；T表示任意的类型；“is T”部分是可选的。若一个函数带有asserts类型判定，那么该函数就是一个断言函数。接下来将分别介绍这两种断言函数。
-
-（1）asserts x is T
-
-对于“asserts x is T”形式的断言函数，它只有在实际参数x的类型为T时才会正常返回，否则将抛出异常。例如，下例中定义了assertIsBoolean断言函数，它的类型判定为“asserts x is boolean”。这表示只有在参数x的值是boolean类型时，该函数才会正常返回，如果参数x的值不是boolean类型，那么assertIsBoolean函数将抛出异常。
-
-```typescript
-function assertIsBoolean(x: unknown): asserts x is boolean {
-    if (typeof x !== 'boolean') {
-        throw new TypeError('Boolean type expected.');
-  }
+function assert(x:unknown):asserts x {
+  // ...
 }
 ```
 
-（2）asserts x
+上面示例中，函数`assert()`的断言部分，`asserts x`省略了谓语和宾语，表示参数`x`保证为真（`true`）。
 
-对于“asserts x”形式的断言函数，它只有在实际参数x的值为真时才会正常返回，否则将抛出异常。例如，下例中定义了assertTruthy断言函数，它的类型判定为“asserts x”。这表示只有在参数x是真值时，该函数才会正常返回，如果参数x不是真值，那么assertTruthy函数将抛出异常。
-
-```typescript
-function assertTruthy(x: unknown): asserts x {
-   if (!x) {
-       throw new TypeError(
-            `${x} should be a truthy value.`
-        );
-    }
-}
-```
-
-在assertTruthy断言函数的函数体中，开发者需要按照约定的断言函数语义去实现断言函数。第2行使用了类型守卫，当参数x是假值时，函数抛出一个异常。
+同样的，参数为真的实际检查需要开发者自己实现。
 
 ```typescript
-function assertNonNullish<TValue>(
-  value: TValue,
-  message: string
-): asserts value is NonNullable<TValue> {
-  if (value === null || value === undefined) {
-    throw Error(message);
+function assert(x:unknown):asserts x {
+  if (!x) {
+    throw new Error(`${x} should be a truthy value.`);
   }
 }
 ```
 
-`asserts value is NonNullable<TValue>`返回类型注解就是所谓的断言签名。这个断言签名表明，如果函数正常返回（也就是说，如果它没有抛出错误），它就断言value参数的类型是NonNullable<TValue>. TypeScript 使用这条信息来缩小我们传递给value参数的表达式的类型。
-
-下面是一个例子。返回值加了类型断言以后，TypeScript 就不会报错了。
+这种断言函数的简写形式，通常用来检查某个操作是否成功。
 
 ```typescript
-const root = document.getElementById("root");
-assertNonNullish(root, "Unable to find DOM element #root");
+type Person = {
+  name: string;
+  email?: string;
+};
 
-root.addEventListener("click", e => {
-  /* ... */
-});
-```
-
-编译器将asserts类型判定视为void类型，这意味着断言函数的返回值类型是void。从类型兼容性的角度来考虑：undefined类型可以赋值给void类型；never类型是尾端类型，也可以赋值给void类型；当然，还有无所不能的any类型也可以赋值给void类型。除此之外，任何类型都不能作为断言函数的返回值类型（在严格类型检查模式下）。
-
-```typescript
-function f0(x: unknown): asserts x {
-    if (!x) {
-        // 相当于返回 never 类型，与 void 类型兼容
-        throw new TypeError(
-            `${x} should be a truthy value.`
-        );
-    }
-
-    // 正确，隐式地返回 undefined 类型，与 void 类型兼容
+function loadPerson(): Person | null {
+  return null;
 }
 
-function f1(x: unknown): asserts x {
-    if (!x) {
-        throw new TypeError(
-            `${x} should be a truthy value.`
-        );
-    }
+let person = loadPerson();
 
-    // 正确
-    return undefined;  // 返回 undefined 类型，与 void 类型兼容
+function assert(
+  condition:unknown, message:string
+):asserts condition {
+  if (!condition) throw new Error(message);
 }
 
-function f2(x: unknown): asserts x {
-    if (!x) {
-        throw new TypeError(
-            `${x} should be a truthy value.`
-        );
-    }
-
-    return false;  // 编译错误！类型 false 不能赋值给类型 void
-}
-
-function f3(x: unknown): asserts x {
-   if (!x) {
-       throw new TypeError(
-           `${x} should be a truthy value.`
-        );
-    }
-
-    return null; // 编译错误！类型 null 不能赋值给类型 void
-}
+// Error: Person is not defined
+assert(person, 'Person is not defined'); 
+console.log(person.name);
 ```
 
-当程序中调用了断言函数后，其结果一定为以下两种情况之一：
-
-- 断言判定失败，程序抛出异常并停止继续向后执行代码。
-- 断言判定成功，程序继续向后执行代码。
-
-基于控制流的类型分析能够利用以上的事实对调用断言函数之后的代码进行类型细化。
-
-```typescript
-function assertIsNumber(x: unknown): asserts x is number {
-    if (typeof x !== 'number') {
-        throw new TypeError(`${x} should be a number.`);
-    }
-}
-
-function f(x: any, y: any) {
-    x; // any
-    y; // any
-
-    assertIsNumber(x);
-    assertIsNumber(y);
-
-    x; // number
-    y; // number
-}
-```
-
-此例中，assertIsNumber断言函数用于确保传入的参数是number类型。f函数的两个参数x和y都是any类型。第8、9行还没有执行断言函数，这时参数x和y都是any类型。第14、15行，在执行了assertIsNumber断言函数后，编译器能够分析出当前位置上参数x和y的类型一定是number类型。因为如果不是number类型，那么意味着断言函数已经抛出异常并退出了f函数，不可能执行到第14和15行位置。
-
-## 类型断言
-
-类型断言用于在一个大类型之中，指定更具体的类型。
-
-它有两种写法。一种是使用 as 命令。
-
-```typescript
-const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement;
-```
-
-另一种是使用尖括号。
-
-```typescript
-const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
-```
-
-注意，类型断言只能用于将大类型断言为其内部更小的类型，不能将小类型断言为更大的类型，或者更改大类型。
-
-```typescript
-const x = "hello" as number;
-```
-
-如果要更改大类型，可以使用两次 as 命令。
-
-```typescript
-const a = (expr as any) as T;
-```
-
-上面示例中， 变量 expr 先断言为 any 类型（即取消原有的类型），然后再断言为类型 T。
+上面示例中，只有`loadPerson()`返回结果为真（即操作成功），`assert()`才不会报错。
 
 ## 参考链接
 
 - [Const Assertions in Literal Expressions in TypeScript](https://mariusschulz.com/blog/const-assertions-in-literal-expressions-in-typescript), Marius Schulz
 - [Assertion Functions in TypeScript](https://mariusschulz.com/blog/assertion-functions-in-typescript), Marius Schulz
+- [Assertion functions in TypeScript](https://blog.logrocket.com/assertion-functions-typescript/), Matteo Di Pirro

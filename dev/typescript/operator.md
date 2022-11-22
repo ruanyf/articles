@@ -671,6 +671,18 @@ function f(person: Teacher | Student) {
 
 注意，类型谓词“this is T”只能作为函数和方法的返回值类型，而不能用作属性或存取器的类型。
 
+`is`运算符常用于类型守卫（type guard）。类型守卫是一种特殊函数，返回一个布尔值，用于在运行时检查某个值是否为指定类型。
+
+```typescript
+function isString(value:unknown): value is string {
+  return typeof value === "string"
+}
+
+// Type guards can also be declared as function expression
+const isStringExp = (value: unknown):value is string =>
+  typeof value === "string"
+```
+
 ## 工具函数
 
 ```typescript
