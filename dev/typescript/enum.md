@@ -1,10 +1,28 @@
-# enum 类型
+# TypeScript 的 Enum 类型
 
-## 数值枚举
+Enum 是 TypeScript 新增的一种数据结构和类型，中文译为“枚举”。
 
-enum 是一种 TypeScript 引入的数据结构，创造一种新的类型，中文译为“枚举”。
+## 简介
 
-它用来将一组相关的值或者常量，放在一个容器里面，便于使用。
+实际开发中，经常需要定义一组相关的常量。
+
+```typescript
+const RED = 1;
+const GREEN = 2;
+const BLUE = 3;
+
+let color = userInput();
+
+if (color === RED) {/* */}
+if (color === GREEN) {/* */}
+if (color === BLUE) {/* */}
+
+throw new Error('wrong color');
+```
+
+上面示例中，常量`RED`、`GREEN`、`BLUE`是相关的，而且它们具体等于什么值并不重要，只要不相等就可以了。
+
+TypeScript 就设计了 Enum 结构，将这组常量放在 Enum 容器里面，方便这种场景的使用。
 
 ```typescript
 enum Color {
@@ -16,40 +34,53 @@ enum Color {
 
 上面示例声明了一个 Enum 结构`Color`，里面包含三个成员`Red`、`Green`和`Blue`。第一个成员的值默认为整数`0`，第二个为`1`，第二个为`2`，以此类推。
 
-使用时，就调用 Enum 的某个成员，与调用对象属性的写法一样。
+使用时，就调用 Enum 的某个成员，与调用对象属性的写法一样，可以使用点运算符，也可以使用方括号运算符。
 
 ```typescript
-let color = Color.Green; // 1 
+let c = Color.Green; // 1 
 // 等同于
-let color = Color['Green']; // 1
+let c = Color['Green']; // 1
 ```
 
-上面示例展示了 Enum 结构的基本用法。JavaScript 内部把 Enum 成员当作数值处理，这说明 Enum 不仅是类型，还是实际的功能代码。
-
-注意，虽然变量`color`等于`1`，但是它的类型是 Color，而不是`number`。
-
-事实上，Enum 是 TypeScript 为数不多的非类型语法之一。编译后，Enum 结构会转成 JavaScript 对象。
-
-不过，Enum 的有用之处，不在于成员的值等于什么，或者说成员的值无所谓，而是成员的名字可以明确表示代码的语义，增加代码的可读性和可维护性。
+Enum 结构本身也是一种类型。比如，上例的变量`c`等于`1`，它的类型可以是 Color，也可以是`number`。
 
 ```typescript
-// 写法一
-let color:number;
-
-// 写法二
-let color:Color;
+let c:Color = Color.Green; // 正确
+let c:number = Color.Green; // 正确
 ```
 
-上面示例中，写法二显然比写法一更清晰，表达变量`color`的类型到底是什么。
+上面示例中，变量`c`的类型写成`Color`或`number`都可以。但是，`Color`类型的语义更好。
 
-下面是另一个例子。
+Enum 结构的特别之处在于，它即是一种类型，也是一个值。绝大多数 TypeScript 新增的语法都是类型语法，编译后会全部去除，但是 Enum 结构是一个值，所以编译后会变成 JavaScript 对象，留在代码中。
+
+```typescript
+// 编译前
+enum Color {
+  Red,     // 0
+  Green,   // 1
+  Blue     // 2
+}
+
+// 编译后
+let Color = {
+  Red: 0,
+  Green: 1,
+  Blue: 2
+};
+```
+
+上面示例是 Enum 结构编译前后的对比。
+
+由于 TypeScript 的定位是 JavaScript 语言的类型增强，所以官方建议谨慎使用 Enum 结构，因为它不仅仅是类型，还会为编译后的代码加入一个对象。
+
+Enum 结构比较适合的场景是，成员的值不重要，名字更重要，从而增加代码的可读性和可维护性。
 
 ```typescript
 enum Operator {  
-  ADD,  
-  DIV,  
-  MUL,  
-  SUB  
+  ADD, 
+  DIV, 
+  MUL, 
+  SUB
 }
 
 function compute(
@@ -66,6 +97,8 @@ function compute(
       return a * b;
     case Operator.SUB:
       return a - b;  
+    default:
+      throw new Error('wrong operator');  
   }  
 }
 
@@ -74,9 +107,7 @@ compute(Operator.ADD, 1, 3) // 4
 
 上面示例中，Enum 结构`Operator`的四个成员表示四则运算“加减乘除”。代码根本不需要用到这四个成员的值，只用成员名就够了。
 
-Enum 也可以当作类型使用，就像上面例子的函数`compute()`的第一个参数`op`的类型。Enum 类型的好处是明确有哪些值可以用，而且 IDE 的参数提示有良好的可读性，这个例子就会提示有四个值可以用。
-
-Enum 作用类型有一个缺点，就是输入任何数值都不报错。
+Enum 作为类型有一个缺点，就是输入任何数值都不报错。
 
 ```typescript
 enum NoYes { 
@@ -92,6 +123,10 @@ func(33);  // 不报错
 ```
 
 上面代码中，函数`foo`的参数`noYes`只有两个可用的值，但是输入任意数值，编译都不会报错。
+
+## Enum 成员的值
+
+Enum 成员默认不用赋值，系统会从零开始逐一递增，为它们赋值。
 
 Enum 成员的值除了用默认值，还可以显式设定。
 
