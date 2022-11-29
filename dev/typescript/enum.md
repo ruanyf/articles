@@ -138,6 +138,28 @@ const Color = 'red'; // 报错
 
 上面示例，Enum 结构与变量同名，导致报错。
 
+很大程度上，Enum 结构可以被对象的`as const`断言替代。
+
+```typescript
+enum Foo {
+  A,
+  B,
+  C,
+}
+ 
+const Bar = {
+  A: 0,
+  B: 1,
+  C: 2,
+} as const;
+
+if （x === Foo.A）{}
+// 等同于
+if (x === Bar.A) {}
+```
+
+上面示例中，对象`Bar`使用了`as const`断言，作用就是使得它的属性无法修改。这样的话，`Foo`和`Bar`的行为就很类似了，前者完全可以用后者替代，而且后者还是 JavaScript 的原生数据结构。
+
 ## Enum 成员的值
 
 Enum 成员默认不必赋值，系统会从零开始逐一递增，按照顺序为每个成员赋值，比如0、1、2……

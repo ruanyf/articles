@@ -295,14 +295,46 @@ type User = Concrete<MaybeUser>;
 
 ## in 运算符
 
+JavaScript 语言中，`in`运算符用来确定对象是否包含某个属性名。
+
+```javascript
+const obj = { a: 123 };
+
+if ('a' in obj) 
+  console.log('found a');
+```
+
+上面示例中，`in`运算符用来判断对象`obj`是否包含属性`a`。
+
+`in`运算符的左侧是一个字符串，表示属性名，右侧是一个对象。它的返回值是一个布尔值。
+
+TypeScript 语言中，`in`运算符继承了这种用法。
+
+```typescript
+type Fish = { swim: () => void };
+type Bird = { fly: () => void };
+ 
+function move(animal:Fish | Bird) {
+  if ('swim' in animal) {
+    return animal.swim();
+  }
+ 
+  return animal.fly();
+}
+```
+
+上面示例中，`in`运算符通过判断参数`animal`是否具有`swim`属性，确定`animal`到底属于哪一种类型。
+
 in 运算符遍历 Union 类型里面的每一个类型。
 
 ```typescript
 interface DataEntry<T> {
-key: T;
-value: string;
+  key: T;
+  value: string;
 }
+
 type DataKey = "location" | "name" | "year";
+
 type DataEntryGetters = {
 [K in DataKey as `get${Capitalize<K>}`]: () => DataEntry<K>;
 };
@@ -618,9 +650,24 @@ type Result1 = LiteralTypeName<123n>;
 type Result2 = LiteralTypeName<true | 1 | 'a'>;
 ```
 
-## is 命令
+## is 运算符
 
-TypeScript允许自定义类型守卫函数。类型守卫函数是指在函数返回值类型中使用了类型谓词的函数。
+`is`运算符用来缩小函数返回值的类型。
+
+```typescript
+function isFish(
+  pet:Fish|Bird
+):pet is Fish {
+  return (pet as Fish).swim !== undefined;
+}
+```
+
+上面示例中，函数`isFish()`的返回值类型为`pet is Fish`，表示如果参数`pet`类型为`Fish`，则返回`true`，否则返回`false`。
+
+`is`运算符总是用于描述函数的返回值类型，写法采用`parameterName is Type`的形式，即左侧为当前函数的参数名，右侧为某一种类型。它返回一个布尔值，表示左侧参数是否属于右侧的类型，特别适合描述判断参数类型的函数。
+
+
+TypeScript允许自定义类型保护函数。类型守卫函数是指在函数返回值类型中使用了类型谓词的函数。
 
 ```typescript
 x is T
