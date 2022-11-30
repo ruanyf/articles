@@ -806,3 +806,38 @@ type CreateElement = {
   (tag:string): HTMLElement;
 }
 ```
+
+## 构造函数
+
+JavaScript 语言使用构造函数，生成对象的实例。
+
+构造函数的最大特点，就是必须使用`new`命令调用。
+
+```typescript
+const d = new Date();
+```
+
+上面示例中，`date()`就是一个构造函数，使用`new`命令调用，返回 Date 对象的实例。
+
+构造函数的类型声明，采用对象形式。
+
+```typescript
+type F = {
+  new (s:string): object;
+};
+```
+
+上面示例中，类型 F 就是一个构造函数。类型写成一个可执行对象的形式，并且在参数列表前面要加上`new`命令。
+
+某些函数既是构造函数，又可以当作普通函数使用，比如`Date()`。这时，类型声明可以写成下面这样。
+
+```typescript
+interface CallOrConstruct {
+  new (s:string): object;
+  (n?:number): number;
+}
+```
+
+上面示例中，`CallOrConstruct()`既可以当作普通函数执行，也可以当作构造函数使用。
+
+不过，构造函数在 TypeScript 里面实际上只能用类（class）的形式来实现，详见《Class》一章。
