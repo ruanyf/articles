@@ -1,68 +1,157 @@
-# 泛型
+# TypeScript 泛型
 
-## 泛型的概念
+## 简介
 
-前面章节的所有类型都是确定的，即使用之前就知道某个值是什么类型。但是很多时候，类型是不确定的，跟输入的值有关，如果输入改变类型，输出也会改变。这种类型不确定的情况，就叫做泛型（generics）。
-
-举例来说，有些函数可以接受不定类型的参数，返回值的类型与参数类型相关。
+有些时候，函数返回值的类型与参数类型是相关的。
 
 ```javascript
-function f(x) {
-  return x;
+function getFirst(arr) {
+  return arr[0];
 }
 ```
 
-上面示例是一个函数，原封不动地返回它的参数。参数是什么类型，返回值就是什么类型，因此没有办法提前知道返回值的类型。它的类型描述只能写成下面这样。
+上面示例中，函数`getFirst()`总是返回参数数组的第一个成员。参数数组是什么类型，返回值就是什么类型。
 
-```javascript
-function f(x:any):any {
-  return x;
-}
-```
-
-有了泛型以后，就可以利用它的输出值类型由输入值决定这个特点，来描述它的类型。
+这个函数的类型声明只能写成下面这样。
 
 ```typescript
-function f<T>(x:T):T {
-  return x;
+function f(arr:any[]):any {
+  return arr[0];
 }
 ```
 
-上面示例中，函数名`f`后面有一个尖括号，里面列出了这个函数需要的类型参数，即这个函数的类型需要依靠参数决定。本例只有一个类型参数`T`。
+上面的类型声明，就反映不出参数与返回值之间的类型关系。
 
-类型参数必须为合法的标识符，名字可以随便取，通常使用大写字母，或者以大写字母开头，比如使用`T`（type 的第一个字母），以及后续的`U`、`V`等字母。后面的代码很好懂，函数参数`x`的类型为`T`，返回值的类型也为`T`，这就准确表示了这个函数的类型。
-
-总之，泛型可以理解成一段类型逻辑，输入值和输出值都是类型，可以接受多种类型的输入，但是输入类型和输出类型之间存在一一对应的关系。
-
-调用函数时，可以在尖括号里面指明类型参数的值。
+为了解决这个问题，TypeScript 就引入了“泛型”（generics）。泛型的特点就是带有“类型参数”（type parameter）。
 
 ```typescript
-function f<T>(x:T):T {
-  return x;
-}
-
-f<number>(2) // 2
-```
-
-上面示例中，调用函数`f()`时，尖括号里面给出类型参数`T`的值是`number`，表示`f()`的参数和返回值类型都是数值。
-
-不过，为了方便，调用时不写类型参数的值，让 TypeScript 自己推断。
-
-```typescript
-f(2) // 正确
-```
-
-类型推断虽然写起来方便，但是有些复杂的使用场景，TypeScript 可能推断不出参数的类型，这时就只能手动注明参数的具体类型了。
-
-类型参数允许设置类型默认值。这样的话，调用时不给出具体的类型，就会使用默认值。
-
-```typescript
-function f<T = number>(x:T):T {
-  return x;
+function getFirst<T>(arr:T[]):T {
+  return arr[0];
 }
 ```
 
-上面示例中，类型参数`T`的默认值为`number`，调用时不给出`T`的值，就会默认`f()`的参数类型为`number`。
+上面示例中，函数`getFirst()`的函数名后面尖括号的部分`<T>`，就是类型参数放在一对尖括号（`<>`）里面。本例只有一个类型参数`T`，可以将其视为类型声明需要的变量，具体的类型由调用时输入的参数类型决定。
+
+参数类型是`T[]`，返回值类型是`T`，就清楚地表示了两者之间的关系。比如，输入的参数类型是`number[]`，那么 T 的值就是`number`，因此返回值类型也是`number`。
+
+函数调用时，需要提供类型参数。
+
+```typescript
+getFirst<number>([1, 2, 3])
+```
+
+上面示例中，调用函数`getFirst()`时，需要在函数名后面使用尖括号，给出类型参数`T`的值，本例是`<number>`。
+
+不过为了方便，函数调用时，往往省略不写类型参数的值，让 TypeScript 自己推断。
+
+```typescript
+getFirst([1, 2, 3])
+```
+
+上面示例中，TypeScript 会从实际参数`[1, 2, 3]`，推断出类型参数 T 的值为`number`。
+
+有些复杂的使用场景，TypeScript 可能推断不出类型参数的值，这时就必须显式给出了。
+
+```typescript
+function comb<T>(arr1:T[], arr2:T[]):T[] {
+  return arr1.concat(arr2);
+}
+```
+
+上面示例中，两个参数`arr1`、`arr2`和返回值都是同一个类型。如果不给出类型参数的值，下面的调用会报错。
+
+```typescript
+comb([1, 2], ['a', 'b']) // 报错
+```
+
+上面示例会报错，TypeScript 认为两个参数不是同一个类型。但是，如果类型参数是一个联合类型，就不会报错。
+
+```typescript
+comb<number|string>([1, 2], ['a', 'b']) // 正确
+```
+
+上面示例中，类型参数是一个联合类型，使得两个参数都符合类型参数，就不报错了。这种情况下，类型参数是不能省略不写的。
+
+类型参数的名字，可以随便取，但是必须为合法的标识符。习惯上，类型参数的第一个字符往往采用大写字母。
+
+一般会使用`T`（type 的第一个字母）作为类型参数的名字。如果有多个类型参数，则使用 T 后面的 U、V 等字母命名，各个参数之间使用逗号“,”分隔。
+
+下面是多个类型参数的例子。
+
+```typescript
+function map<T, U>(
+  arr:T[],
+  f:(arg:T) => U
+):U[] {
+  return arr.map(f);
+}
+
+// 用法实例
+map<string, number>(
+  ['1', '2', '3'],
+  (n) => parseInt(n)
+); // 返回 [1, 2, 3]
+```
+
+上面示例将数组的实例方法`map()`改写成全局函数，它有两个类型参数`T`和`U`。含义是，原始数组的类型为`T[]`，对该数组的每个成员执行一个处理函数`f`，将类型`T`转成类型`U`，那么就会得到一个类型为`U[]`的数组。
+
+总之，泛型可以理解成一段类型逻辑，需要类型参数来表达。有了类型参数以后，可以在输入类型与输出类型之间，建立一一对应关系。
+
+泛型主要用在三个场合：函数、接口和类。
+
+## 类型参数的默认值
+
+类型参数可以设置默认值。使用时，如果没有给出类型参数的值，就会使用默认值。
+
+```typescript
+function getFirst<T = string>(
+  arr:T[]
+):T {
+  return arr[0];
+}
+```
+
+上面示例中，`T = string`表示类型参数的默认值是`string`。调用`getFirst()`时，如果不给出`T`的值，TypeScript 就认为`T`等于`string`。
+
+但是，因为 TypeScript 会从实际参数推断出`T`的值，从而覆盖掉默认值，所以下面的代码不会报错。
+
+```typescript
+getFirst([1, 2, 3]) // 正确
+```
+
+上面示例中，实际参数是`[1, 2, 3]`，TypeScript 推断 T 等于`number`，从而覆盖掉默认值`string`。
+
+类型参数的默认值，往往用在类中。
+
+```typescript
+class Generic<T = string> {
+  list:T[] = []
+
+  add(t:T) {
+    this.list.push(t)
+  }
+}
+```
+
+上面示例中，类`Generic`有一个类型参数`T`，默认值为`string`。这意味着，实例方法`add()`的参数`t`的类型，默认是`string`。
+
+```typescript
+const g = new Generic();
+
+g.add(4) // 报错
+g.add('hello') // 正确
+```
+
+上面示例中，新建`Generic`的实例`g`时，没有给出类型参数`T`的值，所以`T`就等于`string`。因此，向`add()`方法传入一个数值会报错，传入字符串就不会。
+
+```typescript
+const g = new Generic<number>();
+
+g.add(4) // 正确
+g.add('hello') // 报错
+```
+
+上面示例中，新建实例`g`时，给出了类型参数`T`的值是`number`，因此`add()`方法传入数值不会报错，传入字符串会报错。
 
 一旦类型参数有默认值，就表示它是可选参数。如果有多个类型参数，可选参数必须在必选参数之后。
 
@@ -72,19 +161,9 @@ function f<T = number>(x:T):T {
 <T, U = boolean> // 正确
 ```
 
-不过，即使`f()`的参数不是数值（比如`f('abc')`），编译也不会报错，因为 TypeScript 检查类型时，发现参数是字符串，就会设定`T`的值为字符串。
+上面示例中，依次有两个类型参数`T`和`U`。如果`T`是可选参数，`U`不是，就会报错。
 
-类型参数可有多个，统一放在尖括号（`<>`）里面，各个参数之间使用逗号“,”分隔。
-
-泛型主要用在三个场合：函数、接口和类。
-
-泛型可以看作是类型的函数，即这个函数接受类型当作参数，返回一个新的类型。
-
-```typescript
-type Fn  <A extends string, B extends string = 'world'>   =  [A, B]
-
-type Result = Fn<'hello'> // ["hello", "world"]
-```
+## 待用材料
 
 但是，泛型本身不是 TypeScript 的一等公民，不能将一个泛型传给另一个泛型，TypeScript 也不允许将泛型当作类型参数。
 
@@ -278,101 +357,107 @@ function length(t: ArrayLike<unknown>): number {}
 
 ## 数组的泛型表示
 
-数组类型可以使用泛型表示。前面的《数组》一章提到过，数组类型有两种表示方法。
+《数组》一章提到过，数组类型有一种表示方法是`Array<T>`。这就是泛型的写法，`Array`是 TypeScript 原生的一个类型接口，`T`是它的类型参数。声明数组时，需要提供`T`的值。
 
 ```typescript
-// 方法一
-let someValues: number[];
-
-// 方法二
-let someValues: Array<number>;
+let arr:Array<number> = [1, 2, 3];
 ```
 
-上面的方法二，就是使用泛型表示数组。`Array<number>`表示所有成员都是数值的数组，其中`Array`是 TypeScript 提供的数组生成接口，当它的类型参数是`number`时，返回的就是一个全部成员都是数值的数组类型。
+上面的示例中，`Array<number>`就是一个泛型，类型参数的值是`number`，表示该数组的全部成员都是数值。
 
-同样的，如果数组成员都是字符串，那么类型就可以写成`Array<string>`。事实上，在 TypeScript 内部，写法一`number[]`、`string[]`只是写法二`Array<number>`、`Array<string>`的简写形式。
+同样的，如果数组成员都是字符串，那么类型就写成`Array<string>`。事实上，在 TypeScript 内部，数组类型的另一种写法`number[]`、`string[]`，只是`Array<number>`、`Array<string>`的简写形式。
 
-数组的类型参数，可以是各种各样的类型，`Array<string|number>`就表示数组成员可以是字符串，也可以是数值。
-
-```typescript
-class Person {}
-const people = new Array<Person>(10);
-```
-
-上面示例中，`Array<Person>`表示数组成员都是`Person`类的实例对象。
-
-`Array`本身是一个泛型接口，在 TypeScript 内部它的类型定义基本是下面的样子。
+在 TypeScript 内部，`Array`是一个泛型接口，类型定义基本是下面的样子。
 
 ```typescript
 interface Array<Type> {
 
-  length: number;
+  length:number;
  
-  pop(): Type | undefined;
+  pop():Type | undefined;
  
-  push(...items: Type[]): number;
+  push(...items:Type[]): number;
  
   // ...
 }
 ```
 
-上面代码中，`push()`方法的参数`item`的类型是`Type[]`，跟`Array()`的参数类型`Type`保持一致。调用`push()`的时候，TypeScript 就会检查两者是否一致。
+上面代码中，`push()`方法的参数`item`的类型是`Type[]`，跟`Array()`的参数类型`Type`保持一致，表示只能添加同类型的成员。调用`push()`的时候，TypeScript 就会检查两者是否一致。
 
 其他的 TypeScript 内部数据结构，比如`Map`、`Set`和`Promise`，其实也是泛型接口，完整的写法是`Map<K, V>`、`Set<T>`和`Promise<T>`。
 
-TypeScript 默认还提供一个`ReadonlyArray<T>`接口，表示该类型数组不能修改。
+TypeScript 默认还提供一个`ReadonlyArray<T>`接口，表示只读数组。
 
 ```typescript
 function doStuff(
   values: ReadonlyArray<string>
 ) {
-  values.push("hello!");  // 报错
+  values.push('hello!');  // 报错
 }
 ```
 
-上面示例中，参数`values`的类型是`ReadonlyArray<string>`，表示不能修改这个数组，所以函数体内部新增数组成员就会报错。
-
-所以，如果看到一个函数的参数是`ReadonlyArray`类型，就不用担心它在函数内部会被改变。
+上面示例中，参数`values`的类型是`ReadonlyArray<string>`，表示不能修改这个数组，所以函数体内部新增数组成员就会报错。因此，如果不希望函数内部改动参数数组，就可以将该参数数组声明为`ReadonlyArray`类型。
 
 ## 类型参数的约束条件
 
-类型参数可以加上约束条件。
+很多类型参数并不是无限制的，对于传入的类型存在约束条件。
+
+```typescript
+function comp<T>(a:T, b:T) {
+  if (a.length >= b.length) {
+    return a;
+  }
+  return b;
+}
+```
+
+上面示例中，类型参数 T 有一个隐藏的约束条件：T 必须是对象，且存在`length`属性。如果不满足这个条件，就会报错。
+
+TypeScript 提供了一种语法，允许在类型参数上面写明约束条件，如果不满足条件，编译时就会报错。这样也可以有良好的语义，对类型参数进行了说明。
+
+```typescript
+function comp<T extends { length: number }>(
+  a:T, b:T
+) {
+  if (a.length >= b.length) {
+    return a;
+  }
+  return b;
+}
+```
+
+上面示例中，`T extends { length: number }`就是约束条件，表示类型参数 T 必须满足`{ length: number }`，否则就会报错。
+
+```typescript
+comp([1, 2], [1, 2, 3]) // 正确
+comp('ab', 'abc') // 正确
+comp(1, 2) // 报错
+```
+
+上面示例中，只要传入的参数类型不满足约束条件，就会报错。
+
+类型参数的约束条件采用下面的形式。
 
 ```typescript
 <TypeParameter extends ConstraintType>
 ```
 
-上面语法表示，类型参数必须属于某个类型，即属于该类型的子类型。
+上面语法中，`TypeParameter`表示类型参数，`extends`是关键字，这是必须的，`ConstraintType`表示类型参数要满足的条件，即类型参数应该是`ConstraintType`的子类型。
+
+类型参数可以同时设置约束条件和默认值，前提是默认值必须满足约束条件。
 
 ```typescript
-interface Point {
-    x: number;
-    y: number;
-}
+type Fn<A extends string, B extends string = 'world'>
+  =  [A, B];
 
-function identity<T extends Point>(x: T): T {
-    return x;
-}
-
-// 正确
-identity({ x: 0, y: 0 });
-identity({ x: 0, y: 0, z: 0 });
-
-identity({ x: 0 });
-//       ~~~~~~~~
-//       编译错误！类型 '{ x: number; }' 不能赋值给类型 Point
+type Result = Fn<'hello'> // ["hello", "world"]
 ```
 
-类型参数可以同时定义泛型约束和默认类型，但默认类型必须满足泛型约束。
+上面示例中，类型参数`A`和`B`都有约束条件，并且`B`还有默认值。所以，调用`Fn`的时候，可以只给出`A`的值，不给出`B`的值。
 
-```typescript
-<TypeParameter extends ConstraintType = DefaultType>
+另外，上例也可以看出，泛型本质上是一个类型函数，通过输入参数，获得结果，两者是一一对应关系。
 
-// 实例
-<T extends number = 0|1>
-```
-
-如果有多个类型参数，一个参数可以引用其他参数。
+如果有多个类型参数，一个类型参数的约束条件，可以引用其他参数。
 
 ```typescript
 <T, U extends T>
@@ -380,12 +465,18 @@ identity({ x: 0 });
 <T extends U, U>
 ```
 
-但是，不能引用自身。
+上面示例中，`U`的约束条件引用`T`，或者`T`的约束条件引用`U`，都是正确的。
+
+但是，约束条件不能引用类型参数自身。
 
 ```typescript
-<T extends T>               // 错误
-<T extends U, U extends T>  // 错误
+<T extends T>               // 报错
+<T extends U, U extends T>  // 报错
 ```
+
+上面示例中，`T`的约束条件不能是`T`自身，因此多个类型参数也不能互相约束（即`T`的约束条件是`U`、`U`的约束条件是
+
+## 使用注意点
 
 ## 泛型接口
 

@@ -832,12 +832,12 @@ type F = {
 某些函数既是构造函数，又可以当作普通函数使用，比如`Date()`。这时，类型声明可以写成下面这样。
 
 ```typescript
-interface CallOrConstruct {
+type F = {
   new (s:string): object;
   (n?:number): number;
 }
 ```
 
-上面示例中，`CallOrConstruct()`既可以当作普通函数执行，也可以当作构造函数使用。
+上面示例中，F 既可以当作普通函数执行，也可以当作构造函数使用。
 
 不过，构造函数在 TypeScript 里面实际上只能用类（class）的形式来实现，详见《Class》一章。
