@@ -807,6 +807,24 @@ type CreateElement = {
 }
 ```
 
+由于重载是一种比较复杂的类型声明方法，为了降低复杂性，一般来说，如果可以的话，应该优先使用联合类型替代函数重载。
+
+```typescript
+// 写法一
+function len(s:string):number;
+function len(arr:any[]):number;
+function len(x:any):number {
+  return x.length;
+}
+
+// 写法二
+function len(x:any[]|string):number {
+  return x.length;
+}
+```
+
+上面示例中，写法二使用联合类型，要比写法一的函数重载简单很多。
+
 ## 构造函数
 
 JavaScript 语言使用构造函数，生成对象的实例。

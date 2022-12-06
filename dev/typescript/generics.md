@@ -97,7 +97,193 @@ map<string, number>(
 
 总之，泛型可以理解成一段类型逻辑，需要类型参数来表达。有了类型参数以后，可以在输入类型与输出类型之间，建立一一对应关系。
 
-泛型主要用在三个场合：函数、接口和类。
+## 泛型的写法
+
+泛型主要用在四个场合：函数、接口、类和别名。
+
+### 函数的泛型写法
+
+上一节提到，`function`关键字定义的泛型函数，类型参数放在尖括号中，写在函数名后面。
+
+```typescript
+function id<T>(arg:T):T {
+  return arg;
+}
+```
+
+那么对于变量形式定义的函数，泛型有下面两种写法。
+
+```typescript
+// 写法一 
+let myId:<T>(arg:T) => T = id;
+
+// 写法二
+let myId:{ <T>(arg:T):T } = id;
+```
+
+### 接口的泛型写法
+
+泛型函数也可以采用 inteface 的写法。
+
+```typescript
+interface Box<Type> {
+  contents: Type;
+}
+
+let box:Box<string>;
+```
+
+上面示例中，使用泛型接口时，需要给出类型参数的值（本例是`string`）。
+
+下面是另一个例子。
+
+```typescript
+interface Comparator<T> {
+  compareTo(value:T):number;
+}
+
+class Rectangle implements Comparator<Rectangle> {
+
+  compareTo(value:Rectangle): number {
+    // ...
+  }
+}
+```
+
+上面示例中，先定义了一个泛型接口，然后将这个接口用于一个类。
+
+泛型接口还有第二种写法。
+
+```typescript
+interface Fn {
+  <T>(arg:T):T;
+}
+
+function id<T>(arg:T):T {
+  return arg;
+}
+ 
+let myId:Fn = id;
+```
+
+上面示例中，类型参数定义在接口内部，所以使用这个接口时（最后一行），不需要给出类型参数的值。
+
+### 类的泛型写法
+
+泛型类的类型参数写在类名后面。
+
+```typescript
+class Pair<K, V> {
+  key: K;
+  value: V;
+}
+```
+
+下面是继承泛型类的例子。
+
+```typescript
+class A<T> {
+  value: T;
+}
+
+class B extends A<any> {
+}
+```
+
+上面示例中，类`A`有一个类型参数`T`，使用时必须给出`T`的类型，所以类`B`继承时要写成`A<any>`。
+
+泛型也可以用在类表达式。
+
+```typescript
+const Container = class<T> {
+  constructor(private readonly data:T) {}
+};
+
+const a = new Container<boolean>(true);
+const b = new Container<number>(0);
+```
+
+上面示例中，新建实例时，需要同时给出类型参数`T`和类参数`data`的值。
+
+下面是另一个例子。
+
+```typescript
+class C<NumType> {
+  value!:NumType;
+  add!:(x: NumType, y: NumType) => NumType;
+}
+ 
+let foo = new C<number>();
+
+foo.value = 0;
+foo.add = function (x, y) {
+  return x + y;
+};
+```
+
+上面示例中，先新建类`C`的实例`foo`，然后再定义示例的`value`属性和`add()`方法。类的定义中，属性和方法后面的感叹号是非空断言，告诉 TypeScript 它们都是非空的，后面会赋值。
+
+JavaScript 的类本质上是一个构造函数，因此也可以把泛型类写成构造函数。
+
+```typescript
+type Class<T> = new (...args: any[]) => T;
+
+// 或者
+interface Class<T> {
+  new(...args: any[]):T;
+}
+
+// 用法实例
+function createInstance<T>(
+  AnyClass:Class<T>,
+  ...args:any[]
+):T {
+  return new AnyClass(...args);
+}
+```
+
+泛型类描述的是类的实例，不包括静态属性，因为静态属性定义在类的本身。因此，类的静态属性不能引用类型参数。
+
+```typescript
+class C<T> {
+  static data:T;  // 报错
+  constructor(public value:T) {}
+}
+```
+
+上面示例中，静态属性`data`引用了类型参数`T`，这是不可以的，因为类型参数只能用于实例属性和实例方法，所以报错了。
+
+### 类型别名的泛型写法
+
+type 命令定义的类型别名，也可以使用泛型。
+
+```typescript
+type Nullable<T> = T | undefined | null; 
+```
+
+上面示例中，`Nullable<T>`是一个泛型，只要传入一个类型，就可以得到这个类型与`undefined`和`null`的一个联合类型。
+
+下面是另一个例子。
+
+```typescript
+type Container<T> = { value: T };
+
+const a: Container<number> = { value: 0 };
+
+const b: Container<string> = { value: 'b' };
+```
+
+下面是定义树形结构的例子。
+
+```typescript
+type Tree<T> = {
+  value: T;
+  left: Tree<T> | null;
+  right: Tree<T> | null;
+};
+```
+
+上面示例中，类型别名`Tree`内部递归引用了`Tree`自身。
 
 ## 类型参数的默认值
 
@@ -162,198 +348,6 @@ g.add('hello') // 报错
 ```
 
 上面示例中，依次有两个类型参数`T`和`U`。如果`T`是可选参数，`U`不是，就会报错。
-
-## 待用材料
-
-但是，泛型本身不是 TypeScript 的一等公民，不能将一个泛型传给另一个泛型，TypeScript 也不允许将泛型当作类型参数。
-
-如果数组成员是泛型，可以采用下面的写法。
-
-```typescript
-// 写法一
-function loggingIdentity<Type>(arg: Type[]): Type[] {
-  console.log(arg.length);
-  return arg;
-}
-
-// 写法二
-function loggingIdentity<Type>(arg: Array<Type>): Array<Type> {
-  console.log(arg.length); // Array has a .length, so no more error
-  return arg;
-}
-```
-
-函数的泛型写法。
-
-```typescript
-function identity<Type>(arg: Type): Type {
-  return arg;
-}
- 
-// 写法一 
-let myIdentity: <Input>(arg: Input) => Input = identity;
-
-// 写法二
-let myIdentity: { <Type>(arg: Type): Type } = identity;
-```
-
-除了用于函数，泛型也可以定义类型。
-
-```typescript
-type MessageOf<T extends { message: unknown }> = T["message"];
- 
-interface Email {
-  message: string;
-}
- 
-type EmailMessageContents = MessageOf<Email>;
-```
-
-函数的泛型也可以采用 inteface 定义接口。
-
-```typescript
-interface GenericIdentityFn {
-  <Type>(arg: Type): Type;
-}
- 
-function identity<Type>(arg: Type): Type {
-  return arg;
-}
- 
-let myIdentity: GenericIdentityFn = identity;
-```
-
-另一种写法是将类型变量定义在 interface 接口上面。
-
-```typescript
-interface GenericIdentityFn<Type> {
-  (arg: Type): Type;
-}
- 
-function identity<Type>(arg: Type): Type {
-  return arg;
-}
- 
-let myIdentity: GenericIdentityFn<number> = identity;
-```
-
-采用第二种写法时，每次使用 interface 接口时，都必须给出类型变量具体的值。
-
-泛型主要用来描述变量之间的依赖关系，可以理解为引入了表示类型的变量。
-
-```typescript
-function reverse<T>(items: T[]): T[] {
-    var toreturn = [];
-    for (let i = items.length - 1; i >= 0; i--) {
-        toreturn.push(items[i]);
-    }
-    return toreturn;
-}
-```
-
-```typescript
-class Queue<T> {
-  private data = [];
-  push(item: T) { this.data.push(item); }
-  pop(): T | undefined { return this.data.shift(); }
-}
-```
-
-可以同时使用多个类型变量。
-
-```typescript
-function map<Input, Output>(arr: Input[], func: (arg: Input) => Output): Output[] {
-  return arr.map(func);
-}
- 
-// Parameter 'n' is of type 'string'
-// 'parsed' is of type 'number[]'
-const parsed = map(["1", "2", "3"], (n) => parseInt(n));
-```
-
-如果类型变量是对象，可以使用 extends 关键字继承其他对象。
-
-```typescript
-function longest<Type extends { length: number }>(a: Type, b: Type) {
-  if (a.length >= b.length) {
-    return a;
-  } else {
-    return b;
-  }
-}
-```
-
-类型指定也可以用于泛型。
-
-```typescript
-function combine<Type>(arr1: Type[], arr2: Type[]): Type[] {
-  return arr1.concat(arr2);
-}
-
-// 错误
-const arr = combine([1, 2, 3], ["hello"]);
-
-// 正确
-const arr = combine<string | number>([1, 2, 3], ["hello"]);
-```
-
-上面示例中，类型指定将 Type 指定为`string | number`。
-
-泛型虽然灵活，但是容易将类型注释写得很复杂，大大降低了代码可读性，所以必须谨慎使用，尤其要防止写出复杂难懂的泛型注释。
-
-一个规则是如果类型变量在类型注释里面只出现一次，那么它很可能是不必要的。
-
-```typescript
-// 不必要
-function greet<Str extends string>(s: Str) {
-  console.log("Hello, " + s);
-}
-
-// 正确
-function greet(s: string) {
-  console.log("Hello, " + s);
-}
-```
-
-下面是泛型与 Interface 接口结合的例子。
-
-```typescript
-interface Box<Type> {
-  contents: Type;
-}
-
-let box: Box<string>;
-```
-
-泛型的类型变量可以嵌套。
-
-```typescript
-type OrNull<Type> = Type | null;
- 
-type OneOrMany<Type> = Type | Type[];
- 
-type OneOrManyOrNull<Type> = OrNull<OneOrMany<Type>>;
-           
-type OneOrManyOrNull<Type> = OneOrMany<Type> | null
- 
-type OneOrManyOrNullStrings = OneOrManyOrNull<string>;
-               
-type OneOrManyOrNullStrings = OneOrMany<string> | null
-```
-
-一个经验法则是，如果泛型的类型参数只是泛型体出现一次，那么可能不需要使用泛型。
-
-```typescript
-// 写法一
-function length<T extends ArrayLike<unknown>>(t: T):number {}
-
-// 写法二
-function length(t: ArrayLike<unknown>): number {}
-```
-
-上面示例中，写法一的泛型其实是不需要的，因为类型参数`T`只在泛型体出现一次，完全可以改成写法二。
-
-也就是说，只有当类型参数出现两次以上，才是泛型的适用场合。
 
 ## 数组的泛型表示
 
@@ -474,202 +468,79 @@ type Result = Fn<'hello'> // ["hello", "world"]
 <T extends U, U extends T>  // 报错
 ```
 
-上面示例中，`T`的约束条件不能是`T`自身，因此多个类型参数也不能互相约束（即`T`的约束条件是`U`、`U`的约束条件是
+上面示例中，`T`的约束条件不能是`T`自身，因此多个类型参数也不能互相约束（即`T`的约束条件是`U`、`U`的约束条件是`T`），因为互相约束就意味着约束条件就是类型参数自身。
 
 ## 使用注意点
 
-## 泛型接口
+泛型有一些使用注意点。
 
-泛型除了用来定义函数，也可以用来定义接口。
+**（1）尽量少用泛型。**
 
-```typescript
-interface Comparator<T> {
-  compareTo(value: T): number;
-}
+泛型虽然灵活，但是会加大代码的复杂性，使其变得难读难写。一般来说，只要使用了泛型，类型声明通常都不太易读，容易写得很复杂。因此，可以不用泛型就不要用。
 
-class Rectangle implements Comparator<Rectangle> {
+**（2）类型参数越少越好。**
 
-  compareTo(value: Rectangle): number {
-    // the algorithm of comparing rectangles goes here
-  }
-}
-
-class Triangle implements Comparator<Triangle> {
-  compareTo(value: Triangle): number {
-    // the algorithm of comparing triangles goes here
-  }
-}
-```
-
-## 泛型别名
-
-泛型也可以用在`type`别名。
+多一个类型参数，多一道替换步骤，加大复杂性。因此，类型参数越少越好。
 
 ```typescript
-type Nullable<T> = T | undefined | null; 
-```
-
-下面是另一个例子。
-
-```typescript
-type Container<T> = { value: T };
-
-const a: Container<number> = { value: 0 };
-
-const b: Container<string> = { value: 'b' };
-```
-
-下面是定义树形结构的例子。
-
-```typescript
-type Tree<T> = {
-    value: T;
-    left: Tree<T> | null;
-    right: Tree<T> | null;
-};
-```
-
-## 泛型类
-
-泛型也可以用在类（class）上面。在泛型类定义中，形式类型参数列表紧随类名之后。
-
-```typescript
-class Pair<K, V> {
-  key: K;
-  value: V;
+function filter<
+  T,
+  Fn extends (arg:T) => boolean
+>(
+  arr:T[],
+  func:Fn
+):T[] {
+  return arr.filter(func);
 }
 ```
 
-通常来说，类的构造函数会用到类型参数。
+上面示例有两个类型参数，但是第二个类型参数`Fn`是不必要的，完全可以直接写在函数参数的类型声明里面。
 
 ```typescript
-class Pair<K, V> {
-  constructor(
-    public key: K,
-    public value: V
-  ) {
-    // ...
-  }
-}
-
-let p1: Pair<number, string> = new Pair(1, "Apple");
-```
-
-```typescript
-class A<T> {
-  value: T;
-}
-
-class B extends A<any> {
+function filter<T>(
+  arr:T[],
+  func:(arg:T) => boolean
+):T[] {
+  return arr.filter(func);
 }
 ```
 
-上面示例中，类`A`有一个类型参数`T`，使用时必须将`T`替换成具体的类型，所以类`B`的定义里面，给出了父类`A`的类型参数`any`。
+上面示例中，类型参数简化成了一个，效果与前一个示例是一样的。
 
-泛型也可以用在类表达式。
+**（3）类型参数需要出现两次。**
 
-```typescript
-const Container = class<T> {
-  constructor(private readonly data: T) {}
-};
-
-const a = new Container<boolean>(true);
-const b = new Container<number>(0);
-```
-
-下面是一个链表的例子。
+如果类型参数只出现一次，那么很可能是不必要的。
 
 ```typescript
-interface NamedItem {  
-    name: string;  
-}
-
-class List<T extends NamedItem> {  
-    next: List<T> = null;
-
-    constructor(public item: T) {  
-    }
-
-    insertAfter(item: T) {  
-        var temp = this.next;  
-        this.next = new List(item);  
-        this.next.next = temp;  
-    }
-
-    log() {  
-        console.log(this.item.name);  
-    }
-
-    // ...  
+function greet<Str extends string>(
+  s:Str
+) {
+  console.log('Hello, ' + s);
 }
 ```
 
+上面示例中，类型参数`Str`只在函数声明中出现一次（除了它的定义部分），这往往表明这个类型参数是不必要。
+
 ```typescript
-class GenericNumber<NumType> {
-  zeroValue: NumType;
-  add: (x: NumType, y: NumType) => NumType;
+function greet(s:string) {
+  console.log('Hello, ' + s);
 }
+```
+
+上面示例把前面的类型参数省略了，效果与前一个示例是一样的。
+
+也就是说，只有当类型参数用到两次或两次以上，才是泛型的适用场合。
+
+**（4）泛型可以嵌套。**
+
+类型参数可以是另一个类型参数。
+
+```typescript
+type OrNull<Type> = Type|null;
  
-let myGenericNumber = new GenericNumber<number>();
-myGenericNumber.zeroValue = 0;
-myGenericNumber.add = function (x, y) {
-  return x + y;
-};
+type OneOrMany<Type> = Type|Type[];
+ 
+type OneOrManyOrNull<Type> = OrNull<OneOrMany<Type>>;
 ```
 
-生成类的实例时，要给出类型变量的具体值。
-
-泛型变量通常是构造函数的参数。给出实例类型时，需要同时给出泛型变量的值。
-
-```typescript
-const someClass = class<Type> {
-  content: Type;
-  constructor(value: Type) {
-    this.content = value;
-  }
-};
-
-// const m: someClass<string>
-const m = new someClass("Hello, world");
-```
-
-类可以使用范型写成通用形式，其实就是写一个构造函数。
-
-```typescript
-type Class<T> = new (...args: any[]) => T;
-
-// 或者
-interface Class<T> {
-  new(...args: any[]): T;
-}
-
-function createInstance<T>(
-  AnyClass:Class<T>,
-  ...args:any[]
-):T {
-  return new AnyClass(...args);
-}
-```
-
-泛型类描述的是类的实例，所以不包括类的静态属性，因为静态属性定义在类的本身。因此，在类的静态成员中不允许引用类型参数。
-
-```typescript
-class Container<T> {
-    static version: T;
-     //              ~
-    //              编译错误！静态成员不允许引用类型参数
-
-  constructor(private readonly data: T) {}
-}
-```
-
-## 变量继承
-
-范型的类型变量，可以采用对象继承的形式。
-
-```typescript
-function computeDistance2<P extends Point>(point: P) { /*...*/ }
-computeDistance2({ x: 1, y: 2, z: 3 }); // 正确
-```
-
-`extends`表示当前类继承基类，比如`<T extends constructorMixin>`表示`T`继承了`constructorMixin`，这意味着前者具有后者的结构，并且还有一些自己的属性和方法。因此，所有可以使用`constructorMixin`的地方，都可以使用`T`。
+上面示例中，最后一行的泛型`OrNull`的类型参数，就是另一个泛型`OneOrMany`。
