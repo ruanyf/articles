@@ -171,6 +171,22 @@ var add:myfn = (a, b) => a + b;
 
 上面示例中，interface 命令定义了接口`myfn`，这个接口的类型就是一个用对象表示的函数。
 
+## Function 类型
+
+TypeScript 提供 Function 类型表示函数，任何函数都属于这个类型。
+
+```typescript
+function doSomething(f:Function) {
+  return f(1, 2, 3);
+}
+```
+
+上面示例中，参数`f`的类型就是`Function`，代表这是一个函数。
+
+Function 类型的值都可以直接执行。
+
+Function 类型的函数可以接受任意数量的参数，每个参数的类型都是`any`，返回值的类型也是`any`，代表没有任何约束，所以不建议使用这个类型，给出函数详细的类型声明会更好。
+
 ## 箭头函数
 
 箭头函数是普通函数的一种简化写法，它的类型写法与普通函数类似。
@@ -386,27 +402,33 @@ function sum(
 }
 ```
 
+参数结构可以结合类型别名（type 命令）一起使用，代码会看起来简洁一些。
+
+```typescript
+type ABC = { a:number; b:number; c:number };
+
+function sum({ a, b, c }:ABC) {
+  console.log(a + b + c);
+}
+```
+
 ## rest 参数
 
 rest 参数表示函数剩余的所有参数，它可以是数组（剩余参数类型相同），也可能是元组（剩余参数类型不同）。
 
 ```typescript
 // rest 参数为数组
-function joinNumbers(
-  ...nums: number[]
-) {
+function joinNumbers(...nums:number[]) {
   // ...
 }
 
 // rest 参数为元组
-function f(
-  ...args:[boolean, number]
-) {
+function f(...args:[boolean, number]) {
   // ...
 }
 ```
 
-元组需要声明每一个剩余参数的类型，也可以使用可选参数。
+注意，元组需要声明每一个剩余参数的类型。如果元组里面的参数是可选的，则要使用可选参数。
 
 ```typescript
 function f(
@@ -414,15 +436,22 @@ function f(
 ) {}
 ```
 
+下面是一个 rest 参数的例子。
+
+```typescript
+function multiply(n:number, ...m:number[]) {
+  return m.map((x) => n * x);
+}
+```
+
+上面示例中，参数`m`就是 rest 类型，它的类型是一个数组。
+
 rest 参数甚至可以嵌套。
 
 ```typescript
-function f(
-  ...args: [
-    boolean, 
-    ...string[]
-  ]
-) {}
+function f(...args:[boolean, ...string[]]) {
+  // ...
+}
 ```
 
 rest 参数可以与变量解构结合使用。
@@ -506,7 +535,7 @@ function f():void {
 }
 ```
 
-如果某个变量的类型是一个没有返回值的函数（即返回类型`void`），但是实际上可以赋值为返回任意值的函数。这种情况并不会报错，TypeScript 是允许的。
+需要特别注意的是，如果变量、对象方法、函数参数的类型是 void 类型的函数，那么并不代表不能赋值为有返回值的函数。恰恰相反，该变量、对象方法和函数参数可以接受返回任意值的函数，这时并不会报错。
 
 ```typescript
 type voidFunc = () => void;
@@ -516,7 +545,7 @@ const f:voidFunc = () => {
 };
 ```
 
-上面示例中，变量`f`的类型是`voidFunc`，那是一个没有返回值的函数类型。但是实际上，`f`的值是一个具有返回值的函数（返回`123`），编译时不会报错。
+上面示例中，变量`f`的类型是`voidFunc`，是一个没有返回值的函数类型。但是实际上，`f`的值是一个有返回值的函数（返回`123`），编译时不会报错。
 
 这是因为，这时 TypeScript 认为，这里的 void 类型只是表示该函数的返回值没有利用价值，或者说不应该使用该函数的返回值。只要不用到这里的返回值，就不会报错。
 
@@ -546,6 +575,20 @@ f() * 2 // 报错
 ```
 
 上面示例中，最后一行报错了，因为根据类型声明，`f()`没有返回值，但是却用到了它的返回值，因此报错了。
+
+注意，这种情况仅限于变量、对象方法和函数参数，函数字面量如果声明了返回值是 void 类型，还是不能有返回值。
+
+```typescript
+function f():void {
+  return true; // 报错
+}
+ 
+const f3 = function ():void {
+  return true; // 报错
+};
+```
+
+上面示例中，函数字面量声明了返回`void`类型，这时只要有返回值（除了`undefined`和`null`）就会报错。
 
 除了函数，其他变量声明为`void`类型没有多大意义，因为这时只能赋值为`undefined`或者`null`（假定没有打开`strictNullChecks`) 。
 
