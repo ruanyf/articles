@@ -204,8 +204,10 @@ if (user.lastName !== undefined) {
 
 ```typescript
 // 写法一
-let firstName = user.firstName === undefined ? 'Foo' : user.firstName;
-let lastName = user.lastName === undefined ? 'Bar' : user.lastName;
+let firstName = (user.firstName === undefined) 
+  ? 'Foo' : user.firstName;
+let lastName = (user.lastName === undefined)
+  ? 'Bar' : user.lastName;
 
 // 写法二
 let firstName = user.firstName ?? 'Foo';
@@ -249,30 +251,59 @@ const p:Point = { x: 0, y: 0 };
 p.x = 100; // 报错
 ```
 
-上面示例中，类型`Point`的属性`x`和`y`都带有修饰符`readonly`，表示这两个属性只能在初始化期间，后面再修改就会报错。
+上面示例中，类型`Point`的属性`x`和`y`都带有修饰符`readonly`，表示这两个属性只能在初始化期间赋值，后面再修改就会报错。
 
-前面说过，对象类型一旦声明，增删属性都是不可以的。
-
-```typescript
-const person = {
-  age: 20;
-}
-
-person.name = '张三'; // 报错
-delete person.age // 报错
-```
-
-上面示例中，TypeScript 推断变量`person`只有一个属性`age`，增加新属性`name`或者删除`age`属性都会报错。这意味着，TypeScript 的对象类型的结构是固定的，不会改变，但是属性值是可以修改的。
+注意，如果属性值是一个对象，`readonly`修饰符并不禁止修改该对象的属性，只是禁止完全替换掉该对象。
 
 ```typescript
-const person = {
-  age: 20;
+interface Home {
+  readonly resident: {
+    name: string;
+    age: number
+  };
 }
 
-person.age = 21;  // 正确
+const h:Home = {
+  resident: {
+    name: 'Vicky',
+    age: 42
+  }
+};
+
+h.resident.age = 32; // 正确
+h.resident = {
+  name: 'Kate',
+  age: 23 
+} // 报错
 ```
 
-上面示例中，修改对象类型的已有属性`age`的值是可以的。
+上面示例中，`h.resident`是只读属性，它的值是一个对象。修改这个对象的`age`属性是可以的，但是整个替换掉`h.resident`属性会报错。
+
+另一个需要注意的地方是，如果一个对象有两个引用，即两个变量对应同一个对象，其中一个变量是可写的，另一个变量是只读的，那么从可写变量修改属性，会影响到只读变量。
+
+```typescript
+interface Person {
+  name: string;
+  age: number;
+}
+ 
+interface ReadonlyPerson {
+  readonly name: string;
+  readonly age: number;
+}
+
+let w:Person = {
+  name: 'Vicky',
+  age: 42,
+};
+
+let r:ReadonlyPerson = w;
+
+w.age += 1;
+r.age // 43
+```
+
+上面示例中，变量`w`和`r`指向同一个对象，其中`w`是可写的，`r`的只读的。那么，对`w`的属性修改，会影响到`r`。
 
 如果希望属性值是只读的，除了声明时加上`readonly`关键字，还有一种方法，就是在赋值时，在对象后面加上只读断言`as const`。
 
@@ -332,15 +363,13 @@ type T2 = {
 
 上面示例中，对象的属性名类型分别为`number`和`symbol`。
 
-属性名类型为`number`，其实就是数组。因为 JavaScript 数组是一种特殊对象，可以用数值作为属性名，取出对应位置上的属性值。比如，`arr[0]`表示数组`arr`在0号位置上的属性值，但是实质上`arr`是对象，`0`是属性名。
-
 ```typescript
 type MyArr = {
   [n:number]: number;
 };
 
 const arr:MyArr = [1, 2, 3];
-// 等同于
+// 或者
 const arr:MyArr = {
   0: 1,
   1: 2,
@@ -348,9 +377,20 @@ const arr:MyArr = {
 };
 ```
 
-上面示例中，对象类型`MyArr`的属性名是数值，就表示这是数组。`[n:number]`的这种写法就叫做属性名的数值索引。
+上面示例中，对象类型`MyArr`的属性名是`[n:number]`，就表示它的属性名都是数值，比如`0`、`1`、`2`。
 
-总的来说，这种索引类型的属性名，类型声明太宽泛，约束太少，建议谨慎使用。而且，如果用这种方式声明数组，就不能使用各种数组方法以及`length`属性，因为类型里面没有定义这些东西，所以完全不建议这样描述数组类型。
+属性的索引类型写法，建议谨慎使用，因为属性名的声明太宽泛，约束太少。另外，属性名的数值索引不宜用来声明数组，因为采用这种方式声明数组，就不能使用各种数组方法以及`length`属性，因为类型里面没有定义这些东西。
+
+```typescript
+type MyArr = {
+  [n:number]: number;
+};
+
+const arr:MyArr = [1, 2, 3];
+arr.length // 报错
+```
+
+上面示例中，读取`arr.length`属性会报错，因为类型`MyArr`没有这个属性。
 
 ## 解构赋值
 
