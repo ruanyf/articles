@@ -901,4 +901,20 @@ type F = {
 
 上面示例中，F 既可以当作普通函数执行，也可以当作构造函数使用。
 
+下面是构造函数的一个例子。
+
+```typescript
+class Animal {
+  numLegs: number = 4;
+}
+
+function create(c:new () => Animal):Animal {
+  return new c();
+}
+
+const a = create(Animal);
+```
+
+上面示例中，函数`create()`的参数`c`是一个构造函数。在 JavaScript 中，类（class）本质上是构造函数，所以可以传入`create()`。
+
 不过，构造函数在 TypeScript 里面实际上只能用类（class）的形式来实现，详见《Class》一章。

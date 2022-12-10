@@ -156,10 +156,10 @@ class Rectangle implements Comparator<Rectangle> {
 
 ```typescript
 interface Fn {
-  <T>(arg:T):T;
+  <Type>(arg:Type):Type;
 }
 
-function id<T>(arg:T):T {
+function id<Type>(arg:Type):Type {
   return arg;
 }
  
@@ -167,6 +167,8 @@ let myId:Fn = id;
 ```
 
 上面示例中，类型参数定义在接口内部，所以使用这个接口时（最后一行），不需要给出类型参数的值。
+
+除了声明时不需要给出加类型参数，第二种写法还有一个区别。那就是它的类型参数定义在某个方法之上，其他属性和方法不能使用该类型参数。前面的第一种写法，类型参数定义在整个接口，接口内部的所有属性和方法都可以使用该类型参数。
 
 ### 类的泛型写法
 
@@ -397,7 +399,7 @@ function doStuff(
 很多类型参数并不是无限制的，对于传入的类型存在约束条件。
 
 ```typescript
-function comp<T>(a:T, b:T) {
+function comp<Type>(a:Type, b:Type) {
   if (a.length >= b.length) {
     return a;
   }
@@ -405,7 +407,7 @@ function comp<T>(a:T, b:T) {
 }
 ```
 
-上面示例中，类型参数 T 有一个隐藏的约束条件：T 必须是对象，且存在`length`属性。如果不满足这个条件，就会报错。
+上面示例中，类型参数 Type 有一个隐藏的约束条件：Type 必须是对象，且存在`length`属性。如果不满足这个条件，就会报错。
 
 TypeScript 提供了一种语法，允许在类型参数上面写明约束条件，如果不满足条件，编译时就会报错。这样也可以有良好的语义，对类型参数进行了说明。
 

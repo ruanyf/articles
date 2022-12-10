@@ -1,11 +1,15 @@
 # TypeScript 的 ES6 类型
 
-## Map
+## `Map<K, V>`
 
 ```typescript
 let map2 = new Map(); // Key any, value any
 let map3 = new Map<string, number>(); // Key string, value number
 ```
+
+## `Set<T>`
+
+## `Promise<T>`
 
 ## Generator 函数
 

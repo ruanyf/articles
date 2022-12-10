@@ -202,7 +202,7 @@ const arr:readonly Array<number> = [0, 1];
 
 上面示例中，`readonly`与数组的泛型写法一起使用，就会报错。
 
-实际上，TypeScript 提供了两个专门的泛型，用来生成只读数组。
+实际上，TypeScript 提供了两个专门的泛型，用来生成只读数组的类型。
 
 ```typescript
 const a1:ReadonlyArray<number> = [0, 1];
@@ -210,7 +210,7 @@ const a1:ReadonlyArray<number> = [0, 1];
 const a2:Readonly<number[]> = [0, 1];
 ```
 
-上面示例中，泛型`ReadonlyArray<T>`和`Readonly<T[]>`都可以用来生成只读数组。两者尖括号里面的写法不一样，`Readonly<T[]>`的尖括号里面是整个数组（`number[]`），而`ReadonlyArray<T>`的尖括号里面是数组成员（`number`）。
+上面示例中，泛型`ReadonlyArray<T>`和`Readonly<T[]>`都可以用来生成只读数组类型。两者尖括号里面的写法不一样，`Readonly<T[]>`的尖括号里面是整个数组（`number[]`），而`ReadonlyArray<T>`的尖括号里面是数组成员（`number`）。
 
 只读数组还有一种声明方法，就是使用“const 断言”。
 

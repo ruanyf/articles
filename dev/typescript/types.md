@@ -725,28 +725,3 @@ let x: One = { p: "hi" };
 let two: Two = x;
 two = new Three();
 ```
-
-## 泛型
-
-泛型（Generics）为类型提供变量。一个常见的例子是数组。没有泛型的数组可以包含任何东西。带有泛型的数组可以描述数组包含的值。
-
-```typescript
-function reverse<T>(items: T[]): T[] {
-    var toreturn = [];
-    for (let i = items.length - 1; i >= 0; i--) {
-        toreturn.push(items[i]);
-    }
-    return toreturn;
-}
-```
-
-上面示例中，函数 reverse 的参数 items 是一个数组，数组成员的类型是 T（即`items: T[]`），这里的 T 代表 Type，你也可以使用其他字符代替。它的返回值也是一个数组，该数组的成员类型也是 T（即 reverse: T[]）。也就是说，参数收到什么类型的数组，就返回什么类型的字符，比如收到字符串数组，就返回字符串数组，收到数值数组，就返回数值数组。
-
-可以自己定义泛型。
-
-```typescript
-interface Backpack<Type> {
-  add: (obj: Type) => void;
-  get: () => Type;
-}
-```

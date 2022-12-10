@@ -57,7 +57,7 @@ const b:NamedNums = ['B', 1, 2, 3];
 
 上面示例中，元组类型`NamedNums`的第一个成员是字符串，后面的成员使用扩展运算符展开一个数组，从而实现了不定数量的成员。
 
-扩展运算符用在元组的任意位置都可以。
+扩展运算符用在元组的任意位置都可以，但是它后面只能是数组或元组。
 
 ```typescript
 type t1 = [string, number, ...boolean[]];
@@ -124,9 +124,7 @@ x = y; // 报错
 由于只读元组不能替代元组，所以会产生一些令人困惑的报错。
 
 ```typescript
-function distanceFromOrigin(
-    [x, y]:[number, number]
-) {
+function distanceFromOrigin([x, y]:[number, number]) {
   return Math.sqrt(x**2 + y**2);
 }
 
@@ -137,7 +135,7 @@ distanceFromOrigin(point); // 报错
 
 上面示例中，函数`distanceFromOrigin()`的参数是一个元组，传入只读元组就会报错，因为只读元组不能替代元组。
 
-读者可能注意到了，`[3, 4] as const`的写法，在上一章讲到生成的是只读数组，其实生成的同时也是只读元组。因为它生成的实际上是一个只读的值类型`readonly [3, 4]`，把它解读成只读数组或只读元组都可以。
+读者可能注意到了，上例中`[3, 4] as const`的写法，在上一章讲到生成的是只读数组，其实生成的同时也是只读元组。因为它生成的实际上是一个只读的值类型`readonly [3, 4]`，把它解读成只读数组或只读元组都可以。
 
 上面示例报错的解决方法，就是使用类型断言，详见《类型断言》一章。
 
@@ -194,16 +192,14 @@ if (myTuple.length === 4) { // 正确
 
 ## 扩展运算符与成员数量
 
-扩展运算符（`...`）将数组转换成一个逗号分隔的序列，这时 TypeScript 会认为这个序列的成员数量是不确定的，因为原始数组的成员数量就是不确定的。
+扩展运算符（`...`）将数组转换成一个逗号分隔的序列，这时 TypeScript 会认为这个序列的成员数量是不确定的，因为数组的成员数量是不确定的。
 
-这导致如果把扩展运算符用于函数参数，可能发生参数数量与数组长度不匹配的报错。
+这导致如果函数调用时，使用扩展运算符传入函数参数，可能发生参数数量与数组长度不匹配的报错。
 
 ```typescript
 const arr = [1, 2];
 
-function add(
-  x:number, y:number
-){
+function add(x:number, y:number){
   // ...
 }
 
@@ -221,14 +217,12 @@ console.log(...arr) // 正确
 
 上面示例中，`console.log()`可以接受任意数量的参数，所以传入`...arr`就不会报错。
 
-解决这个问题的一个方法，就是把成员数量不确定的数组，转换成成员数量确定的元组，再使用扩展运算符。
+解决这个问题的一个方法，就是把成员数量不确定的数组，写成成员数量确定的元组，再使用扩展运算符。
 
 ```typescript
 const arr:[number, number] = [1, 2];
 
-function add(
-  x:number, y:number
-){
+function add(x:number, y:number){
   // ...
 }
 
