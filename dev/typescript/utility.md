@@ -612,6 +612,44 @@ type T4 = {
 */
 ```
 
+## ReturnType
+
+ReturnType 是一个预定义类，接受一个函数类型作为类型变量，得到该函数的返回值类型。
+
+```typescript
+type Predicate = (x: unknown) => boolean;
+
+// type K = boolean
+type K = ReturnType<Predicate>;
+```
+
+注意，ReturnType 只能接受函数类型作为参数，不能接受函数名作为参数。
+
+```typescript
+function f() {
+  return { x: 10, y: 3 };
+}
+
+// 报错
+type P = ReturnType<f>;
+```
+
+ReturnType 可以与 typeof 相结合，用于函数名。
+
+```typescript
+function f() {
+  return { x: 10, y: 3 };
+}
+
+/* 等同于
+type P = {
+    x: number;
+    y: number;
+}
+*/
+type P = ReturnType<typeof f>;
+```
+
 ## `ThisParameterType<T>`
 
 `ThisParameterType<Type>`提取函数类型中 this 参数的类型，如果函数没有 this 参数，则类型为 unknown。

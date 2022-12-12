@@ -1,299 +1,208 @@
-# 类型运算符
+# TypeScript 类型运算符
 
 TypeScript 提供强大的类型运算能力，可以使用各种类型运算符，对已有的类型进行计算，得到新类型。
 
 ## keyof 运算符
 
-keyof 是一个键名查询运算符，列出了对象类型或接口的所有属性名组成的联合类型，属性名之间使用`|`分隔。
+### 简介
+
+keyof 是一个单目运算符，接受一个对象类型作为参数，返回该对象的所有键名组成的联合类型。
 
 ```typescript
-interface Person {
-  name: string;
-  age: number;
-}
+type MyObj = {
+  foo: number,
+  bar: string,
+};
 
-type propNames = keyof Person; // "name" | "age"
-
-type propTypes = Person[propNames]; // string | number
+type Keys = keyof MyObj; // 'foo'|'bar'
 ```
+
+上面示例中，`keyof MyObj`返回`MyObj`的所有键名组成的联合类型，即`'foo'|'bar'`。
+
+下面是另一个例子。
 
 ```typescript
 interface T {
-    0: boolean;
-    a: string;
-    b(): void;
+  0: boolean;
+  a: string;
+  b(): void;
 }
 
-// 0 | 'a' | 'b'
-type KeyofT = keyof T;
+type KeyT = keyof T; // 0 | 'a' | 'b'
 ```
+
+由于 JavaScript 对象的键名只有三种类型，所以对于任意键名的联合类型就是`string|number|symbol`。
 
 ```typescript
-type Obj = {
-  0: 'a',
-  1: 'b',
-  prop0: 'c',
-  prop1: 'd',
-};
-
-// %inferred-type: 0 | 1 | "prop0" | "prop1"
-type Result = keyof Obj;
+// string | number | symbol
+type KeyT = keyof any;
 ```
 
-JavaScript 的对象是一个容器，可以放置任何类型的数据。有时候，需要知道某个对象所包含数据的所有类型。
-
-```javascript
-const todo = {
-  id: 1,
-  text: "Buy milk",
-  due: new Date(2016, 11, 31),
-};
-```
-
-上面示例中，对象`todo`包括三个属性，它们的类型依次是数值（number）、字符串（string）、日期（Date）。
-
-keyof 运算符可以返回这个对象的所有键名。
+对于上面三种类型以外的类型使用 keyof 运算符，返回`never`类型，表示不可能有这样类型的键名。
 
 ```typescript
-type TodoKeys = keyof Todo; // "id" | "text" | "due"
+type KeyT = keyof object;  // never
 ```
 
-由于 JavaScript 键名只能是字符串和 Symbol 值，对于数组还有数值类型。所以，键名的联合类型就是`string | number |symbol`。
+上面示例中，由于不可能有`object`类型的键名，所以`keyof object`返回`never`类型。
+
+如果对象属性名是索引类型，keyof 会返回属性名的索引类型。
 
 ```typescript
-type KeyofT = keyof any;       // string | number | symbol
-
+// 示例一
 interface T {
-    [prop: number]: number;
+  [prop: number]: number;
 }
 
 // number
-type KeyofT = keyof T;
+type KeyT = keyof T;
 
+// 示例二
 interface T {
-    [prop: string]: number;
+  [prop: string]: number;
 }
 
-// string | number
-type KeyofT = keyof T;
+// string|number
+type KeyT = keyof T;
 ```
 
-顺便提一下，对unknown类型使用索引类型查询时，结果类型固定为never类型。
+上面的示例二，`keyof T`返回的类型是`string|number`，原因是 JavaScript 属性名为字符串时，包含了属性名为数值的情况，因为数值属性名会自动转为字符串。
+
+如果 keyof 运算符用于数组或元组类型，得到的结果可能出人意料。
 
 ```typescript
-type KeyofT = keyof unknown;  // never
-```
-
-注意，如果想要在对象类型中声明属性名为symbol类型的属性，那么属性名的类型必须为“unique symbol”类型，而不允许为symbol类型。
-
-```typescript
-const s: unique symbol = Symbol();
-interface T {
-    [s]: boolean;
-}
-
-// typeof s
-type KeyofT = keyof T;
-```
-
-元组的返回结果可能出人意料。
-
-```typescript
-应用于keyof元组类型的结果可能有些出乎意料：
-
-// number | "0" | "1" | "2" | "length" | "pop" | "push" | ···
+// 返回 number | "0" | "1" | "2"
+// | "length" | "pop" | "push" | ···
 type Result = keyof ['a', 'b', 'c'];
 ```
 
-对于联合类型，keyof 返回共有的键名。
+上面示例中，keyof 会返回数组的所有属性名，包括字符串属性名和继承的属性名。
+
+对于联合类型，keyof 返回成员共有的键名。
 
 ```typescript
 type A = { a: string; z: boolean };
 type B = { b: string; z: boolean };
 
-type KeyofT = keyof (A | B);  // 'z'
+// 'z'
+type KeyT = keyof (A | B); 
 ```
 
-对于交叉类型，返回所有键名。
+对于交叉类型，keyof 返回所有键名。
 
 ```typescript
 type A = { a: string; x: boolean };
 type B = { b: string; y: number };
 
-type KeyofT = keyof (A & B); // 'a' | 'x' | 'b' | 'y'
-
+// 返回 'a' | 'x' | 'b' | 'y'
+type KeyT = keyof (A & B); 
 
 // 相当于
 keyof (A & B) ≡ keyof A | keyof B
 ```
 
-下面是交集类型和联合类型的 keyof 差异。
+keyof 取出的是键名组成的联合类型，如果想取出键值组成的联合类型，可以像下面这样写。
 
 ```typescript
-type A = { a: number, shared: string };
-type B = { b: number, shared: string };
+type MyObj = {
+  foo: number,
+  bar: string,
+};
 
-// %inferred-type: "a" | "b" | "shared"
-type Result1 = keyof (A & B);
+type Keys = keyof MyObj;
 
-// %inferred-type: "shared"
-type Result2 = keyof (A | B);
+type Values = MyObj[Keys]; // number|string
 ```
 
-keyof 运算符的一个作用，就是取出某个属性的类型。
+上面示例中，`Keys`是键名组成的联合类型，而`MyObj[Keys]`会取出每个键名对应的键值类型，组成一个新的联合类型，即`number|string`。
+
+### keyof 运算符的用途
+
+keyof 运算符往往用于精确表达对象的属性类型。
+
+举例来说，取出对象的某个指定属性的值，JavaScript 版本可以写成下面这样。
 
 ```typescript
-function getProperty<T, K extends keyof T>(
-  obj: T,
-  key: K
-): T[K] {
-  return obj[key];
-}
-```
-
-上面示例中，`K extends keyof T`表示`K`是`T`的一个属性名，函数`getProperty()`的返回值`T[K]`就表示`K`这个属性值的类型。
-
-下面是一个例子。
-
-```javascript
 function prop(obj, key) {
   return obj[key];
 }
 ```
 
-上面这个`prop()`函数，如果要加上类型注释，只能写成下面这样。
+上面这个函数添加类型，只能写成下面这样。
 
 ```javascript
-function prop(obj: {}, key: string):any {
+function prop(
+  obj:object, key:string
+):any {
   return obj[key];
 }
 ```
 
-上面示例中，函数`prop()`返回值没法事先给出，只能写成`any`，因为`obj[key]`可能是任意值。
+上面的类型声明有两个问题，一是无法表示参数`key`与参数`obj`之间的关系，二是返回值类型只能写成`any`。
+
+有了 keyof 以后，就可以解决这两个问题，精确表达返回值类型。
 
 ```javascript
-const todo = {
-  id: 1,
-  text: "Buy milk",
-  due: new Date(2016, 11, 31),
-};
-
-const id = prop(todo, "id"); // any
-const text = prop(todo, "text"); // any
-const due = prop(todo, "due"); // any
-```
-
-这时使用 keyof 运算符，就可以给出准确描述类型。
-
-```typescript
-function prop<T, K extends keyof T>(obj: T, key: K) {
+function prop<Obj, K extends keyof Obj>(
+  obj:Obj, key:K
+):Obj[K] {
   return obj[key];
 }
 ```
 
-上面示例中，TypeScript 现在可以推断函数`prop()`的返回类型是`T[K]`。
+上面示例中，`K extends keyof Obj`表示`K`是`Obj`的一个属性名，传入其他字符串会报错。返回值类型`Obj[K]`就表示`K`这个属性值的类型。
 
-```javascript
-const todo = {
-  id: 1,
-  text: "Buy milk",
-  due: new Date(2016, 11, 31),
+keyof 的另一个用途是用于属性映射，即将一个类型的所有属性逐一映射成其他值。
+
+```typescript
+type NewProps<Obj> = {
+  [Prop in keyof Obj]: boolean;
 };
 
-const id = prop(todo, "id"); // number
-const text = prop(todo, "text"); // string
-const due = prop(todo, "due"); // Date
+// 用法
+type MyObj = { foo: number; };
+
+// 等于 { foo: boolean; }
+type NewObj = NewProps<MyObj>;
 ```
 
-这时，如果传递一个`todo`对象上不存在的键名，TypeScript 就会报错。
-
-```typescript
-const foo = prop(todo, "bar"); // 报错
-```
-
-keyof 运算符接受一个对象类型作为参数，返回该对象的键名的 Union 集合。
-
-```typescript
-type Point = { x: number; y: number };
-
-type P = keyof Point;
-```
-
-上面示例中，类型 P 的值为`"x" | "y"`。
-
-如果键名指定类型为`number`或`string`，那么`keyof`会返回这些类型。
-
-```typescript
-type Arrayish = { [n: number]: unknown };
-
-// 等同于 type A = number
-type A = keyof Arrayish;
-```
-
-keyof 还可以用于映射类型，即将一个类型的属性逐一映射成其他值。
-
-```typescript
-type OptionsFlags<Type> = {
-  [Property in keyof Type]: boolean;
-};
-
-type FeatureFlags = {
-  darkMode: () => void;
-  newUserProfile: () => void;
-};
-
-/* 等同于
-type FeatureOptions = {
-    darkMode: boolean;
-    newUserProfile: boolean;
-}
-*/
-type FeatureOptions = OptionsFlags<FeatureFlags>;
-```
+上面示例中，类型`NewProps`是类型`Obj`的映射类型，前者继承了后者的所有属性，但是把所有属性值类型都改成了`boolean`。
 
 下面的例子是去掉 readonly 修饰符。
 
 ```typescript
-type CreateMutable<Type> = {
-  -readonly [Property in keyof Type]: Type[Property];
-};
- 
-type LockedAccount = {
-  readonly id: string;
-  readonly name: string;
+type Mutable<Obj> = {
+  -readonly [Prop in keyof Obj]: Obj[Prop];
 };
 
-/* 等同于
-type UnlockedAccount = {
-    id: string;
-    name: string;
+// 用法
+type MyObj = {
+  readonly foo: number;
 }
-*/
-type UnlockedAccount = CreateMutable<LockedAccount>;
+
+// 等于 { foo: number; }
+type NewObj = Mutable<MyObj>;
 ```
+
+上面示例中，`[Prop in keyof Obj]`是`Obj`类型的所有属性名，`-readonly`表示去除这些属性的只读特性。对应地，还有`+readonly`的写法，表示添加只读属性设置。
 
 下面的例子是让可选属性变成必有的属性。
 
 ```typescript
-type Concrete<Type> = {
-  [Property in keyof Type]-?: Type[Property];
-};
- 
-type MaybeUser = {
-  id: string;
-  name?: string;
-  age?: number;
+type Concrete<Obj> = {
+  [Prop in keyof Obj]-?: Obj[Prop];
 };
 
-/* 等同于
-type User = {
-    id: string;
-    name: string;
-    age: number;
+// 用法
+type MyObj = {
+  foo?: number;
 }
-*/
-type User = Concrete<MaybeUser>;
+
+// 等于 { foo: number; }
+type NewObj = Concrete<MyObj>;
 ```
+
+上面示例中，`[Prop in keyof Obj]`后面的`-?`表示去除可选属性设置。对应地，还有`+?`的写法，表示添加可选属性设置。
 
 ## in 运算符
 
@@ -310,210 +219,94 @@ if ('a' in obj)
 
 `in`运算符的左侧是一个字符串，表示属性名，右侧是一个对象。它的返回值是一个布尔值。
 
-TypeScript 语言中，`in`运算符继承了这种用法。
+TypeScript 语言的类型运算中，`in`运算符有不同的用法，用来取出（遍历）联合类型的每一个成员类型。
 
 ```typescript
-type Fish = { swim: () => void };
-type Bird = { fly: () => void };
- 
-function move(animal:Fish | Bird) {
-  if ('swim' in animal) {
-    return animal.swim();
-  }
- 
-  return animal.fly();
-}
-```
+type U = 'a'|'b'|'c';
 
-上面示例中，`in`运算符通过判断参数`animal`是否具有`swim`属性，确定`animal`到底属于哪一种类型。
-
-in 运算符遍历 Union 类型里面的每一个类型。
-
-```typescript
-interface DataEntry<T> {
-  key: T;
-  value: string;
-}
-
-type DataKey = "location" | "name" | "year";
-
-type DataEntryGetters = {
-[K in DataKey as `get${Capitalize<K>}`]: () => DataEntry<K>;
+type Foo = {
+  [Prop in U]: number;
 };
-// Equivalent to:
-// {
-//
- getLocation: () => DataEntry<"location">;
-//
- getName: () => DataEntry<"name">;
-//
- getYear: () => DataEntry<"year">;
-// }
-```
-
-```typescript
-type DataKey = "location" | "name" | "year";
-type ExistenceChecks = {
-[K in `check${Capitalize<DataKey>}`]: () => boolean;
+// 等同于
+type Foo = {
+  a: number,
+  b: number,
+  c: number
 };
-// Equivalent to:
-// {
-//
- checkLocation: () => boolean;
-//
- checkName: () => boolean;
-//
- checkYear: () => boolean;
-// }
 ```
 
-## typeof 运算符
+上面示例中，`[Prop in U]`表示依次取出联合类型`U`的每一个成员。
 
-`typeof`运算符可以用于定义类型。它接受一个值作为参数，这个值可以是各类类型的值，typeof 会返回值的类型。
+上一小节的例子也提到，`[Prop in keyof Obj]`表示取出对象`Obj`的每一个键名。
 
-```typescript
-let s = "hello";
+## 方括号运算符
 
-// let n: string
-let n: typeof s;
-```
-
-为了避免运行时的类型推断，TypeScript 规定，typeof 的参数只能是标识符，不能是需要运算的表达式。
+方括号运算符（`[]`）用于取出对象的键值类型，比如`T[K]`会返回对象`T`的属性`K`的类型。
 
 ```typescript
-// 报错
-let shouldContinue: typeof msgbox("Are you sure you want to continue?");
-```
-
-## ReturnType
-
-ReturnType 是一个预定义类，接受一个函数类型作为类型变量，得到该函数的返回值类型。
-
-```typescript
-type Predicate = (x: unknown) => boolean;
-
-// type K = boolean
-type K = ReturnType<Predicate>;
-```
-
-注意，ReturnType 只能接受函数类型作为参数，不能接受函数名作为参数。
-
-```typescript
-function f() {
-  return { x: 10, y: 3 };
-}
-
-// 报错
-type P = ReturnType<f>;
-```
-
-ReturnType 可以与 typeof 相结合，用于函数名。
-
-```typescript
-function f() {
-  return { x: 10, y: 3 };
-}
-
-/* 等同于
-type P = {
-    x: number;
-    y: number;
-}
-*/
-type P = ReturnType<typeof f>;
-```
-
-## 索引访问类型
-
-索引访问类型（indexed access type）指的是计算类型的时候，TypeScript 会查找另一种类型的属性（又称“索引”）。
-
-在计算类型的时候，`T[K]`会返回该属性的类型。
-
-```typescript
-type Person = { age: number; name: string; alive: boolean };
-
-// 等同于 type Age = number
-type Age = Person["age"];
-```
-
-```typescript
-type Obj = {
-  0: 'a',
-  1: 'b',
-  prop0: 'c',
-  prop1: 'd',
-};
-
-// %inferred-type: "a" | "b"
-type Result1 = Obj[0 | 1];
-
-// %inferred-type: "c" | "d"
-type Result2 = Obj['prop0' | 'prop1'];
-
-// %inferred-type: "a" | "b" | "c" | "d"
-type Result3 = Obj[keyof Obj];
-```
-
-```typescript
-type Obj = {
-  [key: string]: RegExp, // (A)
-};
-
-// %inferred-type: string | number
-type KeysOfObj = keyof Obj;
-
-// %inferred-type: RegExp
-type ValuesOfObj = Obj[string];
-```
-
-索引访问类型是一种类型，可以用于所有的类型计算。
-
-```typescript
-// type I1 = string | number
-type I1 = Person["age" | "name"];
-     
-// type I2 = string | number | boolean 
-type I2 = Person[keyof Person];
-     
-
- 
-type AliveOrName = "alive" | "name";
-// type I3 = string | boolean
-type I3 = Person[AliveOrName];
-```
-
-对于数组，可以使用 number 作为数组的索引。
-
-```typescript
-const MyArray = [
-  { name: "Alice", age: 15 },
-  { name: "Bob", age: 23 },
-  { name: "Eve", age: 38 },
-];
- 
-/* 等同于
 type Person = {
-    name: string;
-    age: number;
-}
-*/
+  age: number;
+  name: string;
+  alive: boolean;
+};
+
+// Age 的类型是 number
+type Age = Person['age'];
+```
+
+上面示例中，`Person['age']`返回属性`age`的类型，本例是`number`。
+
+方括号的参数如果是联合类型，那么返回的也是联合类型。
+
+```typescript
+type Person = {
+  age: number;
+  name: string;
+  alive: boolean;
+};
+
+// number|string
+type T = Person['age'|'name'];
+
+// number|string|boolean
+type A = Person[keyof Obj];
+```
+
+上面示例中，方括号里面是属性名的联合类型，所以返回的也是对应的属性值的联合类型。
+
+如果对象的属性是索引类型，那么方括号运算符的参数可以是属性名的类型。
+
+```typescript
+type Obj = {
+  [key:string]: number,
+};
+
+// number
+type T = Obj[string];
+```
+
+上面示例中，`Obj`的属性名是字符串的索引类型，所以可以写成`Obj[string]`，代表所有字符串属性名，返回的就是它们的类型`number`。
+
+这个语法对于数组也适用，可以使用`number`作为方括号的参数。
+
+```typescript
+// MyArray 的类型是 { [key:number]：string }
+const MyArray = ['a','b','c'];
+
+// 等同于 (typeof MyArray)[number]
+// 返回 string
 type Person = typeof MyArray[number];
 ```
 
-注意，类型校验是在编译时发生的，所以不能有运行时的计算，除非使用 typeof。
+上面示例中，`MyArray`是一个数组，它的类型实际上是属性名的数值索引，而`typeof MyArray[number]`的`typeof`运算优先级高于方括号，所以返回的是所有数值键名的键值类型`string`。
+
+注意，方括号里面不能有值的运算。
 
 ```typescript
-const key = "age";
-// 报错
-type Age = Person[key];
-
-// 正确写法
-type Age = Person["Age"];
-type Age = Person[typeof key];
-
-type key = "age";
-type Age = Person[key];
+type Age = Person['a' + 'g' + 'e']; // 报错
 ```
+
+上面示例中，方括号里面是字符串的连接运算，所以会报错。
 
 ## extends...?: 条件运算符
 

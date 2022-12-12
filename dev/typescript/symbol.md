@@ -13,7 +13,7 @@ let y:symbol = Symbol();
 x === y // false
 ```
 
-上面示例中，变量`x`和`y`的类型都是`symbol`，但是它们是不相等的。
+上面示例中，变量`x`和`y`的类型都是`symbol`，且都用`Symbol()`生成，但是它们是不相等的。
 
 ## unique symbol
 
@@ -74,7 +74,7 @@ const b:unique symbol = a; // 报错
 
 上面示例中，变量`a`和变量`b`的类型都是`unique symbol`，但是其实类型不同，所以把`a`赋值给`b`会报错。
 
-上例变量`b`的类型，只能写成与变量`a`的类型相同，即类型为`typeof a`。
+上例变量`b`的类型，如果要写成与变量`a`同一个`unique symbol`值类型，只能写成类型为`typeof a`。
 
 ```typescript
 const a:unique symbol = Symbol();

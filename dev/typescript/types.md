@@ -605,7 +605,7 @@ type Greeting = `hello ${World}`;
 
 ## typeof 运算符
 
-typeof 运算符是 JavaScript 语言的一元运算符，返回一个字符串，代表操作数的类型。
+JavaScript 语言中，typeof 运算符是一个一元运算符，返回一个字符串，代表操作数的类型。
 
 ```javascript
 typeof 'foo'; // 'string'
@@ -613,7 +613,9 @@ typeof 'foo'; // 'string'
 
 上面示例中，`typeof`运算符返回字符串`foo`的类型是`string`。
 
-JavaScript 里面，`typeof`运算符只可能返回八种值，而且都是字符串。
+注意，这时 typeof 的操作数是一个值。
+
+JavaScript 里面，`typeof`运算符只可能返回八种结果，而且都是字符串。
 
 ```javascript
 typeof undefined; // "undefined"
@@ -626,9 +628,9 @@ typeof Symbol(); // "symbol"
 typeof 127n // "bigint"
 ```
 
-上面示例是`typeof`运算符在 JavaScript 语言里面，可能返回的八种值。
+上面示例是`typeof`运算符在 JavaScript 语言里面，可能返回的八种结果。
 
-TypeScript 对`typeof`运算符进行了扩展，使其能够返回某个值的 TypeScript 类型。
+TypeScript 将`typeof`运算符移植到了类型运算，它的操作数依然是一个值，但是返回的不是字符串，而是该值的 TypeScript 类型。
 
 ```typescript
 const a = { x: 0 };
@@ -637,35 +639,46 @@ type T0 = typeof a;   // { x: number }
 type T1 = typeof a.x; // number
 ```
 
-上面示例中，`typeof a`表示返回变量`a`的 TypeScript 类型。注意，这时返回的不是字符串，而是只有 TypeScript 才能识别的类型（`{ x: number }`）。同理，`typeof a.x`返回的是属性`x`的类型（`number`）。
+上面示例中，`typeof a`表示返回变量`a`的 TypeScript 类型（`{ x: number }`）。同理，`typeof a.x`返回的是属性`x`的类型（`number`）。
 
-如果`typeof`返回的是 TypeScript 类型，就只能用在代码的类型声明部分里面。
+这种用法的`typeof`返回的是 TypeScript 类型，所以只能用在类型运算之中（即跟类型相关的代码之中），不能用在值运算。
 
-也就是说，`typeof`运算符既可以用在值相关的代码里面，也可以用在类型声明相关的代码里面。它在两种代码的行为规则是不一样的，前者遵守 JavaScript 规则，后者遵守 TypeScript 规则。编译后，前者会保留，后者会被全部删除。
+也就是说，同一段代码可能存在两种`typeof`运算符，一种用在值相关的 JavaScript 代码部分，另一种用在类型相关的 TypeScript 代码部分。
 
 ```typescript
-// 编译前
-let a = { x: 0 };
-let b:typeof a.x | string
-  = 'hello';
+let a = 1;
+let b:typeof a;
 
-if (typeof b === 'string') {
-  console.log(b);
+if (typeof a === 'number') {
+  b = a;
 }
 ```
 
-上面示例中，`typeof a.x | string`是类型声明相关的代码，编译后被删除；`typeof b === 'string'`是值相关的代码，编译后被保留。下面就是编译后的结果。
+上面示例中，用到了两个`typeof`，第一个是类型运算，第二个是值运算。它们是不一样的，不要混淆。
 
-```javascript
-// 编译后
-let a = { x: 0 };
-let b = 'hello';
-if (typeof b === 'string') {
-    console.log(b);
+JavaScript 的 typeof 遵守 JavaScript 规则，TypeScript 的 typeof 遵守 TypeScript 规则。它们的一个重要区别在于，编译后，前者会保留，后者会被全部删除。
+
+上例的代码编译结果如下。
+
+```typescript
+let a = 1;
+let b;
+if (typeof a === 'number') {
+    b = a;
 }
 ```
 
-上面示例中，编译后会保留原始代码的第二个`typeof`，因此这个`typeof`遵守 JavaScript 的语法。原始代码的第一个`typeof`，遵守的是 TypeScript 类型语法。
+上面示例中，只保留了原始代码的第二个 typeof，删除了第一个 typeof。
+
+由于编译时不会进行 JavaScript 的值运算，所以TypeScript 规定，typeof 的参数只能是标识符，不能是需要运算的表达式。
+
+```typescript
+type T = typeof Date(); // 报错
+```
+
+上面示例会报错，原因是 typeof 的参数不能是一个值的运算式，而`Date()`需要运算才知道结果。
+
+typeof 是一个很重要的 TypeScript 运算符，有些场合不知道某个变量`foo`的类型，这时使用`typeof foo`就可以获得它的类型。
 
 ## 类
 
