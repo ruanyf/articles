@@ -718,3 +718,29 @@ type ObjectDescriptor<D, M> = {
 - `Lowercase<StringType>`
 - `Capitalize<StringType>`
 - `Uncapitalize<StringType>`
+
+## 工具函数
+
+```typescript
+/**
+ * Exclude from T those types that are assignable to U
+ */
+type Exclude<T, U> = T extends U ? never : T;
+
+// %inferred-type: "a" | "b"
+type Result1 = Exclude<1 | 'a' | 2 | 'b', number>;
+
+// %inferred-type: "a" | 2
+type Result2 = Exclude<1 | 'a' | 2 | 'b', 1 | 'b' | 'c'>;
+
+/**
+ * Extract from T those types that are assignable to U
+ */
+type Extract<T, U> = T extends U ? T : never;
+
+// %inferred-type: 1 | 2
+type Result1 = Extract<1 | 'a' | 2 | 'b', number>;
+
+// %inferred-type: 1 | "b"
+type Result2 = Extract<1 | 'a' | 2 | 'b', 1 | 'b' | 'c'>;
+```

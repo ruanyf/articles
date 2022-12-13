@@ -274,6 +274,12 @@ type A = Person[keyof Obj];
 
 上面示例中，方括号里面是属性名的联合类型，所以返回的也是对应的属性值的联合类型。
 
+如果访问不存在的属性，会报错。
+
+```typescript
+type T = Person['notExisted']; // 报错
+```
+
 如果对象的属性是索引类型，那么方括号运算符的参数可以是属性名的类型。
 
 ```typescript
@@ -303,14 +309,38 @@ type Person = typeof MyArray[number];
 注意，方括号里面不能有值的运算。
 
 ```typescript
+// 示例一
+const key = 'age';
+type Age = Person[key]; // 报错
+
+// 示例二
 type Age = Person['a' + 'g' + 'e']; // 报错
 ```
 
-上面示例中，方括号里面是字符串的连接运算，所以会报错。
+上面两个示例，方括号里面都涉及值的运算，编译时不会进行这种运算，所以会报错。
 
 ## extends...?: 条件运算符
 
-extends 还可以当作运算符，起到判断作用，这称为条件类型（conditional type）。
+TypeScript 提供类似 JavaScript 的`?:`运算符这样的三元运算符，但多出了一个`extends`关键字。
+
+条件运算符`extends...?:`可以根据当前类型是否符合某种条件，返回不同的类型。
+
+```typescript
+T extends U ? X : Y
+```
+
+上面式子中的`extends`用来判断，类型`T`是否可以赋值给类型`U`，即`T`是否为`U`的子类型，这里的`T`和`U`可以是任意类型。
+
+如果`T`能够赋值给类型`U`，表达式的结果为类型`X`，否则结果为类型`Y`。
+
+```typescript
+// true
+type T = 1 extends number ? true : false;
+```
+
+上面示例中，`1`是`number`的子类型，所以返回`true`。
+
+下面是另外一个例子。
 
 ```typescript
 interface Animal {
@@ -320,113 +350,51 @@ interface Dog extends Animal {
   woof(): void;
 }
  
-// 等同于 type Example1 = number
-type Example1 = Dog extends Animal ? number : string;
-
-// 等同于 type Example2 = string
-type Example2 = RegExp extends Animal ? number : string;
-```
-
-上面示例中，extends 判断左侧的类型是否继承自右侧的类型。如果是的，返回 true，否则返回 false。
-
-条件运算符可以根据当前类型是否符合某种条件，返回不同的类型。
-
-```typescript
-T extends U ? X : Y
-```
-
-上面式子中的`extends`用来判断，类型`T`是否继承了类型`U`，即是否能够赋值给类型`U`。这里的`T`和`U`可以是任意类型。
-
-如果`T`能够赋值给类型`U`，表达式的结果为类型`X`，否则结果为类型`Y`。
-
-```typescript
-// string
-type T0 = true extends boolean ? string : number;
-
 // number
-type T1 = string extends boolean ? string : number;
+type T1 = Dog extends Animal ? number : string;
+
+// string
+type T2 = RegExp extends Animal ? number : string;
 ```
 
-条件类型实际意义很小，因为条件类型中的所有类型都是固定的，因此结果类型也是固定的。实际应用中，条件类型通常与类型参数结合使用。
+上面示例中，`Dog`是`Animal`的子类型，所以`T1`的类型是`number`。`RegExp`不是`Animal`的子类型，所以`T2`的类型是`string`。
+
+一般来说，调换`extends`两侧类型，会返回相反的结果。举例来说，有两个类`Dog`和`Animal`，前者是后者的子类型，那么`Cat extends Animal`就为真，而`Animal extends Cat`就为伪。
+
+如果需要判断的类型是一个联合类型，那么条件运算符会展开这个联合类型。
 
 ```typescript
-type TypeName<T> = T extends string
-    ? 'string'
-    : T extends number
-    ? 'number'
-    : T extends boolean
-    ? 'boolean'
-    : T extends undefined
-    ? 'undefined'
-    : T extends Function
-    ? 'function'
-    : 'object';
+(A|B) extends U ? X : Y
 
-type T0 = TypeName<'a'>;         // 'string'
-type T1 = TypeName<0>;           // 'number'
-type T2 = TypeName<true>;        // 'boolean'
-type T3 = TypeName<undefined>;   // 'undefined'
-type T4 = TypeName<() => void>;  // 'function'
-type T5 = TypeName<string[]>;    // 'object'
+// 等同于
+
+(A extends U ? X : Y) |
+(B extends U ? X : Y)
 ```
 
-如果实际类型参数T是联合类型“A | B”，那么分布式条件类型会被展开。示例如下：
+上面示例中，`A|B`是一个联合类型，进行条件运算时，相当于`A`和`B`分别进行运算符，返回结果组成一个联合类型。
+
+如果不希望联合类型被条件运算符展开，可以把`extends`两侧的操作数都放在方括号里面。
 
 ```typescript
-T ≡ A | B
+// 示例一
+type ToArray<Type> = 
+  Type extends any ? Type[] : never;
 
-T extends U ? X : Y
-    ≡ (A extends U ? X : Y) | (B extends U ? X : Y)
+// string[]|number[]
+type T = ToArray<string|number>;
+
+// 示例二
+type ToArray<Type> = 
+  [Type] extends [any] ? Type[] : never;
+
+// (string | number)[]
+type T = ToArray<string|number>;
 ```
 
-举例来说，有两个类`Cat`和`Animal`，它们的关系是`class Cat extends Animal`，那么`Cat extends Animal`就为真，而`Animal extends Cat`就为伪。
+上面的示例一，传入的类型参数是联合类型，所以会被展开，返回的也是联合类型。示例二是`extends`两侧的运算数都放在方括号里面，所以传入的联合类型不会展示，返回的是一个数组。
 
-```typescript
-function getProducts<T>(id?: T):
-T extends number ? Product : Product[]
-```
-
-上面示例中，函数`getProducts()`的返回值类型，取决于类型参数`T`是否为数值，如果是的，返回`Product`，否则返回`Product[]`。
-
-下面就是这个函数的实现。
-
-```typescript
-class Product {
-  id: number;
-}
-
-const getProducts = function<T>(id?: T):
-T extends number ? Product : Product[] {
-  if (typeof id === 'number') {
-    return { id: 123 } as any;
-  } else {
-    return [{ id: 123 }, {id: 567}] as any;
-  }
-}
-
-const result1 = getProducts(123);
-const result2 = getProducts();
-```
-
-上面示例的`as any`表示关闭 TypeScript 的类型推断，开发者自己保证类型正确。不这样写会编译报错，因为 TypeScript 无法推断返回值符合条件式的类型。
-
-```typescript
-«Type2» extends «Type1» ? «ThenType» : «ElseType»
-```
-
-如果Type2可赋值给Type1，则此类型表达式的结果为ThenType。否则，它是ElseType。
-
-```typescript
-type Wrap<T> = T extends { length: number } ? [T] : T;
-
-// %inferred-type: [string]
-type A = Wrap<string>;
-
-// %inferred-type: RegExp
-type B = Wrap<RegExp>;
-```
-
-类似 TypeScript 的三元运算符，TypeScript 也可以写多重判断。
+条件运算符还可以嵌套使用。
 
 ```typescript
 type LiteralTypeName<T> =
@@ -437,17 +405,95 @@ type LiteralTypeName<T> =
   T extends bigint ? "bigint" :
   T extends string ? "string" :
   never;
+```
 
-// %inferred-type: "bigint"
+上面示例是一个多重判断，返回一个字符串的值类型，对应当前类型。下面是它的用法。
+
+```typescript
+// "bigint"
 type Result1 = LiteralTypeName<123n>;
 
-// %inferred-type: "string" | "number" | "boolean"
+// "string" | "number" | "boolean"
 type Result2 = LiteralTypeName<true | 1 | 'a'>;
 ```
 
+## infer 关键字
+
+`infer`关键字用来定义泛型里面推断出来的类型参数，而不是外部传入的类型参数。
+
+它通常跟条件运算符一起使用，用在`extends`关键字后面的父类型之中。
+
+```typescript
+type Flatten<Type> =
+  Type extends Array<infer Item> ? Item : Type;
+```
+
+上面示例中，`Type`是外部传入的类型参数，如果传入的是一个数组（`Array`），那么可以从该数组推断出它的成员类型，写成`infer Item`，表示`Item`这个类型参数是从当前信息中推断出来的。
+
+一旦定义了`Item`，后面的代码就可以使用这个类型参数了。
+
+下面是这个泛型`Flatten<Type>`的用法。
+
+```typescript
+// string
+type Str = Flatten<string[]>;
+
+// number
+type Num = Flatten<number>;
+```
+
+上面示例中，第一个例子`Flatten<string[]>`传入的类型参数是`string[]`，可以推断出`Item`的类型是`string`，所以返回的是`string`。第二个例子`Flatten<number>`传入的类型参数是`number`，它不是数组，所以直接返回本身。
+
+如果不用`infer`定义类型参数，那么就要传入两个类型参数。
+
+```typescript
+type Flatten<Type, Item> =
+  Type extends Array<Item> ? Item : Type;
+```
+
+上面是不用`infer`的写法，每次使用`Fleatten`的时候，都要传入两个参数，就非常麻烦。
+
+下面的例子使用`infer`，推断函数的参数类型和返回值类型。
+
+```typescript
+type ReturnPromise<T> =
+  T extends (...args: infer A) => infer R 
+  ? (...args: A) => Promise<R> 
+  : T;
+```
+
+上面示例中，如果`T`是函数，就返回这个函数的 Promise 版本，否则原样返回。`infer A`表示该函数的参数类型为`A`，`infer R`表示该函数的返回值类型为`R`。
+
+如果不使用`infer`，就不得不把`ReturnPromise<T>`写成`ReturnPromise<T, A, R>`，这样就很麻烦。
+
+下面是`infer`提取对象指定属性的例子。
+
+```typescript
+type MyType<T> =
+  T extends { 
+    a: infer M,
+    b: infer N 
+  } ? [M, N] : never;
+
+// [string, number]
+type T = MyType<{ a: string; b: number }>; 
+```
+
+上面示例中，`infer`可以提取参数对象的属性`a`和属性`b`的值。
+
+下面是`infer`通过正则匹配提取类型参数的例子。
+
+```typescript
+type Str = 'foo-bar';
+
+type Bar = Str extends `foo-${infer rest}` ? rest : never // 'bar'
+```
+
+上面示例中，`rest`是从模板字符串提取的类型参数。
+
 ## is 运算符
 
-`is`运算符用来缩小函数返回值的类型。
+`is`运算符用来描述函数返回值的类型，属于布尔值的哪一种情况（`true`还是`false`）。
 
 ```typescript
 function isFish(
@@ -459,94 +505,36 @@ function isFish(
 
 上面示例中，函数`isFish()`的返回值类型为`pet is Fish`，表示如果参数`pet`类型为`Fish`，则返回`true`，否则返回`false`。
 
-`is`运算符总是用于描述函数的返回值类型，写法采用`parameterName is Type`的形式，即左侧为当前函数的参数名，右侧为某一种类型。它返回一个布尔值，表示左侧参数是否属于右侧的类型，特别适合描述判断参数类型的函数。
-
-
-TypeScript允许自定义类型保护函数。类型守卫函数是指在函数返回值类型中使用了类型谓词的函数。
-
-```typescript
-x is T
-```
-
-在该语法中，x为类型守卫函数中的某个形式参数名；T表示任意的类型。从本质上讲，类型谓词相当于boolean类型。
-
-类型谓词表示一种类型判定，即判定x的类型是否为T。当在if语句中或者逻辑表达式中使用类型守卫函数时，编译器能够将x的类型细化为T类型。
+`is`运算符总是用于描述函数的返回值类型，写法采用`parameterName is Type`的形式，即左侧为当前函数的参数名，右侧为某一种类型。它返回一个布尔值，表示左侧参数是否属于右侧的类型，特别适合那种返回布尔值的函数。
 
 ```typescript
 type A = { a: string };
 type B = { b: string };
 
 function isTypeA(x: A | B): x is A {
-   return (x as A).a !== undefined;
-}
-
-function isTypeB(x: A | B): x is B {
-   return (x as B).b !== undefined;
+  if ('a' in x) return true;
+  return false;
 }
 ```
 
-在类型谓词“x is T”中，x可以为关键字this，这时它叫作this类型守卫。this类型守卫主要用于类和接口中，它能够将方法调用对象的类型细化为T类型。
+上面示例中，返回值类型`x is A`可以准确描述函数体内部的运算逻辑。
+
+`is`运算符有一种特别用法，用在类（class）的内部，描述类的方法内部的`this`是否为指定对象。
 
 ```typescript
 class Teacher {
-    isStudent(): this is Student {
-        return false;
-    }
+  isStudent():this is Student {
+    return false;
+  }
 }
 
 class Student {
-    grade: string;
-
-    isStudent(): this is Student {
-        return true;
-    }
-}
-
-function f(person: Teacher | Student) {
-    if (person.isStudent()) {
-        person.grade; // Student
-    }
+  isStudent():this is Student {
+    return true;
+  }
 }
 ```
 
-此例中，isStudent方法是this类型守卫，能够判定this对象是否为Student类的实例对象。第16行，在if语句中使用了this类型守卫后，编译器能够将if分支中person对象的类型细化为Student类型。
+上面示例中，`isStudent()`方法的返回值类型，取决于该方法内部的`this`是否为`Student`对象。
 
-注意，类型谓词“this is T”只能作为函数和方法的返回值类型，而不能用作属性或存取器的类型。
-
-`is`运算符常用于类型守卫（type guard）。类型守卫是一种特殊函数，返回一个布尔值，用于在运行时检查某个值是否为指定类型。
-
-```typescript
-function isString(value:unknown): value is string {
-  return typeof value === "string"
-}
-
-// Type guards can also be declared as function expression
-const isStringExp = (value: unknown):value is string =>
-  typeof value === "string"
-```
-
-## 工具函数
-
-```typescript
-/**
- * Exclude from T those types that are assignable to U
- */
-type Exclude<T, U> = T extends U ? never : T;
-
-// %inferred-type: "a" | "b"
-type Result1 = Exclude<1 | 'a' | 2 | 'b', number>;
-
-// %inferred-type: "a" | 2
-type Result2 = Exclude<1 | 'a' | 2 | 'b', 1 | 'b' | 'c'>;
-
-/**
- * Extract from T those types that are assignable to U
- */
-type Extract<T, U> = T extends U ? T : never;
-
-// %inferred-type: 1 | 2
-type Result1 = Extract<1 | 'a' | 2 | 'b', number>;
-
-// %inferred-type: 1 | "b"
-type Result2 = Extract<1 | 'a' | 2 | 'b', 1 | 'b' | 'c'>;
-```
+注意，`this is T`这种写法，只能用来描述函数和方法的返回值类型，而不能用来描述属性或存取器的类型。
