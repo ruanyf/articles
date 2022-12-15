@@ -46,7 +46,25 @@ type KeyT = keyof object;  // never
 
 上面示例中，由于不可能有`object`类型的键名，所以`keyof object`返回`never`类型。
 
-如果对象属性名是索引类型，keyof 会返回属性名的索引类型。
+由于 keyof 返回的类型是`string|number|symbol`，如果有些场合只需要其中的一种类型，那么可以采用交叉类型的写法。
+
+```typescript
+type Capital<T extends string> = Capitalize<T>;
+
+type MyKeys<Obj extends object> = Capital<keyof Obj>; // 报错
+```
+
+上面示例中，类型`Capital`只接受字符串作为类型参数，传入`keyof Obj`会报错，原因是这时的类型参数是`string|number|symbol`，跟字符串不兼容。
+
+采用下面的交叉类型写法，就不会报错。
+
+```typescript
+type MyKeys<Obj extends object> = Capital<string & keyof Obj>;
+```
+
+上面示例中，`string & keyof Obj`等同于`string & string|number|symbol`进行交集运算，最后返回`string`，因此`Capital<T extends string>`就不会报错了。
+
+如果对象属性名采用索引形式，keyof 会返回属性名的索引类型。
 
 ```typescript
 // 示例一
@@ -538,3 +556,54 @@ class Student {
 上面示例中，`isStudent()`方法的返回值类型，取决于该方法内部的`this`是否为`Student`对象。
 
 注意，`this is T`这种写法，只能用来描述函数和方法的返回值类型，而不能用来描述属性或存取器的类型。
+
+## 模板字符串
+
+TypeScript 允许使用模板字符串，构建类型。
+
+模板字符串的最大特点，就是内部可以引用其他类型。
+
+```typescript
+type World = "world";
+
+// "hello world"
+type Greeting = `hello ${World}`;
+```
+
+上面示例中，类型`Greeting`是一个模板字符串，里面引用了另一个字符串类型`world`，因此`Greeting`实际上是字符串`hello world`。
+
+注意，模板字符串可以引用的类型一共6种，分别是 string、number、bigint、boolean、null、undefined。引用其他类型会报错。
+
+```typescript
+type N = 123;
+type O = { n : 123 };
+
+type T1 = `${N} received`; // 正确
+type T2 = `${O} received`; // 报错
+```
+
+上面示例中，模板字符串引用数值类型（`N`）是可以的，但是引用对象类型（`O`）就会报错。
+
+模板字符串里面引用的类型，如果是一个联合类型，那么它返回的也是一个联合类型，即模板字符串可以展开联合类型。
+
+```typescript
+type T = 'A'|'B';
+
+// "A_id"|"B_id"
+type U = `${T}_id`;
+```
+
+上面示例中，类型`U`是一个模板字符串，里面引用了一个联合类型`T`，导致最后得到的也是一个联合类型。
+
+如果模板字符串引用两个联合类型，它会交叉展开这两个类型。
+
+```typescript
+type T = 'A'|'B';
+
+type U = '1'|'2';
+
+// 'A1'|'A2'|'B1'|'B2'
+type V = `${T}${U}`;
+```
+
+上面示例中，`T`和`U`都是联合类型，各自有两个成员，模板字符串里面引用了这两个类型，最后得到的就是一个4个成员的联合类型。

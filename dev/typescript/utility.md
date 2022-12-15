@@ -712,12 +712,61 @@ type ObjectDescriptor<D, M> = {
 };
 ```
 
-## 字符串类型方法
+## 字符串工具类型
 
-- `Uppercase<StringType>`
-- `Lowercase<StringType>`
-- `Capitalize<StringType>`
-- `Uncapitalize<StringType>`
+TypeScript 内置了四个字符串工具类型，专门用来操作字符串。这四个工具类型都定义在 TypeScript 自带的`.d.ts`文件里面。
+
+### `Uppercase<StringType>`
+
+`Uppercase<StringType>`将字符串的每个字符转为大写。
+
+```typescript
+type A = 'hello';
+
+// "HELLO"
+type B = Uppercase<A>;
+```
+
+上面示例中，`Uppercase<T>`将 hello 转为 HELLO。
+
+### `Lowercase<StringType>`
+
+`Lowercase<StringType>`将字符串的每个字符转为小写。
+
+```typescript
+type A = 'HELLO';
+
+// "hello"
+type B = Lowercase<A>;
+```
+
+上面示例中，`Lowercase<T>`将 HELLO 转为 hello。
+
+### `Capitalize<StringType>`
+
+`Capitalize<StringType>`将字符串的第一个字符转为大写。
+
+```typescript
+type A = 'hello';
+
+// "Hello"
+type B = Capitalize<A>;
+```
+
+上面示例中，`Capitalize<T>`将 hello 转为 Hello。
+
+### `Uncapitalize<StringType>`
+
+`Uncapitalize<StringType>` 将字符串的第一个字符转为小写。
+
+```typescript
+type A = 'HELLO';
+
+// "hELLO"
+type B = Uncapitalize<A>;
+``` 
+
+上面示例中，`Uncapitalize<T>`将 HELLO 转为 hELLO。
 
 ## 工具函数
 
