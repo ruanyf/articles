@@ -324,7 +324,7 @@ type FilteredUser = Filter<User> // { name: string }
 
 它的键盘重映射`as T[K] extends string ? K : never]`，使用了条件运算符。如果属性值`T[K]`的类型是字符串，那么属性名不变，否则属性名类型改为`never`，即这个属性名不存在。这样就等于过滤了不符合条件的属性，只保留属性值为字符串的属性。
 
-### 任意联合类型的映射
+### 联合类型的映射
 
 由于键名重映射可以修改键名类型，所以原始键名的类型不必是`string|number|symbol`，任意的联合类型都可以。
 

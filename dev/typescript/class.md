@@ -1,98 +1,131 @@
 # TypeScript 的 class 类型
 
-## class 类型的写法
-
-### 基本写法
+## 简介
 
 类（class）是面向对象编程的基本构件，封装了属性和方法，TypeScript 给予了全面支持。
 
-声明 class 的时候，class 内部必须给出每个成员的类型描述。
+### 属性的类型
+
+类的属性可以在顶层声明，也可以在构造方法内部声明。
+
+对于顶层声明的属性，可以在声明时同时给出类型。
 
 ```typescript
 class Point {
-  x: number;
-  y: number;
+  x:number;
+  y:number;
+}
+```
 
-  constructor(x: number, y: number) {
+上面声明时，属性`x`和`y`的类型都是`number`。
+
+如果不给出类型，TypeScript 会认为`x`和`y`的类型都是`any`。
+
+```typescript
+class Point {
+  x;
+  y;
+}
+```
+
+上面示例中，`x`和`y`的类型都是`any`。
+
+如果声明时给出初值，可以不写类型，TypeScript 会自行推断属性的类型。
+
+```typescript
+class Point {
+  x = 0;
+  y = 0;
+}
+```
+
+上面示例中，属性`x`和`y`的类型都会被推断为 number。
+
+TypeScript 有一个配置项`strictPropertyInitialization`，只要打开，就会检查属性是否设置了初值，如果没有就报错。
+
+如果你打开了这个设置，但是某些情况下，不是在声明时赋值或在构造函数里面赋值，为了防止这个设置报错，可以使用非空断言。
+
+```typescript
+class Point {
+  x!:number;
+  y!:number;
+}
+```
+
+上面示例中，属性`x`和`y`没有初值，但是属性名后面添加了感叹号，表示这两个属性肯定不会为空，所以 TypeScript 就不报错了，详见《类型断言》一章。
+
+### 方法的类型
+
+类的方法就是普通函数，类型声明方式与函数一致。
+
+```typescript
+class Point {
+  x:number;
+  y:number;
+
+  constructor(x:number, y:number) {
     this.x = x;
     this.y = y;
   }
 
-  add(point: Point) {
-    return new Point(this.x + point.x, this.y + point.y);
+  add(point:Point) {
+    return new Point(
+      this.x + point.x,
+      this.y + point.y
+    );
   }
 }
 ```
 
-上面示例中，实例属性`x`和`y`的类型是`number`。
+上面示例中，构造方法`constructor()`和普通方法`add()`都注明了参数类型，但是省略了返回值类型，因为 TypeScript 可以自己推断出来。
 
-类的方法属于函数，类型可以写在定义里面，所以可以不必先定义。但是，单独定义方法的类型，也是可以的。
+### Class 类型
 
-```typescript
-class Point {
-    x: number;
-    y: number;
-    
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-    }
-
-    add(point:Point): Point;
-    add(point:Point) {
-      return new Point(
-        this.x + point.x,
-        this.y + point.y
-      );
-    }
-}
-```
-
-上面示例中，方法`add()`有单独一行的类型定义。注意，方法的实现必须紧跟在它的类型定义后面，否则会报错。
+TypeScript 的类本身就是一种类型，该类的实例都属于这种类型。
 
 ```typescript
 class Color {
-  name: string;
-  constructor(name: string) {
+  name:string;
+
+  constructor(name:string) {
     this.name = name;
   }
 }
+
+const green:Color = new Color('green');
 ```
 
-这个类定义创建了两件事。
+上面示例中，定义了一个类`Color`。它的类名就是一种类型，实例对象`green`就属于该类型。
 
-首先，一个名为 Color（可以通过调用new）的构造函数：
-
-```typescript
-assert.equal(
-  typeof Color, 'function')
-```
-
-其次，创建了一个名为`Color`实例类型。
-
-```typescript
-const green: Color = new Color('green');
-```
-
-注意，类名`Color`作为类型使用时，只能用来表示实例的类型，不能用来表示类本身。
+注意，作为类型使用时，类名只能表示实例的类型，不能表示类本身的类型。
 
 ```typescript
 class Point {
-  x: number;
-  y: number;
-  constructor(x: number, y: number) {
+  x:number;
+  y:number;
+
+  constructor(x:number, y:number) {
     this.x = x;
     this.y = y;
   }
 }
 
 // 错误
-function createPoint(PointClass:Point, x: number, y: number) { // (A)
+function createPoint(
+  PointClass:Point,
+  x: number,
+  y: number
+) {
   return new PointClass(x, y);
 }
+```
 
+上面示例中，函数`createPoint()`的第一个参数`PointClass`，需要传入 Point 这个类，但是如果把参数的类型写成`Point`就会报错，因为`Point`描述的是实例类型，而不是 Class 本身的类型。
+
+```typescript
 // 正确
-function createPoint(PointClass: typeof Point, x: number, y: number) { 
+function createPoint(
+  PointClass: typeof Point, x: number, y: number) { 
   return new PointClass(x, y);
 }
 // 或者
