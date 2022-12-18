@@ -54,6 +54,47 @@ class Point {
 
 上面示例中，属性`x`和`y`没有初值，但是属性名后面添加了感叹号，表示这两个属性肯定不会为空，所以 TypeScript 就不报错了，详见《类型断言》一章。
 
+### readonly 修饰符
+
+属性名前面加上 readonly 修饰符，就表示该属性是只读的。实例对象不能修改这个属性。
+
+```typescript
+class A {
+  readonly id = 'foo';
+}
+
+const a = new A();
+a.id = 'bar'; // 报错
+```
+
+上面示例中，`id`属性前面有 readonly 修饰符，实例对象修改这个属性就会报错。
+
+readonly 属性的初始值，可以写在顶层属性，也可以写在构造函数里面。
+
+```typescript
+class A {
+  readonly id:string;
+
+  constructor() {
+    this.id = 'bar'; // 正确
+  }
+}
+```
+
+上面示例中，构造方法内部设置只读属性的初值，这是可以的。
+
+```typescript
+class A {
+  readonly id:string = 'foo';
+
+  constructor() {
+    this.id = 'bar'; // 正确
+  }
+}
+```
+
+上面示例中，构造方法修改只读属性的值也是可以的。或者说，如果两个地方都设置了只读属性的值，以构造方法为准。在其他方法修改只读属性都会报错。
+
 ### 方法的类型
 
 类的方法就是普通函数，类型声明方式与函数一致。
@@ -78,6 +119,40 @@ class Point {
 ```
 
 上面示例中，构造方法`constructor()`和普通方法`add()`都注明了参数类型，但是省略了返回值类型，因为 TypeScript 可以自己推断出来。
+
+类的方法跟普通函数一样，可以使用参数默认值，以及函数重载。
+
+下面是参数默认值的例子。
+
+```typescript
+class Point {
+  x: number;
+  y: number;
+
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
+  }
+}
+```
+
+上面示例中，如果新建实例时，不提供属性`x`和`y`的值，它们都等于默认值`0`。
+
+下面是函数重载的例子。
+
+```typescript
+class Point {
+  constructor(x:number, y:string);
+  constructor(s:string);
+  constructor(xs:number|string, y?:string) {
+    // ...
+  }
+}
+```
+
+上面示例中，构造方法可以接受一个参数，也可以接受两个参数，采用函数重载进行类型声明。
+
+注意，构造方法不需要注明返回值类型，因为总是返回类的实例对象。
 
 ### Class 类型
 
@@ -931,45 +1006,6 @@ class Foo {
 ```
 
 上面示例的简写形式，自动将`public x`声明为实例属性。
-
-### readonly 修饰符
-
-`readonly`用来修饰类的某个属性，表示该属性只能在初始化时或构造方法里面设置，一旦设置后就不能更改它的值，即该属性设置后就变成只读了。
-
-```typescript
-class Greeter {
-  readonly name: string = "world"; // 正确
-  constructor() {
-    this.name = 'otherName'; // 正确
-  }
-
-  err() {
-    // 报错
-    this.name = "not ok";
-  }
-}
-
-const g = new Greeter();
-// 报错
-g.name = "also not ok";
-```
-
-上面示例中，`g.name`是一个只读属性，可以在初始化时或构造方法里面设置（如果两个地方都设置了，以构造函数为准），在其他方法修改该属性都会报错。
-
-`readonly`属性也可以采用构造函数参数的简便写法。
-
-```typescript
-class Foo {
-  readonly bar:string;
-}
-
-// 等同于
-class Foo {
-  constructor(readonly bar:string) {
-    // ...
-  }
-}
-```
 
 ### 参数属性
 
