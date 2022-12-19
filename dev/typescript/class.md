@@ -152,9 +152,187 @@ class Point {
 
 上面示例中，构造方法可以接受一个参数，也可以接受两个参数，采用函数重载进行类型声明。
 
-注意，构造方法不需要注明返回值类型，因为总是返回类的实例对象。
+### 存取器方法
 
-### Class 类型
+存取器（accessor）是特殊的类方法，包括取值器（getter）和存值器（setter）两种方法。
+
+它们用于读写某个属性，取值器用来读取属性，存值器用来写入属性。
+
+```typescript
+class C {
+  _name = '';
+  get name() {
+    return this._name;
+  }
+  set name(value) {
+    this._name = value;
+  }
+}
+```
+
+上面示例中，`get name()`是取值器，其中`get`是关键词，`name`是属性名。外部读取`name`属性时，实例对象会自动调用这个方法，该方法的返回值就是`name`属性的值。
+
+`set name()`是存值器，其中`set`是关键词，`name`是属性名。外部写入`name`属性时，实例对象会自动调用这个方法，并将所赋的值作为函数参数传入。
+
+TypeScript 对存取器有以下规则。
+
+（1）如果某个属性只有`get`方法，没有`set`方法，那么该属性自动成为只读属性。
+
+```typescript
+class C {
+  _name = 'foo';
+
+  get name() {
+    return this._name;
+  }
+}
+
+const c = new C();
+c.name = 'bar'; // 报错
+```
+
+上面示例中，`name`属性没有`set`方法，对该属性赋值就会报错。
+
+（2）`set`方法的参数类型，必须兼容`get`方法的返回值类型，否则报错。
+
+```typescript
+class C {
+  _name = '';
+  get name():string {
+    return this._name;
+  }
+  set name(value:number) {
+    this._name = value; // 报错
+  }
+}
+```
+
+上面示例中，`get`方法的返回值类型是字符串，与`set`方法参数类型不兼容，导致报错。
+
+```typescript
+class C {
+  _name = '';
+  get name():string {
+    return this._name;
+  }
+  set name(value:number|string) {
+    this._name = String(value); // 正确
+  }
+}
+```
+
+上面示例中，`set`方法的参数类型（`number|return`）兼容`get`方法的返回值类型（`string`），这是允许的。但是，最终赋值的时候，还是必须保证与`get`方法的返回值类型一致。
+
+另外，如果`set`方法的参数没有指定类型，那么会推断为与`get`方法返回值类型一致。
+
+（3）`get`方法与`set`方法的类型必须一致，要么都为公开方法，要么都为私有方法。
+
+### 属性索引
+
+类允许定义属性索引。
+
+```typescript
+class MyClass {
+  [s:string]: boolean |
+    ((s:string) => boolean);
+ 
+  get(s:string) {
+    return this[s] as boolean;
+  }
+}
+```
+
+上面示例中，`[s:string]`表示所有属性名类型为字符串的属性，它们的属性值要么是布尔值，要么是返回布尔值的函数。
+
+注意，由于类的方法是一种特殊属性（属性值为函数的属性），所以属性索引必须同时给出属性和方法两种类型。
+
+```typescript
+class MyClass {
+  [s:string]: boolean;
+ 
+  get(s:string) { // 报错
+    return this[s] as boolean;
+  }
+}
+```
+
+上面示例中，属性索引没有给出方法的类型，导致`get()`方法报错。
+
+## 构造方法
+
+构造方法`constructor()`是类的特殊方法，新建实例对象（`new`命令）就是调用这个方法。
+
+构造方法有一些使用注意点。
+
+（1）构造方法不能声明返回值类型，否则报错，因为它总是返回实例对象。
+
+```typescript
+class B {
+  constructor():object { // 报错
+    // ...
+  }
+}
+```
+
+上面示例中，构造方法声明了返回值类型`object`，导致报错。
+
+（2）如果把类当作构造函数使用，描述类型的时候，需要再单独定义一个类。
+
+```typescript
+class Point {
+  readonly x:number;
+  readonly y:number;
+    
+  constructor(x:number, y:number) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+function newPoint(pointConstructor, x, y) {
+  return new pointConstructor(x, y);
+}
+
+const p = newPoint(Point, 1, 2); // Point {x: 1, y: 2} 
+```
+
+上面示例中，类`Point`有一个构造方法，后面的工厂方法`newPoint()`需要这个构造方法（其实就是`Point`类本身）作为参数。
+
+`newPoint()`的类型应该怎么写？下面的写法是错的。
+
+```typescript
+function newPoint(
+  pointConstructor:Point,
+  x:number,
+  y:number
+) {
+  return new pointConstructor(x, y); // 报错
+}
+```  
+
+上面示例中，把第一个参数`pointConstructor`指定为`Point`会报错，因为`Point`代表实例对象的类型，并不是构造方法的类型。
+
+解决方法就是为构造方法单独声明一个可调用的类型。
+
+```typescript
+interface PointConstructor {
+  new(x:number, y:number):Point;
+}
+
+function newPoint(
+  pointConstructor:PointConstructor,
+  x:number,
+  y:number
+):Point {
+  return new pointConstructor(x, y);
+}
+
+const p:Point = newPoint(Point, 1, 2); 
+```
+
+上面示例中，必须单独声明一个类型，才能表示构造方法的类型，也就是类本身的类型。
+
+## Class 类型
 
 TypeScript 的类本身就是一种类型，该类的实例都属于这种类型。
 
@@ -520,114 +698,6 @@ class Golfer {
 }
 // No error?
 let w: Car = new Golfer();
-```
-
-## 构造函数
-
-构造函数不允许定义返回值类型，因为构造函数的返回值类型永远为类的实例类型。
-
-```typescript
-class B {
-  constructor(): object {}
-    //             ~~~~~~~
-    //             编译错误！不允许指定构造函数的返回值类型
-}
-```
-
-构造函数也支持重载。
-
-```typescript
-class A {
-    constructor(x: number, y: number);
-    constructor(s: string);
-    constructor(xs: number | string, y?: number) {}
-}
- 
-const a = new A(0, 0);
-const b = new A('foo');
-```
-
-```typescript
-export interface IBaseEntity {
-  id: string
-
-}
-
-export interface IBaseEntityClass {
-    new(_id?: string, _data?: any): IBaseEntity
-}
-
-
-class Test implements IBaseEntity {
-  id: string
-  constructor(_id?: string, _data?: any) {
-    this.id = 'MOCK_ID'
-  }
-}
-
-let baseEntityClass: IBaseEntityClass = Test; // The class test fulfills the contract of IBaseEntityClass
-
-new baseEntityClass("", {}) 
-```
-
-http://fritzthecat-blog.blogspot.com/2018/06/typescript-constructor-in-interface.html
-
-```typescript
-interface Point
-{
-    x: number;
-    y: number;
-}
-
-interface PointConstructor
-{
-    new(x: number, y: number): Point;
-}
-
-class PointImpl implements Point
-{
-    readonly x: number;
-    readonly y: number;
-    
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
-function newPoint(pointConstructor: PointConstructor, x: number, y: number): Point {
-    return new pointConstructor(x, y);
-}
-
-const point: Point = newPoint(PointImpl, 1, 2);
-```
-
-## 存取器
-
-存取器指的是某个属性（假定为`p`）的赋值方法`set p()`和取值方法`get p()`
-
-如果一个类属性同时定义了get方法和set方法，那么get方法的返回值类型必须与set方法的参数类型一致，否则将产生错误。
-
-```typescript
-class C {
-   /**
-    * 正确
-    */
-   private _foo: number = 0;
-   get foo(): number {
-       return this._foo;
-   }
-   set foo(value: number) {}
-
-   /**
-    * 错误！'get' 和 'set' 存取器必须具有相同的类型
-     */
-  private _bar: string = '';
-  get bar(): string {
-        return this._bar;
-  }
-  set bar(value: number) {}
-}
 ```
 
 ## class 类型，类的兼容
@@ -1567,3 +1637,7 @@ let c: C = new C();
 c.x;
 c.y;
 ```
+
+## 参考链接
+
+- [TypeScript Constructor in Interface](http://fritzthecat-blog.blogspot.com/2018/06/typescript-constructor-in-interface.html)
