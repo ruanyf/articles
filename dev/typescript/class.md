@@ -152,6 +152,18 @@ class Point {
 
 上面示例中，构造方法可以接受一个参数，也可以接受两个参数，采用函数重载进行类型声明。
 
+另外，构造方法不能声明返回值类型，否则报错，因为它总是返回实例对象。
+
+```typescript
+class B {
+  constructor():object { // 报错
+    // ...
+  }
+}
+```
+
+上面示例中，构造方法声明了返回值类型`object`，导致报错。
+
 ### 存取器方法
 
 存取器（accessor）是特殊的类方法，包括取值器（getter）和存值器（setter）两种方法。
@@ -258,233 +270,11 @@ class MyClass {
 
 上面示例中，属性索引没有给出方法的类型，导致`get()`方法报错。
 
-## 构造方法
-
-构造方法`constructor()`是类的特殊方法，新建实例对象（`new`命令）就是调用这个方法。
-
-构造方法有一些使用注意点。
-
-（1）构造方法不能声明返回值类型，否则报错，因为它总是返回实例对象。
-
-```typescript
-class B {
-  constructor():object { // 报错
-    // ...
-  }
-}
-```
-
-上面示例中，构造方法声明了返回值类型`object`，导致报错。
-
-（2）如果把类当作构造函数使用，描述类型的时候，需要再单独定义一个类。
-
-```typescript
-class Point {
-  readonly x:number;
-  readonly y:number;
-    
-  constructor(x:number, y:number) {
-    this.x = x;
-    this.y = y;
-  }
-}
-
-function newPoint(pointConstructor, x, y) {
-  return new pointConstructor(x, y);
-}
-
-const p = newPoint(Point, 1, 2); // Point {x: 1, y: 2} 
-```
-
-上面示例中，类`Point`有一个构造方法，后面的工厂方法`newPoint()`需要这个构造方法（其实就是`Point`类本身）作为参数。
-
-`newPoint()`的类型应该怎么写？下面的写法是错的。
-
-```typescript
-function newPoint(
-  pointConstructor:Point,
-  x:number,
-  y:number
-) {
-  return new pointConstructor(x, y); // 报错
-}
-```  
-
-上面示例中，把第一个参数`pointConstructor`指定为`Point`会报错，因为`Point`代表实例对象的类型，并不是构造方法的类型。
-
-解决方法就是为构造方法单独声明一个可调用的类型。
-
-```typescript
-interface PointConstructor {
-  new(x:number, y:number):Point;
-}
-
-function newPoint(
-  pointConstructor:PointConstructor,
-  x:number,
-  y:number
-):Point {
-  return new pointConstructor(x, y);
-}
-
-const p:Point = newPoint(Point, 1, 2); 
-```
-
-上面示例中，必须单独声明一个类型，才能表示构造方法的类型，也就是类本身的类型。
-
-## Class 类型
-
-TypeScript 的类本身就是一种类型，该类的实例都属于这种类型。
-
-```typescript
-class Color {
-  name:string;
-
-  constructor(name:string) {
-    this.name = name;
-  }
-}
-
-const green:Color = new Color('green');
-```
-
-上面示例中，定义了一个类`Color`。它的类名就是一种类型，实例对象`green`就属于该类型。
-
-注意，作为类型使用时，类名只能表示实例的类型，不能表示类本身的类型。
-
-```typescript
-class Point {
-  x:number;
-  y:number;
-
-  constructor(x:number, y:number) {
-    this.x = x;
-    this.y = y;
-  }
-}
-
-// 错误
-function createPoint(
-  PointClass:Point,
-  x: number,
-  y: number
-) {
-  return new PointClass(x, y);
-}
-```
-
-上面示例中，函数`createPoint()`的第一个参数`PointClass`，需要传入 Point 这个类，但是如果把参数的类型写成`Point`就会报错，因为`Point`描述的是实例类型，而不是 Class 本身的类型。
-
-```typescript
-// 正确
-function createPoint(
-  PointClass: typeof Point, x: number, y: number) { 
-  return new PointClass(x, y);
-}
-// 或者
-function createPoint(
-  PointClass: new (x: number, y: number) => Point, // (A)
-  x: number, y: number
-) {
-  return new PointClass(x, y);
-}
-// 或者
-function createPoint(
-  PointClass: {new (x: number, y: number): Point},
-  x: number, y: number
-) {
-  return new PointClass(x, y);
-}
-
-const point = createPoint(Point, 3, 6);
-assert.ok(point instanceof Point);
-```
-
-上面示例中，`Point`作为类型时，不能用来表示类本身。这里是要传入一个类，作为构造函数使用，所以必须写成`typeof Point`。
-
-如果属性是构造函数的参数，那么声明属性有一种简便写法，前面需要加上 public、private、protected。
-
-```typescript
-class Params {
-  constructor(
-    public readonly x: number,
-    protected y: number,
-    private z: number
-  ) {
-    // No body necessary
-  }
-}
-
-// 等同于
-class Params {
-  public readonly x: number,
-  protected y: number,
-  private z: number
-
-  constructor(
-    public readonly x: number,
-    protected y: number,
-    private z: number
-  ) {
-    // No body necessary
-  }
-}
-```
-
-类的内部也可以包括构造函数的类型签名。
-
-```typescript
-class Point {
-  // Overloads
-  constructor(x: number, y: string);
-  constructor(s: string);
-  constructor(xs: any, y?: any) {
-    // TBD
-  }
-}
-```
-
-注意，构造函数的类型签名不能有返回值的类型，因为它总是返回当前类的实例。
-
-类也可以有索引签名。
-
-```typescript
-class MyClass {
-  [s: string]: boolean | ((s: string) => boolean);
- 
-  check(s: string) {
-    return this[s] as boolean;
-  }
-}
-```
-
-在 TypeScript 中声明一个类，同时也声明这个类的接口（interface）。
-
-这就是说，类本身也是一个类型，比如上面例子的类`Point`本身就是一个类型，方法`add()`的参数就是`Point`类型。
-
-继承的时候，只需要给出新增属性的类型注释，不需要给出继承属性的类型注释。
-
-```typescript
-class Point3D extends Point {
-    z: number;
-    constructor(x: number, y: number, z: number) {
-        super(x, y);
-        this.z = z;
-    }
-    add(point: Point3D) {
-        var point2D = super.add(point);
-        return new Point3D(point2D.x, point2D.y, this.z + point.z);
-    }
-}
-```
-
-上面示例中，实例属性`z`是`Point3D`新增的属性，所以需要给出类型注释。实例属性`x`和`y`是继承的属性，不用重复给出类型注释了。
+## 实现 interface 接口
 
 ### implements 关键字
 
-类可以使用 implements 关键字，定义实例的的类型模板。
-
-类的模板可以是`interface`命令或`type`命令定义的对象类型。
+属性和方法的类型，除了在类的内部声明，还可以在类的外部，使用 type 或 interface 命令声明。然后，类使用 implements 关键字，套用这个外部类型声明。
 
 ```typescript
 interface Country {
@@ -503,35 +293,26 @@ class MyCountry implements Country {
 }
 ```
 
-上面示例中，`interface`或`type`都可以定义一个对象类型。class 使用`implements`关键字，表示实例对象符合该类型。
+上面示例中，`interface`或`type`都可以定义一个对象类型。类`MyCountry`使用`implements`关键字，表示该类的实例对象使用这个外部类型。
 
-另一种给出 Class 类型注释的方法，就是使用 interface。这时要使用 implements 关键字。
+类的内部可以定义外部类型没有声明的方法和属性。
 
 ```typescript
 interface Point {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 }
 
 class MyPoint implements Point {
-  x: number = 1;
-  y: number = 2;
+  x = 1;
+  y = 1;
+  z:number = 1;
 }
 ```
 
-Class 可以部署接口以外的方法和属性。
+上面示例中，`MyPoint`类实现了`Point`接口，但是内部还定义了一个额外的属性`z`，这是允许的。
 
-```typescript
-class MyPoint implements Point {
-  x: number = 1;
-  y: number = 2;
-  z: number = 3; // 接口没有定义的属性
-}
-```
-
-上面示例中，`MyPoint`类实现了`Point`接口，但是内部还部署了一个属性`z`，这是接口`point`没有定义的。
-
-但是如果相反，`MyPoint`类缺少`Point`接口里面的方法，那么就会报错。
+但是如果相反，`MyPoint`类缺少`Point`接口里面的属性或方法，就会报错。
 
 ```typescript
 // 报错
@@ -540,14 +321,41 @@ class MyPoint implements Point {
 }
 ```
 
-上面示例中，`MyPoint`类少了`Point`接口里面的属性`y`，编译时就会报错。
+上面示例中，`MyPoint`类少了`Point`接口里面的属性`y`，就会报错。
+
+`implements`关键字后面，不仅可以是接口，也可以是一个类。这时，后面的类将被当作接口。
+
+```typescript
+class Car {
+  id:number = 1;
+  move():void {};
+}
+
+class MyCar implements Car {
+  id = 2; // 不可省略
+  move() {};   // 不可省略
+}
+```
+
+上面示例中，`implements`后面是类`Car`，这时 TypeScript 就把`Car`视为一个接口，要求`MyCar`实现`Car`里面的每一个属性和方法，否则就会报错。所以，这时不能因为`Car`类已经实现过一次，而在`MyCar`类省略属性或方法。
+
+注意，interface 描述的是类的对外接口，也就是实例的公开属性和公开方法，不能定义私有的属性和方法。这是因为 TypeScript 设计者认为，私有属性是类的内部实现，接口作为模板，不应该涉及类的内部代码写法。
+
+```typescript
+interface Foo {
+  private member:{}; // 报错
+}
+```
+
+上面示例中，接口`Foo`有一个私有属性，结果就报错了。
+
+### 实现多个接口
 
 类可以实现多个接口，每个接口之间使用逗号分隔。
 
 ```typescript
 class Car implements MotorVehicle, Flyable, Swimmable {
-// Implement all the methods from three
-// interfaces here
+  // ...
 }
 ```
 
@@ -562,11 +370,10 @@ class Car implements MotorVehicle {
 }
 
 class SecretCar extends Car implements Flyable, Swimmable {
-
 }
 ```
 
-上面示例中，`SecretCar`类继承了`Car`类，然后再实现`Flyable`和`Swimmable`两个接口。
+上面示例中，`Car`类实现了`MotorVehicle`，而`SecretCar`类继承了`Car`类，然后再实现`Flyable`和`Swimmable`两个接口，相当于它同时实现了三个接口。
 
 第二种方法是接口的继承。
 
@@ -580,7 +387,7 @@ interface B extends A {
 }
 ```
 
-上面示例中，接口`B`就继承了接口`A`。
+上面示例中，接口`B`继承了接口`A`，类只要实现接口`B`，就相当于实现`A`和`B`两个接口。
 
 前一个例子可以用接口继承改写。
 
@@ -604,9 +411,9 @@ class SecretCar implements SuperCar {
 }
 ```
 
-上面示例中，接口`SuperCar`就继承了多个接口。
+上面示例中，接口`SuperCar`通过`SuperCar`接口，就间接实现了多个接口。
 
-注意，发生多重继承时（即一个接口同时继承多个接口），不同接口不能有互相冲突的属性。
+注意，发生多重实现时（即一个接口同时实现多个接口），不同接口不能有互相冲突的属性。
 
 ```typescript
 interface Flyable {
@@ -618,38 +425,29 @@ interface Swimmable {
 }
 ```
 
-上面示例中，属性`foo`在两个接口里面的类型不同，如果同时继承这两个接口，编译时就会报错。
+上面示例中，属性`foo`在两个接口里面的类型不同，如果同时实现这两个接口，就会报错。
 
-`implements`关键字后面，不仅可以是接口，也可以是一个类。这时，后面的类将被当作接口。
+## Class 类型
 
-```typescript
-class Car {
-  num:number = 111;
-}
+### 实例类型
 
-// 错误
-class MyCar implements Car {
-}
-
-// 正确
-class MyCar implements Car {
-  num:number = 222;
-}
-```
-
-上面示例中，`implements`后面是类`Car`，这时 TypeScript 就把`Car`视为一个接口，要求`MyCar`部署`Car`里面的每一个属性和方法，否则就会报错。
-
-注意，interface 描述的是类的对外接口，所以只能定义公开属性，不能定义私有属性。因为 TypeScript 设计者认为，私有属性是类的内部实现，接口作为模板，不应该涉及类的内容代码写法。
+TypeScript 的类本身就是一种类型，但是它代表该类的实例类型，而不是 class 的自身类型。
 
 ```typescript
-interface Foo {
-  private member:{}; // 报错
+class Color {
+  name:string;
+
+  constructor(name:string) {
+    this.name = name;
+  }
 }
+
+const green:Color = new Color('green');
 ```
 
-上面示例中，接口`Foo`有一个私有属性，结果就报错了。
+上面示例中，定义了一个类`Color`。它的类名就代表一种类型，实例对象`green`就属于该类型。
 
-对于变量来说，既可以声明类型是 Class，也可以声明类型是 Interface。
+对于引用实例对象的变量来说，既可以声明类型为 Class，也可以声明类型为 Interface，因为两者都代表实例类型。
 
 ```typescript
 interface MotorVehicle {
@@ -659,65 +457,124 @@ class Car implements MotorVehicle {
 }
 
 // 写法一
-const c1: Car = new Car();
+const c:Car = new Car();
 // 写法二
-const c2: MotorVehicle = new Car();
+const c:MotorVehicle = new Car();
 ```
 
-这两种写法的区别是，如果类`Car`里面部署了接口`MotoVehicle`没有的属性和方法，那么只有变量`c1`可以调用这些属性和方法。
+上面示例中，变量`c`的类型可以写成类`Car`，也可以写成接口`MotorVehicle`。它们的区别是，如果类`Car`有接口`MotoVehicle`没有的属性和方法，那么只有变量`c1`可以调用这些属性和方法。
+
+作为类型使用时，类名只能表示实例的类型，不能表示类的自身类型。
+
+```typescript
+class Point {
+  x:number;
+  y:number;
+
+  constructor(x:number, y:number) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+// 错误
+function createPoint(
+  PointClass:Point,
+  x: number,
+  y: number
+) {
+  return new PointClass(x, y);
+}
+```
+
+上面示例中，函数`createPoint()`的第一个参数`PointClass`，需要传入 Point 这个类，但是如果把参数的类型写成`Point`就会报错，因为`Point`描述的是实例类型，而不是 Class 的自身类型。
+
+### 类的自身类型
+
+要获得一个类的自身类型，一个简便的方法就是使用 typeof 运算符。
+
+```typescript
+function createPoint(
+  PointClass:typeof Point,
+  x:number,
+  y:number
+):Point { 
+  return new PointClass(x, y);
+}
+```
+
+上面示例中，`createPoint()`的第一个参数`PointClass`是`Point`类自身，要声明这个参数的类型，简便的方法就是使用`typeof Point`。因为`Point`类是一个值，`typeof Point`返回这个值的类型。注意，`createPoint()`的返回值类型是`Point`，代表实例类型。
+
+JavaScript 语言中，类只是构造函数的一种语法糖，本质上是构造函数的另一种写法。所以，类的自身类型可以写成构造函数的形式。
+
+```typescript
+function createPoint(
+  PointClass: new (x:number, y:number) => Point,
+  x: number,
+  y: number
+):Point {
+  return new PointClass(x, y);
+}
+```
+
+上面示例中，参数`PointClass`的类型写成了一个构造函数，这时就可以把`Point`类传入。
+
+构造函数也可以写成对象形式，所以参数`PointClass`的类型还有另一种写法。
+
+```typescript
+function createPoint(
+  PointClass: {
+    new (x:number, y:number): Point
+  },
+  x: number,
+  y: number
+):Point {
+  return new PointClass(x, y);
+}
+```
+
+根据上面的写法，可以把构造函数提取出来，单独定义一个接口（interface），这样可以大大提高代码的通用性。
+
+```typescript
+interface PointConstructor {
+  new(x:number, y:number):Point;
+}
+
+function createPoint(
+  PointClass: PointConstructor,
+  x: number,
+  y: number
+):Point {
+  return new PointClass(x, y);
+}
+```
+
+总结一下，类的自身类型就是一个构造函数，可以单独定义一个接口来表示。
 
 ### 结构类型原则
 
-Class 也遵循“结构类型原则”。只要满足 Class 的实例结构，就认为类型兼任。
-
-```typescript
-class Empty {}
-
-function fn(arg: Empty) {
-  // do something?
-}
- 
-// 正确
-fn({ k: 10 });
-```
-
-上面示例中，`{ k: 10 }`满足`class Empty {}`的结构，只是多了一个用不到的属性`k`。所以，可以传入函数`fn()`。
-
-两个类如果结构相同，就视为类型兼容。
-
-```typescript
-class Car {
-  drive() {
-    // hit the gas
-  }
-}
-class Golfer {
-  drive() {
-    // hit the ball far
-  }
-}
-// No error?
-let w: Car = new Golfer();
-```
-
-## class 类型，类的兼容
-
-class 可以作为类型使用。
+Class 也遵循“结构类型原则”。一个对象只要满足 Class 的实例结构，就跟该 Class 属于同一个类型。
 
 ```typescript
 class Foo {
-  x:number;
-  constructor() {
-    this.x = 123;
-  }
+  id!:number;
 }
 
-const f:Foo = new Foo();
+function fn(arg:Foo) {
+  // ...
+}
+
+const bar = {
+  id: 10,
+  amount: 100,
+};
+
+fn(bar); // 正确
 ```
 
-上面示例中，`Foo`是一个类，可以作为类型使用，指定变量`f`为该类型就表示`f`是`Foo`的一个实例。
+上面示例中，对象`bar`满足类`Foo`的实例结构，只是多了一个属性`amount`。所以，它可以当作参数，传入函数`fn()`。
 
-TypeScript 规定，只要两个类的结构相同（属性和方法相同），就认为这两个类的类型相同，可以互相替代。
+如果两个类的实例结构相同，那么这两个类就是兼容的，可以用在对方的使用场合。
 
 ```typescript
 class Person {
@@ -732,7 +589,7 @@ class Customer {
 const cust:Customer = new Person();
 ```
 
-上面示例中，`Person`和`Customer`是两个结构相同的类，TypeScript 将它们视为相同类型，因此可以互相替换。
+上面示例中，`Person`和`Customer`是两个结构相同的类，TypeScript 将它们视为相同类型，因此`Person`可以用在类型为`Customer`的场合。
 
 现在修改一下代码，`Person`类添加一个属性。
 
@@ -750,9 +607,9 @@ class Customer {
 const cust:Customer = new Person();
 ```
 
-上面示例中，`Person`类添加了一个属性`age`，跟`Customer`类的结构不再相同。但是这种情况下，TypeScript 依然认为，`Person`属于`Customer`类型。这是因为在使用`Customer`类型的情况下，应该只会用到它的`name`属性，而`Person`类具有`name`属性，可以认为符合`Customer`的结构，它多出来的`age`属性由于用不到，可以不予考虑。
+上面示例中，`Person`类添加了一个属性`age`，跟`Customer`类的结构不再相同。但是这种情况下，TypeScript 依然认为，`Person`属于`Customer`类型。
 
-反过来就不行，如果`Customer`类多出一个属性，就会编译报错。
+这是因为根据“结构类型原则”，只要`Person`类具有`name`属性，就满足`Customer`类型的实例结构，所以代替它。反过来就不行，如果`Customer`类多出一个属性，就会报错。
 
 ```typescript
 class Person {
@@ -768,11 +625,11 @@ class Customer {
 const cust:Customer = new Person();
 ```
 
-上面示例中，`Person`类比`Customer`类少一个属性`age`，它就不属于`Customer`类型。因为在使用`Customer`类型的情况下，可能会用到它的`age`属性，而`Person`类就没有这个属性。
+上面示例中，`Person`类比`Customer`类少一个属性`age`，它就不满足`Customer`类型的实例结构，就报错了。因为在使用`Customer`类型的情况下，可能会用到它的`age`属性，而`Person`类就没有这个属性。
 
-这说明，只要 A 类具有 B 类的结构，哪怕还有额外的属性和方法，TypeScript 也认为 A 属于 B 的类型。
+总之，只要 A 类具有 B 类的结构，哪怕还有额外的属性和方法，TypeScript 也认为 A 兼容 B 的类型。
 
-不仅是类，如果某个对象跟某个 class 结构相同，TypeScript 也认为两者的类型相同。
+不仅是类，如果某个对象跟某个 class 的实例结构相同，TypeScript 也认为两者的类型相同。
 
 ```typescript
 class Person {
@@ -785,21 +642,6 @@ const p:Person = obj; // 正确
 
 上面示例中，对象`obj`并不是`Person`的实例，但是赋值给变量`p`不会报错，TypeScript 认为`obj`也属于`Person`类型，因为它们的属性相同。
 
-下面是另一个例子。
-
-```typescript
-class C {
-  foo: string;
-  constructor(foo: string) {
-    this.foo = foo;
-  }
-}
-
-const obj:C = { foo: 'object literal' }; // 正确
-```
-
-上面示例中，对象`obj`的类型是`C`类的实例，但是只要满足实例属性的结构，任何对象都可以赋值给`obj`。
-
 由于这种情况，运算符`instanceof`不适用于判断某个对象是否跟某个 class 属于同一类型。
 
 ```typescript
@@ -807,29 +649,6 @@ obj instanceof Person // false
 ```
 
 上面示例中，运算符`instanceof`确认变量`obj`不是 Person 的实例，但是两者的类型是相同的。
-
-如果某个接口跟类的结构一致，类的实例也可以赋值给接口类型。
-
-```typescript
-class Circle {
-   radius: number;
-   area(): number {
-       return Math.PI * this.radius * this.radius;
-    }
-}
-
-interface CircleType {
-    radius: number;
-    area(): number;
-}
-
-// 正确
-const a: Circle = new Circle();
-
-// 正确
-const b: CircleType = new Circle();
-```
-
 
 ## 访问修饰符
 
@@ -1117,6 +936,36 @@ class A {
          protected readonly y: number,
          private readonly z: number
    ) {}
+}
+```
+
+
+如果属性是构造函数的参数，那么声明属性有一种简便写法，前面需要加上 public、private、protected。
+
+```typescript
+class Params {
+  constructor(
+    public readonly x: number,
+    protected y: number,
+    private z: number
+  ) {
+    // No body necessary
+  }
+}
+
+// 等同于
+class Params {
+  public readonly x: number,
+  protected y: number,
+  private z: number
+
+  constructor(
+    public readonly x: number,
+    protected y: number,
+    private z: number
+  ) {
+    // No body necessary
+  }
 }
 ```
 
@@ -1438,7 +1287,23 @@ interface B {}
 class C implements A, B {}
 ```
 
+继承的时候，只需要给出新增属性的类型注释，不需要给出继承属性的类型注释。
 
+```typescript
+class Point3D extends Point {
+    z: number;
+    constructor(x: number, y: number, z: number) {
+        super(x, y);
+        this.z = z;
+    }
+    add(point: Point3D) {
+        var point2D = super.add(point);
+        return new Point3D(point2D.x, point2D.y, this.z + point.z);
+    }
+}
+```
+
+上面示例中，实例属性`z`是`Point3D`新增的属性，所以需要给出类型注释。实例属性`x`和`y`是继承的属性，不用重复给出类型注释了。
 
 ## extends 
 
