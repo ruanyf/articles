@@ -270,11 +270,11 @@ class MyClass {
 
 上面示例中，属性索引没有给出方法的类型，导致`get()`方法报错。
 
-## 实现 interface 接口
+## 类的 interface 接口
 
 ### implements 关键字
 
-属性和方法的类型，除了在类的内部声明，还可以在类的外部，使用 type 或 interface 命令声明。然后，类使用 implements 关键字，套用这个外部类型声明。
+interface 接口或 type 别名，可以用对象的形式，为 class 指定一组检查条件。然后，类使用 implements 关键字，表示当前类能够通过这些外部类型条件。
 
 ```typescript
 interface Country {
@@ -293,9 +293,58 @@ class MyCountry implements Country {
 }
 ```
 
-上面示例中，`interface`或`type`都可以定义一个对象类型。类`MyCountry`使用`implements`关键字，表示该类的实例对象使用这个外部类型。
+上面示例中，`interface`或`type`都可以定义一个对象类型。类`MyCountry`使用`implements`关键字，表示该类的实例对象满足这个外部类型。
 
-类的内部可以定义外部类型没有声明的方法和属性。
+interface 只是指定检查条件，如果不满足这些条件就会报错。它并不能代替 class 自身的类型声明。
+
+```typescript
+interface A {
+  get(name:string): boolean;
+}
+ 
+class B implements A {
+  get(s) { // s 的类型是 any
+    return true;
+  }
+}
+```
+
+上面示例中，类`B`实现了接口`A`，但是后者并不能代替`B`的类型声明。因此，`B`的`get()`方法的参数`s`的类型是`any`，而不是`string`。`B`类依然需要声明参数`s`的类型。
+
+```typescript
+class B implements A {
+  get(s:string) {
+    return true;
+  }
+}
+```
+
+下面是另一个例子。
+
+```typescript
+interface A {
+  x: number;
+  y?: number;
+}
+
+class B implements A {
+  x = 0;
+}
+
+const b = new B();
+b.y = 10; // 报错
+```
+
+上面示例中，接口`A`有一个可选属性`y`，类`B`没有声明这个属性，所以可以通过类型检查。但是，如果给`B`的实例对象的属性`y`赋值，就会报错。所以，`B`类还是需要声明可选属性`y`。
+
+```typescript
+class B implements A {
+  x = 0;
+  y?: number;
+}
+```
+
+同理，类可以定义接口没有声明的方法和属性。
 
 ```typescript
 interface Point {
@@ -310,20 +359,9 @@ class MyPoint implements Point {
 }
 ```
 
-上面示例中，`MyPoint`类实现了`Point`接口，但是内部还定义了一个额外的属性`z`，这是允许的。
+上面示例中，`MyPoint`类实现了`Point`接口，但是内部还定义了一个额外的属性`z`，这是允许的，表示除了满足接口给出的条件，类还有额外的条件。
 
-但是如果相反，`MyPoint`类缺少`Point`接口里面的属性或方法，就会报错。
-
-```typescript
-// 报错
-class MyPoint implements Point {
-  x: number = 1;
-}
-```
-
-上面示例中，`MyPoint`类少了`Point`接口里面的属性`y`，就会报错。
-
-`implements`关键字后面，不仅可以是接口，也可以是一个类。这时，后面的类将被当作接口。
+`implements`关键字后面，不仅可以是接口，也可以是另一个类。这时，后面的类将被当作接口。
 
 ```typescript
 class Car {
@@ -333,7 +371,7 @@ class Car {
 
 class MyCar implements Car {
   id = 2; // 不可省略
-  move() {};   // 不可省略
+  move():void {};   // 不可省略
 }
 ```
 
@@ -373,7 +411,7 @@ class SecretCar extends Car implements Flyable, Swimmable {
 }
 ```
 
-上面示例中，`Car`类实现了`MotorVehicle`，而`SecretCar`类继承了`Car`类，然后再实现`Flyable`和`Swimmable`两个接口，相当于它同时实现了三个接口。
+上面示例中，`Car`类实现了`MotorVehicle`，而`SecretCar`类继承了`Car`类，然后再实现`Flyable`和`Swimmable`两个接口，相当于`SecretCar`类同时实现了三个接口。
 
 第二种方法是接口的继承。
 
