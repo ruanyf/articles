@@ -688,13 +688,179 @@ obj instanceof Person // false
 
 上面示例中，运算符`instanceof`确认变量`obj`不是 Person 的实例，但是两者的类型是相同的。
 
-## 访问修饰符
+空类不包含任何成员，任何其他类都可以看作与空类结构相同。因此，凡是类型为空类的地方，所有类（包括对象）都可以使用。
 
-TypeScript 提供了三个访问修饰符（access modifiers），控制类的成员的可访问性：`public`、`private`和`protected`。
+```typescript
+class Empty {}
+ 
+function fn(x:Empty) {
+  // ...
+}
+
+fn({});
+fn(window);
+fn(fn);
+```
+
+上面示例中，函数`fn()`的参数是一个空类，这意味着任何对象都可以用作`fn()`的参数。
+
+## 类的继承
+
+类（这里又称“子类”）可以使用 extends 关键字继承另一个类（这里又称“基类”）的所有属性和方法。
+
+```typescript
+class Base {
+  greet() {
+    console.log('Hello, world!');
+  }
+}
+ 
+class Derived extends Base {
+}
+
+const d = new Derived();
+d.greet() // "Hello, world!"
+```
+
+上面示例中，子类`Derived`继承了基类`Base`，因此就拥有了`greet()`方法，不需要再次在类的内部再次给出类型签名了。
+
+根据结构类型原则，子类也可以用于类型为基类的场合。
+
+```typescript
+const b:Base = d;
+b.greet()
+```
+
+上面示例中，`b`的类型是基类，但是可以赋值为子类的实例。
+
+子类可以覆盖基类的同名方法。
+
+```typescript
+class Derived extends Base {
+  greet(name?: string) {
+    if (name === undefined) {
+      super.greet();
+    } else {
+      console.log(`Hello, ${name}`);
+    }
+  }
+}
+```
+
+上面示例中，子类`Derived`定义了一个方法`greet()`，覆盖了基类的同名方法。
+
+其中，参数`name`省略时，就调用基类的`greet()`方法，这里可以写成`super.greet()`。使用`super`关键字指代基类是常见做法。
+
+但是，子类的同名方法不能与基类的类型签名相冲突。
+
+```typescript
+class Base {
+  greet() {
+    console.log('Hello, world!');
+  }
+}
+ 
+class Derived extends Base {
+  // 报错
+  greet(name:string) {
+    console.log(`Hello, ${name}`);
+  }
+}
+```
+
+上面示例中，子类`Derived`的`greet()`强制需要一个`name`参数，跟基类`Base`不兼容，因此就报错了。
+
+如果基类包括保护成员（`protected`修饰符），子类可以将该成员的可访问性设置为公开（`public`修饰符），也可以保持保护成员不变，但是不能改用私有成员（`private`修饰符）。
+
+```typescript
+class Base {
+  protected x: string = '';
+  protected y: string = '';
+  protected z: string = '';
+}
+
+class Derived extends Base {
+  // 正确
+  public x:string = '';
+
+  // 正确
+  protected y:string = '';
+
+  // 报错
+  private z: string = '';
+}
+```
+
+上面示例中，子类`Derived`将基类的受保护成员改成私有成员，就会报错。
+
+对于那些只设置了类型、没有初值的顶层属性，有一个细节需要注意。
+
+```typescript
+interface Animal {
+  animalStuff: any;
+}
+
+interface Dog extends Animal {
+  dogStuff: any;
+}
+
+class AnimalHouse {
+  resident: Animal;
+
+  constructor(animal:Animal) {
+    this.resident = animal;
+  }
+}
+
+class DogHouse extends AnimalHouse {
+  resident: Dog;
+
+  constructor(dog:Dog) {
+    super(dog);
+  }
+}
+```
+
+上面示例中，类`DogHouse`的顶层成员`resident`只设置了类型（`Dog`），没有设置初值。这段代码在不同的编译设置下，编译结果不一样。
+
+如果编译设置的`target`设成大于等于`ES2022`，或者`useDefineForClassFields`设成`true`，那么下面代码的执行结果是不一样的。
+
+```typescript
+const dog = {
+  animalStuff: 'animal',
+  dogStuff: 'dog'
+};
+
+const dogHouse = new DogHouse(dog);
+
+console.log(dogHouse.resident) // undefined
+```
+
+上面示例中，`DogHouse`实例的属性`resident`输出的是`undefined`，而不是预料的`dog`。原因在于 ES2022 标准的 Class Fields 部分，与早期的 TypeScript 实现不一致，导致子类的那些只设置类型、没有设置初值的顶层成员在基类中被赋值后，会在子类被重置为`undefined`，详细的解释参见《tsconfig.json》一章，以及官方 3.7 版本的[发布说明](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#the-usedefineforclassfields-flag-and-the-declare-property-modifier)。
+
+解决方法就是使用`declare`命令，去声明顶层成员的类型，告诉 TypeScript 这些成员的赋值由基类实现。
+
+```typescript
+class DogHouse extends AnimalHouse {
+  declare resident: Dog;
+
+  constructor(dog:Dog) {
+    super(dog);
+  }
+}
+```
+
+上面示例中，`resident`属性的类型声明前面用了`declare`命令，这样就能确保在编译目标大于等于`ES2022`时（或者打开`useDefineForClassFields`时），代码行为正确。
+
+## 可访问性修饰符
+
+类的内部成员的外部可访问性，由三个可访问性修饰符（access modifiers）控制：`public`、`private`和`protected`。
+
+这三个修饰符的位置，都写在属性或方法的最前面。
 
 ### public
 
-`public`是公开属性，实例可以获取的属性。
+`public`修饰符表示这是公开成员，外部可以自由访问。
 
 ```typescript
 class Greeter {
@@ -702,308 +868,252 @@ class Greeter {
     console.log("hi!");
   }
 }
+
 const g = new Greeter();
 g.greet();
 ```
 
-`public`是属性的默认状态，可以省略不写。
+上面示例中，`greet()`方法前面的`public`修饰符，表示该方法可以在类的外部调用，即外部实例可以调用。
 
-公开属性有一种简便写法，就是用在构造函数的属性前面。
+`public`修饰符是默认修饰符，如果省略不写，实际上就带有该修饰符。因此，类的属性和方法默认都是外部可访问的。
 
-```typescript
-clss Foo {
-  bar: string;
-}
-
-// 等同于
-class Foo {
-  constructor(public bar:string) {
-    // ...
-  }
-}
-```
-
-上面示例中，`Foo`类的内部声明了一个属性`bar`，相当于构造函数的`bar`参数用`public`修饰，两种写法是等价的。`public`就相当于表明，构造函数的这个参数是可以公开访问的。
+正常情况下，除非为了醒目和代码可读性，`public`都是省略不写的。
 
 ### private
 
-`private`是私有属性，只能用在定义它的类内部，实例和子类都不能读取私有属性。
+`private`修饰符表示私有成员，只能用在当前类的内部，类的实例和子类都不能使用该成员。
 
 ```typescript
-class Base {
+class A {
   private x:number = 0;
 }
-const b = new Base();
-console.log(b.x); // 报错
 
-class Derived extends Base {
+const a = new A();
+a.x // 报错
+
+class B extends A {
   showX() {
-    // 报错
-    console.log(this.x); 
+    console.log(this.x); // 报错
   }
 }
 ```
 
-这也意味着，子类不能定义跟父类 private 属性同名的属性。
+上面示例中，属性`x`前面有`private`修饰符，表示这是私有成员。因此，实例对象和子类使用该成员，都会报错。
+
+注意，子类不能定义父类私有成员的同名成员。
 
 ```typescript
-class Base {
+class A {
   private x = 0;
 }
-class Derived extends Base {
-  // 报错
-  x = 1;
+
+class B extends A {
+  x = 1; // 报错
 }
 ```
 
-注意，private 并不是真正意义的私有属性。一方面，编译成 JavaScript 后，private 关键字就被剥离了，该属性可以正常在实例上访问。另一方面，就算是在 TypeScript 代码里面，使用方括号写法（`[]`），就能从实例上拿到该属性。
+上面示例中，`A`类有一个私有属性`x`，子类`B`就不能定义自己的属性`x`了。
+
+如果在类的内部，当前类的实例可以获取私有成员。
 
 ```typescript
-class MySafe {
-  private secretKey:number = 12345;
-}
+class A {
+  private x = 10;
  
-const s = new MySafe();
-console.log(s["secretKey"]); // 12345
+  f(obj:A) {
+    console.log(obj.x);
+  }
+}
+
+const a = new A();
+a.f(a) // 10
 ```
 
-如果想获得真正意义的私有属性，建议使用 ES6 的私有属性写法`#propName`。
+上面示例中，在类`A`内部，`A`的实例对象可以获取私有成员`x`。
 
-```javascript
-class MySafe {
-  #secretKey = 12345;
-}
- 
-const s = new MySafe();
-console.log(s["secretKey"]); // undefined
-```
-
-### 私有构造函数
-
-构造函数也可以是私有的，这就防止了直接用`new`命令生成类的实例。
-
-通常，这时会有一个静态方法，充当工厂函数，要求所有实例都通过该方法生成。
+严格地说，`private`定义的私有成员，并不是真正意义的私有成员。一方面，编译成 JavaScript 后，`private`关键字就被剥离了，这时外部访问该成员就不会报错。另一方面，由于前一个原因，TypeScript 对于访问`private`成员没有严格禁止，使用方括号写法（`[]`）或者`in`运算符，实例对象就能访问该成员。
 
 ```typescript
-class DataContainer {
-  #data: string;
-  static async create() {
-    const data = await Promise.resolve('downloaded'); // (A)
-    return new this(data);
-  }
-  private constructor(data: string) {
-    this.#data = data;
-  }
-  getData() {
-    return 'DATA: '+this.#data;
-  }
+class A {
+  private x = 1;
 }
-DataContainer.create()
-  .then(dc => assert.equal(
-    dc.getData(), 'DATA: downloaded'));
+ 
+const a = new A();
+a['x'] // 1
+
+if ('x' in a) { // 正确
+  // ...
+}
 ```
 
-上面示例中，所有实例都通过静态方法`DataContainer.create()`生成。
+上面示例中，`A`类的属性`x`是私有属性，但是实例使用方括号，就可以读取这个属性，或者使用`in`运算符检查这个属性是否存在，都可以正确执行。
 
-构造函数上也可以使用可访问性修饰符。它描述的是在何处允许使用该类来创建实例对象。在默认情况下，构造函数是公有的。如果将构造函数设置成私有的，则只允许在类的内部创建该类的对象。
+由于`private`存在这些问题，加上它是 ES6 标准发布前出台的，而 ES6 引入了自己的私有成员写法`#propName`。因此建议不使用`private`，改用 ES6 的写法，获得真正意义的私有成员。
+
+```typescript
+class A {
+  #x = 1;
+}
+ 
+const a = new A();
+a['x'] // 报错
+```
+
+上面示例中，采用了 ES6 的私有成员写法（属性名前加`#`），TypeScript 就正确识别了实例对象没有属性`x`，从而报错。
+
+构造方法也可以是私有的，这就直接防止了使用`new`命令生成实例对象，只能在类的内部创建实例对象。
+
+这时一般会有一个静态方法，充当工厂函数，强制所有实例都通过该方法生成。
 
 ```typescript
 class Singleton {
-    private static instance?: Singleton;
+  private static instance?: Singleton;
  
-     private constructor() {}
+  private constructor() {}
  
-     static getInstance() {
-         if (!Singleton.instance) {
-             // 允许访问
-             Singleton.instance = new Singleton();
-         }
-         return Singleton.instance;
+  static getInstance() {
+    if (!Singleton.instance) {
+      Singleton.instance = new Singleton();
+    }
+    return Singleton.instance;
   }
 }
- 
-new Singleton(); // 编译错误
+
+const s = Singleton.getInstance();
 ```
+
+上面示例使用私有构造方法，实现了单例模式。想要获得 Singleton 的实例，不能使用`new`命令，只能使用`getInstance()`方法。
 
 ### protected
 
-`protected`也是私有属性，实例无法读取该属性，但是子类可以读取。
+`protected`修饰符表示保护成员，实例无法读取该属性，但是子类可以读取。
 
 ```typescript
-class Greeter {
-  public greet() {
-    console.log("Hello, " + this.getName());
-  }
-  protected getName() {
-    return "hi";
+class A {
+  protected x = 1;
+}
+
+class B extends A {
+  getX() {
+    return this.x;
   }
 }
- 
-class SpecialGreeter extends Greeter {
-  public howdy() {
-    // OK to access protected member here
-    console.log("Howdy, " + this.getName());
-  }
-}
-const g = new SpecialGreeter();
-g.greet(); // OK
-g.getName(); // 报错
+
+const a = new A();
+const b = new B();
+
+a.x // 报错
+b.getX() // 1
 ```
 
-注意，父类`protected`属性，子类可以将其对外公开。
+上面示例中，类`A`的属性`x`是保护成员，直接从实例读取该属性（`a.x`）会报错，但是子类`B`内部可以读取该属性。
+
+子类不仅可以拿到父类的保护成员，还可以定义同名成员。
 
 ```typescript
-class Base {
-  protected m = 10;
+class A {
+  protected x = 1;
 }
-class Derived extends Base {
-  // No modifier, so default is 'public'
-  m = 15;
-}
-const d = new Derived();
-console.log(d.m); // OK
-```
 
-上面示例中，子类 Derived 的属性 m 前面没有修饰符，所以等同于这里的修饰符是`public`，所以外界可以读取这个属性。
-
-这提醒我们，如果子类继续保持父类的私密属性，那么属性名前面不要忘记加上`protected`。
-
-protected 属性还意味着，不能从父类的实例访问该属性。
-
-```typescript
-class Base {
-  protected x: number = 1;
-}
-class Derived1 extends Base {
-  protected x: number = 5;
-}
-class Derived2 extends Base {
-  f1(other: Derived2) {
-    other.x = 10;
-  }
-  f2(other: Base) {
-    other.x = 10; // 报错
-  }
+class B extends A {
+  x = 2; 
 }
 ```
 
-不过，父类内部访问该属性是没有问题的。
+上面示例中，子类`B`定义了父类`A`的同名成员`x`，并且父类的`x`是保护成员，子类将其改成了公开成员。`B`类的`x`属性前面没有修饰符，等同于修饰符是`public`，外界可以读取这个属性。
+
+在类的外部，实例对象不能读取保护成员，但是在类的内部可以。
 
 ```typescript
-class FooBase {
-    public x: number;
-    private y: number;
-    protected z: number;
+class A {
+  protected x = 1;
+
+  f(obj:A) {
+    console.log(obj.x);
+  }
 }
 
-var foo = new FooBase();
-foo.x; // okay
-foo.y; // ERROR : private
-foo.z; // ERROR : protected
+const a = new A();
 
-class FooChild extends FooBase {
-    constructor() {
-      super();
-        this.x; // okay
-        this.y; // ERROR: private
-        this.z; // okay
+a.x // 报错
+a.f(a) // 1
+```
+
+上面示例中，属性`x`是类`A`的保护成员，在类的外部，实例对象`a`拿不到这个属性。但是，实例对象`a`传入类`A`的内部，就可以从`a`拿到`x`。
+
+### 实例属性的简写形式
+
+实际开发中，很多实例属性的值，是通过构造方法传入的。
+
+```typescript
+class Point {
+  x:number;
+  y:number;
+
+  constructor(x:number, y:number) {
+    this.x = x;
+    this.y = y;
+  }
+}
+```
+
+上面实例中，属性`x`和`y`的值是通过构造方法的参数传入的。
+
+这样的写法等于对同一个属性要声明两次类型，一次在类的头部，另一次在构造方法的参数里面。这有些累赘，TypeScript 就提供了一种简写形式。
+
+```typescript
+class Point {
+  constructor(
+    public x:number,
+    public y:number
+  ) {}
+}
+
+const p = new Point(10, 10);
+p.x // 10
+p.y // 10
+```
+
+上面示例中，构造方法的参数`x`前面有`public`修饰符，这时 TypeScript 就会自动声明一个公开属性`x`，不必在构造方法里面写任何代码，同时还会设置`x`的值为构造方法的参数值。注意，这里的`public`不能省略。
+
+除了`public`修饰符，构造方法的参数名只要有`private`、`protected`、`readonly`修饰符，都会自动声明对应修饰符的实例属性。
+
+```typescript
+class A {
+  constructor(
+    public a: number,
+    protected b: number,
+    private c: number,
+    readonly d: number
+  ) {}
+}
+
+// 编译结果
+class A {
+    a;
+    b;
+    c;
+    d;
+    constructor(a, b, c, d) {
+      this.a = a;
+      this.b = b;
+      this.c = c;
+      this.d = d;
     }
 }
 ```
 
-上面示例中，实例只能访问属性`x`，不能访问属性`y`和`z`。子类可以访问属性`x`和`z`，但不能访问属性`y`。
+上面示例中，从编译结果可以看到，构造方法的`a`、`b`、`c`、`d`会生成对应的实例属性。
 
-如果不注明，默认的访问修饰符是`public`。
-
-有些实例属性，是由构造函数的参数传入的。这样等于要给出两次类型注释，一次在类的头部，另一次在构造函数的参数里面，这有一点累赘。所以，TypeScript 提供了一种简写形式。
-
-```typescript
-class Foo {
-    public x: number;
-    constructor(x:number) {
-        this.x = x;
-    }
-}
-
-// 等同于
-class Foo {
-    constructor(public x:number) {
-    }
-}
-```
-
-上面示例的简写形式，自动将`public x`声明为实例属性。
-
-### 参数属性
-
-TypeScript 提供了一种简洁语法，将构造函数的形式参数声明为类的成员变量，它叫作参数属性。
-
-为形式参数添加任何一个可访问性修饰符或者readonly修饰符，该形式参数就成了类的属性。
+`readonly`还可以与其他三个可访问性修饰符，一起使用。
 
 ```typescript
 class A {
-  constructor(public x: number) {}
-}
- 
-const a = new A(0);
-a.x; // 值为0
-```
-
-上面示例中，此例在类A的构造函数中，参数x是一个参数成员，因此会在类A中声明一个public的成员变量x。第5行，使用实际参数0来实例化类A时会自动将成员变量x的值初始化为0，
-
-```typescript
-class A {
-02     constructor(
-03         public x: number,
-04         protected y: number,
-05         private z: number
-06     ) {}
-07 }
-08 
-09 class B {
-10     constructor(readonly x: number) {}
-11 }
-```
-
-readonly 可以与可访问性修饰符，一起使用。
-
-```
-class A {
   constructor(
-         public readonly x: number,
-         protected readonly y: number,
-         private readonly z: number
-   ) {}
-}
-```
-
-
-如果属性是构造函数的参数，那么声明属性有一种简便写法，前面需要加上 public、private、protected。
-
-```typescript
-class Params {
-  constructor(
-    public readonly x: number,
-    protected y: number,
-    private z: number
-  ) {
-    // No body necessary
-  }
-}
-
-// 等同于
-class Params {
-  public readonly x: number,
-  protected y: number,
-  private z: number
-
-  constructor(
-    public readonly x: number,
-    protected y: number,
-    private z: number
-  ) {
-    // No body necessary
-  }
+    public readonly x:number,
+    protected readonly y:number,
+    private readonly z:number
+  ) {}
 }
 ```
 
@@ -1204,162 +1314,6 @@ class Entry extends Printable {
     out.add('\n');
   }
 }
-```
-
-## 继承
-
-子类可以使用 extends 关键字继承基类，并且可以覆盖基类里面的同名方法。
-
-```typescript
-class Base {
-  greet() {
-    console.log("Hello, world!");
-  }
-}
- 
-class Derived extends Base {
-  greet(name?: string) {
-    if (name === undefined) {
-      super.greet();
-    } else {
-      console.log(`Hello, ${name.toUpperCase()}`);
-    }
-  }
-}
-```
-
-但是，子类的同名方法不能改变类型签名。
-
-```typescript
-class Base {
-  greet() {
-    console.log("Hello, world!");
-  }
-}
- 
-class Derived extends Base {
-  // 报错
-  greet(name: string) {
-    console.log(`Hello, ${name.toUpperCase()}`);
-  }
-}
-```
-
-上面示例会报错，因为派生类是基类的子类型，重写基类的成员时需要保证子类型兼容性。
-
-如果 A 类包含 B 类的所有属性，TypeScript 会认为它们的类型是相同的。
-
-```typescript
-class Point1 {
-  x = 0;
-  y = 0;
-}
- 
-class Point2 {
-  x = 0;
-  y = 0;
-}
- 
-// OK
-const p: Point1 = new Point2();
-```
-
-```typescript
-class Person {
-  name: string;
-  age: number;
-}
- 
-class Employee {
-  name: string;
-  age: number;
-  salary: number;
-}
- 
-// OK
-const p: Person = new Employee();
-```
-
-空类不包含任何成员，以空类为类型参数的地方，所有类都可以使用。
-
-```typescript
-class Empty {}
- 
-function fn(x: Empty) {
-  // can't do anything with 'x', so I won't
-}
- 
-// All OK!
-fn(window);
-fn({});
-fn(fn);
-```
-
-若派生类重写了基类中的受保护成员，则可以将该成员的可访问性设置为受保护的或公有的。也就是说，在派生类中只允许放宽基类成员的可访问性。
-
-```typescript
-class Base {
-    protected x: string = '';
-    protected y: string = '';
-    protected z: string = '';
-}
-
-class Derived extends Base {
-    // 正确
-    public x: string = '';
-
-    // 正确
-    protected y: string = '';
-
-    // 错误！派生类不能够将基类的受保护成员重写为更严格的可访问性
-    private z: string = '';
-}
-```
-
-虽然一个类只允许继承一个基类，但是可以实现一个或多个接口。在定义类时，使用implements语句能够声明类所实现的接口。当实现多个接口时，接口名之间使用逗号“,”分隔。
-
-```typescript
-interface A {}
-interface B {}
- 
-class C implements A, B {}
-```
-
-继承的时候，只需要给出新增属性的类型注释，不需要给出继承属性的类型注释。
-
-```typescript
-class Point3D extends Point {
-    z: number;
-    constructor(x: number, y: number, z: number) {
-        super(x, y);
-        this.z = z;
-    }
-    add(point: Point3D) {
-        var point2D = super.add(point);
-        return new Point3D(point2D.x, point2D.y, this.z + point.z);
-    }
-}
-```
-
-上面示例中，实例属性`z`是`Point3D`新增的属性，所以需要给出类型注释。实例属性`x`和`y`是继承的属性，不用重复给出类型注释了。
-
-## extends 
-
-`extends`本身也是一个运算符，用来确定两个类型有无继承关系。
-
-```typescript
-TypeC = TypeA extends TypeB ? TrueExpression : FalseExpression
-```
-
-如果`TypeA`继承`TypeB`，那么返回`TrueExpression`分配给`TypeC`，否则得到类型`FalseExpression`分配给`TypeC`。
-
-`extends`可以当作类型的相等运算符。
-
-```typescript
-type Username = 'foo'
-
-// true
-type Matched = Username extends 'foo' ? true : false
 ```
 
 ## 静态属性
