@@ -709,34 +709,34 @@ fn(fn);
 类（这里又称“子类”）可以使用 extends 关键字继承另一个类（这里又称“基类”）的所有属性和方法。
 
 ```typescript
-class Base {
+class A {
   greet() {
     console.log('Hello, world!');
   }
 }
  
-class Derived extends Base {
+class B extends A {
 }
 
-const d = new Derived();
-d.greet() // "Hello, world!"
+const b = new B();
+b.greet() // "Hello, world!"
 ```
 
-上面示例中，子类`Derived`继承了基类`Base`，因此就拥有了`greet()`方法，不需要再次在类的内部再次给出类型签名了。
+上面示例中，子类`B`继承了基类`A`，因此就拥有了`greet()`方法，不需要再次在类的内部定义这个方法了。
 
 根据结构类型原则，子类也可以用于类型为基类的场合。
 
 ```typescript
-const b:Base = d;
-b.greet()
+const a:A = b;
+a.greet()
 ```
 
-上面示例中，`b`的类型是基类，但是可以赋值为子类的实例。
+上面示例中，变量`a`的类型是基类，但是可以赋值为子类的实例。
 
 子类可以覆盖基类的同名方法。
 
 ```typescript
-class Derived extends Base {
+class B extends A {
   greet(name?: string) {
     if (name === undefined) {
       super.greet();
@@ -747,20 +747,20 @@ class Derived extends Base {
 }
 ```
 
-上面示例中，子类`Derived`定义了一个方法`greet()`，覆盖了基类的同名方法。
+上面示例中，子类`B`定义了一个方法`greet()`，覆盖了基类`A`的同名方法。
 
-其中，参数`name`省略时，就调用基类的`greet()`方法，这里可以写成`super.greet()`。使用`super`关键字指代基类是常见做法。
+其中，参数`name`省略时，就调用基类`A`的`greet()`方法，这里可以写成`super.greet()`。使用`super`关键字指代基类是常见做法。
 
 但是，子类的同名方法不能与基类的类型签名相冲突。
 
 ```typescript
-class Base {
+class A {
   greet() {
     console.log('Hello, world!');
   }
 }
  
-class Derived extends Base {
+class B extends A {
   // 报错
   greet(name:string) {
     console.log(`Hello, ${name}`);
@@ -768,18 +768,18 @@ class Derived extends Base {
 }
 ```
 
-上面示例中，子类`Derived`的`greet()`强制需要一个`name`参数，跟基类`Base`不兼容，因此就报错了。
+上面示例中，子类`B`的`greet()`需要一个`name`参数，跟基类`A`不兼容，因此就报错了。
 
-如果基类包括保护成员（`protected`修饰符），子类可以将该成员的可访问性设置为公开（`public`修饰符），也可以保持保护成员不变，但是不能改用私有成员（`private`修饰符）。
+如果基类包括保护成员（`protected`修饰符），子类可以将该成员的可访问性设置为公开（`public`修饰符），也可以保持保护成员不变，但是不能改用私有成员（`private`修饰符），详见后文。
 
 ```typescript
-class Base {
+class A {
   protected x: string = '';
   protected y: string = '';
   protected z: string = '';
 }
 
-class Derived extends Base {
+class B extends A {
   // 正确
   public x:string = '';
 
@@ -791,7 +791,7 @@ class Derived extends Base {
 }
 ```
 
-上面示例中，子类`Derived`将基类的受保护成员改成私有成员，就会报错。
+上面示例中，子类`B`将基类`A`的受保护成员改成私有成员，就会报错。
 
 对于那些只设置了类型、没有初值的顶层属性，有一个细节需要注意。
 
@@ -1117,33 +1117,93 @@ class A {
 }
 ```
 
-## 方法重载
+## 静态成员
 
-如果存在方法重载（method overloading），方法的每种使用形式都必须给出单独的类型定义。
+类的内部可以使用`staic`关键字，定义静态成员。
+
+静态成员是只能通过类本身使用的成员，不能通过实例对象使用。
 
 ```typescript
-class ProductService {
-  getProducts(): void;
-  getProducts(id: number): void;
-  getProducts(id?: number) {
-    if (typeof id === 'number') {
-     console.log(`Getting the product info for ${id}`);
-    } else {
-      console.log(`Getting all products`);
-    }
+class MyClass {
+  static x = 0;
+  static printX() {
+    console.log(MyClass.x);
   }
 }
 
-const prodService = new ProductService();
-prodService.getProducts(123);
-prodService.getProducts();
+MyClass.x // 0
+MyClass.printX() // 0
 ```
 
-上面示例中，方法`getProducts()`的具体实现之中，参数`id`后面必须带有问号`?`，否则会报错。因为它有两种调用形式，参数`id`是可以省略的。
+上面示例中，`x`是静态属性，`printX()`是静态方法。它们都必须通过`MyClass`获取，而不能通过实例对象调用。
 
-方法`getProducts()`前面的两行类型定义，其实是可以省略的，所以大多数情况下，方法重载可以不单独写类型定义。
+`static`关键字前面可以使用 public、private、protected 修饰符。
 
-但是，对于复杂的方法重载，可以考虑写上每一种调用形式的类型定义，这样方便阅读代码，另一方面对于 IDE 的 API 提示也很有帮助。
+```typescript
+class MyClass {
+  private static x = 0;
+}
+
+MyClass.x // 报错
+```
+
+上面示例中，静态属性`x`前面有`private`修饰符，表示只能在`MyClass`内部使用，如果在外部调用这个属性就会报错。
+
+静态私有属性也可以用 ES6 语法的`#`前缀表示，上面示例可以改写如下。
+
+```typescript
+class MyClass {
+  static #x = 0;
+}
+```
+
+`public`和`protected`静态成员可以被继承。
+
+```typescript
+class A {
+  public static x = 1;
+  protected static y = 1;
+}
+
+class B extends A {
+  static getY() {
+    return B.y;
+  }
+}
+
+B.x // 1
+B.getY() // 1
+```
+
+上面示例中，类`A`的静态属性`x`和`y`都被`B`继承，公开成员`x`可以在`B`的外部获取，保护成员`y`只能在`B`的内部获取。
+
+## 泛型类
+
+类也可以写成泛型，使用类型参数。
+
+```typescript
+class Box<Type> {
+  contents: Type;
+
+  constructor(value:Type) {
+    this.contents = value;
+  }
+}
+ 
+const b:Box<string> = new Box('hello!');
+```
+
+上面示例中，类`Box`有类型参数`Type`，因此属于泛型类。新建实例时，变量的类型声明需要带有类型参数的值，不过本例的`Box<string>`可以省略不写，因为可以从等号右边推断得到。
+
+注意，静态成员不能使用泛型的类型参数。
+
+```typescript
+class Box<Type> {
+  static defaultContents: Type; // 报错
+}
+```
+
+上面示例中，静态属性`defaultContents`的类型写成类型参数`Type`会报错。因为这意味着调用时必须给出类型参数`Box<string>.defaultContents`，并且类型参数发生变化，这个属性也会跟着变，这并不是好的做法。
 
 ## abstract 类
 
@@ -1316,71 +1376,41 @@ class Entry extends Printable {
 }
 ```
 
-## 静态属性
-
-类的内部可以使用`staic`关键字，定义静态属性。
-
-类的静态属性也可以使用 public、private、protected 修饰符。
-
-```typescript
-class MyClass {
-  private static x = 0;
-}
-console.log(MyClass.x); // 报错
-```
-
-类的public静态成员和protected静态成员也可以被继承。
-
-```typescript
-class Base {
-    public static x: string = '';
-    protected static y: string = '';
-}
-
-class Derived extends Base {
-    b() {
-        // 继承了基类的静态成员 x
-        Derived.x;
-
-        // 继承了基类的静态成员 y
-        Derived.y;
-    }
-}
-```
-
-## 泛型类
-
-类也可以使用泛型进行类型注释。
-
-```typescript
-class Box<Type> {
-  contents: Type;
-  constructor(value: Type) {
-    this.contents = value;
-  }
-}
- 
-const b = new Box("hello!");
-```
-
-注意，静态方法不能使用泛型变量。
-
-```typescript
-class Box<Type> {
-  static defaultValue: Type; // 报错
-```
-
-因为这意味着静态属性的类型，与实例类型有关，这样将静态属性与实例相关联，并不是很好的做法。
-
 ## this 问题
 
-TypeScript提供了一个“--noImplicitThis”编译选项。当启用了该编译选项时，如果this值默认获得了any类型，那么将产生编译错误。
+类的方法经常用到`this`关键字，它表示该方法当前所在的对象。
 
-TypeScript支持在函数形式参数列表中定义一个特殊的this参数来描述该函数中this值的类型。如果函数的第一个参数是 this，TypeScript 编译时会去除这个参数。
+```typescript
+class A {
+  name = 'A';
+
+  getName() {
+    return this.name;
+  }
+}
+
+const a = new A();
+a.getName() // 'A'
+
+const b = {
+  name: 'b',
+  getName: a.getName
+};
+b.getName() // 'b'
+```
+
+上面示例中，变量`a`和`b`的`getName()`是同一个方法，但是执行结果不一样，原因就是它们内部的`this`指向不一样的对象。
+
+如果`getName()`在变量`a`上运行，`this`指向`a`；如果在`b`上运行，`this`指向`b`。
+
+有些场合需要给出`this`类型，但是 JavaScript 函数通常不带有`this`参数，这时 TypeScript 允许函数增加一个名为`this`的参数，放在参数列表的第一位，用来描述函数内部的`this`关键字的类型。
 
 ```typescript
 // 编译前
-function fn(this: SomeType, x: number) {
+function fn(
+  this: SomeType,
+  x: number
+) {
   /* ... */
 }
 
@@ -1390,64 +1420,103 @@ function fn(x) {
 }
 ```
 
-第一个`this`参数，可以声明函数内部`this`的类型。
+上面示例中，函数`fn()`的第一个参数是`this`，用来声明函数内部的`this`的类型。编译时，TypeScript 一旦发现函数的第一个参数名为`this`，则会去除这个参数，即编译结果不会带有该参数。
 
 ```typescript
-function foo(this: { name: string }) {
-  this.name = 'Patrick';
+class A {
+  name = 'A';
+
+  getName(this: A) {
+    return this.name;
+  }
+}
+
+const a = new A();
+const b = a.getName;
+
+b() // 报错
+```
+
+上面示例中，类`A`的`getName()`添加了`this`参数，如果直接调用这个方法，`this`的类型就会跟声明的类型不一致，从而报错。
+
+`this`参数的类型可以声明为各种对象。
+
+```typescript
+function foo(
+  this: { name: string }
+) {
+  this.name = 'Jack';
   this.name = 0; // 报错
 }
 
 foo.call({ name: 123 }); // 报错
 ```
 
-这主要是为了编译检查时，确保类的内部方法正确引用了 this。这个 this 是写给编译器看的，保证该方法只能在实例上调用，不能单独调用。
+上面示例中，参数`this`的类型是一个带有`name`属性的对象，不符合这个条件的`this`都会报错。
+
+TypeScript 提供了一个`noImplicitThis`编译选项。如果打开了这个设置项，如果`this`的值推断为`any`类型，就会报错。
 
 ```typescript
-class MyClass {
-  name = "MyClass";
-  getName(this: MyClass) {
-    return this.name;
-  }
-}
-const c = new MyClass();
-// OK
-c.getName();
+// noImplicitThis 打开
+
+class Rectangle {
+  constructor(
+    public width:number,
+    public height:number
+  ) {}
  
-// 报错
-const g = c.getName;
-console.log(g());
-```
-
-this 也是一个特殊类型，表示当前类，可以在类的非静态成员的类型注解中使用this类型。
-
-```typescript
-class Counter {
-  private count: number = 0;
-
-  public add(): this {
-     this.count++;
-      return this;
+  getAreaFunction() {
+    return function () {
+      return this.width * this.height; // 报错
+    };
   }
-  public subtract(): this {
-      this.count--;
-      return this;
-  }
-    public getResult(): number {
-      return this.count;
-    }
 }
 ```
 
-注意，this类型不允许应用于类的静态成员。
+上面示例中，`getAreaFunction()`方法返回一个函数，这个函数里面用到了`this`，但是这个`this`跟`Rectangle`这个类没关系，它的类型推断为`any`，所以就报错了。
+
+在类的内部，`this`本身也可以当作类型使用，表示当前类的实例对象。
+
+```typescript
+class Box {
+  contents:string = '';
+
+  set(value:string):this {
+    this.contents = value;
+    return this;
+  }
+}
+```
+
+上面示例中，`set()`方法的返回值类型就是`this`，表示当前的实例对象。
+
+注意，`this`类型不允许应用于静态成员。
 
 ```typescript
 class A {
-  static a: this;
-  //        ~~~~
-  //        编译错误！ 'this' 类型只能用于类的非静态成员
+  static a:this; // 报错
 }
 ```
+
+上面示例中，静态属性`a`的返回值类型是`this`，就报错了。原因是`this`类型表示实例对象，但是静态成员拿不到实例对象。
+
+有些方法返回一个布尔值，表示当前的`this`是否属于某种类型。这时，这些方法的返回值类型可以写成`this is Type`的形式，其中用到了`is`运算符。
+
+```typescript
+class FileSystemObject {
+  isFile(): this is FileRep {
+    return this instanceof FileRep;
+  }
+
+  isDirectory(): this is Directory {
+    return this instanceof Directory;
+  }
+
+  // ...
+}
+```
+
+上面示例中，两个方法的返回值类型都是布尔值，写成`this is Type`的形式，可以精确表示返回值。
 
 ## 类的兼容
 
