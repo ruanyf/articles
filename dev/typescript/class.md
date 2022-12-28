@@ -465,6 +465,28 @@ interface Swimmable {
 
 上面示例中，属性`foo`在两个接口里面的类型不同，如果同时实现这两个接口，就会报错。
 
+### 类与接口的合并
+
+TypeScript 不允许两个同名的类，但是如果一个类和一个接口同名，那么接口会被合并进类。
+
+```typescript
+class A {
+  x:number = 1;
+}
+
+interface A {
+  y:number;
+}
+
+let a = new A();
+a.y = 10;
+
+a.x // 1
+a.y // 10
+```
+
+上面示例中，类`A`与接口`A`同名，后者会被合并进前者的类型定义。
+
 ## Class 类型
 
 ### 实例类型
@@ -703,6 +725,55 @@ fn(fn);
 ```
 
 上面示例中，函数`fn()`的参数是一个空类，这意味着任何对象都可以用作`fn()`的参数。
+
+注意，确定两个类的兼容关系时，只检查实例成员，不考虑静态成员和构造方法。
+
+```typescript
+class Point {
+  x: number;
+  y: number;
+  static t: number;
+  constructor(x:number) {}
+}
+
+class Position {
+  x: number;
+  y: number;
+  z: number;
+  constructor(x:string) {}
+}
+
+const point:Point = new Position('');
+```
+
+上面示例中，`Point`与`Position`的静态属性和构造方法都不一样，但因为`Point`的实例成员与`Position`相同，所以`Position`兼容`Point`。
+
+如果类中存在私有成员（private）或保护成员（protected），那么确定兼容关系时，TypeScript 要求私有成员和保护成员来自同一个类，这意味着两个类需要存在继承关系。
+
+```typescript
+// 情况一
+class A {
+  private name = 'a';
+}
+
+class B extends A {  
+}
+
+const a:A = new B();
+
+// 情况二
+class A {
+  protected name = 'a';
+}
+
+class B extends A {
+  protected name = 'b';
+}
+
+const a:A = new B();
+```
+
+上面示例中，`A`和`B`都有私有成员（或保护成员）`name`，这时只有在`B`继承`A`的情况下，`B`才兼容`A`。
 
 ## 类的继承
 
@@ -1205,176 +1276,93 @@ class Box<Type> {
 
 上面示例中，静态属性`defaultContents`的类型写成类型参数`Type`会报错。因为这意味着调用时必须给出类型参数`Box<string>.defaultContents`，并且类型参数发生变化，这个属性也会跟着变，这并不是好的做法。
 
-## abstract 类
+## 抽象类，抽象成员
 
-TypeScript 允许在类定义的前面，加上关键字`abstract`，表示该类不能被实例化，只能当作其他类的模板。这种类就叫做“抽象类”（abastract class）。
+TypeScript 允许在类的定义前面，加上关键字`abstract`，表示该类不能被实例化，只能当作其他类的模板。这种类就叫做“抽象类”（abastract class）。
 
 ```typescript
-abstract class A {}
+abstract class A {
+  id = 1;
+}
 
 const a = new A(); // 报错
 ```
 
-抽象类的作用是作为基类使用，派生类可以继承抽象类。
+上面示例中，直接新建抽象类的实例，会报错。
+
+抽象类只能当作基类使用，用来在它的基础上定义子类。
 
 ```typescript
-abstract class Base {}
+abstract class A {
+  id = 1;
+}
 
-class Derived extends Base {}
+class B extends A {
+  amount = 100;
+}
 
-const derived = new Derived();
+const b = new B();
+
+b.id // 1
+b.amount // 100
 ```
 
-抽象类也可以继承其他抽象类。
+上面示例中，`A`是一个抽象类，`B`是`A`的子类，继承了`A`的所有成员，并且可以定义自己的成员和实例化。
+
+抽象类的子类也可以是抽象类，也就是说，抽象类可以继承其他抽象类。
 
 ```typescript
-abstract class Base {}
+abstract class A {
+  foo:number;
+}
 
-abstract class Derived extends Base {}
-```
-
-抽象类的内部可以有实现好的方法，也可以有抽象方法，即方法定义前加上关键字`abstract`，表示该方法需要继承该类的类来实现。
-
-```typescript
-abstract class Base {
-  abstract a: string;
-  b: string = '';
+abstract class B extends A {
+  bar:string;
 }
 ```
 
-注意，抽象成员不允许包含具体实现代码。
-
-如果一个具体类继承了抽象类，那么在具体的派生类中必须实现抽象类基类中的所有抽象成员。因此，抽象类中的抽象成员不能声明为private，否则将无法在派生类中实现该成员。声明为 public 和 protected 是可以的。
+抽象类的内部可以有已经实现好的属性和方法，也可以有还未实现的属性和方法。后者就叫做“抽象成员”（abstract member），即属性名和方法名有`abstract`关键字，表示该方法需要子类实现。如果子类没有实现抽象成员，就会报错。
 
 ```typescript
-abstract class Base {
-  private abstract a: string; // 报错
-  b: string = '';
+abstract class A {
+  abstract foo:string;
+  bar:string = '';
+}
+
+class B extends A {
+  foo = 'b';
 }
 ```
 
-`abstrct`也是一个修饰符，不仅可以用于类的成员，也可以用于类本身。
+上面示例中，抽象类`A`定义了抽象属性`foo`，子类`B`必须实现这个属性，否则会报错。
 
-抽象类表明这个类不能实例化，必须用子类继承后，对子类实例化。也就是说，抽象类只用于定义类的原型，必须继承后使用。
-
-抽象方法没有实现，只有类型签名。每个子类必须有一个具有相同名称和兼容类型签名的具体方法。如果一个类有任何抽象方法，它也必须是抽象的。
-
-`abstract`的作用是，确保一系列相关的子类拥有跟基类相同的接口，可以看作是模板，其中每个抽象方法都是必须由子类填充（实现）的空白。对于抽象类里面的非抽象方法，则表示是子类已经实现的接口。
-
-虽然一个类可以实现多个接口，但它最多只能扩展一个抽象类。
-
-注意，“抽象”只存在于编译时。在运行时，抽象类是普通类，不存在抽象方法（因为它们只提供编译时信息）。
-
-```typescript
-abstract class Base {
-  abstract getName(): string;
- 
-  printName() {
-    console.log("Hello, " + this.getName());
-  }
-}
- 
-const b = new Base();
-```
-
-抽象类不能用来生成实例。
-
-```typescript
-abstract class FooCommand {}
-
-class BarCommand extends FooCommand {}
-
-// 报错
-const fooCommand: FooCommand = new FooCommand(); 
-
-// 正确
-const barCommand = new BarCommand(); 
-```
+下面是抽象方法的例子。
 
 如果抽象类的属性前面加上`abstract`，就表明子类必须给出该方法的实现。
 
 ```typescript
-abstract class FooCommand {
-  abstract execute(): string;
+abstract class A {
+  abstract execute():string;
 }
 
-// 报错
-class BarErrorCommand  extends FooCommand {} 
-
-// 正确
-class BarCommand extends FooCommand {
+class B extends A {
   execute() {
-    return `Command Bar executed`;
+    return `B executed`;
   }
 }
 ```
 
-如果一个函数的参数是抽象类，它的类型可以写成下面这样。
+这里有几个注意点。
 
-```typescript
-// 正确
-function greet(ctor: new () => Base) {
-  const instance = new ctor();
-  instance.printName();
-}
-greet(Derived);
+（1）抽象成员只能存在于抽象类，不能存在于普通类。
 
-// 错误
-function greet(ctor: typeof Base) {
-  const instance = new ctor();
-  instance.printName();
-}
-// 报错
-greet(Base);
-```
+（2）抽象成员不能有具体实现的代码。也就是说，已经实现好的成员前面不能加`abstract`关键字。
 
-下面是抽象方法的例子。
+（3）抽象成员前也不能有`private`修饰符，否则无法在子类中实现该成员。
 
-```typescript
-class StringBuilder {
-  string = '';
-  add(str: string) {
-    this.string += str;
-  }
-}
-abstract class Printable {
-  toString() {
-    const out = new StringBuilder();
-    this.print(out);
-    return out.string;
-  }
-  abstract print(out: StringBuilder): void;
-}
+（4）一个子类最多只能继承一个抽象类。
 
-class Entries extends Printable {
-  entries: Entry[];
-  constructor(entries: Entry[]) {
-    super();
-    this.entries = entries;
-  }
-  print(out: StringBuilder): void {
-    for (const entry of this.entries) {
-      entry.print(out);
-    }
-  }
-}
-
-class Entry extends Printable {
-  key: string;
-  value: string;
-  constructor(key: string, value: string) {
-    super();
-    this.key = key;
-    this.value = value;
-  }
-  print(out: StringBuilder): void {
-    out.add(this.key);
-    out.add(': ');
-    out.add(this.value);
-    out.add('\n');
-  }
-}
-```
+总之，抽象类的作用是，确保各种相关的子类都拥有跟基类相同的接口，可以看作是模板。其中的抽象成员都是必须由子类实现的成员，非抽象成员则表示基类已经实现的、由所有子类共享的成员。
 
 ## this 问题
 
@@ -1517,52 +1505,6 @@ class FileSystemObject {
 ```
 
 上面示例中，两个方法的返回值类型都是布尔值，写成`this is Type`的形式，可以精确表示返回值。
-
-## 类的兼容
-
-在确定两个类类型之间的子类型关系时仅检查类的实例成员类型，类的静态成员类型以及构造函数类型不进行检查。
-
-```typescript
-class Point {
-    x: number;
-    y: number;
-    static t: number;
-    constructor(x: number) {}
-}
-
-class Position {
-    x: number;
-    y: number;
-    z: number;
-    constructor(x: string) {}
-}
-
-const point: Point = new Position('');
-```
-
-此例中，Position是Point的子类型，在确定子类型关系时仅检查x和y属性。
-
-只要对象满足类的属性要求，TypeScript 就认为对象兼容这个类。
-
-如果类中存在私有成员或受保护成员，那么在确定类类型间的子类型关系时要求私有成员和受保护成员来自同一个类，这意味着两个类需要存在继承关系。
-
-## 类与接口的合并
-
-TypeScript不支持合并同名的类声明，但是外部类声明可以与接口声明进行合并，合并后的类型为类类型。
-
-```typescript
-declare class C {
-    x: string;
-}
-
-interface C {
-    y: number;
-}
-
-let c: C = new C();
-c.x;
-c.y;
-```
 
 ## 参考链接
 
