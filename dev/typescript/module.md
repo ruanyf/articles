@@ -1,120 +1,146 @@
-# 模块
+# TypeScript 模块
 
-TypeScript 模块允许输出类型。
+## 简介
+
+任何包含 import 或 export 语句的文件，就是一个模块（module）。另一方面，如果文件不包含 export 语句，就是一个全局的脚本文件。
+
+模块本身就是一个作用域，不属于全局作用域。模块内部的变量、函数、类，都在模块内部可见，对于模块外部是不可见的。
+
+import 语句用于从外部输入其他模块的接口，export 语句用于给出当前模块的外部接口。
+
+如果一个文件不包含 export 语句，但是你希望它当作一个模块，可以在文件中添加一行语句。
 
 ```typescript
-import { type TypeOne, value } from "my-example-types";
-
-import type { TypeTwo } from "my-example-types";
-
-import type DefaultType from "my-example-types";
-
-export { type TypeOne, value };
-export type { DefaultType, TypeTwo };
+export {};
 ```
 
-```typescript
-export type SomeType = {
-  foo: string;
-};
+上面这行语句不产生任何实际作用，但会让当前文件被当作模块处理。
 
-export type Cat = { breed: string; yearOfBirth: number };
- 
-export interface Dog {
-  breeds: string[];
-  yearOfBirth: number;
+TypeScript 模块的用法，与 ES6 模块是一样的，这部分就不详细介绍了，可以参考 ES6 教程。
+
+TypeScript 模块的一个特别之处在于，允许输出和输入类型。
+
+```typescript
+export type Bool = true | false;
+```
+
+上面示例输入一个类型别名`Bool`。
+
+假定上面的模块文件为`a.ts`，另一个文件`b.ts`就可以使用 import 语句，输入这个类型。
+
+```typescript
+import { Bool } from './a.js';
+
+let foo:Bool = true;
+```
+
+上面示例中，import 语句加载的是一个类型。注意，它是从文件`a.js`加载，而不是从`a.ts`加载，因为在代码运行环境是 JS 环境，所以要写成从 JS 文件加载，否则报错。
+
+编译时，可以两个脚本同时编译。
+
+```bash
+$ tsc a.ts b.ts
+```
+
+上面命令会将`a.ts`和`b.ts`分别编译成`a.js`和`b.js`。
+
+也可以只编译`b.ts`，因为它是入口脚本，tsc 会自动编译它依赖的所有脚本。
+
+```bash
+$ tsc b.ts
+```
+
+上面命令发现`b.ts`依赖`a.js`，就会自动寻找`a.ts`，也将其同时编译，因此编译产物还是`a.js`和`b.js`两个文件。
+
+## import type 语句
+
+import 在一条语句中，可以同时输入类型和正常接口。
+
+```typescript
+// a.ts
+export interface A {
+  foo: string;
 }
+
+export let a = 123;
+
+// b.ts
+import { A, a } from './a.js';
 ```
 
-类型可以跟正常变量一起输出。
+上面示例中，文件`a.ts`的 export 语句输出了一个类型`A`和一个正常接口`a`，另一个文件`b.ts`则在同一条语句中输入了类型和正常接口。
+
+这样很不利于区分类型和正常接口，容易造成混淆。为了解决这个问题，TypeScript 引入了两个解决方法。
+
+第一个方法是在 import 语句输入的类型前面加上`type`关键字。
 
 ```typescript
-let someVar = 123;
-type SomeType = {
-  foo: string;
-};
-export {
-  someVar,
-  SomeType
-};
+import { type A, a } from './a.js';
 ```
 
-`import`命令可以用来输入类型。
+上面示例中，import 语句输入的类型`A`前面有`type`关键字，表示这是一个类型。     
+
+第二个方法是使用 import type 语句，这个语句只能输入类型，不能输入正常接口。
 
 ```typescript
-import { someVar, SomeType } from './foo.ts';
+// 正确
+import type { A } from './a.js';
 
-import { Cat, Dog } from "./animal.ts";
+// 报错
+import type { a } from './a.js';
 ```
 
-TypeScript 还允许使用 `import type`，指明输入的是类型。
+上面示例中，import type 输入类型`A`是正确的，但是输入正常接口`a`就会报错。
+
+import type 语句也可以输入默认类型。
 
 ```typescript
-export type Cat = { breed: string; yearOfBirth: number };
-export type Dog = { breeds: string[]; yearOfBirth: number };
-
-export type { Type }
-
-export type { Type } from 'mod';
-
-import type { Cat, Dog } from "./animal.ts";
+import type DefaultType from 'moduleA';
 ```
 
-导入默认模块。
+import type 在一个名称空间下，输入所有类型的写法如下。
 
 ```typescript
-import type DefaultType from 'mod';
+import type * as TypeNS from 'moduleA';
 ```
 
-从模块中导入命名类型的语法。
+同样的，export 语句也有两种方法，表示输出的是类型。
 
 ```typescript
-import type { Type } from 'mod';
+type A = 'a';
+type B = 'b';
+
+// 方法一
+export {type A, type B};
+
+// 方法二
+export type {A, B};
 ```
 
-从模块中导入所有导出的命名类型的语法如下所示：
+上面示例中，方法一是使用`type`关键字作为前缀，表示输出的是类型；方法二是使用 export type 语句，表示整行输出的都是类型。
 
-```typescript
-import type * as TypeNS from 'mod';
-```
+下面是 export type 将一个类作为类型输出的例子。
 
 ```typescript
 class Point {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 }
 
 export type { Point };
 ```
 
-TypeScript中的类既能表示一个值，又能表示一种类类型。此例中，我们只导出了Point类表示的类型。
+上面示例中，由于使用了 export type 语句，输出的并不是 Point 这个类，而是 Point 代表的实例类型。输入时，只能作为类型输入。
 
 ```typescript
-import type { Point } from './utils';
+import type { Point } from './module.js';
 
-const p: Point = { x: 0, y: 0 };
+const p:Point = { x: 0, y: 0 };
 ```
 
-需要注意的是，若将Point当作一个值来使用，则会产生编译错误。
+上面示例中，`Point`只能作为类型输入，不能当作正常接口使用。
 
-```typescript
-import type { Point } from './utils';
 
-const p = new Point(); // 报错
-```
-
-就算在“index.ts“文件中不是使用“import type”来导入Point，而是使用常规的import语句，也不能将Point作为一个值来使用，因为我们在“utils.ts”模块中只导出了Point类型（export type），而没有导出Point值。
-
-```typescript
-import { Point } from './utils';
-
-const p = new Point();
-//            ~~~~~
-//            编译错误：'Point' 不能作为值来使用，
-//            因为它是由'export type'语句导出的
-```
-
-在编译生成JavaScript代码时，编译器一定会删除“import type”和“export type”语句，因为能够完全确定它们只与类型相关。
 
 对于常规的import语句，编译器提供了`--importsNotUsedAsValues`编译选项来精确控制在编译时如何处理import type 语句。该编译选项接受以下三个可能的值：
 

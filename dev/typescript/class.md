@@ -549,6 +549,8 @@ function createPoint(
 
 上面示例中，函数`createPoint()`的第一个参数`PointClass`，需要传入 Point 这个类，但是如果把参数的类型写成`Point`就会报错，因为`Point`描述的是实例类型，而不是 Class 的自身类型。
 
+由于类名作为类型使用，实际上代表一个对象，因此可以把类看作为对象类型起名。事实上，TypeScript 有三种方法可以为对象类型起名：type、interface 和 class。
+
 ### 类的自身类型
 
 要获得一个类的自身类型，一个简便的方法就是使用 typeof 运算符。
