@@ -1,9 +1,11 @@
-# 工具类型
+# TypeScript 类型工具
 
-TypeScript 提供了一些全局的工具类型，可以把它们看作是用来帮助生成类型的工具函数。
+TypeScript 提供了一些内置的类型工具，用来方便地处理各种类型，以及生成新的类型。
 
-TypeScript 内置的16个工具类型如下，可以直接使用。
+TypeScript 内置了17个类型工具，可以直接使用。
 
+- `Awaited<T>`
+- `ConstructorParameters<T>`
 - Partial<T>
 - Required<T>
 - Readonly<T>
@@ -14,12 +16,38 @@ TypeScript 内置的16个工具类型如下，可以直接使用。
 - Extract<T, U>
 - NonNullable<T>
 - Parameters<T>
-- ConstructorParameters<T>
 - ReturnType<T>
 - InstanceType<T>
 - ThisParameterType<T>
 - OmitThisParameter<T>
 - ThisType<T>
+
+## `Awaited<Type>`
+
+`Awaited<Type>`用来取出 Promise 的返回值类型，适合用在描述`then()`方法和 await 命令的参数类型。
+
+```typescript
+// string
+type A = Awaited<Promise<string>>;
+```
+
+上面示例中，`Awaited<Type>`会返回 Promise 的返回值类型（string）。
+
+它也可以返回多重 Promise 的返回值类型。
+
+```typescript
+// number
+type B = Awaited<Promise<Promise<number>>>;
+```
+
+如果它的类型参数不是 Promise 类型，那么就会原样返回。
+
+```typescript
+// number | boolean
+type C = Awaited<boolean | Promise<number>>;
+```
+
+上面示例中，类型参数是一个联合类型，其中的`boolean`会原样返回，所以最终返回的是`number|boolean`。
 
 ## `ConstructorParameters<T>`
 
@@ -52,57 +80,23 @@ type T2 = ConstructorParameters<RegExpConstructor>;
 type T3 = ConstructorParameters<any>;
 ```
 
-## `Exclude<T, U>`
+## `Exclude<UnionType, ExcludedMembers>`
 
-`Exclude<UnionType, ExcludedMembers>`用来从联合类型里面，排除某些类型。
-
-该工具类型能够从类型T中剔除所有可以赋值给类型U的类型。
+`Exclude<UnionType, ExcludedMembers>`用来从联合类型`UnionType`里面，删除某些类型`ExcludedMembers`，组成一个新的类型返回。
 
 ```typescript
-type T0 = Exclude<"a" | "b" | "c", "a">; // "b" | "c"
-type T1 = Exclude<"a" | "b" | "c", "a" | "b">; // "c"
-type T2 = Exclude<string | (() => void), Function>; // string
+type T1 = Exclude<'a'|'b'|'c', 'a'>; // 'b'|'c'
+type T2 = Exclude<'a'|'b'|'c', 'a'|'b'>; // 'c'
+type T3 = Exclude<string|(() => void), Function>; // string
 ```
 
-```typescript
-// type T0 = "b" | "c"
-type T0 = Exclude<"a" | "b" | "c", "a">;
-
-// type T1 = "c"
-type T1 = Exclude<"a" | "b" | "c", "a" | "b">;
-
-// type T2 = string | number
-type T2 = Exclude<string | number | (() => void), Function>;
-```
-
-`Exclude`的定义如下。
+`Exclude<UnionType, ExcludedMembers>`的实现如下。
 
 ```typescript
-/**
- * Exclude from T those types that are assignable to U
- */
 type Exclude<T, U> = T extends U ? never : T;
 ```
 
-`never`类型是任何其他类型的子类型。因此，当never类型与其他类型组成联合类型时，可以直接将`never`类型从联合类型中“消掉”。
-
-```typescript
-T | never ≡ T
-```
-
-在分布式条件类型“Exclude<T, U>”中，若类型T能够赋值给类型U，则返回never类型；否则，返回类型T。这里巧妙地使用了never类型来从联合类型T中删除符合条件的类型。
-
-```typescript
-T = Exclude<string | undefined, null | undefined>
-
-  = (string extends null | undefined ? never : string)
-    |
-    (null extends null | undefined ? never : null)
-
-  = string | never
-
-  = string
-```
+上面代码中，等号右边的部分，表示先判断`T`是否兼容`U`，如果是的就返回`never`类型，否则返回当前类型`T`。由于`never`类型是任何其他类型的子类型，它跟其他类型组成联合类型时，可以直接将`never`类型从联合类型中“消掉”，因此`Exclude<T, U>`就相当于删除兼容的类型，剩下不兼容的类型。
 
 ## `Extract<T, U>`
 
@@ -188,71 +182,41 @@ type T0 = NonNullable<string | number | undefined>;
 type T1 = NonNullable<string[] | null | undefined>;
 ```
 
-## `Omit<T, K>`
+## `Omit<Type, Keys>`
 
-`Omit<Type, Keys>`用来从某种对象类型中，删除指定的属性。
-
-`Omit<T, K>`工具类型与“Pick<T, K>”工具类型是互补的，它能够从已有对象类型中剔除给定的属性，然后构建出一个新的对象类型。“Omit<T, K>”工具类型中的类型参数T表示源对象类型，类型参数K提供了待剔除的属性名类型，但它可以为对象类型T中不存在的属性。
+`Omit<Type, Keys>`用来从对象类型`Type`中，删除指定的属性`Keys`，组成一个新的对象类型返回。
 
 ```typescript
 interface A {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 }
 
-type T0 = Omit<A, 'x'>;       // { y: number }
-type T1 = Omit<A, 'y'>;       // { x: number }
-type T2 = Omit<A, 'x' | 'y'>; // { }
-type T3 = Omit<A, 'z'>;       // { x: number; y: number }
+type T1 = Omit<A, 'x'>;       // { y: number }
+type T2 = Omit<A, 'y'>;       // { x: number }
+type T3 = Omit<A, 'x' | 'y'>; // { }
 ```
 
+上面示例中，`Omit<Type, Keys>`从对象类型`A`里面删除指定属性，返回剩下的属性。
+
+指定删除的键名`Keys`可以是对象类型`Type`中不存在的属性，但必须兼容`string|number|symbol`。
+
 ```typescript
-interface Todo {
-  title: string;
-  description: string;
-  completed: boolean;
-  createdAt: number;
+interface A {
+  x: number;
+  y: number;
 }
- 
-type TodoPreview = Omit<Todo, "description">;
- 
-const todo: TodoPreview = {
-  title: "Clean room",
-  completed: false,
-  createdAt: 1615544252770,
-};
 
-type TodoInfo = Omit<Todo, "completed" | "createdAt">;
- 
-const todoInfo: TodoInfo = {
-  title: "Pick up kids",
-  description: "Kindergarten closes at 5pm",
-};
+type T = Omit<A, 'z'>; // { x: number; y: number }
 ```
 
-```typescript
-type User = {
-  id: string;
-  name: string;
-  email: string;
-};
+上面示例中，对象类型`A`中不存在属性`z`，所以就原样返回了。
 
-type UserWithoutEmail = Omit<User, "email">;
-
-// This is equivalent to:
-type UserWithoutEmail = {
-  id: string;
-  name: string;
-};
-```
-
-它的定义如下。
+`Omit<Type, Keys>`的实现如下。
 
 ```typescript
-/**
- * Construct a type with the properties of T except for those in type K.
- */
-type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
+type Omit<T, K extends keyof any> 
+  = Pick<T, Exclude<keyof T, K>>;
 ```
 
 ## `OmitThisParameter<T>`
@@ -374,156 +338,187 @@ type MySanta = ReturnType<typeof getGift>; // SecretSanta
 type MyName = Parameters<typeof getGift>[0]; // SecretName
 ```
 
-## `Partial<T>`
+## `Partial<Type>`
 
-`Partial`是一个泛型，表示当前类型是类型变量的一个子集。
-
-该工具类型能够构造一个新类型，并将实际类型参数T中的所有属性变为可选属性。
+`Partial<Type>`返回一个新类型，将参数类型`Type`的所有属性变为可选属性。
 
 ```typescript
 interface A {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 }
  
 type T = Partial<A>; // { x?: number; y?: number; }
 ```
 
+`Partial<Type>`的实现如下。
+
 ```typescript
-interface Todo {
-  title: string;
-  description: string;
-}
- 
-function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>) {
-  return { ...todo, ...fieldsToUpdate };
-}
- 
-const todo1 = {
-  title: "organize desk",
-  description: "clear clutter",
+type Partial<T> = {
+  [P in keyof T]?: T[P];
 };
- 
-const todo2 = updateTodo(todo1, {
-  description: "throw out trash",
-});
 ```
 
-## `Pick<T, K>`
+## `Pick<Type, Keys>`
 
-`Pick<Type, Keys>`表示类型是从对象`Type`里面，挑选`Keys`指定的键名。
-
-该工具类型能够从已有对象类型中选取给定的属性及其类型，然后构建出一个新的对象类型。“Pick<T, K>”工具类型中的类型参数T表示源对象类型，类型参数K提供了待选取的属性名类型，它必须为对象类型T中存在的属性。
+`Pick<Type, Keys>`返回一个新的对象类型，第一个参数`Type`是一个对象类型，第二个参数`Keys`是`Type`里面被选定的键名。
 
 ```typescript
 interface A {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 }
 
-type T0 = Pick<A, 'x'>;        // { x: number }
-type T1 = Pick<A, 'y'>;        // { y: number }
-type T2 = Pick<A, 'x' | 'y'>;  // { x: number; y: number }
-
-type T3 = Pick<A, 'z'>;
-//                ~~~
-//                编译错误：类型'A'中不存在属性'z'
+type T1 = Pick<A, 'x'>; // { x: number }
+type T2 = Pick<A, 'y'>; // { y: number }
+type T3 = Pick<A, 'x'|'y'>;  // { x: number; y: number }
 ```
 
+上面示例中，`Pick<Type, Keys>`会从对象类型`A`里面挑出指定的键名，组成一个新的对象类型。
+
+指定的键名`Keys`必须是对象键名`Type`里面已经存在的键名，否则会报错。
+
 ```typescript
-interface Todo {
-  title: string;
-  description: string;
-  completed: boolean;
+interface A {
+  x: number;
+  y: number;
 }
- 
-type TodoPreview = Pick<Todo, "title" | "completed">;
- 
-const todo: TodoPreview = {
-  title: "Clean room",
-  completed: false,
-};
+
+type T = Pick<A, 'z'>; // 报错
 ```
 
-```typescript
-type UserWithoutEmail = Pick<User, UserKeysWithoutEmail>;
+上面示例中，对象类型`A`不存在键名`z`，所以报错了。
 
-// This is equivalent to:
-type UserWithoutEmail = Pick<User, "id" | "name">;
-
-// This is equivalent to:
-type UserWithoutEmail = {
-  id: string;
-  name: string;
-};
-```
-
-Pick 在 lib.es5.d.ts 的定义如下。
+`Pick<Type, Keys>`的实现如下。
 
 ```typescript
-/**
- * From T, pick a set of properties whose keys are in the union K
- */
 type Pick<T, K extends keyof T> = {
   [P in K]: T[P];
 };
 ```
 
-## `Readonly<T>`
+## `Readonly<Type>`
 
-`Readonly<Type>`是一个泛型，表示类型变量的所有属性都是只读。
-
-该工具类型能够构造一个新类型，并将实际类型参数T中的所有属性变为只读属性。
+`Readonly<Type>`返回一个新类型，将参数类型的所有属性变为只读属性。
 
 ```typescript
 interface A {
-    x: number;
-    y: number;
+  x: number;
+  y?: number;
 }
 
-// { readonly x: number; readonly y: number; }
+// { readonly x: number; readonly y?: number; }
 type T = Readonly<A>;
 ```
 
+上面示例中，`y`是可选属性，`Readonly<Type>`不会改变这一点，只会让`y`变成只读。
+
+`Readonly<Type>`的实现如下。
+
 ```typescript
-interface Todo {
-  title: string;
-}
- 
-const todo: Readonly<Todo> = {
-  title: "Delete inactive users",
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P];
 };
-
-todo.title = "Hello"; // 报错
 ```
-因为类型参数K是用作对象属性名类型的，所以实际类型参数K必须能够赋值给“string | number | symbol”类型，只有这些类型能够作为对象属性名类型。
 
-## `Required<T>`
+我们可以自定义类型工具`Mutable<Type>`，将参数类型的所有属性变成可变属性。
 
-Required 是一个泛型，表示当前类型包含类型变量的所有属性，主要针对可选属性的情况。
+```typescript
+type Mutable<T> = {
+  -readonly [P in keyof T]: T[P];
+};
+```
 
-该工具类型能够构造一个新类型，并将实际类型参数T中的所有属性变为必选属性。
+上面代码中，`-readonly`表示去除属性的只读标志。
+
+相应地，`+readonly`就表示增加只读标志，等同于`readonly`。因此，`ReadOnly<Type>`的实现也可以写成下面这样。
+
+```typescript
+type Readonly<T> = {
+  +readonly [P in keyof T]: T[P];
+};
+```
+
+`Readonly<Type>`可以与`Partial<Type>`结合使用，将所有属性变成只读的可选属性。
+
+```typescript
+interface Person {
+  name: string;
+  age: number;
+}
+
+const worker: Readonly<Partial<Person>> 
+  = { name: '张三' };
+
+worker.name = '李四'; // 报错
+```
+
+## `Record<Keys, Type>`
+
+`Record<Keys, Type>`返回一个对象类型，参数`Keys`用作键名，参数`Type`用作键值类型。
+
+```typescript
+// { a: number }
+type T = Record<'a', number>;
+```
+
+上面示例中，`Record<Keys, Type>`的第一个参数`a`，用作对象的键名，第二个参数`number`是`a`的键值类型。
+
+参数`Keys`可以是联合类型，这时会依次展开为多个键。
+
+```typescript
+// { a: number, b: number }
+type T = Record<'a'|'b', number>;
+```
+
+上面示例中，第一个参数是联合类型`'a'|'b'`，展开成两个键名`a`和`b`。
+
+如果参数`Type`是联合类型，就表明键值是联合类型。
+
+```typescript
+// { a: number|string }
+type T = Record<'a', number|string>;
+```
+
+参数`Keys`的类型必须兼容`string|number|symbol`，否则不能用作键名，会报错。
+
+`Record<Keys, Type>`的实现如下。
+
+```typescript
+type Record<K extends string|number|symbol, T>
+  = { [P in K]: T; }
+```
+
+## `Required<Type>`
+
+`Required<Type>`返回一个新类型，将参数类型`Type`的所有属性变为必选属性。它与`Partial<Type>`的作用正好相反。
 
 ```typescript
 interface A {
-    x?: number;
-    y: number;
+  x?: number;
+  y: number;
 }
 
-type T0 = Required<A>; // { x: number; y: number; }
+type T = Required<A>; // { x: number; y: number; }
 ```
+
+`Required<Type>`的实现如下。
 
 ```typescript
-interface Props {
-  a?: number;
-  b?: string;
-}
- 
-const obj: Props = { a: 5 };
-const obj2: Required<Props> = { a: 5 }; // 报错
+type Required<T> = {
+  [P in keyof T]-?: T[P];
+};
 ```
 
-因为类型参数K是用作对象属性名类型的，所以实际类型参数K必须能够赋值给“string | number | symbol”类型，只有这些类型能够作为对象属性名类型。
+上面代码中，符号`-?`表示去除可选属性的“问号”，使其变成必选属性。
+
+相对应地，符号`+?`表示增加可选属性的“问号”，等同于`?`。因此，前面的`Partial<Type>`的定义也可以写成下面这样。
+
+```typescript
+type Partial<T> = {
+  [P in keyof T]+?: T[P];
+};
+```
 
 ## ReadonlyArray
 
@@ -826,158 +821,4 @@ type Nullable<T> = {
 type Stringify<T> = {
   [P in keyof T]: string;
 };
-```
-
-
-## `Partial<T>`
-
-`Partial<T>`是 TypeScript 预定义的工具类型，用来将对象类型的所有属性都变成可选属性。
-
-```typescript
-type Partial<T> = {
-  [P in keyof T]?: T[P];
-};
-```
-
-```typescript
-interface TodoItem {
-   description: string | undefined;
-   priority: "high" | "medium" | "low" | undefined;
-}
-
-type PartialTodoItem = Partial<TodoItem>;
-
-// 正确
-const foo:TodoItem = {};
-// 报错
-const bar:PartialTodoItem = {};
-```
-
-## `Required<T>`
-
-`Required<T>`是 TypeScript 内置的工具类型，用来将对象类型的所有属性（包括可选属性）变成必备类型。
-
-```typescript
-interface TodoItem {
-   description: string | undefined;
-   priority?: "high" | "medium" | "low" | undefined;
-}
-
-type Required<T> = {
-  [P in keyof T]-?: T[P];
-};
-```
-
-上面定义中，符号`-?`表示去除可选属性的问号（`？`），使其变成必备属性。
-
-与其相对应，`+?`表示将属性变成可选属性，等同于`?`。因此，前面的`Partial<T>`的定义也可以写成下面这样。
-
-```typescript
-type Partial<T> = {
-  [P in keyof T]+?: T[P];
-};
-```
-
-```typescript
-type RequiredTodoItem = Required<TodoItem>;
-// {
-//   description: string;
-//   priority: "high" | "medium" | "low";
-// }
-```
-
-上面示例中，经此转换之后，`priority`属性不再是可选的。
-
-## `Readonly<T>`
-
-`Required<T>`是 TypeScript 内置的工具类型，用来将对象类型的所有属性变成只读。
-
-```typescript
-interface Person {
-  name: string;
-  age: number;
-}
-
-interface ReadonlyPerson {
-  readonly name: string;
-  readonly age: number;
-}
-
-const worker: Person = {name: "John", age: 22};
-
-function doStuff(
-  person: Readonly<Person>
-) {
-  person.age = 25; // 报错
-}
-```
-
-TypeScript 对 Readonly 的定义如下。
-
-```typescript
-type Readonly<T> = {
-  readonly [P in keyof T]: T[P];
-};
-```
-
-```typescript
-interface TodoItem {
-   description: string | undefined;
-   priority?: "high" | "medium" | "low" | undefined;
-}
-
-type ReadonlyTodoItem = Readonly<TodoItem>;
-// {
-//   readonly description?: string | undefined;
-//   readonly priority?: "high" | "medium" | "low" | undefined;
-// }
-
-const todo: ReadonlyTodoItem = {
-  description: "Mow the lawn",
-  priority: "high",
-};
-
-// 报错
-todo.priority = "medium";
-```
-
-我们可以自定义工具类型`Mutable<T>`，将对象类型的只读属性变成可变属性。
-
-```typescript
-type Mutable<T> = {
-  -readonly [P in keyof T]: T[P];
-};
-```
-
-上面定义中，`-readonly`表示去除属性的只读。
-
-```typescript
-const todo: Mutable<ReadonlyTodoItem> = {
-  description: "Mow the lawn",
-  priority: "high",
-};
-
-todo.priority = "medium";
-```
-
-类似的，将属性变成只读，就是写成`+readonly`，等同于`readonly`。
-
-```typescript
-type Readonly<T> = {
-  +readonly [P in keyof T]: T[P];
-};
-```
-
-`Readonly<T>`与`Partial<T>`可以结合使用。
-
-```typescript
-interface Person {
-  name: string;
-  age: number;
-}
-
-const worker1: Readonly<Partial<Person>> 
-= {name: "John"};
-
-worker1.name = "Mary"; // 报错
 ```

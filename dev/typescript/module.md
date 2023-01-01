@@ -16,15 +16,21 @@ export {};
 
 上面这行语句不产生任何实际作用，但会让当前文件被当作模块处理。
 
-TypeScript 模块的用法，与 ES6 模块是一样的，这部分就不详细介绍了，可以参考 ES6 教程。
+TypeScript 模块的基本用法，与 ES6 模块是一样的，这部分就不详细介绍了，可以参考 ES6 教程。
 
-TypeScript 模块的一个特别之处在于，允许输出和输入类型。
+TypeScript 模块的特别之处在于，允许输出和输入类型。
 
 ```typescript
 export type Bool = true | false;
 ```
 
-上面示例输入一个类型别名`Bool`。
+上面示例输入一个类型别名`Bool`，也可以拆成两行。
+
+```typescript
+type Bool = true | false;
+
+export { Bool };
+```
 
 假定上面的模块文件为`a.ts`，另一个文件`b.ts`就可以使用 import 语句，输入这个类型。
 
@@ -140,45 +146,89 @@ const p:Point = { x: 0, y: 0 };
 
 上面示例中，`Point`只能作为类型输入，不能当作正常接口使用。
 
+## importsNotUsedAsValues
 
+输入类型的 import 语句，编译时怎么处理？
 
-对于常规的import语句，编译器提供了`--importsNotUsedAsValues`编译选项来精确控制在编译时如何处理import type 语句。该编译选项接受以下三个可能的值：
+TypeScript 提供了`importsNotUsedAsValues`编译设置项，有三个可能的值。
 
-- "remove"（默认值）。该选项是编译器的默认行为，它自动删除只和类型相关的import语句。
-- "preserve"。该选项会保留所有import语句。
-- "error"。该选项会保留所有import语句，发现可以改写为“import type”的import语句时会报错。
+（1）`remove`：这是默认值，自动删除输入类型的 import 语句。
 
-import 加载接口时，接口还可以使用`type`前缀，区分加载的是变量，还是类型。
+（2）`preserve`：保留输入类型的 import 语句。
+
+（3）`error`：保留输入类型的 import 语句（与`preserve`相同），但是必须写成 import type 的形式，否则报错。
+
+请看示例，下面是一个输入类型的 import 语句。
 
 ```typescript
-import { createCatName, type Cat, type Dog } from "./animal.js";
+import { TypeA } from './a.js';
 ```
 
-这种写法有一个好处，就是使得外部的编译器（比如 Babel、swc、esbuild）可以简单地区分，哪些接口是变量，哪些接口是类型。
+上面示例中，`TypeA`是一个类型。
 
-## export =，import = require()
+`remove`的编译结果会将该语句删掉。
 
-为了兼容 CommonJS 模块格式，TypeScript 提供了两种特殊语法。
-
-`export =`用来输出一个对象，等同于 CommonJS 里面的`exports`对象。
+`preserve`的编译结果会保留该语句，但会把删掉类型的部分。
 
 ```typescript
-let numberRegexp = /^[0-9]+$/;
-class ZipCodeValidator {
-  isAcceptable(s: string) {
-    return s.length === 5 && numberRegexp.test(s);
-  }
-}
-export = ZipCodeValidator;
+import './a.js';
 ```
 
-`export =`输出的对象，只能使用`import = require()`语法加载。
+上面示例中，编译后的 import 语句不从`a.js`输入任何接口，但是会引发`a.js`的执行，因此会保留`a.js`里面的副作用。
+
+`error`的结果与`preserve`相同，但是编译过程会报错，因为输入类型的 import 语句必须写成 import type 的形式。原始语句改成下面的形式，就不会报错。
 
 ```typescript
-import zip = require("./ZipCodeValidator");
+import type { TypeA } from './a.js';
+```
+
+## CommonJS 模块
+
+CommonJS 是 Node.js 的专用模块格式，与 ES 模块格式不兼容。
+
+### import = 语句
+
+TypeScript 使用 import = 语句输入 CommonJS 模块。
+
+```typescript
+import fs = require('fs');
+const code = fs.readFileSync('hello.ts', 'utf8');
+```
+
+上面示例中，使用 import = 语句和`require()`命令输入了一个 CommonJS 模块。模块本身的用法跟 Node.js 是一样的。
+
+### export = 语句
+
+TypeScript 使用 export = 语句，输出 CommonJS 模块的对象，等同于 CommonJS 的`module.exports`对象。
+
+```typescript
+let obj = { foo: 123 };
+
+export = obj;
+```
+
+export = 语句输出的对象，只能使用 import = 语句加载。
+
+```typescript
+import obj = require('./a');
+
+console.log(obj.foo); // 123
 ```
 
 ## 模块定位
+
+模块定位（module resolution）指的是确定 import 语句和 export 语句里面的模块文件位置。
+
+模块定位有两种方法，一种称为经典方法（classic），另一种称为 Node 方法。如果编译设置的参数`module`没有设为`commonjs`（即设成 amd、system、umd、es2015、esnext 等值），则采用经典方法，否则采用 Node 方法（复制 Node.js 的模块定位方法，并加入了`.ts`文件和`.d.ts`文件）。
+
+```bash
+$ tsc demo.ts
+
+# 或者
+$ tsc --module commonjs demo.ts
+```
+
+上面命令在编译时，没有给出`module`参数，或者指定`--module commonjs`，这时就会采用 Node 方法进行模块定位。
 
 模块导入分为相对导入和非相对导入。
 
@@ -192,8 +242,6 @@ import zip = require("./ZipCodeValidator");
 
 - import * as $ from "jquery";
 - import { Component } from "@angular/core";
-
-模块定位有两种策略。一种是经典策略（classic），另一种是 Node.js 策略（node.js）。默认采用 Node.js 策略，编译时不给出 module 参数，或者指定`--module commonjs`。如果要使用经典策略，则编译时`module`参数需要指定为其他值（amd、system、umd、es2015、esnext 等）。
 
 ### 经典策略
 
@@ -213,7 +261,7 @@ import zip = require("./ZipCodeValidator");
 - /moduleB.ts
 - /moduleB.d.ts
 
-### Node.js 策略
+### Node 策略
 
 Node.js 策略就是使用 Node.js 的模块加载策略。
 
@@ -276,3 +324,6 @@ TypeScript 则是这样加载模块，比如源文件`/root/src/moduleA.ts`有�
 
 上面的步骤虽然数量很多，但只是每一个子目录要检查的文件多了，只在第9步和第17步进入上一级子目录。
 
+## 参考链接
+
+- [tsconfig 之 importsNotUsedAsValues 属性](https://blog.51cto.com/u_13028258/5754309)
