@@ -98,34 +98,26 @@ type Exclude<T, U> = T extends U ? never : T;
 
 上面代码中，等号右边的部分，表示先判断`T`是否兼容`U`，如果是的就返回`never`类型，否则返回当前类型`T`。由于`never`类型是任何其他类型的子类型，它跟其他类型组成联合类型时，可以直接将`never`类型从联合类型中“消掉”，因此`Exclude<T, U>`就相当于删除兼容的类型，剩下不兼容的类型。
 
-## `Extract<T, U>`
+## `Extract<Type, Union>`
 
-`Extract<UnionType, Union>`从联合类型之中，提取指定类型。它与`Exclude<T, U>`正好相反。
-
-`Extract<T, U>`工具类型与“Exclude<T, U>”工具类型是互补的，它能够从类型T中获取所有可以赋值给类型U的类型。
-
-该类型能够从联合类型T中挑选符合条件的类型。若类型T能够赋值给类型U，则返回T类型；否则，返回类型never。
+`Extract<UnionType, Union>`用来从联合类型`UnionType`之中，提取指定类型`Union`，组成一个新类型返回。它与`Exclude<T, U>`正好相反。
 
 ```typescript
-type T0 = Extract<'a' | 'b' | 'c', 'a' | 'f'>; // 'a'
-type T1 = Extract<string | (() => void), Function>; // () => void
-type T2 = Extract<string | number, boolean>;        // never
+type T1 = Extract<'a'|'b'|'c', 'a'>; // 'a'
+type T2 = Extract<'a'|'b'|'c', 'a'|'b'>; // 'a'|'b'
+type T3 = Extract<'a'|'b'|'c', 'a'|'d'>; // 'a'
 ```
+
+如果参数类型`Union`不包含在联合类型`UnionType`之中，则返回`never`类型。
+
+```typescript
+type T = Extract<string|number, boolean>; // never
+```
+
+`Extract<UnionType, Union>`的实现如下。
 
 ```typescript
 type Extract<T, U> = T extends U ? T : never;
- 
-type T = Extract<string | number, number | boolean>;
-//   ~
-//   类型为number
-```
-
-```typescript
-// type T0 = "a"
-type T0 = Extract<"a" | "b" | "c", "a" | "f">;
-    
-// type T1 = () => void
-type T1 = Extract<string | number | (() => void), Function>;
 ```
 
 ## `InstanceType<T>`
