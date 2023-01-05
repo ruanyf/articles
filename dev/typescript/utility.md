@@ -4,24 +4,6 @@ TypeScript 提供了一些内置的类型工具，用来方便地处理各种类
 
 TypeScript 内置了17个类型工具，可以直接使用。
 
-- `Awaited<T>`
-- `ConstructorParameters<T>`
-- Partial<T>
-- Required<T>
-- Readonly<T>
-- Record<K, T>
-- Pick<T, K>
-- Omit<T, K>
-- Exclude<T, U>
-- Extract<T, U>
-- NonNullable<T>
-- Parameters<T>
-- ReturnType<T>
-- InstanceType<T>
-- ThisParameterType<T>
-- OmitThisParameter<T>
-- ThisType<T>
-
 ## `Awaited<Type>`
 
 `Awaited<Type>`用来取出 Promise 的返回值类型，适合用在描述`then()`方法和 await 命令的参数类型。
@@ -49,35 +31,76 @@ type C = Awaited<boolean | Promise<number>>;
 
 上面示例中，类型参数是一个联合类型，其中的`boolean`会原样返回，所以最终返回的是`number|boolean`。
 
-## `ConstructorParameters<T>`
-
-`ConstructorParameters<Type>`提取构造函数的参数类型，组成一个元组类型。
-
-该工具类型能够获取构造函数T中的参数类型，并使用参数类型构造一个元组类型。若类型T不是函数类型，则返回never类型。
+`Awaited<Type>`的实现如下。
 
 ```typescript
-// [string, number]
-02 type T0 = ConstructorParameters<new (x: string, y: number) => object>;
-03 
-04 // [(string | undefined)?]
-05 type T1 = ConstructorParameters<new (x?: string) => object>;
-06 
-07 type T2 = ConstructorParameters<string>;   // 编译错误
-08 type T3 = ConstructorParameters<Function>; // 编译错误
+type Awaited<T> = 
+  T extends null | undefined ? T :
+  T extends object & {
+    then(
+      onfulfilled: infer F,
+      ...args: infer _
+    ): any;
+  } ? F extends (
+    value: infer V,
+    ...args: infer _
+  ) => any ? Awaited<...> : never:
+  T;
 ```
 
+## `ConstructorParameters<Type>`
+
+`ConstructorParameters<Type>`提取构造方法`Type`的参数类型，组成一个元组类型返回。
+
 ```typescript
-// type T0 = [message?: string]
-type T0 = ConstructorParameters<ErrorConstructor>;
-     
-// type T1 = string[]
-type T1 = ConstructorParameters<FunctionConstructor>;
-     
-// type T2 = [pattern: string | RegExp, flags?: string]
-type T2 = ConstructorParameters<RegExpConstructor>;
-     
-// type T3 = unknown[]
-type T3 = ConstructorParameters<any>;
+type T1 = ConstructorParameters<
+  new (x: string, y: number) => object
+>; // [x: string, y: number]
+ 
+type T2 = ConstructorParameters<
+  new (x?: string) => object
+>; // [x?: string | undefined]
+```
+
+它可以返回一些内置构造方法的参数类型。
+
+```typescript
+type T1 = ConstructorParameters<
+  ErrorConstructor
+>; // [message?: string]
+
+type T2 = ConstructorParameters<
+  FunctionConstructor
+>; // string[]
+
+type T3 = ConstructorParameters<
+  RegExpConstructor
+>; // [pattern:string|RegExp, flags?:string]
+```
+
+如果参数类型不是构造方法，就会报错。
+
+```typescript
+type T1 = ConstructorParameters<string>; // 报错
+
+type T2 = ConstructorParameters<Function>; // 报错
+```
+
+`any`类型和`never`类型是两个特殊值，分别返回`unknown[]`和`never`。
+
+```typescript     
+type T1 = ConstructorParameters<any>;  // unknown[]
+
+type T2 = ConstructorParameters<never>; // never
+```
+
+`ConstructorParameters<Type>`的实现如下。
+
+```typescript
+type ConstructorParameters<
+  T extends abstract new (...args: any) => any
+> = T extends abstract new (...args: infer P) 
+  => any ? P : never
 ```
 
 ## `Exclude<UnionType, ExcludedMembers>`
@@ -120,27 +143,19 @@ type T = Extract<string|number, boolean>; // never
 type Extract<T, U> = T extends U ? T : never;
 ```
 
-## `InstanceType<T>`
+## `InstanceType<Type>`
 
-`InstanceType<Type>`返回对象实例的类型。
-
-该工具类型能够获取构造函数的返回值类型，即实例类型。
+`InstanceType<Type>`的参数`Type`是一个构造函数，返回该构造函数对应的实例类型。
 
 ```typescript
-class C {
-    x = 0;
-}
-type T0 = InstanceType<typeof C>;         // C
- 
-type T1 = InstanceType<new () => object>; // object
-
-type T2 = InstanceType<any>;              // any
-
-type T3 = InstanceType<never>;            // any
-
-type T4 = InstanceType<string>;           // 编译错误
-type T5 = InstanceType<Function>;         // 编译错误
+type T = InstanceType<
+  new () => object
+>; // object
 ```
+
+上面示例中，类型参数是一个构造函数`new () => object`，返回值是该构造函数的实例类型（`object`）。
+
+由于 Class 作为类型，代表实例类型。要获取它的构造方法，必须把它当成值，然后用`typeof`运算符获取它的构造方法类型。
 
 ```typescript
 class C {
@@ -148,31 +163,55 @@ class C {
   y = 0;
 }
 
-// type T0 = C 
-type T0 = InstanceType<typeof C>;
+type T = InstanceType<typeof C>; // C
 ```
 
-## `NonNullable<T>`
+上面示例中，`typeof C`是`C`的构造方法类型，然后 InstanceType 就能获得实例类型，即`C`本身。
 
-该工具类型能够从类型T中剔除null类型和undefined类型并构造一个新类型，也就是获取类型T中的非空类型。
-
-`NonNullable<Type>`用来从某种类型中去除 undefined。
+如果类型参数不是构造方法，就会报错。
 
 ```typescript
-// string | number
-type T0 = NonNullable<string | number | undefined>;
+type T1 = InstanceType<string>; // 报错
+
+type T2 = InstanceType<Function>; // 报错
+```
+
+如果类型参数是`any`或`never`两个特殊值，分别返回`any`和`never`。
+
+```typescript
+type T1 = InstanceType<any>; // any
+
+type T2 = InstanceType<never>; // never
+```
+
+`InstanceType<Type>`的实现如下。
+
+```typescript
+type InstanceType<
+  T extends abstract new (...args:any) => any
+> = T extends abstract new (...args: any) => infer R ? R :
+  any;
+```
+
+## `NonNullable<Type>`
+
+`NonNullable<Type>`用来从联合类型`Type`删除`null`类型和`undefined`类型，组成一个新类型返回，也就是返回`Type`的非空类型版本。
+
+```typescript
+// string|number
+type T1 = NonNullable<string|number|undefined>;
 
 // string[]
-type T1 = NonNullable<string[] | null | undefined>;
+type T2 = NonNullable<string[]|null|undefined>;
 ```
 
+`NonNullable<Type>`的实现如下。
+
 ```typescript
-// type T0 = string | number
-type T0 = NonNullable<string | number | undefined>;
-     
-// type T1 = string[]
-type T1 = NonNullable<string[] | null | undefined>;
+type NonNullable<T> = T & {}
 ```
+
+上面代码中，`T & {}`等同于求`T & Object`的交叉类型。由于 TypeScript 的非空值都属于`Object`的子类型，所以会返回自身；而`null`和`undefined`不属于`Object`，会返回`never`类型。
 
 ## `Omit<Type, Keys>`
 
@@ -211,123 +250,104 @@ type Omit<T, K extends keyof any>
   = Pick<T, Exclude<keyof T, K>>;
 ```
 
-## `OmitThisParameter<T>`
+## `OmitThisParameter<Type>`
 
-`OmitThisParameter<Type>`从函数类型中移除 this 参数。如果函数没有 this 参数，则返回函数类型。
-
-该工具类型能够从类型T中剔除this参数类型，并构造一个新类型。在使用“Omit-ThisParameter<T>”工具类型时需要启用“--strictFunctionTypes”编译选项。
-
-```typescript
-/**
-* --strictFunctionTypes=true
-*/
-
-function f0(this: object, x: number) {}
-function f1(x: number) {}
-
-// (x: number) => void
-type T0 = OmitThisParameter<typeof f0>;
-
-// (x: number) => void
-type T1 = OmitThisParameter<typeof f1>;
-
-// string
-type T2 = OmitThisParameter<string>;
-```
+`OmitThisParameter<Type>`从函数类型中移除 this 参数。
 
 ```typescript
 function toHex(this: Number) {
   return this.toString(16);
 }
- 
-const fiveToHex: OmitThisParameter<typeof toHex> = toHex.bind(5);
- 
-console.log(fiveToHex());
+
+type T = OmitThisParameter<typeof toHex>; // () => string
 ```
 
-## `Parameters<T>`
+如果函数没有 this 参数，则返回原始函数类型。
 
-`Parameters<Type>`从函数类型里面提取参数类型，组成一个元组。
-
-该工具类型能够获取函数类型T的参数类型并使用参数类型构造一个元组类型。
+`OmitThisParameter<Type>`的实现如下。
 
 ```typescript
-type T0 = Parameters<() => string>;        // []
+type OmitThisParameter<T> = 
+  unknown extends ThisParameterType<T> ? T :
+  T extends (...args: infer A) => infer R ?
+  (...args: A) => R : T;
+```
 
-type T1 = Parameters<(s: string) => void>; // [string]
+## `Parameters<Type>`
+
+`Parameters<Type>`从函数类型`Type`里面提取参数类型，组成一个元组返回。
+
+```typescript
+type T1 = Parameters<() => string>; // []
+
+type T2 = Parameters<(s:string) => void>; // [s:string]
  
-type T2 = Parameters<<T>(arg: T) => T>;    // [unknown]
+type T3 = Parameters<<T>(arg: T) => T>;    // [arg: unknown]
 
 type T4 = Parameters<
-    (x: { a: number; b: string }) => void
->;                                         // [{ a: number, b: string }]
+  (x:{ a: number; b: string }) => void
+>; // [x: { a: number, b: string }]
 
-type T5 = Parameters<any>;                 // unknown[]
-
-type T6 = Parameters<never>;               // never
-
-type T7 = Parameters<string>;
-//                   ~~~~~~~
-//                   编译错误！string类型不符合约束'(...args: any) => any'
-
-type T8 = Parameters<Function>;
-//                   ~~~~~~~~
-//                   编译错误！Function类型不符合约束'(...args: any) => any'
+type T5 = Parameters<
+  (a:number, b:number) => number
+>; // [a:number, b:number]
 ```
+
+上面示例中，`Parameters<Type>`的返回值会包括函数的参数名，这一点需要注意。
+
+如果参数类型`Type`不是带有参数的函数形式，会报错。
 
 ```typescript
-declare function f1(arg: { a: number; b: string }): void;
- 
-// type T0 = []
-type T0 = Parameters<() => string>;     
-
-// type T1 = [s: string]
-type T1 = Parameters<(s: string) => void>;
-
-// type T2 = [arg: unknown]
-type T2 = Parameters<<T>(arg: T) => T>;
-     
-/* type T3 = [arg: {
-    a: number;
-    b: string;
-}]
-*/
-type T3 = Parameters<typeof f1>;
-     
-// type T4 = unknown[]
-type T4 = Parameters<any>;
-     
-// type T5 = never
-type T5 = Parameters<never>;
+// 报错
+type T1 = Parameters<string>;
 
 // 报错
-type T6 = Parameters<string>;
-
-// 报错
-type T7 = Parameters<Function>;
+type T2 = Parameters<Function>;
 ```
 
-`Parameters<T>`可以提取某个模块内部没有输出的接口类型。
+由于`any`和`never`是两个特殊值，会返回`unknown[]`和`never`。
+
+```typescript
+type T1 = Parameters<any>; // unknown[]
+
+type T2 = Parameters<never>; // never
+```
+
+`Parameters<Type>`主要用于从外部模块提供的函数类型中，获取参数类型。
 
 ```typescript
 interface SecretName {
- first: string;
- last: string;
+  first: string;
+  last: string;
 }
+
 interface SecretSanta {
- name: SecretName;
- gift: string;
+  name: SecretName;
+  gift: string;
 }
-export function getGift(name: SecretName, gift: string): SecretSanta {
+
+export function getGift(
+  name: SecretName,
+  gift: string
+): SecretSanta {
  // ...
 }
 ```
 
-上面示例中，该模块只输出了`getGift()`，没有输出接口`SecretName`和`SecretSanta`。这时可以通过`Parameters<T>`和`ReturnType<T>`，拿到这两个接口的类型。
+上面示例中，模块只输出了函数`getGift()`，没有输出参数`SecretName`和返回值`SecretSanta`。这时就可以通过`Parameters<T>`和`ReturnType<T>`拿到这两个接口类型。
 
 ```typescript
-type MySanta = ReturnType<typeof getGift>; // SecretSanta
-type MyName = Parameters<typeof getGift>[0]; // SecretName
+type ParaT = Parameters<typeof getGift>[0]; // SecretName
+
+type ReturnT = ReturnType<typeof getGift>; // SecretSanta
+```
+
+`Parameters<Type>`的实现如下。
+
+```typescript
+type Parameters<T extends (...args: any) => any> = 
+  T extends (...args: infer P)
+  => any ? P : never
 ```
 
 ## `Partial<Type>`
@@ -391,7 +411,7 @@ type Pick<T, K extends keyof T> = {
 
 ## `Readonly<Type>`
 
-`Readonly<Type>`返回一个新类型，将参数类型的所有属性变为只读属性。
+`Readonly<Type>`返回一个新类型，将参数类型`Type`的所有属性变为只读属性。
 
 ```typescript
 interface A {
@@ -512,200 +532,163 @@ type Partial<T> = {
 };
 ```
 
-## ReadonlyArray
+## `ReadonlyArray<Type>`
 
-`ReadonlyArray`指定数组为只读。
+`ReadonlyArray<Type>`用来生成一个只读数组类型，类型参数`Type`表示数组成员的类型。
 
 ```typescript
-const values: ReadonlyArray<string> = ["a", "b", "c"];
+const values: ReadonlyArray<string> 
+  = ['a', 'b', 'c'];
 
-values[0] = "x"; // Type error
-values.push("x"); // Type error
-values.pop(); // Type error
-values.splice(1, 1); // Type error
+values[0] = 'x'; // 报错
+values.push('x'); // 报错
+values.pop(); // 报错
+values.splice(1, 1); // 报错
 ```
 
-## `ReturnType<T>`
+上面示例中，变量`values`的类型是一个只读数组，所以修改成员会报错，并且那些会修改源数组的方法`push()`、`pop()`、`splice()`等都不存在。
 
-`ReturnType<Type>`提取函数类型的返回值类型。
-
-该工具类型能够获取函数类型T的返回值类型。
+`ReadonlyArray<Type>`的实现如下。
 
 ```typescript
-// string
-type T0 = ReturnType<() => string>;
+interface ReadonlyArray<T> {
+  readonly length: number;
 
-// { a: string; b: number }
-type T1 = ReturnType<() => { a: string; b: number }>;
+  readonly [n: number]: T;
 
-// void
-type T2 = ReturnType<(s: string) => void>;
-
-// {}
-type T3 = ReturnType<<T>() => T>;
-
-// number[]
-type T4 = ReturnType<<T extends U, U extends number[]>() => T>;
-
-// any
-type T5 = ReturnType<never>;
-
-type T6 = ReturnType<boolean>;   // 编译错误
-type T7 = ReturnType<Function>;  // 编译错误
-```
-
-它可以从某个函数实现，提取返回值类型。
-
-```typescript
-function getUserInfo(userId: string) {
   // ...
-  return {
-    userId,
-    name,
-    age,
-    height,
-    weight,
-    favoriteColor,
-  };
 }
-
-type UserInfo = ReturnType<typeof getUserInfo>;
 ```
 
-上面示例中，`getUserInfo()`是一个现有的函数实现，如果想拿到它的返回值类型，可以先使用`typeof getUserInfo`获取它的类型，再用`ReturnType<T>`提取出返回值类型。
+## `ReturnType<Type>`
 
-注意，不能写成`ReturnType<getUserInfo>`，因为其中的`getUserInfo`是一个值，不是一个类型，而`ReturnType<T>`只接受类型作为参数。
+`ReturnType<Type>`提取函数类型`Type`的返回值类型，作为一个新类型返回。
 
 ```typescript
-// type T0 = string 
-type T0 = ReturnType<() => string>;
+type T1 = ReturnType<() => string>; // string
 
-// type T1 = void
-type T1 = ReturnType<(s: string) => void>;
-     
-// type T2 = unknown
-type T2 = ReturnType<<T>() => T>;
-     
-// type T3 = number[]
-type T3 = ReturnType<<T extends U, U extends number[]>() => T>;
-     
-declare function f1(): { a: number; b: string };
-type T4 = ReturnType<typeof f1>;
-/*     
-type T4 = {
-    a: number;
-    b: string;
-}
-*/
+type T2 = ReturnType<() => {
+  a: string; b: number
+}>; // { a: string; b: number }
+
+type T3 = ReturnType<(s:string) => void>; // void
 ```
 
-## ReturnType
-
-ReturnType 是一个预定义类，接受一个函数类型作为类型变量，得到该函数的返回值类型。
+如果参数类型是泛型函数，返回值取决于泛型类型。如果泛型不带有限制条件，就会返回`unknown`。
 
 ```typescript
-type Predicate = (x: unknown) => boolean;
+type T1 = ReturnType<<T>() => T>; // unknown
 
-// type K = boolean
-type K = ReturnType<Predicate>;
+type T2 = ReturnType<
+  <T extends U, U extends number[]>() => T
+>; // number[]
 ```
 
-注意，ReturnType 只能接受函数类型作为参数，不能接受函数名作为参数。
+如果类型不是函数，会报错。
 
 ```typescript
-function f() {
-  return { x: 10, y: 3 };
-}
+type T1 = ReturnType<boolean>; // 报错
 
-// 报错
-type P = ReturnType<f>;
+type T2 = ReturnType<Function>; // 报错
 ```
 
-ReturnType 可以与 typeof 相结合，用于函数名。
+`any`和`never`是两个特殊值，分别返回`any`和`never`。
 
 ```typescript
-function f() {
-  return { x: 10, y: 3 };
-}
+type T1 = ReturnType<any>; // any
 
-/* 等同于
-type P = {
-    x: number;
-    y: number;
-}
-*/
-type P = ReturnType<typeof f>;
+type T2 = ReturnType<never>; // never
 ```
 
-## `ThisParameterType<T>`
-
-`ThisParameterType<Type>`提取函数类型中 this 参数的类型，如果函数没有 this 参数，则类型为 unknown。
-
-该工具类型能够获取函数类型T中this参数的类型，若函数类型中没有定义this参数，则返回unknown类型。在使用“ThisParameterType<T>”工具类型时需要启用“--strict-FunctionTypes”编译选项。
+`ReturnType<Type>`的实现如下。
 
 ```typescript
-/**
-* --strictFunctionTypes=true
-*/
-
-function f0(this: object, x: number) {}
-function f1(x: number) {}
-
-type T0 = ThisParameterType<typeof f0>;  // object
-type T1 = ThisParameterType<typeof f1>;  // unknown
-type T2 = ThisParameterType<string>;     // unknown
+type ReturnType<
+  T extends (...args: any) => any
+> = 
+  T extends (...args: any) => infer R ? R : any;
 ```
+
+## `ThisParameterType<Type>`
+
+`ThisParameterType<Type>`提取函数类型中`this`参数的类型。
 
 ```typescript
 function toHex(this: Number) {
   return this.toString(16);
 }
- 
-function numberToString(n: ThisParameterType<typeof toHex>) {
-  return toHex.apply(n);
+
+type T = ThisParameterType<typeof toHex>; // number
+```
+
+如果函数没有`this`参数，则返回`unknown`。
+
+`ThisParameterType<Type>`的实现如下。
+
+```typescript
+type ThisParameterType<T> =
+  T extends (
+    this: infer U,
+    ...args: never
+  ) => any ? U : unknown；
+```
+
+## `ThisType<Type>`
+
+`ThisType<Type>`不返回类型，只用来跟其他类型组成交叉类型，用来提示 TypeScript 其他类型里面的`this`的类型。
+
+```typescript
+interface HelperThisValue {
+  logError: (error:string) => void;
+}
+
+let helperFunctions:
+  { [name: string]: Function } &
+  ThisType<HelperThisValue> 
+= {
+  hello: function() {
+    this.logError("Error: Something wrong!"); // 正确
+    this.update(); // 报错
+  }
 }
 ```
 
-## `ThisType<T>`
+上面示例中，变量`helperFunctions`的类型是一个正常的对象类型与`ThisType<HelperThisValue>`组成的交叉类型。
 
-`ThisType<Type>`不返回类型，更像一个提示，表明此处的类型与 this 对象有关。
+这里的`ThisType`的作用是提示 TypeScript，变量`helperFunctions`的`this`应该满足`HelperThisValue`的条件。所以，`this.logError()`可以正确调用，而`this.update()`会报错，因为`HelperThisValue`里面没有这个方法。
 
-Note that the noImplicitThis flag must be enabled to use this utility.
+注意，使用这个类型工具时，必须打开`noImplicitThis`设置。
 
-该工具类型比较特殊，它不是用于构造一个新类型，而是用于定义对象字面量的方法中this的类型。如果对象字面量的类型是“ThisType<T>”类型或包含“ThisType<T>”类型的交叉类型，那么在对象字面量的方法中this的类型为T。在使用“ThisType<T>”工具类型时需要启用“--noImplicitThis”编译选项。
+下面是另一个例子。
 
 ```typescript
-/**
- * --noImplicitThis=true
- */
-
-let obj: ThisType<{ x: number }> & { getX: () => number };
+let obj: ThisType<{ x: number }> & 
+  { getX: () => number };
 
 obj = {
-    getX() {
-        this; // { x: number }
-
-        return this.x;
-    },
+  getX() {
+    return this.x + this.y; // 报错
+  },
 };
 ```
 
-此例中，使用交叉类型为对象字面量obj指定了“ThisType<T>”类型，因此obj中getX方法的this类型为“{ x: number; }”类型。
+上面示例中，`getX()`里面的`this.y`会报错，因为根据`ThisType<{ x: number }>`，这个对象的`this`不包含属性`y`。
+
+`ThisType<Type>`的实现就是一个空接口。
 
 ```typescript
-type ObjectDescriptor<D, M> = {
-  data?: D;
-  methods?: M & ThisType<D & M>; // Type of 'this' in methods is D & M
-};
+interface ThisType<T> { }
 ```
 
-## 字符串工具类型
+## 字符串类型工具
 
-TypeScript 内置了四个字符串工具类型，专门用来操作字符串。这四个工具类型都定义在 TypeScript 自带的`.d.ts`文件里面。
+TypeScript 内置了四个字符串类型工具，专门用来操作字符串类型。这四个工具类型都定义在 TypeScript 自带的`.d.ts`文件里面。
+
+它们的实现都是在底层调用 JavaScript 引擎提供 JavaScript 字符操作方法。
 
 ### `Uppercase<StringType>`
 
-`Uppercase<StringType>`将字符串的每个字符转为大写。
+`Uppercase<StringType>`将字符串类型的每个字符转为大写。
 
 ```typescript
 type A = 'hello';
@@ -755,62 +738,6 @@ type B = Uncapitalize<A>;
 
 上面示例中，`Uncapitalize<T>`将 HELLO 转为 hELLO。
 
-## 工具函数
+## 参考链接
 
-```typescript
-/**
- * Exclude from T those types that are assignable to U
- */
-type Exclude<T, U> = T extends U ? never : T;
-
-// %inferred-type: "a" | "b"
-type Result1 = Exclude<1 | 'a' | 2 | 'b', number>;
-
-// %inferred-type: "a" | 2
-type Result2 = Exclude<1 | 'a' | 2 | 'b', 1 | 'b' | 'c'>;
-
-/**
- * Extract from T those types that are assignable to U
- */
-type Extract<T, U> = T extends U ? T : never;
-
-// %inferred-type: 1 | 2
-type Result1 = Extract<1 | 'a' | 2 | 'b', number>;
-
-// %inferred-type: 1 | "b"
-type Result2 = Extract<1 | 'a' | 2 | 'b', 1 | 'b' | 'c'>;
-```
-
-下面是更多的类型映射的例子。
-
-```typescript
-/**
- * Make all properties in T optional
- */
-// 部分类型映射
-type Partial<T> = {
-  [P in keyof T]?: T[P];
-};
-
-/**
- * From T pick a set of properties K
- */
-// 指定发生映射的属性
-type Pick<T, K extends keyof T> = {
-  [P in K]: T[P];
-};
-
-/**
- * Make all properties in T nullable
- */
-type Nullable<T> = {
-  [P in keyof T]: T[P] | null;
-};
-
-/**
- * Turn all properties of T into strings
- */
-type Stringify<T> = {
-  [P in keyof T]: string;
-};
-```
+- [What is TypeScript's ThisType used for?](https://stackoverflow.com/questions/55029032/what-is-typescripts-thistype-used-for)
