@@ -2,19 +2,19 @@
 
 ## 简介
 
-装饰器（Decorator）是一种语法结构，附加在类、方法、存取器、属性和参数上面，用来修改它们的行为。
+装饰器（Decorator）是一种语法结构，用来修改类（class）的行为。
 
-它本身是一个函数，写成`@函数名`，针对所装饰的对象，在运行时调用。
-
-举例来说，装饰器函数是`Injectable()`，那么需要写成`@Injectable`。如果用来一个类`A`，那么写法如下。
+在语法上，装饰器就是一个普通函数，通过`@`前缀附加在所装饰的对象前面，在运行时自动执行。举例来说，有一个函数`Injectable()`当作装饰器使用，那么需要写成`@Injectable`，放在类的前面下。
 
 ```typescript
-@Injectable class A {}
+@Injectable class A {
+  // ...
+}
 ```
 
-加上装饰器以后，类`A`的行为在运行时就会发生改变。相比用子类改变父类的行为，装饰器更加简洁优雅，缺点是不那么直观，功能也受到一些限制。所以，装饰器一般只用来为类添加某种特定行为。
+上面示例中，由于有了装饰器`@Injectable`，类`A`的行为在运行时就会发生改变。
 
-下面示例就是一个最简单的装饰器。
+下面就是一个最简单的装饰器。
 
 ```typescript
 function simpleDecorator() {
@@ -22,10 +22,10 @@ function simpleDecorator() {
 }
 
 @simpleDecorator
-class A {}
+class A {} // "hi"
 ```
 
-上面示例中，函数`simpleDecorator()`用作装饰器，附加在类`A`之上，后者运行时就会打印一行日志。
+上面示例中，函数`simpleDecorator()`用作装饰器，附加在类`A`之上，后者在代码解析时就会打印一行日志。
 
 编译上面的代码会报错，提示没有用到装饰器的参数。现在就为装饰器加上参数，让它更像正式运行的代码。
 
@@ -36,10 +36,26 @@ function simpleDecorator(target:any) {
 }
 
 @simpleDecorator
-class A {}
+class A {} // "hi, this is class A {}" 
 ```
 
-上面的代码就可以顺利通过编译了，代码含义这里先不解释。大家只要理解，类`A`在执行前会先执行装饰器`simpleDecorator()`，并且会向装饰器自动转入参数就可以了。
+上面的代码就可以顺利通过编译了，代码含义这里先不解释。大家只要理解，类`A`在执行前会先执行装饰器`simpleDecorator()`，并且会向装饰器自动传入参数就可以了。
+
+相比使用子类改变父类，装饰器更加简洁优雅，缺点是不那么直观，功能也受到一些限制。所以，装饰器一般只用来为类添加某种特定行为。
+
+```javascript
+@frozen class Foo {
+
+  @configurable(false)
+  @enumerable(true)
+  method() {}
+
+  @throttle(500)
+  expensiveMethod() {}
+}
+```
+
+上面示例中，一共有四个装饰器，一个用在类本身（`@frozen`），另外三个用在类的方法（`@configurable`、`@enumerable`、`@throttle`）。它们不仅增加了代码的可读性，清晰地表达了意图，而且提供一种方便的手段，增加或修改类的功能。
 
 TypeScript 的装饰器是一个实验性功能，编译时需要在命令行打开`--experimentalDecorators`选项。
 
@@ -61,7 +77,11 @@ $ tsc --target ES5 --experimentalDecorators
 }
 ```
 
-装饰器可以用在五个场景。
+装饰器语法是 TypeScript 自己制定的，ECMAScript 相关标准还没有定稿。现在的标准草案与 TypeScript 的语法有很大差别，所以建议谨慎使用装饰器，如果不是非常必要，就暂时不要使用。
+
+## 装饰器的种类
+
+按照所装饰的不同对象，装饰器可以分成五类。
 
 > - 类装饰器（Class Decorators）：用于类。
 > - 属性装饰器（Property Decorators）：用于属性。
@@ -69,24 +89,24 @@ $ tsc --target ES5 --experimentalDecorators
 > - 存取器装饰器（Accessor Decorators）：用于类的 set 或 get 方法。
 > - 参数装饰器（Parameter Decorators）：用于方法的参数。
 
-下面是这五种装饰器一起使用的一个样板。
+下面是这五种装饰器一起使用的一个示例。
 
 ```typescript
-@ClassDecorator()
+@ClassDecorator() // （A）
 class A {
 
-  @PropertyDecorator()
+  @PropertyDecorator() // （B）
   name: string;
 
-  @MethodDecorator()
+  @MethodDecorator() //（C）
   fly(
-    @ParameterDecorator()
+    @ParameterDecorator() // （D）
     meters: number
   ) {
     // code
   }
 
-  @AccessorDecorator()
+  @AccessorDecorator() // （E）
   get egg() {
     // code
   }
@@ -96,7 +116,11 @@ class A {
 }
 ```
 
-注意，装饰器只能在类中使用，要么应用于一个类，要么应用于一个类的成员，不能用于独立的函数、类型或接口。
+上面示例中，A 是类装饰器，B 是属性装饰器，C 是方法装饰器，D 是参数装饰器，E 是存取器装饰器。
+
+注意，构造方法没有方法装饰器，只有参数装饰器。
+
+另外，装饰器只能用于类，要么应用于一个类，要么应用于一个类的内部成员，不能用于独立的函数。
 
 ```typescript
 function Decorator() {
@@ -110,30 +134,6 @@ function decorated() {
 ```
 
 上面示例中，装饰器用于一个普通函数，这是无效的，结果报错。
-
-五种装饰器的用法都不一样，下面逐一讲解。
-
-```javascript
-@frozen class Foo {
-  @configurable(false)
-  @enumerable(true)
-  method() {}
-
-  @throttle(500)
-  expensiveMethod() {}
-}
-```
-
-上面代码一共使用了四个装饰器，一个用在类本身（`@frozen`），另外三个用在类方法（`@configurable`、`@enumerable`、`@throttle`）。它们不仅增加了代码的可读性，清晰地表达了意图，而且提供一种方便的手段，增加或修改类的功能。
-
-
-
-如果同时使用多种装饰器，它们的执行顺序如下。
-
-1. 正常方法和属性的参数装饰器，然后是方法装饰器、存取装饰器、属性装饰器。
-1. 静态方法和属性的参数装饰器，然后是方法装饰器、存取装饰器、属性装饰器。
-1. 构造函数的参数装饰器。
-1. 类装饰器。
 
 ## 类装饰器
 
@@ -1151,57 +1151,129 @@ pex.member(5, 8);
 
 ## 装饰器的执行顺序
 
-不同类型的装饰器按照如下顺序执行。
+前面说过，装饰器只会执行一次，就是在代码解析时执行，哪怕根本没有调用类新建实例，也会执行，而且从此就不再执行了。
 
-1. 每个实例方法（或属性）的参数装饰器、方法装饰器、存取器装饰器、属性装饰器。
-1. 每个静态方法（或属性）的参数装饰器、方法装饰器、存取器装饰器、属性装饰器。
-1. 构造函数的参数装饰器。
+执行装饰器时，按照如下顺序执行。
+
+1. 实例相关的装饰器。
+1. 静态相关的装饰器。
+1. 构造方法的参数装饰器。
 1. 类装饰器。
 
+请看下面的示例。
+
 ```typescript
-function f(key: string): any {
-  // console.log("evaluate: ", key);
+function f(key:string):any {
   return function () {
-    console.log("call: ", key);
+    console.log('执行：', key);
   };
 }
 
-@f("Class Decorator")
+@f('类装饰器')
 class C {
-  @f("Static Property")
-  static prop?: number;
+  @f('静态方法')
+  static method() {}
+  
+  @f('实例方法')
+  method() {}
 
-  @f("Static Method")
-  static method(@f("Static Method Parameter") foo) {}
-
-  constructor(@f("Constructor Parameter") foo) {}
-
-  @f("Instance Method")
-  method(@f("Instance Method Parameter") foo) {}
-
-  @f("Instance Property")
-  prop?: number;
+  constructor(@f('构造方法参数') foo:any) {}
 }
 ```
 
-每个实例方法和属性（或静态方法和属性）的装饰器的执行顺序，按照它们在代码里面出现的顺序。
-
-但是，同一方法或构造函数中不同参数的装饰器的求值顺序是相反的，最后一个参数的装饰器将首先被调用。
+加载上面的示例，输出如下。
 
 ```typescript
-function f(key: string): any {
-  // console.log("evaluate: ", key);
+执行： 实例方法
+执行： 静态方法
+执行： 构造方法参数
+执行： 类装饰器
+```
+
+同一级装饰器的执行顺序，是按照它们的代码顺序。但是，参数装饰器的执行总是早于方法装饰器。
+
+```typescript
+function f(key:string):any {
   return function () {
-    console.log("call: ", key);
+    console.log('执行：', key);
+  };
+}
+
+class C {
+  @f('方法1')
+  m1(@f('参数1') foo:any) {}
+
+  @f('属性1')
+  p1: number;
+
+  @f('方法2')
+  m2(@f('参数2') foo:any) {}
+
+  @f('属性2')
+  p2: number;
+}
+```
+
+加载上面的示例，输出如下。
+
+```typescript
+执行： 参数1
+执行： 方法1
+执行： 属性1
+执行： 参数2
+执行： 方法2
+执行： 属性2
+```
+
+上面示例中，实例装饰器的执行顺序，完全是按照代码顺序的。但是，同一个方法的参数装饰器，总是早于该方法的方法装饰器执行。
+
+如果同一个方法或属性有多个装饰器，那么装饰器将顺序加载、逆序执行。
+
+```typescript
+function f(key:string):any {
+  console.log('加载：', key);
+  return function () {
+    console.log('执行：', key);
+  };
+}
+
+class C {
+  @f('A')
+  @f('B')
+  @f('C')
+  m1() {}
+}
+// 加载： A
+// 加载： B
+// 加载： C
+// 执行： C
+// 执行： B
+// 执行： A
+```
+
+如果同一个方法有多个参数，那么参数也是顺序加载、逆序执行。
+
+```typescript
+function f(key:string):any {
+  console.log('加载：', key);
+  return function () {
+    console.log('执行：', key);
   };
 }
 
 class C {
   method(
-    @f("Parameter Foo") foo,
-    @f("Parameter Bar") bar
+    @f('A') a:any,
+    @f('B') b:any,
+    @f('C') c:any,
   ) {}
 }
+// 加载： A
+// 加载： B
+// 加载： C
+// 执行： C
+// 执行： B
+// 执行： A
 ```
 
 ## 为什么装饰器不能用于函数？
