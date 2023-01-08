@@ -118,7 +118,7 @@ class A {
 
 上面示例中，A 是类装饰器，B 是属性装饰器，C 是方法装饰器，D 是参数装饰器，E 是存取器装饰器。
 
-注意，构造方法没有方法装饰器，只有参数装饰器。
+注意，构造方法没有方法装饰器，只有参数装饰器。类装饰器其实就是用来装饰构造方法。
 
 另外，装饰器只能用于类，要么应用于一个类，要么应用于一个类的内部成员，不能用于独立的函数。
 
@@ -137,11 +137,20 @@ function decorated() {
 
 ## 类装饰器
 
-类装饰器应用于类（class），用来改造类的构造函数。
+类装饰器应用于类（class），但实际上是应用于类的构造方法。
 
-类装饰器有唯一参数，就是构造函数。类装饰器如果有返回值，就会替换掉原来的构造函数。
+类装饰器有唯一参数，就是构造方法，可以在装饰器内部，对构造方法进行各种改造。如果类装饰器有返回值，就会替换掉原来的构造方法。
 
-类装饰器会在代码加载阶段执行，而且只会执行一次。
+类装饰器的类型定义如下。
+
+```typescript
+type ClassDecorator = <TFunction extends Function>
+  (target: TFunction) => TFunction | void;
+```
+
+上面定义中，类型参数`TFunction`必须是函数，实际上就是构造方法。类装饰器的返回值，要么是返回处理后的原始构造方法，要么返回一个新的构造方法。
+
+下面就是一个示例。
 
 ```typescript
 function f(target:any) {
@@ -154,93 +163,13 @@ class A {}
 // 输出：apply decorator
 ```
 
-上面示例中，类`A`并没有新建实例，但是装饰器也会执行。
+上面示例中，使用了装饰器`@f`，因此类`A`的构造方法会自动传入`f`。
 
-如果类装饰器需要其他参数，可以采取“工厂模式”，即返回一个装饰器函数。然后，调用装饰器的时候，就需要先执行一次工厂函数。
+类`A`不需要新建实例，装饰器也会执行。装饰器会在代码加载阶段执行，而不是在运行时执行，而且只会执行一次。
 
-```typescript
-function factory(info:string) {
-  console.log('received: ', info);
-  return function (target:any) {
-    console.log('apply decorator');
-    return target;
-  }
-}
+由于 TypeScript 存在编译阶段，所以装饰器对类的行为的改变，实际上发生在编译阶段。这意味着，TypeScript 装饰器能在编译阶段运行代码，也就是说，它本质就是编译时执行的函数。
 
-@factory('log something')
-class A {}
-```
-
-上面示例中，函数`factory()`的返回值才是装饰器，所以加载装饰器的时候，要先执行一次`@factory('log something')`，才能得到装饰器。这样做的好处是，可以加入额外的参数，本例是`info`。
-
-类装饰器可以没有返回值，如果有返回值，就会替代所装饰的类的构造函数。由于 JavaScript 的类等同于构造函数，所以装饰器通常返回一个新的类。
-
-```typescript
-function decorator(target:object) {
-  return class extends target {
-    value = 123;  
-  };
-}
-
-@decorator
-class Foo {
-  value = 456;
-}
-
-const foo = new Foo();
-console.log(foo.value); // 123
-```
-
-上面示例中，装饰器`decorator`返回一个新的类，替代了原来的类。
-
-上例的装饰器参数`target`类型是`object`，可以改成类，这样就更准确了。
-
-```typescript
-type constructorMixin = {
-  new(...args: any[]): {}
-};
-
-function decorator<T extends constructorMixin> (
-  target: T
-) {
-  return class extends target {
-    value = 123;  
-  };
-}
-```
-
-
-下面是类装饰器的类型描述。
-
-```typescript
-type ClassDecorator = <TFunction extends Function>
-  (target: TFunction) => TFunction | void;
-```
-
-下面是一个例子。
-
-```typescript
-type Consturctor = { new (...args: any[]): any };
-
-function toString<T extends Consturctor>(BaseClass: T) {
-  return class extends BaseClass {
-    toString() {
-      return JSON.stringify(this);
-    }
-  };
-}
-
-@toString
-class C {
-  public foo = "foo";
-  public num = 24;
-}
-
-console.log(new C().toString())
-// -> {"foo":"foo","num":24}
-```
-
-上面的示例为类加了一个`toString()`方法。
+下面再看一个示例。
 
 ```typescript
 @sealed
@@ -259,105 +188,72 @@ function sealed(constructor: Function) {
 }
 ```
 
-下面是一个例子。
+上面示例中，装饰器`@sealed()`会锁定`BugReport`这个类，使得它无法新增或删除静态成员和实例成员。
+
+如果除了构造方法，类装饰器还需要其他参数，可以采取“工厂模式”，即把装饰器写在一个函数里面，该函数可以接受其他参数，执行后返回装饰器。但是，这样就需要调用装饰器的时候，先执行一次工厂函数。
 
 ```typescript
-function withParam(path: string) {
-    console.log(`outer withParam ${path}`);
-    return (target: Function) => {
-        console.log(`inner withParam ${path}`);
-    };
+function factory(info:string) {
+  console.log('received: ', info);
+  return function (target:any) {
+    console.log('apply decorator');
+    return target;
+  }
 }
 
-@withParam('first')
-@withParam('middle')
-@withParam('last')
-class ExampleClass {
-}
-
-/* 输出为
-outer withParam first
-outer withParam middle
-outer withParam last
-inner withParam last
-inner withParam middle
-inner withParam first
-*/
+@factory('log something')
+class A {}
 ```
 
-下面是替换构造函数的例子。
+上面示例中，函数`factory()`的返回值才是装饰器，所以加载装饰器的时候，要先执行一次`@factory('log something')`，才能得到装饰器。这样做的好处是，可以加入额外的参数，本例是参数`info`。
+
+总之，`@`后面要么是一个函数名，要么是函数表达式，甚至可以写出下面这样的代码。
 
 ```typescript
-function Override<T extends { new(...args: any[]): {} }>(target: T) {
-    return class extends target {
-        area(w: number, h: number) {
-            return {
-                w, h, area: w * h
-            };
-        }
-    }
+@((constructor: Function) => {
+  console.log('log something');
+})
+class InlineDecoratorExample {
+  // ...
 }
-
-@Override
-class Overridden {
-
-    area(w: number, h: number) {
-        return w * h;
-    }
-}
-
-console.log(new Overridden().area(5, 6));
-console.log(new Overridden().area(6, 7));
 ```
 
-下面是继承构造函数的例子。
+上面示例中，`@`后面是一个箭头函数，这也是合法的。
+
+类装饰器可以没有返回值，如果有返回值，就会替代所装饰的类的构造函数。由于 JavaScript 的类等同于构造函数的语法糖，所以装饰器通常返回一个新的类，对原有的类进行修改或扩展。
 
 ```typescript
-import * as util from 'util';
-
-function LogClassCreate<T extends { new(...args: any[]): {}}>(target: T) {
-    return class extends target {
-        constructor(...args: any[]) {
-            super(...args);
-            console.log(`Create ${util.inspect(target)} with args=`, args);
-        }
-    }
+function decorator(target:any) {
+  return class extends target {
+    value = 123;  
+  };
 }
 
-@LogClassCreate
-class Rectangle {
-    width: number;
-    height: number;
-
-    constructor(width: number, height: number) {
-        this.height = height;
-        this.width = width;
-    }
-
-    area() { return this.width * this.height; }
+@decorator
+class Foo {
+  value = 456;
 }
 
-@LogClassCreate
-class Circle {
-    diameter: number;
-    constructor(diameter: number) {
-        this.diameter = diameter;
-    }
+const foo = new Foo();
+console.log(foo.value); // 123
+```
 
-    area() { return ((this.diameter / 2) ** 2) * (Math.PI); }
+上面示例中，装饰器`decorator`返回一个新的类，替代了原来的类。
+
+上例的装饰器参数`target`类型是`any`，可以改成构造方法，这样就更准确了。
+
+```typescript
+type Constructor = {
+  new(...args: any[]): {}
+};
+
+function decorator<T extends Constructor> (
+  target: T
+) {
+  return class extends target {
+    value = 123;  
+  };
 }
-
-const rect1 = new Rectangle(3, 5);
-console.log(`area rect1 ${rect1.area()}`);
-
-const rect2 = new Rectangle(5, 8);
-console.log(`area rect2 ${rect2.area()}`);
-
-const rect3 = new Rectangle(8, 13);
-console.log(`area rect3 ${rect3.area()}`);
-
-const circ1 = new Circle(20);
-console.log(`area circ1 ${circ1.area()}`);
 ```
 
 这时，装饰器的行为就是下面这样。
@@ -371,232 +267,31 @@ class A {}
 A = decorator(A) || A;
 ```
 
-也就是说，装饰器是一个对类进行处理的函数。装饰器函数的第一个参数，就是所要装饰的目标类。
+上面代码中，装饰器要么返回一个新的类`A`，要么不返回任何值，`A`保持装饰器处理后的状态。
 
-```javascript
-@testable
-class MyTestableClass {
-  // ...
-}
+## 方法装饰器
 
-function testable(target) {
-  target.isTestable = true;
-}
-
-MyTestableClass.isTestable // true
-```
-
-上面代码中，`@testable`就是一个装饰器。它修改了`MyTestableClass`这个类的行为，为它加上了静态属性`isTestable`。`testable`函数的参数`target`是`MyTestableClass`类本身。
-
-```javascript
-function testable(target) {
-  // ...
-}
-```
-
-上面代码中，`testable`函数的参数`target`，就是会被装饰的类。
-
-如果觉得一个参数不够用，可以在装饰器外面再封装一层函数。
-
-```javascript
-function testable(isTestable) {
-  return function(target) {
-    target.isTestable = isTestable;
-  }
-}
-
-@testable(true)
-class MyTestableClass {}
-MyTestableClass.isTestable // true
-
-@testable(false)
-class MyClass {}
-MyClass.isTestable // false
-```
-
-上面代码中，装饰器`testable`实际上有两个参数（`isTestable`和`target`），但是由于最终只能接受`target`这一个参数，所以必须先调用一次，接受参数`isTestable`，然后返回一个函数，由该函数接受参数`target`。
-
-这种分次调用的写法，解决了装饰器接受多个参数的问题，同时也可以根据其他参数的不同（上例的`@testable(true)`和`@testable(false)`），来调整装饰器的行为，有着广泛的应用。
-
-总之，`@`后面要么是一个函数名，要么是函数表达式，甚至可以写出下面这样的代码。
-
-```typescript
-@((constructor: Function) => {
-    console.log(`Inline constructor decorator `, constructor);
-})
-class InlineDecoratorExample {
-    // properties and methods
-}
-```
-
-上面示例中，`@`后面是一个箭头函数，只用来输出信息，这也是合法的。
-
-注意，装饰器对类的行为的改变，是代码编译时发生的，而不是在运行时。这意味着，装饰器能在编译阶段运行代码。也就是说，装饰器本质就是编译时执行的函数。
-
-前面的例子是为类添加一个静态属性，如果想添加实例属性，可以通过目标类的`prototype`对象操作。
-
-```javascript
-function testable(target) {
-  target.prototype.isTestable = true;
-}
-
-@testable
-class MyTestableClass {}
-
-let obj = new MyTestableClass();
-obj.isTestable // true
-```
-
-上面代码中，装饰器函数`testable`是在目标类的`prototype`对象上添加属性，因此就可以在实例上调用。
-
-下面是另外一个例子。
-
-```javascript
-// mixins.js
-export function mixins(...list) {
-  return function (target) {
-    Object.assign(target.prototype, ...list)
-  }
-}
-
-// main.js
-import { mixins } from './mixins.js'
-
-const Foo = {
-  foo() { console.log('foo') }
-};
-
-@mixins(Foo)
-class MyClass {}
-
-let obj = new MyClass();
-obj.foo() // 'foo'
-```
-
-上面代码通过装饰器`mixins`，把`Foo`对象的方法添加到了`MyClass`的实例上面。可以用`Object.assign()`模拟这个功能。
-
-```javascript
-const Foo = {
-  foo() { console.log('foo') }
-};
-
-class MyClass {}
-
-Object.assign(MyClass.prototype, Foo);
-
-let obj = new MyClass();
-obj.foo() // 'foo'
-```
-
-实际开发中，React 与 Redux 库结合使用时，常常需要写成下面这样。
-
-```javascript
-class MyReactComponent extends React.Component {}
-
-export default connect(mapStateToProps, mapDispatchToProps)(MyReactComponent);
-```
-
-有了装饰器，就可以改写上面的代码。
-
-```javascript
-@connect(mapStateToProps, mapDispatchToProps)
-export default class MyReactComponent extends React.Component {}
-```
-
-相对来说，后一种写法看上去更容易理解。
-
-下面是利用装饰器，覆盖掉同名方法的例子。
-
-```typescript
-function Override<T extends { new(...args: any[]): {} }>(target: T) {
-    return class extends target {
-        area(w: number, h: number) {
-            return {
-                w, h, area: w * h
-            };
-        }
-    }
-}
-
-@Override
-class Overridden {
-    area(w: number, h: number) {
-        return w * h;
-    }
-}
-```
-
-利用上面这种覆盖的写法，可以实现打印功能。
-
-```typescript
-import * as util from 'util';
-
-function LogClassCreate<T extends { new(...args: any[]): {}}>(target: T) {
-    return class extends target {
-        constructor(...args: any[]) {
-            super(...args);
-            console.log(`Create ${util.inspect(target)} with args=`, args);
-        }
-    }
-}
-```
-
-类装饰器如果没有参数，会导致报错。
-
-```typescript
-function Decorator() {
-    console.log('In Decorator');
-}
-
-// 报错
-@Decorator
-class FooClass {
-    foo: string;
-}
-```
-
-## 方法的装饰
-
-装饰器不仅可以装饰类，还可以装饰类的方法。
-
-```javascript
-class Person {
-  @readonly
-  name() { return `${this.first} ${this.last}` }
-}
-```
-
-上面代码中，装饰器`@readonly`用来装饰“类”的`name()`方法。
-
-装饰器函数`readonly`一共可以接受三个参数。
-
-- 第一个参数`target`：（对于类的静态方法）类的构造函数，或者（对于类的实例方法）类的原型。
-- 第二个参数`propertyKey`：该方法的方法名，类型为字符串。
-- 第三个参数`descriptor`：该方法的描述对象。
-
-装饰器函数的返回值（如果有的话），就是修改后的该方法的描述对象。下面是它的类型签名。
+方法装饰器用来装饰类的方法，它的类型定义如下。
 
 ```typescript
 type MethodDecorator = <T>(
   target: Object,
-  propertyKey: string | symbol,
+  propertyKey: string|symbol,
   descriptor: TypedPropertyDescriptor<T>
 ) => TypedPropertyDescriptor<T> | void;
 ```
 
-```typescript
-class Greeter {
-  greeting: string;
-  constructor(message: string) {
-    this.greeting = message;
-  }
- 
-  @enumerable(false)
-  greet() {
-    return "Hello, " + this.greeting;
-  }
-}
+方法装饰器一共可以接受三个参数。
 
+- target：（对于类的静态方法）类的构造函数，或者（对于类的实例方法）类的原型。
+- propertyKey：所装饰方法的方法名，类型为`string|symbol`。
+- descriptor：所装饰方法的描述对象。
+
+方法装饰器的返回值（如果有的话），就是修改后的该方法的描述对象，可以覆盖原始方法的描述对象。
+
+下面是一个示例。
+
+```typescript
 function enumerable(value: boolean) {
   return function (
     target: any,
@@ -606,14 +301,31 @@ function enumerable(value: boolean) {
     descriptor.enumerable = value;
   };
 }
+
+class Greeter {
+  greeting: string;
+
+  constructor(message:string) {
+    this.greeting = message;
+  }
+ 
+  @enumerable(false)
+  greet() {
+    return 'Hello, ' + this.greeting;
+  }
+}
 ```
 
-上面示例中，装饰器`@enumerable()`装饰 Greeter 类的`greet()`方法，作用是修改该方法的描述对象的可遍历性属性`enumerable`。`@enumerable(false)`表示将该方法修改成不可遍历。
+上面示例中，方法装饰器`@enumerable()`装饰 Greeter 类的`greet()`方法，作用是修改该方法的描述对象的可遍历性属性`enumerable`。`@enumerable(false)`表示将该方法修改成不可遍历。
 
 下面再看一个例子。
 
 ```typescript
-function logger(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+function logger(
+  target: any,
+  propertyKey: string,
+  descriptor: PropertyDescriptor
+) {
   const original = descriptor.value;
 
   descriptor.value = function (...args) {
@@ -630,278 +342,58 @@ class C {
     return x + y;
   }
 }
-
-const c = new C();
-c.add(1, 2);
-// -> params: 1, 2
-// -> result: 3
 ```
+
+上面示例中，方法装饰器`@logger`用来装饰`add()`方法，它的作用是将该方法的结果输出一条日志。每当`add()`调用一次，控制台就会打印出一条日志“result: ...”。
+
+## 属性装饰器
+
+属性装饰器用来装饰属性，类型定义如下。
 
 ```typescript
-import * as util from 'util';
-
-function logMethod(target: Object, propertyKey: string,
-                   descriptor: PropertyDescriptor) {
-
-    console.log(`logMethod`, {
-        target, propertyKey, descriptor, 
-        targetKeys: Object.getOwnPropertyNames(target),
-        function: descriptor.value,
-        funcText: descriptor.value.toString()
-    });
-}
-
-class MethodExample {
-
-    @logMethod
-    method(x: number) {
-        return x * 2;
-    }
-}
-
-/* 输出
-logMethod {
-  target: {},
-  propertyKey: 'method',
-  descriptor: {
-    value: [Function: method],
-    writable: true,
-    enumerable: false,
-    configurable: true
-  },
-  targetKeys: [ 'constructor', 'method' ],
-  function: [Function: method],
-  funcText: 'method(x) {\n        return x * 2;\n    }'
-}
-*/
-```
-
-利用属性描述对象，可以获得所装饰的方法本身，下面是一个输出调试信息的例子。
-
-```typescript
-function MethodSpy(target: Object,
-    propertyKey: string, descriptor: PropertyDescriptor) {
-
-    const originalMethod = descriptor.value;
-    descriptor.value = function (...args: any[]) {
-        console.log(`MethodSpy before ${propertyKey}`, args);
-        const result = originalMethod.apply(this, args);
-        console.log(`MethodSpy after ${propertyKey}`, result);
-        return result;
-    }
-}
-
-class SpiedOn {
-
-    @MethodSpy
-    area(width: number, height: number) {
-        return width * height;
-    }
-
-    @MethodSpy
-    areaCircle(diameter: number) {
-        return Math.PI * ((diameter / 2) ** 2);
-    }
-}
-```
-
-
-
-```javascript
-function readonly(target, name, descriptor){
-  // descriptor对象原来的值如下
-  // {
-  //   value: specifiedFunction,
-  //   enumerable: false,
-  //   configurable: true,
-  //   writable: true
-  // };
-  descriptor.writable = false;
-  return descriptor;
-}
-
-readonly(Person.prototype, 'name', descriptor);
-// 类似于
-Object.defineProperty(Person.prototype, 'name', descriptor);
-```
-
-装饰器第一个参数是类的原型对象，上例是`Person.prototype`，装饰器的本意是要“装饰”类的实例，但是这个时候实例还没生成，所以只能去装饰原型（这不同于类的装饰，那种情况时`target`参数指的是类本身）；第二个参数是所要装饰的属性名，第三个参数是该属性的描述对象。
-
-另外，上面代码说明，装饰器（readonly）会修改属性的描述对象（descriptor），然后被修改的描述对象再用来定义属性。
-
-下面是另一个例子，修改属性描述对象的`enumerable`属性，使得该属性不可遍历。
-
-```javascript
-class Person {
-  @nonenumerable
-  get kidCount() { return this.children.length; }
-}
-
-function nonenumerable(target, name, descriptor) {
-  descriptor.enumerable = false;
-  return descriptor;
-}
-```
-
-下面的`@log`装饰器，可以起到输出日志的作用。
-
-```javascript
-class Math {
-  @log
-  add(a, b) {
-    return a + b;
-  }
-}
-
-function log(target, name, descriptor) {
-  var oldValue = descriptor.value;
-
-  descriptor.value = function() {
-    console.log(`Calling ${name} with`, arguments);
-    return oldValue.apply(this, arguments);
-  };
-
-  return descriptor;
-}
-
-const math = new Math();
-
-// passed parameters should get logged now
-math.add(2, 4);
-```
-
-上面代码中，`@log`装饰器的作用就是在执行原始的操作之前，执行一次`console.log`，从而达到输出日志的目的。
-
-装饰器有注释的作用。
-
-```javascript
-@testable
-class Person {
-  @readonly
-  @nonenumerable
-  name() { return `${this.first} ${this.last}` }
-}
-```
-
-从上面代码中，我们一眼就能看出，`Person`类是可测试的，而`name`方法是只读和不可枚举的。
-
-下面是使用 Decorator 写法的[组件](https://github.com/ionic-team/stencil)，看上去一目了然。
-
-```javascript
-@Component({
-  tag: 'my-component',
-  styleUrl: 'my-component.scss'
-})
-export class MyComponent {
-  @Prop() first: string;
-  @Prop() last: string;
-  @State() isVisible: boolean = true;
-
-  render() {
-    return (
-      <p>Hello, my name is {this.first} {this.last}</p>
-    );
-  }
-}
-```
-
-如果同一个方法有多个装饰器，会像剥洋葱一样，先从外到内进入，然后由内向外执行。
-
-```javascript
-function dec(id){
-  console.log('evaluated', id);
-  return (target, property, descriptor) => console.log('executed', id);
-}
-
-class Example {
-    @dec(1)
-    @dec(2)
-    method(){}
-}
-// evaluated 1
-// evaluated 2
-// executed 2
-// executed 1
-```
-
-上面代码中，外层装饰器`@dec(1)`先进入，但是内层装饰器`@dec(2)`先执行。
-
-除了注释，装饰器还能用来类型检查。所以，对于类来说，这项功能相当有用。从长期来看，它将是 JavaScript 代码静态分析的重要工具。
-
-## 属性的装饰
-
-属性装饰器用来装饰属性，用法如下。
-
-```typescript
-class ContainingClass {
-  @Decorator(?? optional parameters)
-  name: type;
-}
+type PropertyDecorator =
+  (
+    target: Object,
+    propertyKey: string|symbol
+  ) => void;
 ```
 
 属性装饰器函数接受两个参数。
 
-- 第一个参数：（对于类的普通属性）类的 prototype 对象，或者（对于类的静态属性）类的构造函数。
-- 第二个参数：该属性的属性名，类型为字符串。
+- target：（对于实例属性）类的原型对象（prototype），或者（对于静态属性）类的构造函数。
+- propertyKey：所装饰属性的属性名，注意类型有可能是字符串，也有可能是 Symbol 值。
 
-该装饰器不需要返回值。下面是它的类型签名。
+属性装饰器不需要返回值，如果有的话，也会被忽略。
 
-```typescript
-type PropertyDecorator =
-  (target: Object, propertyKey: string | symbol) => void;
-```
+下面是一个示例。
 
 ```typescript
-function logProperty(target: Object, member: string): any {
-    const prop = Object.getOwnPropertyDescriptor(target, member);
-    console.log(`Property ${member} ${prop}`);
-}
-
-class PropertyExample {
-    @logProperty
-    name: string;
-}
-// 输出 Property name undefined
-```
-
-下面是一个例子。
-
-```typescript
-function ValidRange(min: number, max: number) {
-    return (target: Object, member: string) => {
-        console.log(`Installing ValidRange on ${member}`);
-        let value: number;
-        Object.defineProperty(target, member, {
-            enumerable: true,
-            get: function() {
-                console.log("Inside ValidRange get");
-                return value;
-            },
-            set: function(v: number) {
-                console.log(`Inside ValidRange set ${v}`);
-                if (v < min || v > max) {
-                    throw new Error(`Not allowed value ${v}`);
-                }
-                value = v;
-            }
-        });
-    }
+function ValidRange(min:number, max:number) {
+  return (target:Object, key:string) => {
+    Object.defineProperty(target, key, {
+      set: function(v:number) {
+        if (v < min || v > max) {
+          throw new Error(`Not allowed value ${v}`);
+        }
+      }
+    });
+  }
 }
 
 // 输出 Installing ValidRange on year
 class Student {
-    @ValidRange(1900, 2050)
-    year: number;
+  @ValidRange(1920, 2020)
+  year!: number;
 }
+```
 
+上面示例中，装饰器`ValidRange`对属性`year`设立了一个上下限检查器，只要该属性赋值时，超过了上下限，就会报错。
+
+```typescript
 const stud = new Student();
 
-// Inside ValidRange set 1901
-stud.year = 1901;
-
-// 先输出 Inside ValidRange set 1899
-// 然后报错 Uncaught Error: Not allowed value 1899
-stud.year = 1899;
+// 报错 Not allowed value 2022 
+stud.year = 2022;
 ```
 
 ## 存取器的装饰
