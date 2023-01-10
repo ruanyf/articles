@@ -396,42 +396,113 @@ const stud = new Student();
 stud.year = 2022;
 ```
 
-## 存取器的装饰
+注意，属性装饰器的第一个参数，对于实例属性是类的原型对象，而不是实例对象（即不是`this`对象）。这是因为装饰器执行时，类还没有新建实例，所以实例对象不存在。
 
-装饰器可以用于类的存取器（accessor），所谓“存取器”指的是某个属性的取值器（getter）和存值器（setter）。
+由于拿不到`this`，所以属性装饰器无法获得实例属性的值。
 
 ```typescript
-class Example {
-
-    #name: string;
-
-    @Decorator
-    set name(n: string) { this.#name = n; }
-    get name() { return #name; }
-
-    #width: number;
-    #height: number;
-
-    @Decorator
-    get area() { return this.#width * this.#height; }
+function logProperty(target: Object, member: string) {
+  const prop = Object.getOwnPropertyDescriptor(target, member);
+  console.log(`Property ${member} ${prop}`);
 }
+
+class PropertyExample {
+  @logProperty
+  name:string = 'Foo';
+}
+// 输出 Property name undefined
 ```
 
-上面示例中，`@Decorator`装饰`name`属性的存值器和取值器，同时也装饰`area`属性的取值器。
+上面示例中，属性装饰器`@logProperty`内部想要获取实例属性`name`的属性描述对象，结果拿到的是`undefined`。
 
-存取方法的装饰器函数可以有三个参数。
+因为上例的`target`是类的原型对象，不是实例对象，所以拿不到`name`属性，也就是说`target.name`是不存在的，所以拿到的是`undefined`。只有通过`this.name`才能拿到`name`属性，但是这时`this`还不存在。
 
-- 第一个参数：（对于类的静态属性的存取方法）类的构造函数，或者（对于类的实例属性的存取方法）类的原型。
-- 第二个参数：该属性的属性名。
-- 第三个参数：该属性的描述对象。
-
-装饰器的返回值（如果有的话），会作为该属性新的描述对象。它的类型签名与方法装饰器的类型签名是一样的。
+不过，如果属性装饰器设置了当前属性的取值器（setter），然后在构造函数里面为实例属性赋值，这时可以拿到属性的值。
 
 ```typescript
+function Min(limit:number) {
+  return function(
+    target: Object,
+    propertyKey: string
+  ) { 
+    let value: string;
+
+    const getter = function() {
+      return value;
+    };
+
+    const setter = function(newVal:string) {
+      if(newVal.length < limit) {
+        throw new Error(`Your password should be bigger than ${limit}`);
+      }
+      else {
+        value = newVal;
+      }      
+    }; 
+    Object.defineProperty(target, propertyKey, {
+      get: getter,
+      set: setter
+    }); 
+  }
+}
+
+class User {
+  username: string;
+  
+  @Min(8)
+  password: string;
+  
+  constructor(username: string, password: string){
+    this.username = username;
+    this.password = password;
+  }    
+}
+
+const u = new User('Foo', 'pass'); 
+// 报错 Your password should be bigger than 8 
+```
+
+上面示例中，属性装饰器`@Min`通过设置存取器，拿到了实例属性的值。
+
+## 存取器装饰器
+
+存取器装饰器用来装饰类的存取器（accessor）。所谓“存取器”指的是某个属性的取值器（getter）和存值器（setter）。
+
+存取器装饰器的类型定义，与方法装饰器一致。
+
+```typescript
+type AccessorDecorator = <T>(
+  target: Object,
+  propertyKey: string|symbol,
+  descriptor: TypedPropertyDescriptor<T>
+) => TypedPropertyDescriptor<T> | void;
+```
+
+存取器装饰器有三个参数。
+
+- target：（对于静态属性的存取器）类的构造函数，或者（对于实例属性的存取器）类的原型。
+- propertyKey：存取器的属性名。
+- descriptor：存取器的属性描述对象。
+
+存取器装饰器的返回值（如果有的话），会作为该属性新的描述对象。
+
+下面是一个示例。
+
+```typescript
+function configurable(value: boolean) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    descriptor.configurable = value;
+  };
+}
+
 class Point {
   private _x: number;
   private _y: number;
-  constructor(x: number, y: number) {
+  constructor(x:number, y:number) {
     this._x = x;
     this._y = y;
   }
@@ -446,200 +517,142 @@ class Point {
     return this._y;
   }
 }
-
-function configurable(value: boolean) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    descriptor.configurable = value;
-  };
-}
 ```
 
-上面示例中，装饰器`@configurable(false)`关闭了所装饰属性（`x`和`y`）的描述对象的`configurable`属性（可配置性）。
+上面示例中，装饰器`@configurable(false)`关闭了所装饰属性（`x`和`y`）的属性描述对象的`configurable`键（即关闭了属性的可配置性）。
 
-TypeScript 不允许对同一个属性的存取器使用同一个装饰器，换句话说只能装饰一个，否则就会报错。
+下面的示例是将装饰器用来验证属性，如果赋值不满足条件就报错。
+
+```typescript
+function validator(
+  target: Object,
+  propertyKey: string,
+  descriptor: PropertyDescriptor
+){
+  const originalGet = descriptor.get;
+  const originalSet = descriptor.set;
+  
+  if (originalSet) {
+    descriptor.set = function (val) {
+      if (val > 100) {
+        throw new Error(`Invalid value for ${propertyKey}`);
+      }
+      originalSet.call(this, val);
+    };
+  }
+}
+
+class C {
+  #foo!: number;
+
+  @validator
+  set foo(v) {
+    this.#foo = v;
+  }
+
+  get foo() {
+    return this.#foo;
+  }
+}
+
+const c = new C();
+c.foo = 150;
+// 报错
+```
+
+上面示例中，装饰器用自己定义的存值器，取代了原来的存值器，加入了验证条件。
+
+TypeScript 不允许对同一个属性的存取器（getter 和 setter）使用同一个装饰器，也就是说只能装饰一个，否则报错。
 
 ```typescript
 // 报错
-@Decorator
-set name(n: string) { this.#name = n; }
+class Person {
+  #name:string;
 
-@Decorator
-get name() { return #name; }
+  @Decorator
+  set name(n:string) {
+    this.#name = n;
+  }
+
+  @Decorator // 报错
+  get name() {
+    return this.#name;
+  }
+}
 ```
 
-上面的示例会报错，因为`@Decorator`不能同时装饰`name`的存值器和取值器
+上面示例中，`@Decorator`同时装饰`name`属性的存值器和取值器，所以报错。
 
 但是，下面的写法不会报错。
 
 ```typescript
-@Decorator
-set name(n: string) { this.#name = n; }
-get name() { return #name; }
-```
+class Person {
+  #name:string;
 
-上面的示例不会报错，因为`@Decorator`只会装饰它后面第一个出现的存值器（`set name()`），并不装饰取值器（`get name()`）。
-
-装饰器之所以不能同时用于同一个属性的存值器和取值器，原因是装饰器可以从属性的描述对象上面，同时拿到取值器和存值器，因此只调用一次就够了。
-
-```typescript
-descriptor: {
-    get: [Function: get num],
-    set: [Function: set num],
-    enumerable: false,
-    configurable: true
+  @Decorator
+  set name(n:string) {
+    this.#name = n;
+  }
+  get name() {
+    return this.#name;
+  }
 }
 ```
 
-```typescript
-function LogAccessor(target: Object, propertyKey: string,
-  descriptor: PropertyDescriptor) {
+上面示例中，`@Decorator`只装饰它后面第一个出现的存值器（`set name()`），并不装饰取值器（`get name()`），所以不报错。
 
-    console.log(`LogAccessor`, {
-        target, propertyKey, descriptor
-  });
-}
+装饰器之所以不能同时用于同一个属性的存值器和取值器，原因是装饰器可以从属性描述对象上面，同时拿到取值器和存值器，因此只调用一次就够了。
 
-class Simple {
+## 参数装饰器
 
-    #num: number;
-
-    @LogAccessor
-    set num(w: number) { this.#num = w; }
-    get num() { return this.#num; }
-}
-```
-
-
-下面的例子就是改写原始的存取器。
-
-```typescript
-function AccessorSpy<T>() {
-    return function (target: Object, propertyKey: string,
-                    descriptor: PropertyDescriptor) {
-
-        const originals = {
-            get: descriptor.get,
-            set: descriptor.set
-        };
-        if (originals.get) {
-            descriptor.get = function (): T {
-                const ret: T = originals.get.call(this);
-                console.log(`AccessorSpy get ${String(propertyKey)}`, ret);
-                return ret;
-            };
-        }
-        if (originals.set) {
-            descriptor.set = function(newval: T) {
-                console.log(`AccessorSpy set ${String(propertyKey)}`, newval);
-                originals.set.call(this, newval);
-            };
-        }
-    }
-}
-```
-
-装饰器还可以用作属性的验证，如果赋值时不满足条件就报错。
-
-```typescript
-function Validate<T>(validator: Function) {
-    return (target: Object, propertyKey: string,
-        descriptor: PropertyDescriptor) => {
-        
-        const originals = {
-            get: descriptor.get,
-            set: descriptor.set
-        };
-        if (originals.set) {
-            descriptor.set = function(newval: T) {
-                console.log(`Validate set ${String(propertyKey)}`, newval);
-                if (validator) {
-                    if (!validator(newval)) {
-                        throw new Error(`Invalid value for ${propertyKey} -- ${newval}`);
-                    }
-                }
-                originals.set.call(this, newval);
-            };
-        }
-    }
-}
-
-class CarSeen {
-
-    #speed: number;
-
-    @Validate<number>((speed: number) => {
-        console.log(`Validate speed ${speed}`);
-        if (typeof speed !== 'number') return false;
-        if (speed < 10 || speed > 65) return false;
-        return true;
-    })
-    set speed(speed) {
-        console.log(`set speed ${speed}`);
-        this.#speed = speed; }
-    get speed() { return this.#speed; }
-
-}
-```
-
-## 参数的装饰
-
-参数装饰器用来装饰构造函数或者方法的参数。
-
-```typescript
-@ClassDecorator()
-class A {
-...
-    @MethodDecorator()
-    fly(
-        @ParameterDecorator(?? optional parameters)
-        meters: number
-    ) {
-        // code
-    }
-...
-}
-```
-
-装饰参数时，装饰器接受三个参数。
-
-- 第一个参数：（对于静态方法）类的构造函数，或者（对于类的实例方法）类的原型。
-- 第二个参数：当前方法的方法名，类型为字符串。
-- 第三个参数：当前参数在函数参数序列的位置（从0开始）。
-
-该装饰器不需要返回值。下面是它的类型签名。
+参数装饰器用来装饰构造方法或者其他方法的参数。它的类型定义如下。
 
 ```typescript
 type ParameterDecorator = (
   target: Object,
-  propertyKey: string | symbol,
+  propertyKey: string|symbol,
   parameterIndex: number
 ) => void;
 ```
 
+参数装饰器接受三个参数。
+
+- target：（对于静态方法）类的构造函数，或者（对于类的实例方法）类的原型对象。
+- propertyKey：所装饰的方法的名字，类型为`string|symbol`。
+- parameterIndex：当前参数在方法的参数序列的位置（从0开始）。
+
+该装饰器不需要返回值，如果有的话会被忽略。
+
+下面是一个示例。
+
 ```typescript
-import * as util from 'util';
-
-function logParameter(target: Object, propertyKey: string | symbol,
-                        parameterIndex: number) {
-
-    console.log(`logParameter ${target} ${util.inspect(target)} ${String(propertyKey)} ${parameterIndex}`);
+function log(
+  target: Object,
+  propertyKey: string|symbol,
+  parameterIndex: number
+) {
+  console.log(`${String(propertyKey)} NO.${parameterIndex} Parameter`);
 }
 
-class ParameterExample {
-
-    member(@logParameter x: number,
-           @logParameter y: number) {
-        console.log(`member ${x} ${y}`);
-    }
+class C {
+  member(
+    @log x:number,
+    @log y:number
+  ) {
+    console.log(`member Paremeters: ${x} ${y}`);
+  }
 }
 
-const pex = new ParameterExample();
-pex.member(2, 3);
-pex.member(3, 5);
-pex.member(5, 8);
+const c = new C();
+c.member(5, 5);
+// member NO.1 Parameter
+// member NO.0 Parameter 
+// member Paremeters: 5 5 
 ```
 
-跟其他装饰器不同，参数装饰器主要用于输出信息，没有办法修改实例方法的行为。
+上面示例中，参数装饰器会输出参数的位置序号。注意，后面的参数会先输出。
+
+跟其他装饰器不同，参数装饰器主要用于输出信息，没有办法修改类的行为。
 
 ## 装饰器的执行顺序
 
@@ -770,62 +783,53 @@ class C {
 
 ## 为什么装饰器不能用于函数？
 
-装饰器只能用于类和类的方法，不能用于函数，因为存在函数提升。
+装饰器只能用于类和类的方法，不能用于函数，主要原因是存在函数提升。
 
-```javascript
-var counter = 0;
+JavaScript 的函数不管在代码的什么位置，都会提升到代码顶部。
 
-var add = function () {
+```typescript
+addOne(1);
+function addOne(n:number) {
+  return n + 1;
+}
+```
+
+上面示例中，函数`addOne()`不会因为在定义之前执行而报错，原因就是函数存在提升，会自动提升到代码顶部。
+
+如果允许装饰器可以用于普通函数，那么就有可能导致意想不到的情况。
+
+```typescript
+let counter = 0;
+
+let add = function (target:any) {
   counter++;
 };
 
 @add
 function foo() {
+  //...
 }
 ```
 
-上面的代码，意图是执行后`counter`等于 1，但是实际上结果是`counter`等于 0。因为函数提升，使得实际执行的代码是下面这样。
+上面示例中，本来的意图是装饰器`@add`每使用一次，变量`counter`就加`1`，但是实际上会报错，因为函数提升的存在，使得实际执行的代码是下面这样。
 
 ```javascript
-var counter;
-var add;
-
-@add
+@add // 报错
 function foo() {
+  //...
 }
 
-counter = 0;
-
-add = function () {
+let counter = 0;
+let add = function (target:any) {
   counter++;
 };
 ```
 
-下面是另一个例子。
-
-```javascript
-var readOnly = require("some-decorator");
-
-@readOnly
-function foo() {
-}
-```
-
-上面代码也有问题，因为实际执行是下面这样。
-
-```javascript
-var readOnly;
-
-@readOnly
-function foo() {
-}
-
-readOnly = require("some-decorator");
-```
+上面示例中，`@add`还没有定义就调用了，从而报错。
 
 总之，由于存在函数提升，使得装饰器不能用于函数。类是不会提升的，所以就没有这方面的问题。
 
-另一方面，如果一定要装饰函数，可以采用高阶函数的形式直接执行。
+另一方面，如果一定要装饰函数，可以采用高阶函数的形式直接执行，没必要写成装饰器。
 
 ```javascript
 function doSomething(name) {
@@ -844,74 +848,29 @@ function loggingDecorator(wrapped) {
 const wrapped = loggingDecorator(doSomething);
 ```
 
+上面示例中，`loggingDecorator()`是一个装饰器，只要把原始函数传入它执行，就能起到装饰器的效果。
+
 ## 多个装饰器的合成
 
-多个装饰器可以应用于同一个对象。
+多个装饰器可以应用于同一个目标对象，可以写在一行。
 
-```javascript
+```typescript
 @f @g x
-// 或者写成
+```
+
+上面示例中，装饰器`@f`和`@g`同时装饰目标对象`x`。
+
+多个装饰器也可以写成多行。
+
+```typescript
 @f
 @g
 x
 ```
 
-多重装饰器的效果，类似于函数的合成。对于上例来说，就是执行`f(g(x))`。
+多个装饰器的效果，类似于函数的合成，按照从里到外的顺序执行。对于上例来说，就是执行`f(g(x))`。
 
-编译器执行的时候，会从上到下先得到每个装饰器的最终值，然后再从下到上，将对象依次作用于每个装饰器。
-
-```typescript
-function withParam(path: string) {
-    console.log(`outer withParam ${path}`);
-    return (target: Function) => {
-        console.log(`inner withParam ${path}`);
-    };
-}
-
-@withParam('first')
-@withParam('middle')
-@withParam('last')
-class ExampleClass {
-}
-
-/*
-outer withParam first
-outer withParam middle
-outer withParam last
-inner withParam last
-inner withParam middle
-inner withParam first
-*/
-```
-
-```typescript
-function first() {
-  console.log("first(): factory evaluated");
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    console.log("first(): called");
-  };
-}
- 
-function second() {
-  console.log("second(): factory evaluated");
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    console.log("second(): called");
-  };
-}
- 
-class ExampleClass {
-  @first()
-  @second()
-  method() {}
-}
-
-// first(): factory evaluated
-// second(): factory evaluated
-// second(): called
-// first(): called
-```
-
-上面示例中，先从上到下计算装饰器`@first()`和`@second()`的值，然后再从下到上将`method`作用于装饰器`@second()`和`@first()`。
+前面也说过，如果`f`和`g`是表达式，那么需要先从外到里求值。
 
 ## core-decorators.js
 
@@ -1355,6 +1314,8 @@ class MyClass {}
 
 ## 参考链接
 
+- [A Complete Guide to TypeScript Decorators](https://saul-mirone.github.io/a-complete-guide-to-typescript-decorator/), by Saul Mirone
 - [Deep introduction to using and implementing TypeScript decorators](https://techsparx.com/nodejs/typescript/decorators/introduction.html), by David Herron
 - [Deep introduction to property decorators in TypeScript](https://techsparx.com/nodejs/typescript/decorators/properties.html), by David Herron
 - [Deep introduction to accessor decorators in TypeScript](https://techsparx.com/nodejs/typescript/decorators/accessors.html), by David Herron
+- [Using Property Decorators in Typescript with a real example](https://dev.to/danywalls/using-property-decorators-in-typescript-with-a-real-example-44e), by Dany Paredes
