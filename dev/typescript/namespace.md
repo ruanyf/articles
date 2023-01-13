@@ -153,9 +153,9 @@ import * as shapes from "./shapes";
 let t = new shapes.Triangle();
 ```
 
-## 命名空间的合并
+## namespace 的合并
 
-多个同名的 namespace 也会自动合并。
+多个同名的 namespace 会自动合并，这一点跟 interface 一样。
 
 ```typescript
 namespace Animals {
