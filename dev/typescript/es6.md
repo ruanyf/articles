@@ -31,6 +31,18 @@ const myMap = new Map([
 
 ## `Promise<T>`
 
+## `Iterable<>《》`
+
+对象只要部署了 Iterator 接口，就可以用`for...of`循环遍历。
+
+TypeScript 内置了 Iterator 接口的类型是`Iterable<T>`。
+
+```typescript
+function toArray<X>(xs: Iterable<X>): X[] {
+  return [...xs]
+}
+```
+
 ## Generator 函数
 
 Generator 函数返回一个迭代器 Iterator，属于`IterableIterator<T>`类型，其中`T`是每一轮`yield`语句获得的值（即`value`属性）。

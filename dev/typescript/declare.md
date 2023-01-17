@@ -105,42 +105,85 @@ document.title = "Hello";
 
 如果 TypeScript 如果找到`document`的外部定义，就会假定它的类型是`any`。
 
-## 扩充模块
+## declare module 命令
 
-在多模块文件的项目中，可以对一个文件中声明的类型，在另一个文件中进行扩展。
+我们可以为每个模块文件，定义一个`.d.ts`文件。但是，更方便的做法是为整个项目，定义一个大的`.d.ts`文件，在这个文件里面使用`declare module`定义每个模块文件的类型。
 
-对于任意模块，通过模块扩充语法能够对模块内的已有声明进行扩展。例如，在“a.ts”模块中定义了一个接口A，在“b.ts”模块中可以对“a.ts”模块中定义的接口A进行扩展，为其增加新的属性。
+下面的示例是`node.d.ts`文件的一部分。
+
+```typescript
+declare module "url" {
+  export interface Url {
+    protocol?: string;
+    hostname?: string;
+    pathname?: string;
+  }
+
+  export function parse(
+    urlStr: string,
+    parseQueryString?,
+    slashesDenoteHost?
+  ): Url;
+}
+
+declare module "path" {
+  export function normalize(p: string): string;
+  export function join(...paths: any[]): string;
+  export var sep: string;
+}
+```
+
+使用时，脚本使用三斜杠命令，加载这个类型声明文件。
+
+```typescript
+/// <reference path="node.d.ts"/>
+```
+
+如果不想为外部模块编写类型，可以在`.d.ts`文件里面或者在脚本顶部，加上下面一行命令。
+
+```typescript
+declare module "模块名";
+```
+
+加上上面的命令以后，外部模块即使没有类型，也可以通过编译。但是，从该模块输入的所有接口都将为`any`类型。
+
+## 扩展模块类型
+
+如果一个项目有多个模块文件，可以对一个文件中声明的类型，在另一个文件中进行扩展。
 
 ```typescript
 // a.ts
 export interface A {
-    x: number;
+  x: number;
 }
 
 // b.ts
 import { A } from './a';
 
 declare module './a' {
-    interface A {
-        y: number;
-    }
+  interface A {
+    y: number;
+  }
 }
 
-const a: A = { x: 0, y: 0 };
+const a:A = { x: 0, y: 0 };
 ```
 
-此例中，“declare module './a' {}”是模块扩充语法。其中，“'./a'”表示要扩充的模块名，它与第一行模块导入语句中的模块名一致。
+上面示例中，脚本`a.ts`定义了一个接口`A`，脚本`b.ts`为这个接口添加了属性`y`。`declare module './a' {}`表示对`a.ts`里面的模块，进行类型声明，而同名 interface 会自动合并，所以等同于扩展类型。
 
-我们使用模块扩充语法对导入模块“'./a'”进行了扩充。第4行定义的接口A将与“a.ts”模块中的接口A进行声明合并，合并后的结果仍为接口A，但是接口A增加了一个属性成员y。
+使用这种语法进行模块的类型扩展时，有两点需要注意：
 
-在进行模块扩充时有以下两点需要注意：
+（1）不能创建新的顶层类型。也就是说，只能对`a.ts`模块中已经存在的类型进行扩展，不允许增加新的顶层类型，比如新定义一个接口`B`。
 
-- 不能在模块扩充语法中增加新的顶层声明，只能扩充现有的声明。也就是说，我们只能对“'./a'”模块中已经存在的接口A进行扩充，而不允许增加新的声明，例如新定义一个接口B。
-- 无法使用模块扩充语法对模块的默认导出进行扩充，只能对命名模块导出进行扩充，因为在进行模块扩充时需要依赖于导出的名字。
+（2）不能对默认的`default`接口进行扩展，只能对 export 命令输出的命名接口进行扩充。这是因为在进行类型扩展时，需要依赖输出的接口名。
 
 ## 扩充全局声明
 
-与模块扩充类似，TypeScript还提供了全局对象扩充语法“declare global {}”。示例如下：
+与模块扩充类似，TypeScript还提供了全局对象扩充语法“declare global {}”。
+
+全局对象是 JavaScript 引擎提供的对象，不用输入就可以直接使用。如果需要扩充全局对象，就需要使用`declare`命令。
+
+示例如下：
 
 ```typescript
 export {};
@@ -155,5 +198,21 @@ const config: object = window.myAppConfig;
 ```
 
 此例中，“declare global {}”是全局对象扩充语法，它扩展了全局的Window对象，增加了一个myAppConfig属性。第1行，我们使用了“export {}”空导出语句，这是因为全局对象扩充语句必须在模块或外部模块声明中使用，当我们添加了空导出语句后，该文件就成了一个模块。
+
+下面是另一个例子。
+
+```typescript
+export class Observable<T> {
+  // ... still no implementation ...
+}
+declare global {
+  interface Array<T> {
+    toObservable(): Observable<T>;
+  }
+}
+Array.prototype.toObservable = function () {
+  // ...
+};
+```
 
 全局对象扩充也具有和模块扩充相同的限制，不能在全局对象扩充语法中增加新的顶层声明，只能扩充现有的声明。

@@ -2,29 +2,27 @@
 
 ## 简介
 
-任何包含 import 或 export 语句的文件，就是一个模块（module）。另一方面，如果文件不包含 export 语句，就是一个全局的脚本文件。
+任何包含 import 或 export 语句的文件，就是一个模块（module）。相应地，如果文件不包含 export 语句，就是一个全局的脚本文件。
 
-模块本身就是一个作用域，不属于全局作用域。模块内部的变量、函数、类，都在模块内部可见，对于模块外部是不可见的。
+模块本身就是一个作用域，不属于全局作用域。模块内部的变量、函数、类只在内部可见，对于模块外部是不可见的。暴露给外部的接口，必须用 export 命令声明；如果其他文件要使用模块的接口，必须用 import 命令来输入。
 
-import 语句用于从外部输入其他模块的接口，export 语句用于给出当前模块的外部接口。
-
-如果一个文件不包含 export 语句，但是你希望它当作一个模块，可以在文件中添加一行语句。
+如果一个文件不包含 export 语句，但是希望把它当作一个模块（即内部变量对外不可见），可以在文件中添加一行语句。
 
 ```typescript
 export {};
 ```
 
-上面这行语句不产生任何实际作用，但会让当前文件被当作模块处理。
+上面这行语句不产生任何实际作用，但会让当前文件被当作模块处理，所有它的代码都变成了内部代码。
 
-TypeScript 模块的基本用法，与 ES6 模块是一样的，这部分就不详细介绍了，可以参考 ES6 教程。
+ES 模块的详细介绍，请参考 ES6 教程，这里就不重复了。本章主要介绍 TypeScript 的模块处理。
 
-TypeScript 模块的特别之处在于，允许输出和输入类型。
+TypeScript 模块除了支持所有 ES 模块的语法，特别之处在于允许输出和输入类型。
 
 ```typescript
 export type Bool = true | false;
 ```
 
-上面示例输入一个类型别名`Bool`，也可以拆成两行。
+上面示例中，当前脚本输出一个类型别名`Bool`。这行语句把类型定义和接口输出写在一行，也可以写成两行。
 
 ```typescript
 type Bool = true | false;
@@ -42,6 +40,14 @@ let foo:Bool = true;
 
 上面示例中，import 语句加载的是一个类型。注意，它是从文件`a.js`加载，而不是从`a.ts`加载，因为在代码运行环境是 JS 环境，所以要写成从 JS 文件加载，否则报错。
 
+TypeScript 允许加载模块时，省略模块文件的后缀名，它会自动定位。
+
+```typescript
+import { Bool } from './a';
+```
+
+上面示例中，模块名写成`./a`，TypeScript 会自动定位到`./a.ts`。
+
 编译时，可以两个脚本同时编译。
 
 ```bash
@@ -57,6 +63,14 @@ $ tsc b.ts
 ```
 
 上面命令发现`b.ts`依赖`a.js`，就会自动寻找`a.ts`，也将其同时编译，因此编译产物还是`a.js`和`b.js`两个文件。
+
+如果想将`a.ts`和`b.ts`编译成一个文件，可以使用`--outFile`参数。
+
+```typescript
+$ tsc --outFile result.js b.ts
+```
+
+上面示例将`a.ts`和`b.ts`合并编译为`result.js`。
 
 ## import type 语句
 
@@ -196,6 +210,14 @@ const code = fs.readFileSync('hello.ts', 'utf8');
 ```
 
 上面示例中，使用 import = 语句和`require()`命令输入了一个 CommonJS 模块。模块本身的用法跟 Node.js 是一样的。
+
+除了使用`import =`语句，TypeScript 还允许使用`import * as [接口名] from "模块文件"`输入 CommonJS 模块。
+
+```typescript
+import * as fs from 'fs';
+// 等同于
+import fs = require('fs');
+```
 
 ### export = 语句
 
