@@ -1,80 +1,77 @@
-# 注释指令
+# TypeScript 的注释指令
 
 TypeScript 接受一些注释指令。
 
+所谓“注释指令”，指的是采用 JS 双斜杠注释的形式，向编译器发出的命令。
+
 ## `// @ts-nocheck`
 
-“// @ts-nocheck”是一个注释指令，如果为JavaScript文件添加该注释，那么相当于告诉编译器不对该JavaScript文件进行类型检查。此外，该指令也可以在TypeScript文件中使用。
+`// @ts-nocheck`告诉编译器不对当前脚本进行类型检查，可以用于 TypeScript 脚本，也可以用于 JavaScript 脚本。
 
 ```javascript
 // @ts-nocheck
 
-const element = document.getElementById(123); // 错误语句
+const element = document.getElementById(123);
 ```
 
-上例中，虽然“index.js”存在类型错误，但是编译器不会报错。因为我们使用“// @ts-nocheck”注释指令禁用了对“index.js”文件的类型检查。
+上面示例中，`document.getElementById(123)`存在类型错误，但是编译器不对该脚本进行类型检查，所以不会报错。
 
 ## `// @ts-check`
 
-如果一个JavaScript文件中添加了“// @ts-check”注释指令，那么编译器将对该Java-Script文件进行类型检查，不论是否启用了“--checkJs”编译选项。
+如果一个 JavaScript 脚本顶部添加了`// @ts-check`，那么编译器将对该脚本进行类型检查，不论是否启用了`checkJs`编译选项。
 
 ```javascript
 // @ts-check
-let myQuote = "Each person must live their life as a model for others.";
+let isChecked = true;
 
-console.log(quote);
-//
- ~~~~~~~
-// Error: Cannot find name 'quote'. Did you mean 'myQuote'?
+console.log(isChceked); // 报错
 ```
+
+上面示例是一个 JavaScript 脚本，`// @ts-check`告诉 TypeScript 编译器对其进行类型检查，所以最后一行会报错。
 
 ## `// @ts-ignore`
 
-“// @ts-ignore”注释指令的作用是忽略对某一行代码进行类型检查。当在代码中使用“// @ts-ignore”注释指令时，编译器不会对与该指令相邻的后面一行代码进行类型检查。此外，该指令也可以在TypeScript文件中使用。
+`// @ts-ignore`或`// @ts-expect-error`，告诉编译器不对下一行代码进行类型检查，可以用于 TypeScript 脚本，也可以用于 JavaScript 脚本。
+
+```typescript
+let x:number;
+ 
+x = 0;
+
+// @ts-expect-error
+x = false; // 不报错
+```
+
+上面示例中，最后一行是类型错误，变量`x`的类型是`number`，不能等于布尔值。但是因为前面加上了`// @ts-expect-error`，编译器会跳过这一行的类型检查，所以不会报错。
 
 ## JSDoc
 
-很多编译器会自动读取 JSDoc 样式的注释，所以对于一些重要的方法，可以使用 JSDoc 编写注释。
+TypeScript 直接处理 JS 文件时，如果无法推断出类型，会使用 JS 脚本里面的 JSDoc 注释。
 
-在使用JSDoc时，有以下两个基本要求：
+使用 JSDoc 时，有两个基本要求。
 
-- 代码注释必须以“/**”开始，其中星号（*）的数量必须为两个。若使用了“/*”“/***”或其他形式的多行注释，则JSDoc会忽略该条注释。
-- 代码注释与它描述的代码处于相邻的位置，并且注释在上，代码在下。
+（1）JSDoc 注释必须以`/**`开始，其中星号（`*`）的数量必须为两个。若使用其他形式的多行注释，则 JSDoc 会忽略该条注释。
 
-下例中，使用JSDoc描述了“sayHello”函数能够接受一个string类型的参数。其中，“@param”是一个JSDoc标签，如下所示：
+（2）JSDoc 注释必须与它描述的代码处于相邻的位置，并且注释在上，代码在下。
+
+下面是 JSDoc 的一个简单例子。
 
 ```javascript
 /**
  * @param {string} somebody
  */
 function sayHello(somebody) {
-    alert('Hello ' + somebody);
+  console.log('Hello ' + somebody);
 }
 ```
 
-TypeScript编译器既能够自动推断出大部分JavaScript代码的类型信息，也能够从JSDoc中提取类型信息。接下来，我们将介绍TypeScript编译器支持的部分JSDoc标签。
+上面示例中，注释里面的`@param`是一个 JSDoc 命令，表示下面的函数`sayHello()`的参数`somebody`类型为`string`。
 
-```typescript
-/**
- * Generate a greeting.
- * @param name Name of the person to greet
- * @param salutation The person's title
- * @returns A greeting formatted for human consumption.
- */
-function greetFullTSDoc(name: string, title: string) {
- return `Hello ${title} ${name}`;
-}
-```
-
-If your project already has JSDoc-style comments, TypeScript will
-begin checking them when you flip on @ts-check. 
-
-You can get much of the TypeScript experience in a JavaScript
-project using JSDoc annotations and @ts-check. 
+TypeScript 编译器支持的大部分的 JSDoc 命令，下面介绍其中的一些。
 
 ### @typedef
 
-“@typedef”标签能够创建自定义类型。通过“@typedef”标签创建的自定义类型等同于TypeScript中的类型别名。
+`@typedef`命令创建自定义类型，等同于 TypeScript 里面的类型别名。
 
 ```javascript
 /**
@@ -82,7 +79,7 @@ project using JSDoc annotations and @ts-check.
  */
 ```
 
-此例中，创建了一个名为NumberLike的类型，它是由number类型和string类型构成的联合类型。该类型等同于如下类型别名定义：
+上面示例中，定义了一个名为`NumberLike`的新类型，它是由`number`和`string`构成的联合类型，等同于 TypeScript 的如下语句。
 
 ```typescript
 type NumberLike = string | number;
@@ -90,7 +87,7 @@ type NumberLike = string | number;
 
 ### @type
 
-“@type”标签能够定义变量的类型。
+`@type`命令定义变量的类型。
 
 ```javascript
 /**
@@ -99,9 +96,9 @@ type NumberLike = string | number;
 let a;
 ```
 
-此例中，定义了变量a的类型为string。
+上面示例中，`@type`定义了变量`a`的类型为`string`。
 
-在“@type”标签中可以使用由“@typedef”标签创建的类型。示例如下：
+在`@type`命令中可以使用由`@typedef`命令创建的类型。
 
 ```javascript
 /**
@@ -114,7 +111,7 @@ let a;
 let a = 0;
 ```
 
-在“@type”标签中允许使用TypeScript中的类型及其语法。示例如下：
+在`@type`命令中允许使用 TypeScript 类型及其语法。
 
 ```javascript
 /**@type {true | false} */
@@ -135,80 +132,81 @@ let e;
 
 ### @param
 
-“@param”标签用于定义函数参数类型。
+`@param`命令用于定义函数参数的类型。
 
 ```javascript
 /**
- * @param {string}  x - A string param.
+ * @param {string}  x
  */
 function foo(x) {}
 ```
 
-若函数参数是可选参数，则需要将参数名置于一对中括号“[]”中。示例如下：
+如果是可选参数，需要将参数名放在方括号`[]`里面。
 
 ```javascript
 /**
- * @param {string}  [x] - An optional param.
+ * @param {string}  [x]
  */
 function foo(x) {}
 ```
 
-在定义可选参数时，还可以为它指定一个默认值。
+方括号里面，还可以指定参数默认值。
 
 ```javascript
 /**
- * @param {string} [x="bar"] - An optional param
+ * @param {string} [x="bar"]
  */
 function foo(x) {}
 ```
 
-此例中，声明了参数x的默认值为字符串bar。
+上面示例中，参数`x`的默认值是字符串`bar`。
 
-### @return和@returns
+### @return，@returns
 
-“@return”和“@returns”标签的作用相同，两者都用于定义函数返回值类型。
+`@return`和`@returns`命令的作用相同，指定函数返回值的类型。
 
 ```javascript
 /**
  * @return {boolean}
  */
 function foo() {
-    return true;
+  return true;
 }
 
 /**
  * @returns {number}
  */
 function bar() {
-    return 0;
+  return 0;
 }
 ```
 
-### @extends和修饰符
+### @extends 和类型修饰符
 
-“@extends”标签用于定义继承的基类。“@public”“@protected”“@private”标签分别用于定义类的公有成员、受保护成员和私有成员。“@readonly”标签用于定义只读成员。
-
-```javascript
-class Base {
-    /**
-     * @public
-     * @readonly
-     */
-    x = 0;
-
-    /**
-     *  @protected
-     */
-    y = 0;
-}
+`@extends`命令用于定义继承的基类。
 
 /**
  * @extends {Base}
  */
 class Derived extends Base {
-    /**
-     * @private
-     */
-    z = 0;
+}
+```
+
+`@public`、`@protected`、`@private`分别指定类的公开成员、保护成员和私有成员。
+
+`@readonly`指定只读成员。
+
+```javascript
+class Base {
+  /**
+   * @public
+   * @readonly
+   */
+  x = 0;
+
+  /**
+   *  @protected
+   */
+  y = 0;
 }
 ```

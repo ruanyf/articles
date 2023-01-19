@@ -241,110 +241,134 @@ console.log(obj.foo); // 123
 
 模块定位（module resolution）指的是确定 import 语句和 export 语句里面的模块文件位置。
 
-模块定位有两种方法，一种称为经典方法（classic），另一种称为 Node 方法。如果编译设置的参数`module`没有设为`commonjs`（即设成 amd、system、umd、es2015、esnext 等值），则采用经典方法，否则采用 Node 方法（复制 Node.js 的模块定位方法，并加入了`.ts`文件和`.d.ts`文件）。
-
-```bash
-$ tsc demo.ts
-
-# 或者
-$ tsc --module commonjs demo.ts
+```typescript
+import { TypeA } from './a';
 ```
 
-上面命令在编译时，没有给出`module`参数，或者指定`--module commonjs`，这时就会采用 Node 方法进行模块定位。
+上面示例中，TypeScript 怎么确定`./a`到底是指哪一个模块，这就叫做“模块定位”。
 
-模块导入分为相对导入和非相对导入。
+模块定位有两种方法，一种称为 Classic 方法，另一种称为 Node 方法。可以使用编译参数`moduleResolution`，指定使用哪一种方法。
 
-相对导入指的是给出路径信息的模块，即以`/`、`./`、`../`开头的路径。
+没有指定定位方法时，就看原始脚本采用什么模块格式。如果模块格式是 CommonJS，即编译时指定`--module commonjs`，那么模块定位采用 Node 方法，否则采用 Classic 方法（模块格式为 es2015、 esnext、amd, system, umd 等等）。
 
-- import Entry from "./components/Entry";
-- import { DefaultHeaders } from "../constants/http";
-- import "/mod";
+### 相对模块，非相对模块
 
-非相对导入指的是不带有路径信息的模块。
+加载模块时，目标模块分为相对模块（relative import）和非相对模块两种（non-relative import）。
 
-- import * as $ from "jquery";
-- import { Component } from "@angular/core";
+相对模块指的是路径以`/`、`./`、`../`开头的模块。下面 import 语句加载的模块，都是相对模块。
 
-### 经典策略
+- `import Entry from "./components/Entry";`
+- `import { DefaultHeaders } from "../constants/http";`
+- `import "/mod";`
 
-相对导入中，模块位置根据当前脚本文件的位置进行计算。比如，源文件`/root/src/folder/A.ts`有一行代码`import { b } from "./moduleB"`，这时 TypeScript 会从以下位置获取 moduleB。
+非相对模块指的是不带有路径信息的模块。下面 import 语句加载的模块，都是非相对模块。
 
-- /root/src/folder/moduleB.ts
-- /root/src/folder/moduleB.d.ts
+- `import * as $ from "jquery";`
+- `import { Component } from "@angular/core";`
 
-非相对导入则是从源文件所在目录一层层向上查找模块。还是以上面的`import { b } from "./moduleB"`为例，TypeScript 会按照以下顺序查找 moduleB。
+### Classic 方法
 
-- /root/src/folder/moduleB.ts
-- /root/src/folder/moduleB.d.ts
-- /root/src/moduleB.ts
-- /root/src/moduleB.d.ts
-- /root/moduleB.ts
-- /root/moduleB.d.ts
-- /moduleB.ts
-- /moduleB.d.ts
+Classic 方法以当前脚本的路径作为“基准路径”，计算相对模块的位置。比如，脚本`a.ts`里面有一行代码`import { b } from "./b"`，那么 TypeScript 就会在`a.ts`所在的目录，查找`b.ts`和`b.d.ts`。
 
-### Node 策略
+至于非相对模块，也是以当前脚本的路径作为起点，一层层查找上级目录。比如，脚本`a.ts`里面有一行代码`import { b } from "b"`，那么就会查找`b.ts`和`b.d.ts`。
 
-Node.js 策略就是使用 Node.js 的模块加载策略。
+### Node 方法
 
-相对导入依然是参考源文件所在目录，进行计算。比如，源文件`/root/src/moduleA.js`有一行`var x = require("./moduleB");`，Node.js 按以下顺序导入模块 moduleB。
+Node 方法就是模拟 Node.js 的模块加载方法。
 
-1. 文件 /root/src/moduleB.js 是否存在。
-1. 文件`/root/src/moduleB/package.json`里面，`main`属性是否指定了入口文件（比如`{ "main": "lib/mainModule.js" }`。
-1. 文件`/root/src/moduleB/`是否存在。
+相对模块依然是以当前脚本的路径作为“基准路径”。比如，脚本文件`a.ts`里面有一行代码`let x = require("./b");`，TypeScript 按照以下顺序查找。
 
-非相对导入则是从当前目录开始，逐级向上寻找是否存在子目录`node_modules`。比如，源文件`/root/src/moduleA.js`有一行`var x = require("moduleB");`，Node.js 会按以下顺序导入模块 moduleB。
+1. 当前目录是否包含`b.ts`、`b.tsx`、`b.d.ts`。
+1. 当前目录是否有子目录`b`，该子目录是否存在文件`package.json`，该文件的`types`字段是否指定了入口文件，如果是的就加载该文件。
+1. 当前目录的子目录`b`是否包含`index.ts`、`index.tsx`、`index.d.ts`。
 
-1. /root/src/node_modules/moduleB.js
-1. /root/src/node_modules/moduleB/package.json（查找是否有属性 main）
-1. /root/src/node_modules/moduleB/index.js
-1. /root/node_modules/moduleB.js
-1. /root/node_modules/moduleB/package.json（查找是否有属性 main）
-1. /root/node_modules/moduleB/index.js
-1. /node_modules/moduleB.js
-1. /node_modules/moduleB/package.json（查找是否有属性 main）
-1. /node_modules/moduleB/index.js
+非相对模块则是以当前脚本的路径作为起点，逐级向上层目录查找是否存在子目录`node_modules`。比如，脚本文件`a.js`有一行`let x = require("b");`，TypeScript 按照以下顺序进行查找。
 
-上面顺序中，第4步和第7步都是进入了上一级目录。
+1. 当前目录的子目录`node_modules`是否包含`b.ts`、`b.tsx`、`b.d.ts`。
+2. 当前目录的子目录`node_modules`，是否存在文件`package.json`，该文件的`types`字段是否指定了入口文件，如果是的就加载该文件。
+3. 当前目录的子目录`node_modules`里面，是否包含子目录`@types`，在该目录中查找文件`b.d.ts`。
+4. 当前目录的子目录`node_modules`里面，是否包含子目录`b`，在该目录中查找`index.ts`、`index.tsx`、`index.d.ts`。
+5. 进入上一层目录，重复上面4步，直到找到为止。 
 
-TypeScript 则是这样加载模块，比如源文件`/root/src/moduleA.ts`有一行`import { b } from "./moduleB"`。TypeScript 会按照下面顺序加载模块 moduleB。
+### 路径映射
 
-1. /root/src/moduleB.ts
-1. /root/src/moduleB.tsx
-1. /root/src/moduleB.d.ts
-1. /root/src/moduleB/package.json（查找是否有 types 属性）
-1. /root/src/moduleB/index.ts
-1. /root/src/moduleB/index.tsx
-1. /root/src/moduleB/index.d.ts
+TypeScript 允许开发者在`tsconfig.json`文件里面，手动指定模块的路径。
 
-非相对导入的加载顺序如下，。将遵循 Node.js 解析逻辑，首先查找文件，然后查找适用的文件夹。源文件`/root/src/moduleA.ts`有一行`import { b } from "moduleB";`，会按照如下顺序加载模块 moduleB。
+（1）baseUrl 
 
-1. /root/src/node_modules/moduleB.ts
-1. /root/src/node_modules/moduleB.tsx
-1. /root/src/node_modules/moduleB.d.ts
-1. /root/src/node_modules/moduleB/package.json（查找是否有 types 属性）
-1. /root/src/node_modules/@types/moduleB.d.ts
-1. /root/src/node_modules/moduleB/index.ts
-1. /root/src/node_modules/moduleB/index.tsx
-1. /root/src/node_modules/moduleB/index.d.ts
-1. /root/node_modules/moduleB.ts
-1. /root/node_modules/moduleB.tsx
-1. /root/node_modules/moduleB.d.ts
-1. /root/node_modules/moduleB/package.json（查找是否有 types 属性）
-1. /root/node_modules/@types/moduleB.d.ts
-1. /root/node_modules/moduleB/index.ts
-1. /root/node_modules/moduleB/index.tsx
-1. /root/node_modules/moduleB/index.d.ts
-1. /node_modules/moduleB.ts
-1. /node_modules/moduleB.tsx
-1. /node_modules/moduleB.d.ts
-1. /node_modules/moduleB/package.json（如果它指定了一个types属性）
-1. /node_modules/@types/moduleB.d.ts
-1. /node_modules/moduleB/index.ts
-1. /node_modules/moduleB/index.tsx
-1. /node_modules/moduleB/index.d.ts
+`baseUrl`字段可以手动指定模块的基准目录。
 
-上面的步骤虽然数量很多，但只是每一个子目录要检查的文件多了，只在第9步和第17步进入上一级子目录。
+```typescript
+{
+  "compilerOptions": {
+    "baseUrl": "."
+  }
+}
+```
+
+上面示例中，`baseUrl`是一个点，表示基准目录就是`tsconfig.json`所在的目录。
+
+（2）paths
+
+`paths`字段指定非相对模块与实际脚本的映射。
+
+```typescript
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "jquery": ["node_modules/jquery/dist/jquery"]
+    }
+  }
+}
+```
+
+上面示例中，加载模块`jquery`时，实际加载的脚本是`node_modules/jquery/dist/jquery`，它的位置要根据`baseUrl`字段计算得到。
+
+注意，上例的`jquery`属性的值是一个数组，可以指定多个路径。如果第一个脚本路径不存在，那么就加载第二个路径，以此类推。
+
+（3）rootDirs
+
+`rootDirs`字段指定模块定位时必须查找的其他目录。
+
+```typescript
+{
+  "compilerOptions": {
+    "rootDirs": ["src/zh", "src/de", "src/#{locale}"]
+  }
+}
+```
+
+上面示例中，`rootDirs`指定了模块定位时，需要查找的不同的国际化目录。
+
+### tsc 的`--traceResolution`参数
+
+由于模块定位的过程很复杂，tsc 命令有一个`--traceResolution`参数，能够在编译时在命令行显示模块定位的每一步。
+
+```bash
+$ tsc --traceResolution
+```
+
+上面示例中，`traceResolution`会输出模块定位的判断过程。
+
+### tsc 的`--noResolve`参数
+
+tsc 命令的`--noResolve`参数，表示模块定位时，只考虑在命令行传入的模块。
+
+举例来说，`app.ts`包含如下两行代码。
+
+```typescript
+import * as A from "moduleA";
+import * as B from "moduleB";
+```
+
+使用下面的命令进行编译。
+
+```bash
+$ tsc app.ts moduleA.ts --noResolve
+```
+
+上面命令使用`--noResolve`参数，因此可以定位到`moduleA.ts`，因为它从命令行传入了；无法定位到`moduleB`，因为它没有传入，因此会报错。
 
 ## 参考链接
 

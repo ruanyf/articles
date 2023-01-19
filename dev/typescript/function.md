@@ -71,20 +71,6 @@ f = function (y:number) {
 
 上面示例中，函数类型里面的参数名为`x`，实际的函数定义里面，参数名为`y`，两者并不相同。
 
-变量所赋值的函数的参数个数，可以少于指定类型，但是不能多于指定类型，即这种情况下，TypeScript 允许省略参数。
-
-```typescript
-let myFunc:
-  (a:number, b:number) => number;
-
-myFunc = (a:number) => a; // 正确
-myFunc = (
-  a:number, b:number, c:number
-) => a + b + c; // 报错
-```
-
-上面示例中，变量`myFunc`的类型只能接受两个参数，如果被赋值只有一个参数的函数，并不报错。但是，被赋值为有三个参数的函数，就会报错。
-
 如果有多个变量被赋值为同一种类型的函数，写法二用起来就很麻烦。因此，往往用`type`命令为函数类型定义一个别名，便于指定给其他变量。
 
 ```typescript
@@ -96,6 +82,33 @@ const hello:MyFunc = function (txt) {
 ```
 
 上面示例中，`type`命令为函数类型定义了一个别名`MyFunc`，后面使用就很方便，变量可以指定为这个类型。
+
+变量所赋值的函数的参数个数，可以少于指定类型，但是不能多于指定类型，即这种情况下，TypeScript 允许省略参数。
+
+```typescript
+let myFunc:
+  (a:number, b:number) => number;
+
+myFunc = (a:number) => a; // 正确
+
+myFunc = (
+  a:number, b:number, c:number
+) => a + b + c; // 报错
+```
+
+上面示例中，变量`myFunc`的类型只能接受两个参数，如果被赋值只有一个参数的函数，并不报错。但是，被赋值为有三个参数的函数，就会报错。
+
+这是因为 JavaScript 函数在声明时往往有多余的参数，实际使用时可以只传入一部分参数。比如，数组的`forEach()`方法的参数是一个函数，该函数默认有三个参数`(item, index, array) => void`，实际上往往只使用第一个参数`(item) => any`。因此，TypeScript 允许参数较少的函数，兼容于参数较多的函数。
+
+```typescript
+let x = (a:number) => 0;
+let y = (b:number, s:string) => 0;
+
+y = x; // 正确
+x = y; // 报错
+```
+
+上面示例中，函数`x`只有一个参数，函数`y`有两个参数，`x`可以赋值给`y`，反过来就不行。
 
 如果一个变量要套用另一个函数的类型，有一个小技巧，就是使用`typeof`运算符。
 
@@ -270,9 +283,7 @@ f(undefined) // 正确
 但是，反过来就不成立，类型显式设为`undefined`的参数，就不能省略。
 
 ```typescript
-function f(
-  x:number| undefined
-) {
+function f(x:number|undefined) {
   return x;
 }
 
