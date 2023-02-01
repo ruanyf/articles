@@ -1,5 +1,11 @@
 # 备用材料
 
+1、[ERNIE-ViLG](https://huggingface.co/spaces/PaddlePaddle/ERNIE-ViLG)
+
+![](https://cdn.beekka.com/blogimg/asset/202209/bg2022090202.webp)
+
+中文“文本到图像”引擎，基于百度的飞桨框架（PaddlePaddle）。输入一个中文句子，它可以生成相应的图像。
+
 2、[电梯变快的故事](https://news.ycombinator.com/item?id=30764970)
 
 上个世纪，一座漂亮的新办公大楼在美国一个大城市落成。当地的办公空间很紧张，这栋楼的所有楼面空间很快都租光了。
