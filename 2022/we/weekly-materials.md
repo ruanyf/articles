@@ -1,5 +1,11 @@
 # 备用材料
 
+1、[HTML `<head>` 元素指南](https://htmlhead.dev/)（英文）
+
+![](https://cdn.beekka.com/blogimg/asset/202212/bg2022120818.webp)
+
+这个网站详细介绍网页`<head>`里面放置的各种标签的用法。
+
 1、[ERNIE-ViLG](https://huggingface.co/spaces/PaddlePaddle/ERNIE-ViLG)
 
 ![](https://cdn.beekka.com/blogimg/asset/202209/bg2022090202.webp)
