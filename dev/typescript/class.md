@@ -1059,7 +1059,7 @@ const s = Singleton.getInstance();
 
 ### protected
 
-`protected`修饰符表示保护成员，实例无法读取该属性，但是子类可以读取。
+`protected`修饰符表示该成员是保护成员，只能在类的内部使用该成员，实例无法使用该成员，但是子类可以使用。
 
 ```typescript
 class A {
