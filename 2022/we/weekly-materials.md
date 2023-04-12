@@ -1,5 +1,9 @@
 # 备用材料
 
+![](https://cdn.beekka.com/blogimg/asset/202301/bg2023012001.webp)
+
+加拿大动物学家在森林里，为一只麻醉后的黑熊安装 GPS 项圈。这真是一项危险的工作，黑熊的体型如此之大（直立身高超过2米），如果中途醒来……（[via](https://www.washingtonpost.com/climate-environment/2023/01/19/grizzly-bear-missing-toes/)）
+
 1、[HTML `<head>` 元素指南](https://htmlhead.dev/)（英文）
 
 ![](https://cdn.beekka.com/blogimg/asset/202212/bg2022120818.webp)
