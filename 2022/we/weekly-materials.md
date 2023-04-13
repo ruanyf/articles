@@ -1,5 +1,9 @@
 # 备用材料
 
+你不会被 AI 取代，你会被具有 AI 技能的人取代。
+
+-- [《跨领域思维推动创新》](https://markmcneilly.substack.com/p/cross-domain-thinking-drives-insights)
+
 ![](https://cdn.beekka.com/blogimg/asset/202301/bg2023012001.webp)
 
 加拿大动物学家在森林里，为一只麻醉后的黑熊安装 GPS 项圈。这真是一项危险的工作，黑熊的体型如此之大（直立身高超过2米），如果中途醒来……（[via](https://www.washingtonpost.com/climate-environment/2023/01/19/grizzly-bear-missing-toes/)）
