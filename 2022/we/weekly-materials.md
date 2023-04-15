@@ -1,5 +1,11 @@
 # 备用材料
 
+1、[求职信生成器](https://tally.work/)（AI Cover Letter Generator）
+
+![](https://cdn.beekka.com/blogimg/asset/202302/bg2023020817.webp)
+
+网页工具，只要输入你的简历和求职岗位（只支持英文），它就会自动生成一封求职信。
+
 你不会被 AI 取代，你会被具有 AI 技能的人取代。
 
 -- [《跨领域思维推动创新》](https://markmcneilly.substack.com/p/cross-domain-thinking-drives-insights)
