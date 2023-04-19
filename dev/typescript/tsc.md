@@ -63,6 +63,14 @@ $ tsc --checkJs
 $ tsc --init
 ```
 
+## --inlineSourceMap
+
+`--inlineSourceMap`编译参数指定 Source Map 信息，放在编译出来的`js`文件里面，而不是生成独立的`.js.map`文件。
+
+## --inlineSources 
+
+`--inlineSources`编译参数可以将`.ts`源码文件嵌入编译产物的`.js`文件里面。
+
 ## --lib
 
 指定使用何种运行环境的类型声明文件。
@@ -94,9 +102,17 @@ $ tsc --module commonjs Test.ts
 
 决定模块解析策略。
 
+## --newLine
+
+默认情况下，如果在 Windows 系统下编译，断行符为`\r\n`；如果在 Linux 系统（包括 Mac 系统）下编译，换行符为`\n`。`--newLine`编译项允许指定换行符。
+
 ## --noEmit
 
 不生成新文件，只用来进行类型检查。
+
+## --noEmitHelpers
+
+TypeScript 默认会在需要的时候，在编辑结果加入一些工具函数（比如`__extends`），会放在每个输出的文件里面。如果网页同时加载多个独立编译的 TypeScript 脚本，那么只需要一个脚本放入这些工具函数，其他脚本可以不放，这时采用`--noEmitHelpers`这个编译参数，编译结果里面就不会放入工具函数。
 
 ## --out
 
@@ -132,6 +148,10 @@ $ tsc index.ts --pretty false
 ## --removeComments
 
 在输出文件中移除代码注释。
+
+## --rootDir
+
+`--rootDir`指定输入文件的根目录，该目录里面的目录结构会被复制到输出目录。
 
 ## --skipLibCheck
 

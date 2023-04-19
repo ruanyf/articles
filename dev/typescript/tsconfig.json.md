@@ -2,14 +2,14 @@
 
 ## 简介
 
-`tsconfig.json`是 TypeScript 项目的配置文件。
+`tsconfig.json`是 TypeScript 项目的配置文件，放在项目的根目录。
 
 它是一个 JSON 对象，可以只放置一个空对象`{}`。
 
 在编写好“tsconfig.json”配置文件之后，有以下两种方式来使用它：
 
-- 运行tsc命令时，让编译器自动搜索“tsconfig.json”配置文件。
-- 运行tsc命令时，使用“--project”或“-p”编译选项指定使用的“tsconfig.json”配置文件。
+- 运行`tsc`命令时，编译器就会在当前目录下搜索`tsconfig.json`文件，如果不存在，就到上一级目录搜索，直到找到为止。
+- 运行`tsc`命令时，使用“--project”或“-p”指定`tsconfig.json`的位置。
 
 使用`tsc`命令编译代码时，它会在当前目录和所有父目录里面寻找 tsconfig.json 文件。也可以使用`-p`参数指定`tsconfig.json`所在的目录。
 
