@@ -1,5 +1,19 @@
 # 备用材料
 
+1、[世界最强水枪](https://www.theverge.com/2023/4/5/23672037/syprathree-spyra-water-guns-powerful)
+
+一家美国公司推出了“世界最强水枪”。
+
+![](https://cdn.beekka.com/blogimg/asset/202304/bg2023041103.webp)
+
+它带有电子发射系统，射程达到9米。它还能“自动充水”，只要将枪口浸入水中，按下扳机，几秒钟后水仓就会自动注满。
+
+![](https://cdn.beekka.com/blogimg/asset/202304/bg2023041104.webp)
+
+水仓充满一次，可以发射22次，每次的水量约为30毫升。它还带有一个显示屏，显示剩余的水量和电量。
+
+这把水枪售价高达179美元。不过，你把当它成电子产品看，这个售价不算离谱，还可以实现组队、计分等功能。
+
 1、[求职信生成器](https://tally.work/)（AI Cover Letter Generator）
 
 ![](https://cdn.beekka.com/blogimg/asset/202302/bg2023020817.webp)
