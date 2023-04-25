@@ -819,7 +819,15 @@ Enabling the isolatedModules compiler tells TypeScript to report an error on any
 
 “exclude”属性需要与“include”属性一起使用，它的作用是从“include”属性匹配到的文件列表中去除指定的文件。“exclude”属性也支持和“include”属性相同的通配符。
 
-它当前的位置是基于 tsconfig.json 文件而言的。
+```typescript
+"exclude": [
+  "node_modules",
+  "test.ts",
+  "utils/t2.ts"
+]
+```
+
+它基于 tsconfig.json 文件的位置，来计算指定文件的位置。
 
 ```typescript
 {

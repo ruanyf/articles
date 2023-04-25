@@ -824,7 +824,7 @@ class B extends A {
 
 其中，参数`name`省略时，就调用基类`A`的`greet()`方法，这里可以写成`super.greet()`。使用`super`关键字指代基类是常见做法。
 
-但是，子类的同名方法不能与基类的类型签名相冲突。
+但是，子类的同名方法不能与基类的类型定义相冲突。
 
 ```typescript
 class A {
@@ -841,7 +841,7 @@ class B extends A {
 }
 ```
 
-上面示例中，子类`B`的`greet()`需要一个`name`参数，跟基类`A`不兼容，因此就报错了。
+上面示例中，子类`B`的`greet()`有一个`name`参数，跟基类`A`的`greet()`定义不兼容，因此就报错了。
 
 如果基类包括保护成员（`protected`修饰符），子类可以将该成员的可访问性设置为公开（`public`修饰符），也可以保持保护成员不变，但是不能改用私有成员（`private`修饰符），详见后文。
 
@@ -865,6 +865,48 @@ class B extends A {
 ```
 
 上面示例中，子类`B`将基类`A`的受保护成员改成私有成员，就会报错。
+
+注意，`extends`关键字后面不一定是类名，可以是一个表达式，只要它的类型是构造函数就可以了。
+
+```typescript
+// 例一
+class MyArray extends Array<number> {}
+
+// 例二
+class MyError extends Error {}
+
+// 例三
+class A {
+  greeting() {
+    return 'Hello from A';
+  }
+}
+class B {
+  greeting() {
+    return 'Hello from B';
+  }
+}
+
+interface Greeter {
+  greeting(): string;
+}
+
+interface GreeterConstructor {
+  new (): Greeter;
+}
+
+function getGreeterBase(): GreeterConstructor {
+  return Math.random() >= 0.5 ? A : B;
+}
+
+class Test extends getGreeterBase() {
+  sayHello() {
+    console.log(this.greeting());
+  }
+}
+```
+
+上面示例中，例一和例二的`extends`关键字后面都是构造函数，例三的`extends`关键字后面是一个表达式，执行后得到的也是一个构造函数。
 
 对于那些只设置了类型、没有初值的顶层属性，有一个细节需要注意。
 

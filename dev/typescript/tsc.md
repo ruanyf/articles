@@ -57,7 +57,7 @@ $ tsc --checkJs
 
 ## --init
 
-`--init`创建一个全新的`tsconfig.json`文件。
+`--init`在当前目录创建一个全新的`tsconfig.json`文件，里面是预设的设置。
 
 ```bash
 $ tsc --init

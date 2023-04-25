@@ -511,7 +511,9 @@ type Bar = Str extends `foo-${infer rest}` ? rest : never // 'bar'
 
 ## is 运算符
 
-`is`运算符用来描述函数返回值的类型，属于布尔值的哪一种情况（`true`还是`false`）。
+函数返回布尔值的时候，可以使用`is`运算符，限定返回值与参数之间的关系。
+
+`is`运算符用来描述返回值属于`true`还是`false`。
 
 ```typescript
 function isFish(
@@ -523,13 +525,13 @@ function isFish(
 
 上面示例中，函数`isFish()`的返回值类型为`pet is Fish`，表示如果参数`pet`类型为`Fish`，则返回`true`，否则返回`false`。
 
-`is`运算符总是用于描述函数的返回值类型，写法采用`parameterName is Type`的形式，即左侧为当前函数的参数名，右侧为某一种类型。它返回一个布尔值，表示左侧参数是否属于右侧的类型，特别适合那种返回布尔值的函数。
+`is`运算符总是用于描述函数的返回值类型，写法采用`parameterName is Type`的形式，即左侧为当前函数的参数名，右侧为某一种类型。它返回一个布尔值，表示左侧参数是否属于右侧的类型。
 
 ```typescript
 type A = { a: string };
 type B = { b: string };
 
-function isTypeA(x: A | B): x is A {
+function isTypeA(x: A|B): x is A {
   if ('a' in x) return true;
   return false;
 }
@@ -537,7 +539,23 @@ function isTypeA(x: A | B): x is A {
 
 上面示例中，返回值类型`x is A`可以准确描述函数体内部的运算逻辑。
 
-`is`运算符有一种特别用法，用在类（class）的内部，描述类的方法内部的`this`是否为指定对象。
+`is`运算符可以用于类型保护。
+
+```typescript
+function isCat(a:any): a is Cat {
+  return a.name === 'kitty';
+}
+
+let x:Cat|Dog;
+
+if (isCat(x)) {
+  x.meow(); // 正确，因为 x 肯定是 Cat 类型
+}
+```
+
+上面示例中，需要保证`x`有`meow()`方法，`isCat()`的返回值是`a is Cat`与`if`结合，就能起到类型保护的作用，确保`x`是 Cat 类型。
+
+`is`运算符还有一种特别用法，就是用在类（class）的内部，描述类的方法内部的`this`是否为指定对象。
 
 ```typescript
 class Teacher {
