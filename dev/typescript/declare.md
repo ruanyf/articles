@@ -179,9 +179,23 @@ const a:A = { x: 0, y: 0 };
 
 ## 扩充全局声明
 
-与模块扩充类似，TypeScript还提供了全局对象扩充语法“declare global {}”。
+与模块扩充类似，TypeScript还提供了全局对象扩充语法`declare global {}`。
 
-全局对象是 JavaScript 引擎提供的对象，不用输入就可以直接使用。如果需要扩充全局对象，就需要使用`declare`命令。
+全局对象是 JavaScript 引擎提供的对象，可以直接使用。如果需要扩充全局对象，就需要使用`declare`命令，主要用于为 JavaScript 原生对象（比如`Array`）添加成员。
+
+```typescript
+export {}; // 确保当前文件被当成模块处理
+
+declare global {
+  interface Array<T> {
+    mapToNumbers(): number[];
+  }
+}
+
+Array.prototype.mapToNumbers = function () {
+  /* ... */
+};
+```
 
 示例如下：
 
