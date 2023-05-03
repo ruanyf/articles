@@ -1,5 +1,9 @@
 # 备用材料
 
+![](https://cdn.beekka.com/blogimg/asset/202304/bg2023040602.webp)
+
+巴黎新改建的街道，只允许行人和自行车，不允许汽车。巴黎市政府正采取激进措施，大量减少市区的机动车，到2030年将禁止汽油车进入市区。（[via](https://slate.com/business/2023/03/paris-car-ban-bikes-cycling-history-france.html)）
+
 1、[世界最强水枪](https://www.theverge.com/2023/4/5/23672037/syprathree-spyra-water-guns-powerful)
 
 一家美国公司推出了“世界最强水枪”。
