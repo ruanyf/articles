@@ -326,7 +326,12 @@ let e2 = Foo.X as const;   // Foo.X
 
 ```typescript
 function f(x?:number|null) {
+  validateNumber(x);
   console.log(x!.toFixed());
+}
+
+function validateNumber(e？:number|null) {
+  // 如果 e 不是数值，就抛出错误
 }
 ```
 
