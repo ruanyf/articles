@@ -1,9 +1,10 @@
 # 链接
 
-## 阅读
+## 资源
 
 - [Z library](https://singlelogin.me/)：[link1](https://z-lib.is/), [link2](https://zlibrary-asia.se/)
 - [Lore Free](https://ebook2.lorefree.com/)：电子书共享社区
+- [小雅](http://alist.xiaoya.pro/)
 
 ## AI
 
