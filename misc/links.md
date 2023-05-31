@@ -21,7 +21,7 @@
 
 - [OpenWrt 固件定制](https://supes.top/)
 - OpenWrt 软件包：[地址1](https://op.supes.top/packages/)，[地址2](https://op.dllkids.xyz/packages/)
-- passwall：[源码](https://github.com/xiaorouji/openwrt-passwall)，[构建产物](https://github.com/MoetaYuko/openwrt-passwall-build)
+- passwall：[源码](https://github.com/xiaorouji/openwrt-passwall)，[构建产物](https://github.com/MoetaYuko/openwrt-passwall-build)，[iStore 离线包](https://github.com/AUK9527/Are-u-ok)
 - [冲浪云](https://dash.surfcloud.buzz/)
 
 
