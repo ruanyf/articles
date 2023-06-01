@@ -1,5 +1,17 @@
 # 备用材料
 
+3、
+
+React 是一个库，如果你要构建整个应用程序，我们建议使用全栈框架。
+
+-- [React 官网首页](https://react.dev/)写着，别直接使用 React，而要使用高层框架
+
+1、
+
+看来我今年的工作是安全的。我要好好学习 ChatGPT，尽量掌握它，让自己在明年也安全。
+
+-- [一个程序员](https://github.com/ixaxaar/VardaGPT/blob/master/STORY.md)在 GitHub 上详细记录，自己怎么让 ChatGPT 写出一个应用，上面这段话是他的结论。
+
 ![](https://cdn.beekka.com/blogimg/asset/202304/bg2023040602.webp)
 
 巴黎新改建的街道，只允许行人和自行车，不允许汽车。巴黎市政府正采取激进措施，大量减少市区的机动车，到2030年将禁止汽油车进入市区。（[via](https://slate.com/business/2023/03/paris-car-ban-bikes-cycling-history-france.html)）
