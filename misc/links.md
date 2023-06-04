@@ -7,6 +7,10 @@
 - [小雅](http://alist.xiaoya.pro/)
 - [Tvbox](https://github.com/liu673cn/box)接口：[1](https://www.yydsys.top/box/api/)，[2](http://xn--sss604efuw.ga/)，[3](https://xhdwc.tk/0)
 
+## Web
+
+- [ping.pe](https://ping.pe/)
+
 ## AI
 
 - [Hugging 聊天](https://huggingface.co/chat/)
