@@ -10,6 +10,7 @@
 ## Web
 
 - [ping.pe](https://ping.pe/)
+- [Hacker News 总结](https://hackernews.betacat.io/)
 
 ## AI
 
