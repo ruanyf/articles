@@ -36,4 +36,7 @@
 -  [NSW2U](https://nsw2u.xyz/)：游戏 ROM 下载
 -  [Yuzu Roms](http://www.yuzuroms.ml/)：Switch ROM 下载
 
-  
+## 学习材料
+
+- [Vim 教程](https://www.barbarianmeetscoding.com/boost-your-coding-fu-with-vscode-and-vim/moving-blazingly-fast-with-the-core-vim-motions/)
+- [GitHub Actions 示例教程](https://www.actionsbyexample.com/)
