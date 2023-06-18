@@ -54,6 +54,20 @@ class A {} // "hi, this is class A {}"
 
 上面的代码就可以顺利通过编译了，代码含义这里先不解释。大家只要理解，类`A`在执行前会先执行装饰器`simpleDecorator()`，并且会向装饰器自动传入参数就可以了。
 
+装饰器有多种形式，基本上只要在`@`符号后面添加表达式都是可以。下面都是合法的装饰器。
+
+```typescript
+@myFunc
+@myFuncFactory(arg1, arg2)
+
+@libraryModule.prop
+@someObj.method(123)
+
+@(wrap(dict['prop'])) 
+```
+
+注意，`@`后面的表达式，最终执行后得到的应该是一个函数。
+
 相比使用子类改变父类，装饰器更加简洁优雅，缺点是不那么直观，功能也受到一些限制。所以，装饰器一般只用来为类添加某种特定行为。
 
 ```javascript
@@ -104,7 +118,16 @@ type Decorator = (
 
 上面代码中，`Decorator`是装饰器的类型定义。它是一个函数，接受`value`和`context`两个参数。
 
-其中，`value`参数是所装饰的对象，`context`是装饰器的上下文对象。
+其中，`value`参数是所装饰的对象，`context`是装饰器的上下文对象，TypeScript 提供一个原生接口`ClassMethodDecoratorContext`，描述这个对象。
+
+```typescript
+function decorator(
+  value:any,
+  context:ClassMethodDecoratorContext
+) {
+  // ...
+}
+```
 
 `context`对象有以下属性。
 
@@ -121,7 +144,83 @@ type Decorator = (
 
 （2）`name`：字符串或者 Symbol 值，所装饰对象的名字，比如类名、属性名等。
 
-（3）`addInitializer()`：函数，为所装饰对象添加初始化方法。该函数的参数是一个没有返回值的函数，会自动执行。
+（3）`addInitializer()`：函数，用来在类的初始化阶段，对方法进行一些处理。以前，这些处理通常放在构造函数里面，早于方法本身执行，现在改为放在装饰器的`context`对象里面，具体例子请参阅《方法装饰器》一节。
+
+注意，`addInitializer()`函数没有返回值。
+
+（4）`private`：布尔值，表示所装饰的方法或属性，是否为私有。
+
+## 类装饰器
+
+类装饰器的类型描述如下。
+
+```typescript
+type ClassDecorator = (
+  value: Function,
+  context: {
+    kind: 'class';
+    name: string | undefined;
+    addInitializer(initializer: () => void): void;
+  }
+) => Function | void;
+```
+
+请看下面的例子。
+
+```typescript
+class InstanceCollector {
+  instances = new Set();
+  install = (value:any, {kind}:any) => {
+    if (kind === 'class') {
+      const _this = this;
+      return function (...args:any[]) {
+        const inst = new value(...args);
+        _this.instances.add(inst);
+        return value;
+      } as unknown as typeof MyClass;
+    }
+    return;
+  };
+}
+
+const collector = new InstanceCollector();
+
+@collector.install
+class MyClass {}
+
+const inst1 = new MyClass();
+const inst2 = new MyClass();
+const inst3 = new MyClass();
+
+collector.instances // new Set([inst1, inst2, inst3])
+```
+
+上面示例中，类装饰器`@collector.install`将所有实例加入一个集合变量`collector.instances`。
+
+类装饰器返回的函数，会作为新的构造函数。
+
+```typescript
+function countInstances(value:any, context:any) {
+  let instanceCount = 0;
+  const wrapper = function (...args:any[]) {
+    instanceCount++;
+    const instance = new value(...args);
+    instance.count = instanceCount;
+    return instance;
+  } as unknown as typeof MyClass;
+  wrapper.prototype = value.prototype; // A
+  return wrapper;
+}
+
+@countInstances
+class MyClass {}
+
+const inst1 = new MyClass();
+inst1 instanceof MyClass // true
+inst1.count // 1
+```
+
+上面示例实现了实例的计数。为了确保`wrapper()`的返回值是`MyClass`的示例，特别加入`A`行，确保两者的原型对象是一致的。
 
 ## 方法装饰器
 
@@ -136,7 +235,7 @@ class C {
 }
 
 function trace(decoratedMethod) {
-  // Returns a function that replaces `decoratedMethod`.
+  // 此处略
 }
 ```
 
@@ -179,7 +278,76 @@ robin.hello() // 'How are you, Robin?'
 
 上面示例中，装饰器`@replaceMethod`返回的函数，就成为了新的`hello()`方法。
 
-下面是装饰器`addInitializer()`方法的例子。
+下面是另一个例子。
+
+```typescript
+class Person {
+  name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  @log
+  greet() {
+    console.log(`Hello, my name is ${this.name}.`);
+  }
+}
+
+function log(originalMethod:any, context:ClassMethodDecoratorContext) {
+  const methodName = String(context.name);
+
+  function replacementMethod(this: any, ...args: any[]) {
+    console.log(`LOG: Entering method '${methodName}'.`)
+    const result = originalMethod.call(this, ...args);
+    console.log(`LOG: Exiting method '${methodName}'.`)
+    return result;
+  }
+
+  return replacementMethod;
+}
+
+const person = new Person('张三');
+person.greet()
+// "LOG: Entering method 'greet'." 
+// "Hello, my name is 张三." 
+// "LOG: Exiting method 'greet'." 
+```
+
+下面是装饰器上下文对象的`addInitializer()`方法的例子。类的方法往往会在构造方法里面，进行`this`的绑定。
+
+```typescript
+class Person {
+  name: string;
+  constructor(name: string) {
+    this.name = name;
+
+    // greet() 绑定 this
+    this.greet = this.greet.bind(this);
+  }
+
+  greet() {
+    console.log(`Hello, my name is ${this.name}.`);
+  }
+}
+```
+
+上面例子中，构造方法将`greet()`方法绑定了`this`，这行代码必须放在构造方法里面。现在，它可以移到`addInitializer()`。
+
+```typescript
+function bound(
+  originalMethod:any, context:ClassMethodDecoratorContext
+) {
+  const methodName = context.name;
+  if (context.private) {
+    throw new Error(`不能绑定私有方法 ${methodName as string}`);
+  }
+  context.addInitializer(function () {
+    this[methodName] = this[methodName].bind(this);
+  });
+}
+```
+
+上面示例中，绑定`this`转移到了`addInitializer()`方法里面。
 
 ```typescript
 function collect(
@@ -238,3 +406,88 @@ green.name // 'red'
 ```
 
 上面示例中，`@exposeAccess`是`name`属性的装饰器，它的第二个参数就是`name`的上下文对象，其中`access`属性包含了取值器（`get`）和存值器（`set`），可以对`name`属性进行取值和赋值。
+
+## 装饰器的执行顺序
+
+装饰器的执行分为两三个阶段。
+
+（1）评估（evaluation）：计算`@`符号后面的表达式的值，得到的应该是函数。
+
+（2）应用（application）：将调用装饰器后得到的结果，应用于类的定义。其中，类装饰器在所有方法装饰器和属性装饰器之后应用。
+
+请看下面的例子。
+
+```typescript
+function d(str:string) {
+  console.log(`评估 @d(): ${str}`);
+  return (
+    value:any, context:any
+  ) => console.log(`应用 @d(): ${str}`);
+}
+
+function log(str:string) {
+  console.log(str);
+  return str;
+}
+
+@d('类装饰器')
+class T {
+  @d('静态属性装饰器')
+  static staticField = log('静态属性值');
+
+  @d('原型方法')
+  [log('计算方法名')]() {}
+
+  @d('实例属性')
+  instanceField = log('实例属性值');
+}
+```
+
+上面示例中，类`T`有四种装饰器：类装饰器、静态属性装饰器、方法装饰器、属性装饰器。
+
+它的运行结果如下。
+
+```typescript
+// "评估 @d(): 类装饰器"
+// "评估 @d(): 静态属性装饰器"
+// "评估 @d(): 原型方法"
+// "计算方法名"
+// "评估 @d(): 实例属性"
+// "应用 @d(): 原型方法"
+// "应用 @d(): 静态属性装饰器"
+// "应用 @d(): 实例属性"
+// "应用 @d(): 类装饰器"
+// "静态属性值"
+```
+
+可以看到，类载入的时候，代码按照以下顺序执行。
+
+（1）装饰器评估：这一步计算装饰器的值，首先是类装饰器，然后是类内部的装饰器，按照它们出现的顺序。
+
+注意，如果属性名或方法名是计算值（本例是“计算方法名”），则它们在对应的装饰器评估之后，也会进行自身的评估。
+
+（2）装饰器应用：实际执行装饰器函数，将它们与对应的方法和属性进行结合。
+
+原型方法的装饰器首先应用，然后是静态属性和静态方法装饰器，接下来是实例属性装饰器，最后是类装饰器。
+
+注意，“实例属性值”在类初始化的阶段并不执行，直到类实例化时才会执行。
+
+如果一个方法或属性有多个装饰器，则内层的装饰器先执行，外层的装饰器后执行。
+
+```typescript
+class Person {
+  name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  @bound
+  @log
+  greet() {
+    console.log(`Hello, my name is ${this.name}.`);
+  }
+}
+```
+
+上面示例中，`greet()`有两个装饰器，内层的`@log`先执行，外层的`@bound`针对得到的结果再执行。
+

@@ -122,7 +122,7 @@ class BugReport {
   type = "report";
   title: string;
  
-  constructor(t: string) {
+  constructor(t:string) {
     this.title = t;
   }
 }
