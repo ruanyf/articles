@@ -220,11 +220,83 @@ inst1 instanceof MyClass // true
 inst1.count // 1
 ```
 
-上面示例实现了实例的计数。为了确保`wrapper()`的返回值是`MyClass`的示例，特别加入`A`行，确保两者的原型对象是一致的。
+上面示例实现了实例的计数。为了确保`wrapper()`的返回值是`MyClass`的示例，特别加入`A`行，确保两者的原型对象是一致的。否则，新的构造函数`wrapper`的原型对象，与`MyClass`不同，通不过`instanceof`运算符。
+
+类装饰器也可以直接返回一个新的类。
+
+```typescript
+function countInstances(value:any, context:any) {
+  let instanceCount = 0;
+  return class extends value {
+    constructor(...args:any[]) {
+      super(...args);
+      instanceCount++;
+      this.count = instanceCount;
+    }
+  };
+}
+
+@countInstances
+class MyClass {}
+
+const inst1 = new MyClass();
+inst1 instanceof MyClass // true
+inst1.count // 1
+```
+
+上面示例中，`@countInstances`返回一个`MyClass`的子类。
+
+下面的例子是通过类装饰器，禁止使用`new`命令调用类。
+
+```typescript
+function functionCallable(
+  value as any, {kind} as any
+) {
+  if (kind === 'class') {
+    return function (...args) {
+      if (new.target !== undefined) {
+        throw new TypeError('This function can’t be new-invoked');
+      }
+      return new value(...args);
+    }
+  }
+}
+
+@functionCallable
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+}
+const robin = Person('Robin');
+robin.name // 'Robin'
+```
+
+上面示例中，类装饰器`@functionCallable`返回一个新的构造方法，里面判断`new.target`是否不为空，如果是的，就表示通过`new`命令调用，从而报错。
 
 ## 方法装饰器
 
-方法装饰器用来装饰类的方法（method）。
+方法装饰器用来装饰类的方法（method）。它的类型描述如下。
+
+```typescript
+type ClassMethodDecorator = (
+  value: Function,
+  context: {
+    kind: 'method';
+    name: string | symbol;
+    static: boolean;
+    private: boolean;
+    access: { get: () => unknown };
+    addInitializer(initializer: () => void): void;
+  }
+) => Function | void;
+```
+
+它的上下文对象`context`有以下属性。
+
+- static：布尔值，表示是否为静态方法。
+- private：布尔值，表示是否为私有方法。
+- access：函数，表示方法的存取器，但是只能用来取值（只有`get()`方法），不能用来赋值（不能定义`set()`方法）。
 
 ```typescript
 class C {
@@ -406,6 +478,77 @@ green.name // 'red'
 ```
 
 上面示例中，`@exposeAccess`是`name`属性的装饰器，它的第二个参数就是`name`的上下文对象，其中`access`属性包含了取值器（`get`）和存值器（`set`），可以对`name`属性进行取值和赋值。
+
+## getter 装饰器，setter 装饰器
+
+getter 装饰器和 setter 装饰器的类型描述如下。
+
+```typescript
+type ClassGetterDecorator = (
+  value: Function,
+  context: {
+    kind: 'getter';
+    name: string | symbol;
+    static: boolean;
+    private: boolean;
+    access: { get: () => unknown };
+    addInitializer(initializer: () => void): void;
+  }
+) => Function | void;
+
+type ClassSetterDecorator = (
+  value: Function,
+  context: {
+    kind: 'setter';
+    name: string | symbol;
+    static: boolean;
+    private: boolean;
+    access: { set: (value: unknown) => void };
+    addInitializer(initializer: () => void): void;
+  }
+) => Function | void;
+```
+
+下面的例子是将取值器的结果，保存为一个属性，加快后面的读取。
+
+```typescript
+class C {
+  @lazy
+  get value() {
+    console.log('正在计算……');
+    return '开销大的计算结果';
+  }
+}
+
+function lazy(
+  value:any,
+  {kind, name}:any
+) {
+  if (kind === 'getter') {
+    return function (this:any) {
+      const result = value.call(this);
+      Object.defineProperty(
+        this, name,
+        {
+          value: result,
+          writable: false,
+        }
+      );
+      return result;
+    };
+  }
+  return;
+}
+
+const inst = new C();
+inst.value 
+// 正在计算……
+// '开销大的计算结果'
+inst.value
+// '开销大的计算结果'
+```
+
+上面示例中，第一次读取`inst.value`，会进行计算，然后装饰器`@lazy`将结果存入只读属性`value`，后面再读取这个属性，就不会进行计算了。
 
 ## 装饰器的执行顺序
 
