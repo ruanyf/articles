@@ -2,22 +2,19 @@
 
 ## 简介
 
-`tsconfig.json`是 TypeScript 项目的配置文件，放在项目的根目录。
+`tsconfig.json`是 TypeScript 项目的配置文件，放在项目的根目录。反过来说，如果一个目录里面有`tsconfig.json`，TypeScript 就认为这是项目的根目录。
 
-它是一个 JSON 对象，可以只放置一个空对象`{}`。
+如果项目源码是 JavaScript，但是想用 TypeScript 处理，那么配置文件的名字是`jsconfig.json`，它跟`tsconfig`的写法是一样的。
 
-在编写好“tsconfig.json”配置文件之后，有以下两种方式来使用它：
-
-- 运行`tsc`命令时，编译器就会在当前目录下搜索`tsconfig.json`文件，如果不存在，就到上一级目录搜索，直到找到为止。
-- 运行`tsc`命令时，使用“--project”或“-p”指定`tsconfig.json`的位置。
-
-使用`tsc`命令编译代码时，它会在当前目录和所有父目录里面寻找 tsconfig.json 文件。也可以使用`-p`参数指定`tsconfig.json`所在的目录。
+`tsconfig.json`文件主要供`tsc`编译器使用，它的命令行参数`--project`或`-p`可以指定`tsconfig.json`的位置（目录或文件皆可）。
 
 ```bash
-$ tsc -p ./path-to-project-directory
+$ tsc -p ./dir
 ```
 
-下面是一个简单的 tsconfig.json。
+如果不指定配置文件的位置，`tsc`就会在当前目录下搜索`tsconfig.json`文件，如果不存在，就到上一级目录搜索，直到找到为止。
+
+`tsconfig.json`文件的格式，是一个 JSON 对象，最简单的情况可以只放置一个空对象`{}`。下面是一个示例。
 
 ```json
 {
@@ -92,7 +89,9 @@ yarn add --dev @tsconfig/deno
 
 ## compileOptions
 
-compilerOptions：定制编译器行为。
+`compilerOptions`属性用来定制编译行为。
+
+这个属性可以省略，这时编译器将使用默认设置。
 
 ```javascript
 {
@@ -817,23 +816,10 @@ Enabling the isolatedModules compiler tells TypeScript to report an error on any
 
 ## exclude
 
-“exclude”属性需要与“include”属性一起使用，它的作用是从“include”属性匹配到的文件列表中去除指定的文件。“exclude”属性也支持和“include”属性相同的通配符。
-
-```typescript
-"exclude": [
-  "node_modules",
-  "test.ts",
-  "utils/t2.ts"
-]
-```
-
-它基于 tsconfig.json 文件的位置，来计算指定文件的位置。
+`exclude`属性是一个数组，必须与`include`属性一起使用，用来从编译列表中去除指定的文件。它也支持使用与`include`属性相同的通配符。
 
 ```typescript
 {
-    "compilerOptions": {
-        "listFiles": true
-    },
     "include": ["**/*"],
     "exclude": ["**/*.spec.ts"]
 }
@@ -841,94 +827,61 @@ Enabling the isolatedModules compiler tells TypeScript to report an error on any
 
 ## extends
 
-一个“tsconfig.json”配置文件可以继承另一个“tsconfig.json”配置文件中的配置。当一个项目中包含了多个TypeScript工程时，我们可以将工程共同的配置提取到“tsconfig.base.json”配置文件中，其他的“tsconfig.json”配置文件继承“tsconfig.base.json”配置文件中的配置。这种方式避免了重复配置同一属性并且能够增强可维护性，当需要修改某一共通属性时，仅需要修改一处即可。
+`tsconfig.json`可以继承另一个`tsconfig.json`文件的配置。
 
-在“tsconfig.json”配置文件中，使用顶层的“extends”属性来设置要继承的“tscon-fig.json”配置文件。在“extends”属性中指定的路径既可以是相对路径，也可以是绝对路径，但路径解析规则有所不同。
+如果一个项目有多个配置，可以把共同的配置写成`tsconfig.base.json`，其他的配置文件继承该文件，这样便于维护和修改。
 
-`extends`可以指定当前 tsconfig.json 文件，所继承的原始配置文件。
-
-```json
-{
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "target": "es5",
-    "module": "es2015"
-  },
-  "include": ["**/*.ts"]
-}
-```
-
-```typescript
-{
-    "extends": "./tsconfig.base.json",
-    "includes": ["src"],
-    "compilerOptions": {
-        "strict": true
-    },
-    "files": ["./src/index.ts"]
-}
-```
-
-若“extends”属性指定的路径不是以“./”或“../”作为起始的，那么编译器将在“node_modules”目录下查找指定的配置文件。
-
-编译器首先在“tsconfig.json”配置文件所在目录的“node_modules”子目录下查找，若该目录下包含了指定的配置文件，则使用该配置文件；否则，继续在父级目录下的“node_modules”子目录下查找，直到搜索到系统根目录为止。若最终未能找到指定的配置文件，则产生编译错误。
-
-如果有重名的属性，当前的设置会覆盖所继承的设置。
-
-`extends`也可以继承 npm 模块里面的 tsconfig 文件。
+`extends`属性用来指定所要继承的配置文件。它可以是本地文件。
 
 ```json
 {
-"extends": "@my-org/tsconfig",
-"includes": ["src"]
+  "extends": "../tsconfig.base.json"
 }
 ```
 
- TypeScript will use the normal Node module resolution system
-to find a package matching the name. If that package’s package.json contains a "tsconfig" field containing a relative path string, the TSConfig file at that path will be used. Otherwise, the package’s tsconfig.json file will be used.
+如果`extends`属性指定的路径不是以`./`或`../`开头，那么编译器将在`node_modules`目录下查找指定的配置文件。
+
+`extends`属性也可以继承已发布的 npm 模块里面的 tsconfig 文件。
+
+```json
+{
+  "extends": "@tsconfig/node12/tsconfig.json"
+}
+```
+
+`extends`指定的依赖会先加载，然后加载当前配置。如果当前配置与继承的配置有重名的属性，前者会覆盖后者。
 
 ## files
 
-顶层的“files”属性能够定义编译文件列表。“files”属性的值是由待编译文件路径所构成的数组。
+`files`属性指定编译的文件列表。如果有一个文件不存在，就会报错。
 
 一个数组，指定所要编译的文件。数组中排在前面的文件，会先编译。
 
 ```javascript
 {
-    "compilerOptions": {
-        "strict": true,
-        "target": "ESNext",
-        "outFile": "main.js"
-    },
-    "files": ["a.ts", "b.ts"]
+  "files": ["a.ts", "b.ts"]
 }
 ```
 
-在使用“files”属性设置编译文件列表时必须逐一地列出每一个文件，该属性不支持进行模糊的文件匹配。因此，“files”属性适用于待编译文件数量较少的情况。当待编译文件数量较多时，使用“include”和“exclude”属性是更好的选择。
+该属性必须逐一列出文件，不支持文件匹配。如果文件较多，建议使用`include`和`exclude`属性。
 
 ## include
 
-顶层的“include”属性能够定义编译文件列表。“include”属性的功能包含了“files”属性的功能，它既支持逐一地列出每一个待编译的文件，也支持使用通配符来模糊匹配待编译的文件。
-
-include 的文件位置是相对当前这个`tsconfig.json`文件而言的。
-
-“include”属性支持使用三种通配符来匹配文件，
-
-- ? 单个字符
-- * 任意字符，不含路径分隔符
-- ** 任意目录层级
+`include`属性指定所要编译的文件列表，既支持逐一列出文件，也支持通配符。文件位置相对于当前配置文件而定。
 
 ```typescript
 {
-    "include": ["foo/*.spec.ts"]
+  "include": ["src/**/*", "tests/**/*"]
 }
-
-"include": ["foo/?.ts"]
-"include": ["bar/**/*.ts"]
-
-// 包含 src 目录
-"include": ["src"]
 ```
+
+`include`属性支持三种通配符。
+
+- `?`：指代单个字符
+- `*`：指代任意字符，不含路径分隔符
+- `**`：指定任意目录层级。
+
+如果不指定文件后缀名，默认包括`.ts`、`.tsx`和`.d.ts`文件。如果打开了`allowJs`，那么还包括`.js`和`.jsx`。
 
 ## inlineSources
 
@@ -973,22 +926,20 @@ include 的文件位置是相对当前这个`tsconfig.json`文件而言的。
 
 ## references
 
-“tsconfig.json”配置文件有一个顶层属性“references”。它的值是对象数组，用于设置引用的工程。
-
-某些项目代码依赖于另一个项目。
+`references`属性的值是成员为对象的数组，适合某些项目依赖于另一个项目的情况，用来设置需要引用的工程。
 
 ```javascript
 {
-    "references": [
-        { "path": "../pkg1" },
-        { "path": "../pkg2/tsconfig.release.json" },
+  "references": [
+    { "path": "../pkg1" },
+    { "path": "../pkg2/tsconfig.json" }
     ]
 }
 ```
 
-其中，“path”的值既可以是指向含有“tsconfig.json”配置文件的目录，也可以直接指向某一个配置文件，此时配置文件名可以不为“tsconfig.json”。此例中的工程引用了两个工程。
+其中，`path`既可以指向含有`tsconfig.json`的目录，也可以直接指向另一个配置文件。
 
-同时，父项目的tsconfig.json配置文件中将“--composite”编译选项设置为true。
+同时，引用的项目的`tsconfig.json`必须启用`composite`属性。只要启用这个属性，就会自动启用`declaration`属性。
 
 ```javascript
 {
@@ -998,8 +949,6 @@ include 的文件位置是相对当前这个`tsconfig.json`文件而言的。
     }
 }
 ```
-
-父工程由于启用了“--composite”编译选项，它会自动启用“--declaration”编译选项，因此编译后生成了index.d.ts声明文件。
 
 ## rootDir
 

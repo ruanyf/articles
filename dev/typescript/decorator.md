@@ -450,9 +450,25 @@ inst.@collect // new Set(['toString', Symbol.iterator])
 
 ## 属性装饰器
 
-属性装饰器用来装饰定义在类顶部的属性（field）。
+属性装饰器用来装饰定义在类顶部的属性（field）。它的类型描述如下。
 
-下面的例子是通过属性装饰器，获取属性的存取器函数。
+```typescript
+type ClassFieldDecorator = (
+  value: undefined,
+  context: {
+    kind: 'field';
+    name: string | symbol;
+    static: boolean;
+    private: boolean;
+    access: { get: () => unknown, set: (value: unknown) => void };
+    addInitializer(initializer: () => void): void;
+  }
+) => (initialValue: unknown) => unknown | void;
+```
+
+注意，装饰器的第一个参数`value`的类型是`undefined`，这意味着这个参数实际上是不存在的，即不能从`value`获取目标属性的值。
+
+如果要获取属性的值，必须使用存取器，请看下面的例子。
 
 ```typescript
 let acc;
@@ -478,6 +494,22 @@ green.name // 'red'
 ```
 
 上面示例中，`@exposeAccess`是`name`属性的装饰器，它的第二个参数就是`name`的上下文对象，其中`access`属性包含了取值器（`get`）和存值器（`set`），可以对`name`属性进行取值和赋值。
+
+下面的例子是更改属性的初始值。
+
+```typescript
+function twice() {
+  return initialValue => initialValue * 2;
+}
+
+class C {
+  @twice
+  field = 3;
+}
+
+const inst = new C();
+inst.field // 6
+```
 
 ## getter 装饰器，setter 装饰器
 
@@ -633,4 +665,8 @@ class Person {
 ```
 
 上面示例中，`greet()`有两个装饰器，内层的`@log`先执行，外层的`@bound`针对得到的结果再执行。
+
+## 参考链接
+
+- [JavaScript metaprogramming with the 2022-03 decorators API](https://2ality.com/2022/10/javascript-decorators.html)
 

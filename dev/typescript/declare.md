@@ -1,111 +1,300 @@
-# declare 命令
+# declare 关键字
 
-## 基本用法
+## 简介
 
-declare 命令用来表示，声明的类型用在其他文件中，通常用在类型声明文件`d.ts`中。
+declare 关键字用来告诉编译器，某个类型是存在的，可以在当前文件中使用。
 
-declare 的作用是使得 TypeScript 也能写 C 语言那样的类型声明，即只声明类型，不必给出具体实现。比如，函数不能只写类型，不写实现。
+它的直接作用，就是让当前文件可以使用其他文件声明的类型。因此，编译单个脚本时，不会因为使用了外部类型而报错。
 
-它包含外部变量声明、外部函数声明、外部类声明、外部枚举声明和外部命名空间声明。
+declare 关键字可以描述以下类型。
 
-```typescript
-declare var a: boolean;
- 
-declare let b: boolean;
+- 变量（const、let、var 命令声明）
+- type 或者 interface 命令声明的类型
+- class
+- enum
+- 函数（function）
+- 模块（module）
+- 命名空间（namespace） 
 
-declare const c: boolean;
-```
+declare 关键字的重要特点是，它只是通知编译器某个类型是存在的，不用给出具体实现。
 
-外部变量声明不允许定义初始值，因为它只表示一种类型，而不能够表示一个值。如果外部变量声明中没有使用类型注解，那么变量的类型为any类型。
+declare 只能用来描述已经存在的变量和数据结构，不能用来声明新的变量和数据结构。另外，所有 declare 语句都不会出现在编译后的文件里面。
 
-```typescript
-declare function f(a: string, b: boolean): void;
-```
+## declare variable
 
-外部函数声明使用“declare function”关键字来定义。外部函数声明中不允许带有函数实现，只能定义函数类型。
+declare 关键字可以给出外部变量的类型描述。
 
-```typescript
-declare class C {
-    // 静态成员声明
-    public static s0(): string;
-    private static s1: string;
-
-    // 属性声明
-    public a: number;
-    private b: number;
-
-    // 构造函数声明
-    constructor(arg: number);
-
-    // 方法声明
-    m(x: number, y: number): number;
-
-    // 存取器声明
-    get c(): number;
-    set c(value: number);
-
-    // 索引签名声明
-    [index: string]: any;
-}
-```
-
-外部类声明使用“declare class”关键字来定义。外部类声明中的成员不允许带有具体实现，只允许定义类型。例如，类的方法和构造函数不允许带有具体实现，类的属性声明不允许定义初始值等。
+举例来说，当前脚本使用了其他脚本定义的全局变量`x`。
 
 ```typescript
-declare enum Foo {
-    A,
-    B,
-}
-
-declare enum Bar {
-    A = 0,
-    B = 1,
-}
-
-declare const enum Baz {
-    A,
-    B,
-}
-
-declare const enum Qux {
-    A = 0,
-    B = 1,
-}
+x = 123; // 报错
 ```
 
-外部枚举声明与常规枚举声明主要有以下两点不同：
+上面示例中，变量`x`是其他脚本定义的，当前脚本不知道它的类型，编译器就会报错。
 
-- 在外部枚举声明中，枚举成员的值必须为常量枚举表达式，例如数字字面量、字符串字面量或简单算术运算等。
-- 在使用了“declare enum”的外部枚举中，若枚举成员省略了初始值，则会被视为计算枚举成员，因此不会被赋予一个自增长的初始值，如0、1和2等。
-
-若想要实际运行此例中的代码，我们还需要给出Direction枚举的具体定义。“typings.d.ts”中只声明了Direction枚举的类型，而没有提供具体定义。
-
-外部命名空间的成员默认为导出成员，不需要使用export关键字来明确地导出它们，但使用了export关键字也没有错误。
+这时使用 declare 命令给出它的类型，就不会报错了。
 
 ```typescript
-declare namespace Foo {
-    export var a: boolean;
-}
+declare let x:number;
+x = 1;
 ```
+
+如果 declare 关键字没有给出变量的具体类型，那么变量类型就是`any`。
 
 ```typescript
-declare module 'io' {
-   export function readFile(filename: string): string;
-}
+declare let x;
+x = 1;
 ```
 
-在该语法中，“declare module”是关键字，它后面跟着一个表示模块名的字符串，模块名中不能使用路径。
+上面示例中，变量`x`的类型为`any`。
 
-===
-
-举例来说，浏览器脚本会使用`document`对象，该对象是浏览器内置的，不是脚本定义的。所以，可以使用`declare`命令，表示`document`对象由外部定义。TypeScript 默认提供的定义文件`lib.d.ts`，给出了`document`的类型声明。
+下面的例子是脚本使用浏览器全局对象`document`。
 
 ```typescript
 declare var document;  
 document.title = "Hello"; 
 ```
 
-如果 TypeScript 如果找到`document`的外部定义，就会假定它的类型是`any`。
+上面示例中，declare 告诉编译器，变量`document`的类型是外部定义的（具体定义在 TypeScript 内置文件`lib.d.ts`）。
+
+如果 TypeScript 没有找到`document`的外部定义，这里就会假定它的类型是`any`。
+
+注意，declare 关键字只用来给出类型描述，是纯的类型代码，不允许设置变量的初始值，即不涉及值。
+
+```typescript
+// 报错
+declare let x:number = 1;
+```
+
+上面示例中，declare 设置了变量的初始值，结果就报错了。
+
+## declare function
+
+declare 关键字可以给出外部函数的类型描述。
+
+下面是一个例子。
+
+```typescript
+declare function sayHello(
+  name:string
+):void;
+
+sayHello('张三');
+``` 
+
+上面示例中，declare 命令给出了`sayHello()`的类型描述，因此可以直接使用它。
+
+注意，这种单独的函数类型声明语句，只能用于`declare`命令后面。一方面，TypeScript 不支持单独的函数类型声明语句；另一方面， declare 关键字后面也不能带有函数的具体实现。
+
+```typescript
+// 报错
+function sayHello(
+  name:string
+):void;
+function sayHello(name) {
+  return '你好，' + name;
+}
+```
+
+上面示例中，单独写函数的类型声明就会报错。
+
+## declare class
+
+declare 给出 class 的描述描述写法如下。
+
+```typescript
+declare class Animal {
+  constructor(name:string);
+  eat():void;
+  sleep():void;
+}
+```
+
+下面是一个复杂一点的例子。
+
+```typescript
+declare class C {
+  // 静态成员
+  public static s0():string;
+  private static s1:string;
+
+  // 属性
+  public a:number;
+  private b:number;
+
+  // 构造函数
+  constructor(arg:number);
+
+  // 方法
+  m(x:number, y:number):number;
+
+  // 存取器
+  get c():number;
+  set c(value:number);
+
+  // 索引签名
+  [index:string]:any;
+}
+```
+
+同样的，declare 后面不能给出 Class 的具体实现或初始值。
+
+## declare module，declare namespace
+
+如果想把变量、函数、类组织在一起，可以将 declare 与 module 或 namespace 一起使用。
+
+```typescript
+declare namespace AnimalLib {
+  class Animal {
+    constructor(name:string);
+    eat():void;
+    sleep():void;
+  }
+
+  type Animals = 'Fish' | 'Dog';
+}
+
+// 或者
+declare module AnimalLib {
+  class Animal {
+    constructor(name:string);
+    eat(): void;
+    sleep(): void;
+  }
+
+  type Animals = 'Fish' | 'Dog';
+}
+```
+
+上面示例中，declare 关键字给出了 module 或 namespace 的类型描述。
+
+declare module 和 declare namespace 里面，加不加 export 关键字都可以。
+
+```typescript
+declare namespace Foo {
+  export var a: boolean;
+}
+
+declare module 'io' {
+ export function readFile(filename:string):string;
+}
+```
+
+上面示例中，namespace 和 module 里面使用了 export 关键字。
+
+下面的例子是当前脚本使用了`myLib`这个外部库，它有方法`makeGreeting()`和属性`numberOfGreetings`。
+
+```typescript
+let result = myLib.makeGreeting('你好');
+console.log('欢迎词：' + result);
+let count = myLib.numberOfGreetings;
+```
+
+`myLib`的类型描述就可以这样写。
+
+```typescript
+declare namespace myLib {
+  function makeGreeting(s:string):string;
+  let numberOfGreetings:number;
+}
+```
+
+declare 关键字的另一个用途，是为外部模块添加属性和方法时，给出新增部分的类型描述。
+
+```typescript
+import { Foo as Bar } from 'moduleA';
+  
+declare module 'moduleA' {
+  interface Bar extends Foo {
+    custom: {
+      prop1:string;
+    }
+  }
+}
+```
+
+上面示例中，从模块`moduleA`导入了一个`Foo`，将其重命名为`Bar`，并用 declare 关键字增加一个属性`custom`。
+
+declare module 后面的模块名可以使用通配符。
+
+```typescript
+declare module 'my-plugin-*' {
+  interface PluginOptions {
+    enabled: boolean;
+    priority: number;
+  }
+
+  function initialize(options: PluginOptions): void;
+  export = initialize;
+}
+```
+
+上面示例中，模块名`my-plugin-*`表示适配所有以`my-plugin-`开头的模块名（比如`my-plugin-logger`）。
+
+## declare global
+
+如果要为 JavaScript 引擎的原生对象添加属性和方法，可以使用`declare global {}`语法。
+
+```typescript
+export {};
+
+declare global {
+  interface String {
+    toSmallString(): string;
+  }
+}
+  
+String.prototype.toSmallString = ():string => {
+    // 具体实现
+    return '';
+};
+```
+
+上面示例中，为 JavaScript 原生的`String`对象添加了`toSmallString()`方法。declare global 给出这个新增方法的类型描述。
+
+这个示例第一行的空导出语句`export {}`，表示当前脚本是一个模块。这是因为 declare global必须用在模块里面。
+
+下面的示例是为 window 对象添加一个属性`myAppConfig`。
+
+```typescript
+export {};
+
+declare global {
+  interface window {
+    myAppConfig:object;
+  }
+}
+
+const config = window.myAppConfig;
+```
+
+declare global 只能扩充现有对象的类型描述，不能增加新的顶层类型。
+
+## declare enum
+
+declare 关键字给出 enum 类型描述的例子如下，后面的写法都是允许的。
+
+```typescript
+declare enum E1 {
+  A,
+  B,
+}
+
+declare enum E2 {
+  A = 0,
+  B = 1,
+}
+
+declare const enum E3 {
+  A,
+  B,
+}
+
+declare const enum E3 {
+  A = 0,
+  B = 1,
+}
+```
 
 ## declare module 命令
 
@@ -188,56 +377,6 @@ const a:A = { x: 0, y: 0 };
 
 （3）不能对默认的`default`接口进行扩展，只能对 export 命令输出的命名接口进行扩充。这是因为在进行类型扩展时，需要依赖输出的接口名。
 
-## 扩充全局对象
+## 参考链接
 
-与模块扩充类似，TypeScript还提供了全局对象扩充语法`declare global {}`。
-
-全局对象是 JavaScript 引擎提供的原生对象，可以直接使用。如果需要扩充全局对象，就需要使用`declare`命令，主要用于为 JavaScript 原生对象（比如`Array`）添加成员。
-
-```typescript
-export {}; // 确保当前文件被当成模块处理
-
-declare global {
-  interface Array<T> {
-    mapToNumbers(): number[];
-  }
-}
-
-Array.prototype.mapToNumbers = function () {
-  /* ... */
-};
-```
-
-示例如下：
-
-```typescript
-export {};
-
-declare global {
-    interface Window {
-        myAppConfig: object;
-    }
-}
-
-const config: object = window.myAppConfig;
-```
-
-此例中，“declare global {}”是全局对象扩充语法，它扩展了全局的Window对象，增加了一个myAppConfig属性。第1行，我们使用了“export {}”空导出语句，这是因为全局对象扩充语句必须在模块或外部模块声明中使用，当我们添加了空导出语句后，该文件就成了一个模块。
-
-下面是另一个例子。
-
-```typescript
-export class Observable<T> {
-  // ... still no implementation ...
-}
-declare global {
-  interface Array<T> {
-    toObservable(): Observable<T>;
-  }
-}
-Array.prototype.toObservable = function () {
-  // ...
-};
-```
-
-全局对象扩充也具有和模块扩充相同的限制，不能在全局对象扩充语法中增加新的顶层声明，只能扩充现有的声明。
+- [How Does The Declare Keyword Work In TypeScript?](https://timmousk.com/blog/typescript-declare/), Tim Mouskhelichvili
