@@ -400,19 +400,23 @@ allowJs 编译时同时处理 JS 文件，一起拷贝到输出目录。
 
 ### baseUrl
 
-`baseUrl`参数的值为字符串，指定 TypeScript 源文件目录。
+`baseUrl`的值为字符串，指定 TypeScript 项目的基准目录。
 
-“--baseUrl”编译选项用来设置非相对模块导入的基准路径。在解析相对模块导入时，将不受“--baseUrl”编译选项值的影响。
+由于默认是以 tsconfig.json 的位置作为基准目录，所以一般情况不需要使用该属性。
 
 ```typescript
 {
-    "compilerOptions": {
-        "baseUrl": "./"
-    }
+  "compilerOptions": {
+    "baseUrl": "./"
+  }
 }
 ```
 
-此例中，将baseUrl设置为当前目录“./”，参照的是“tsconfig.json”配置文件所在的目录。
+上面示例中，`baseUrl`为当前目录`./`。那么，当遇到下面的语句，TypeScript 将以当前目录为起点，寻找`hello/world.ts`。
+
+```typescript
+import { helloWorld } from "hello/world";
+```
 
 ### checkJS
 
@@ -431,11 +435,9 @@ checkJS 对 JS 文件进行类型检查。
 
 ### declaration
 
-编译时是否生成一个类型声明文件`.d.ts`。
+`declaration`设置编译时是否为每个脚本生成类型声明文件`.d.ts`。
 
 ```javascript
-tsc --declaration
-
 {
   "compilerOptions": {
     "declaration": true
@@ -443,18 +445,39 @@ tsc --declaration
 }
 ```
 
+### declarationDir
+
+`declarationDir`设置生成的`.d.ts`文件所在的目录。
+
+```typescript
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./types"
+  }
+}
+```
+
 ### declarationMap
 
-“--declarationMap”是推荐启用的编译选项。如果启用了该选项，那么在生成“.d.ts”声明文件时会同时生成对应的“Source Map”文件。
+`declarationMap`设置生成`.d.ts`类型声明文件的同时，还会生成对应的 Source Map 文件。
 
 ```javascript
 {
-    "compilerOptions": {
-        "declaration": true,
-        "declarationMap": true
-    }
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true
+  }
 }
 ```
+
+### emitBOM
+
+`emitBOM`设置是否在编译结果的文件头添加字节顺序标志 BOM。默认值是`false`。
+
+### emitDeclarationOnly
+
+`emitDeclarationOnly`设置编译后只生成`.d.ts`文件，不生成`.js`文件。
 
 ### jsx
 
@@ -520,7 +543,7 @@ $ tsc --jsx preserve
 
 ### module
 
-指定输出文件的模块格式。
+`module`指定编译输出文件的模块格式。它的默认值与`target`属性有关，如果`target`是`ES3`或`ES5`，它的默认值是`commonjs`，否则就是`ES6/ES2015`。
 
 ```json
 {
@@ -530,26 +553,31 @@ $ tsc --jsx preserve
 }
 ```
 
-If your target compiler option is "es3" or "es5", module’s default value will be "commonjs". Otherwise, module will default to "es2015" to specify outputting ECMAScript modules.
+它可以取以下值：none、commonjs、amd、umd、system、es6/es2015、es2020、es2022、esnext、node16、nodenext。
 
 ### moduleResolution
 
-模块解析策略可以使用“--moduleResolution”编译选项来指定。
+`moduleResolution`指的确定模块路径的算法。它可以取以下四种值。
 
-TypeScript提供了两种模块解析策略，分别是：
+- `node`：采用 Node.js 的 CommonJS 模块算法。
+- `node16`或`nodenext`：采用 Node.js 的 ECMAScript 模块算法，从  TypeScript 4.7 开始支持。
+- `classic`：TypeScript 1.6 之前的算法，新项目不建议使用。
 
-- Classic策略。
-- Node策略类似于 Node.js。
+它的默认值与`module`属性有关，如果`module`为`AMD`、`UMD`、`System`或`ES6/ES2015`，默认值为`classic`；如果`module`为`node16`或`nodenext`，默认值为这两个值；其他情况下,默认值为`Node`。
 
-这个设置不会改变输出代码，只用来描述输出代码的运行时环境。
+### moduleSuffixes
 
-For backward compatibility reasons, TypeScript keeps the default moduleResolution value to a classic value that was used for projects years ago. You almost certainly do not want the classic strategy in any modern project.
+`moduleSuffixes`指定模块的后缀名。
 
-Classic模块解析策略是TypeScript最早提供的模块解析策略，它尝试将模块名视为一个文件进行解析，先查找TypeScript文件，再查找 JavaScript 文件。
+```typescript
+{
+  "compilerOptions": {
+    "moduleSuffixes": [".ios", ".native", ""]
+  }
+}
+```
 
-Node模块解析策略是TypeScript 1.6版本中引入的，它因模仿了Node.js的模块解析策略[1]而得名。
-
-当没有设置模块的解析策略时，默认的模块解析策略与“--module”编译选项的值有关。若“--module”编译选项的值为CommonJS，则默认的模块解析策略为Node。若“--module”编译选项的值不为CommonJS，则默认的模块解析策略为Classic。
+上面的设置使得 TypeScript 对于语句`import * as foo from "./foo";`，会搜索以下脚本`./foo.ios.ts`、`./foo.native.ts`和`./foo.ts`。
 
 ### noEmitOnError
 
@@ -581,37 +609,33 @@ Node模块解析策略是TypeScript 1.6版本中引入的，它因模仿了Node.
 
 ### paths
 
-paths编译选项用来设置模块名和模块路径的映射，用于设置非相对模块导入的规则。
+`paths`设置模块名和模块路径的映射，也就是 TypeScript 如何导入`require`或`imports`语句加载的模块。
 
-paths编译选项只能在“tsconfig.json”配置文件中设置，不支持在命令行上使用。由于paths是基于“--baseUrl”进行解析的，所以必须同时设置“--baseUrl”和paths编译选项。
-
-```typescript
-{
-    "compilerOptions": {
-        "baseUrl": "./",
-        "paths": {
-            "b": ["bar/b"]
-        }
-    }
-}
-```
-
-此例中的paths设置会将对模块b的非相对模块导入映射到“C:\app\bar\b”路径。
-
-在设置paths时，还可以使用通配符“*”，它能够匹配任意路径。
+`paths`基于`baseUrl`进行加载，所以必须同时设置后者。
 
 ```typescript
 {
-    "compilerOptions": {
-        "baseUrl": "./",
-        "paths": {
-            "@bar/*": ["bar/*"]
-        }
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "b": ["bar/b"]
     }
+  }
 }
 ```
 
-此例中的paths设置会将对模块“@bar/...”的导入映射到“C:\app\bar\...”路径下。两个星号通配符代表相同的路径。
+它还可以使用通配符“*”。
+
+```typescript
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@bar/*": ["bar/*"]
+    }
+  }
+}
+```
 
 ### preserveConstEnums
 
@@ -655,21 +679,27 @@ function doSomething(x: string | null) {
 - allowUnreachableCode：发现有运行不到的代码时报错。
 - allowUnusedLabels：发现没有使用的代码标签时报错。
 
+### resolveJsonModule
+
+`resolveJsonModule`运行 import 命令导入 JSON 文件。
+
+### rootDir
+
+`rootDir`设置源码脚本所在的目录，主要跟编译后的脚本结构有关。`rootDir`对应目录下的所有脚本，会成为输出目录里面的顶层脚本。
+
 ### rootDirs
 
-rootDirs编译选项能够使用不同的目录创建出一个虚拟目录，在使用时就好像这些目录被合并成了一个目录一样。在解析相对模块导入时，编译器会在rootDirs编译选项构建出来的虚拟目录中进行搜索。
-
-rootDirs编译选项需要在“tsconfig.json”配置文件中设置，它的值是由路径构成的数组。
+`rootDirs`把多个不同目录，合并成一个目虚拟目录。
 
 ```typescript
 {
-    "compilerOptions": {
-        "rootDirs": ["bar", "foo"]
-    }
+  "compilerOptions": {
+    "rootDirs": ["bar", "foo"]
+  }
 }
 ```
 
-此例中的rootDirs创建了一个虚拟目录，它包含了“C:\app\bar”和“C:\app\foo”目录下的内容。
+上面示例中，`rootDirs`将`bar`和`foo`组成一个虚拟目录。
 
 ### skipLibCheck
 

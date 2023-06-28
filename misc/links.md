@@ -11,6 +11,7 @@
 
 - [ping.pe](https://ping.pe/)
 - [Hacker News 总结](https://hackernews.betacat.io/)
+- [SafeLine（雷池）](https://github.com/chaitin/safeline)：应用程序防火墙 WAF
 
 ## AI
 
