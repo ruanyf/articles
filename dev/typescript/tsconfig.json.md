@@ -101,11 +101,6 @@ book).
 • esModuleInterop is true and module is not an ECMAScript modules format
 such as "es2015" or "esnext".
 
-## esModuleInterop
-
-The esModuleInterop configuration option adds a small amount of logic to Java‐
-Script code emitted by TypeScript when module is not an ECMAScript module.
-
 ## isolatedModules
 
 Enabling the isolatedModules compiler tells TypeScript to report an error on any instance of a syntax that is likely to cause issues in those transpilers（比如 Babel 每次只能转一个文件）:
@@ -378,9 +373,13 @@ allowJs 编译时同时处理 JS 文件，一起拷贝到输出目录。
 }
 ```
 
+### alwaysStrict
+
+`alwaysStrict`确保脚本以 ECMAScript 严格模式进行解析，因此脚本头部不用写`"use strict"`。它的值是一个布尔值，默认为`true`。
+
 ### allowUnreachableCode
 
-`allowUnreachableCode`设置是否允许不可能执行到的代码。它可以设置为三个值。
+`allowUnreachableCode`设置是否允许存在不可能执行到的代码。它的值有三种可能。
 
 - `undefined`： 默认值，编辑器显示警告。
 - `true`：忽略不可能执行到的代码。
@@ -388,15 +387,11 @@ allowJs 编译时同时处理 JS 文件，一起拷贝到输出目录。
 
 ### allowUnusedLabels
 
-`allowUnusedLabels`设置是否允许没有用到的代码标签（label）。它可以设置为三个值。
+`allowUnusedLabels`设置是否允许存在没有用到的代码标签（label）。它的值有三种可能。
 
 - `undefined`： 默认值，编辑器显示警告。
 - `true`：忽略没有用到的代码标签。
 - `false`：编译器报错。
-
-### alwaysStrict
-
-`alwaysStrict`确保脚本以 ECMAScript 严格模式进行解析，因此脚本头部不用写`"use strict"`。它的值是一个布尔值，默认为`true`。
 
 ### baseUrl
 
@@ -479,6 +474,23 @@ checkJS 对 JS 文件进行类型检查。
 
 `emitDeclarationOnly`设置编译后只生成`.d.ts`文件，不生成`.js`文件。
 
+### esModuleInterop
+
+The esModuleInterop configuration option adds a small amount of logic to Java‐
+Script code emitted by TypeScript when module is not an ECMAScript module.
+
+esModuleInterop：修复了一些 CommonJS 和 ES6 模块之间的兼容性问题。
+
+### inlineSourceMap
+
+`inlineSourceMap`设置将 SourceMap 文件写入编译后的 JS 文件中，否则会单独生称一个`.js.map`文件。
+
+### inlineSources
+
+`inlineSources`设置将原始的`.ts`代码嵌入编译后的 JS 中。
+
+它要求`sourceMap`或`inlineSourceMap`至少打开一个。
+
 ### jsx
 
 `jsx`属性设置如何处理`.tsx`文件。
@@ -537,13 +549,22 @@ $ tsc --jsx preserve
 
 它会打印出，除了编译的源脚本以外，还会包含 TypeScript 内置的一些声明文件。
 
-### outDir
+### mapRoot
 
-`outDir`参数的值为字符串，指定编译产物 JavaScript 文件目录。
+`mapRoot`指定 SourceMap 文件的位置，而不是默认的生成位置。
+
+```typescript
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "mapRoot": "https://my-website.com/debug/sourcemaps/"
+  }
+}
+```
 
 ### module
 
-`module`指定编译输出文件的模块格式。它的默认值与`target`属性有关，如果`target`是`ES3`或`ES5`，它的默认值是`commonjs`，否则就是`ES6/ES2015`。
+`module`指定编译产物的模块格式。它的默认值与`target`属性有关，如果`target`是`ES3`或`ES5`，它的默认值是`commonjs`，否则就是`ES6/ES2015`。
 
 ```json
 {
@@ -557,7 +578,7 @@ $ tsc --jsx preserve
 
 ### moduleResolution
 
-`moduleResolution`指的确定模块路径的算法。它可以取以下四种值。
+`moduleResolution`确定模块路径的算法，即如何查找模块。它可以取以下四种值。
 
 - `node`：采用 Node.js 的 CommonJS 模块算法。
 - `node16`或`nodenext`：采用 Node.js 的 ECMAScript 模块算法，从  TypeScript 4.7 开始支持。
@@ -579,21 +600,35 @@ $ tsc --jsx preserve
 
 上面的设置使得 TypeScript 对于语句`import * as foo from "./foo";`，会搜索以下脚本`./foo.ios.ts`、`./foo.native.ts`和`./foo.ts`。
 
+### newLine
+
+`newLine`设置换行符为`CRLF`（Windows）还是`LF`（Linux）。
+
+### noEmit
+
+`noEmit`设置是否产生编译结果。如果不生成，TypeScript 编译就纯粹作为类型检查了。
+
+### noEmitHelpers
+
+`noEmitHelpers`设置在编译结果文件不插入 TypeScript 辅助函数，而是通过外部引入辅助函数来解决，比如 NPM 模块`tslib`。
+
 ### noEmitOnError
 
-`"noEmitOnError`参数的值为布尔值，指定一旦编译报错，就不生成编译产物。
+`noEmitOnError`指定一旦编译报错，就不生成编译产物，默认为`false`。
 
 ### noFallthroughCasesInSwitch
 
-`noFallthroughCasesInSwitch`设置是否对没有`break`语句（或者`return`和`throw`语句）的 switch 分支报错。
-
+`noFallthroughCasesInSwitch`设置是否对没有`break`语句（或者`return`和`throw`语句）的 switch 分支报错，即`case`代码里面必须有终结语句（比如`break`）。
+  
 ### noImplicitAny
 
-`noImplicitAny`设置当一个表达式没有明确的类型描述、且编译器无法推断出具体类型时，是否允许将它推断为`any`类型。它的值是一个布尔值，默认为`true`。
+`noImplicitAny`设置当一个表达式没有明确的类型描述、且编译器无法推断出具体类型时，是否允许将它推断为`any`类型。
+
+它是一个布尔值，默认为`true`，即只要推断出`any`类型就报错。
 
 ### noImplicitReturns
 
-`noImplicitReturns`设置是否要求函数任何情况下都必须返回一个值。
+`noImplicitReturns`设置是否要求函数任何情况下都必须返回一个值，即函数必须有`return`语句。
 
 ### noImplicitThis
 
@@ -606,6 +641,14 @@ $ tsc --jsx preserve
 ### noUnusedParameters
 
 `noUnusedParameters`设置是否允许未使用的函数参数。
+
+### outDir
+
+`outDir`指定编译产物所在的目录。如果不指定，编译出来的`.js`文件在对应的`.ts`文件的相同位置。
+
+### outFile
+
+`outFile`设置将所有非模块的全局文件，编译在同一个文件里面。它只有在`module`属性为`None`、`System`、`AMD`时才生效，并且不能用来打包 CommonJS 或 ES6 模块。 
 
 ### paths
 
@@ -639,7 +682,7 @@ $ tsc --jsx preserve
 
 ### preserveConstEnums
 
-开启了这个选项，编译后会对于`const enum`保留 enum 结构，不会用值代替，也不会越界查找。
+`preserveConstEnums`将`const enum`结构保留下来，不替换成常量值。
 
 ```javascript
 {
@@ -649,35 +692,9 @@ $ tsc --jsx preserve
 }
 ```
 
-Enum 命令使用`const`命令修饰时，保留 Enum 结构。
+### removeComments
 
-- noImplicitAny：如果无法推断出类型，就报错。
-- strictNullChecks：打开该设置时，需要显式检查 null 或 undefined。
-
-```typescript
-function doSomething(x: string | null) {
-  if (x === null) {
-    // do nothing
-  } else {
-    console.log("Hello, " + x.toUpperCase());
-  }
-}
-```
-
-- module:commonjs
-- moduleResolution: "Node"
-
-- module：编译后代码的模块系统。对于 Node.js，可以采用 CommonJS 模块，对于其他环境，可以采用 ES6 模块，写成 es2020 或者 es2022 或者 esnext。
-- esModuleInterop：修复了一些 CommonJS 和 ES6 模块之间的兼容性问题。
-- moduleResolution：描述如何查找模块。在 TypeScript 中，使用 ES6 模块格式，这意味着我们使用import语句来检索模块，并使用语句定义导出export。TypeScript 支持多种查找模块的算法，我们使用此参数控制这些算法。使用node值告诉 TypeScript 使用与正常 Node.js 模块解析过程匹配的算法，包括对 ES6 模块的支持。
-- target：指定 ECMAScript 版本，即（编译后的）代码所在的语言环境，比如`es2021`。
-- rootDir：TypeScript 源文件所在目录。
-- outDir：编译后的文件所在目录。
-
-- noImplicitReturns：函数必须有 return 语句。
-- noFallthroughCasesInSwitch：switch 的 case 代码块中必须有 break 语句。
-- allowUnreachableCode：发现有运行不到的代码时报错。
-- allowUnusedLabels：发现没有使用的代码标签时报错。
+`removeComments`移除 TypeScript 脚本里面的注释，默认为`false`。
 
 ### resolveJsonModule
 
@@ -711,6 +728,23 @@ function doSomething(x: string | null) {
 {
   "compilerOptions": {
     "skipLibCheck": true
+  }
+}
+```
+
+### sourceMap
+
+`sourceMap`设置编译时生成 SourceMap 文件。
+
+### sourceRoot
+
+`sourceRoot`在 SourceMap 里面设置 TypeScript 源文件的位置。
+
+```typescript
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "sourceRoot": "https://my-website.com/debug/source/"
   }
 }
 ```
@@ -784,7 +818,7 @@ let func:StringOrNumberFunc = fn;
 
 ### strictNullChecks
 
-`strictNullChecks`设置禁止对`null`和`undefined`进行类型检查。默认如果打开`strict`设置，这一项就会自动设为`true`，否则默认为`false`。
+`strictNullChecks`设置禁止对`null`和`undefined`进行类型检查。如果打开`strict`设置，这一项就会自动设为`true`，否则为`false`。
 
 ```bash
 let value:string;
@@ -792,6 +826,18 @@ let value:string;
 // strictNullChecks:false
 // 下面语句不报错
 value = null;
+```
+
+它可以理解成只要打开，就需要显式检查`null`或`undefined`。
+
+```typescript
+function doSomething(x:string|null) {
+  if (x === null) {
+    // do nothing
+  } else {
+    console.log("Hello, " + x.toUpperCase());
+  }
+}
 ```
 
 ### strictPropertyInitialization
@@ -850,7 +896,7 @@ class User {
 
 ### target
 
-`target`参数的值为字符串，指定编译出来的 JavaScript 代码的版本。
+`target`指定编译出来的 JavaScript 代码的 ECMAScript 版本，比如`es2021`。
 
 注意，如果编译的目标版本过老，比如`"target": "es3"`，有些语法可能无法编译，`tsc`命令会报错。
 
