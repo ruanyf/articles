@@ -87,62 +87,6 @@ yarn add --dev @tsconfig/deno
 
 @tsconfig 包含的完整 tsconfig 文件目录可以查看 https://github.com/tsconfig/bases/tree/main/bases。
 
-
-
-## allowSyntheticDefaultImports
-
-The allowSyntheticDefaultImports compiler option informs the type system that ECMAScript modules may default import from files that are otherwise incompatible
-CommonJS namespace exports.
-
-It defaults to true only if either of the following is true:
-
-• module is "system" (an older, rarely used module format not covered in this
-book).
-• esModuleInterop is true and module is not an ECMAScript modules format
-such as "es2015" or "esnext".
-
-## isolatedModules
-
-Enabling the isolatedModules compiler tells TypeScript to report an error on any instance of a syntax that is likely to cause issues in those transpilers（比如 Babel 每次只能转一个文件）:
-
-## composite
-
-这个设置允许大型项目的不同文件，使用不同的 tsconfig.json。
-
-条件是 declaration 设置必须打开。
-
-```json
-// core/tsconfig.json
-{
-"compilerOptions": {
-"declaration": true
-},
-"composite": true
-}
-```
-
-它必须与`references`配合使用。
-
-```json
-{
-"files": [],
-"references": [
-{ "path": "./packages/core" },
-{ "path": "./packages/shell" }
-]
-}
-```
-
-`package.json`里面使用`--build`选项。根据文件是否改动，判断是否要重新构建。
-
-```json
-{
-  "scripts": {
-    "build": "tsc -b"
-  }
-}
-```
-
 ## exclude
 
 `exclude`属性是一个数组，必须与`include`属性一起使用，用来从编译列表中去除指定的文件。它也支持使用与`include`属性相同的通配符。
@@ -212,118 +156,28 @@ Enabling the isolatedModules compiler tells TypeScript to report an error on any
 
 如果不指定文件后缀名，默认包括`.ts`、`.tsx`和`.d.ts`文件。如果打开了`allowJs`，那么还包括`.js`和`.jsx`。
 
-## inlineSources
-
-`--inlineSources true`生成的 SourceMap 文件里面包含了 TypeScript 源码，即两者在同一个文件里面。
-
-使用这个参数的前提是打开了 sourceMap 属性。
-
-## lib
-
-`lib`: TypeScript 应该注意哪些平台特性？可能性包括 ECMAScript 标准库和浏览器的 DOM。
-
-“--lib”编译选项与“/// <reference lib="" />”三斜线指令有着相同的作用，都是用来引用语言内置的某个声明文件。
-
-如果将“--target”设置为“ES6”，但是我们想使用ES2017环境中才开始支持的“pad-Start()”函数。那么，我们就需要引用内置的“lib.es2017.string.d.ts”声明文件，否则编译器将产生编译错误。
-
-```javascript
-{
-    "compilerOptions": {
-        "target": "ES6",
-        "lib": ["ES6", "ES2017.String"]
-    }
-}
-```
-
-上例中，我们不但要传入“ES2017.String”，还要传入“ES6”，否则编译器将仅包含“ES2017.String”这一个内置声明文件，
-
-使用“/// <reference lib="" />”三斜线指令，示例如下：
-
-```typescript
-/// <reference lib="ES2017.String" />
-```
-
-需要注意的是，在将“lib.es2017.string.d.ts”内置声明文件添加到编译文件列表后，虽然编译器允许使用“padStart()”方法，但是实际的JavaScript运行环境可能不支持该方法。因为该方法是在ES2017标准中定义的，而JavaScript运行环境可能仍处于一个较旧的版本，因此不支持这个新方法。这样就会导致程序可以成功地编译，但是在运行时出错，因为找不到“padStart()”方法的定义。
-
-## module
-
-`module`：指定编译输出的格式。
-
-## outDir
-
-`outDir`：字符串，编译结果的存放位置。
-
 ## references
 
-`references`属性的值是成员为对象的数组，适合某些项目依赖于另一个项目的情况，用来设置需要引用的工程。
+`references`属性是一个数组，数组成员为对象，适合一个大项目由许多小项目构成的情况，用来设置需要引用的底层项目。
 
 ```javascript
 {
   "references": [
     { "path": "../pkg1" },
     { "path": "../pkg2/tsconfig.json" }
-    ]
+  ]
 }
 ```
 
-其中，`path`既可以指向含有`tsconfig.json`的目录，也可以直接指向另一个配置文件。
+`references`数组成员对象的`path`属性，既可以是含有文件`tsconfig.json`的目录，也可以直接是该文件。
 
-同时，引用的项目的`tsconfig.json`必须启用`composite`属性。只要启用这个属性，就会自动启用`declaration`属性。
+与此同时，引用的底层项目的`tsconfig.json`必须启用`composite`属性。
 
 ```javascript
 {
-    "compilerOptions": {
-        "composite": true,
-        "declarationMap": true
-    }
-}
-```
-
-## rootDir
-
-`rootDir`：字符串，表示 TypeScript 脚本文件的位置。
-
-## sourceMap
-
-`--sourceMap true`生成 sourcemap 文件。
-
-## target
-
-`target`: 字符串，编译所针对的 ECMAScript 的目标版本。
-
-## typeRoots
-
-“--typeRoots”编译选项用来设置声明文件的根目录。当配置了“--typeRoots”编译选项时，只有该选项指定的目录下的声明文件会被添加到编译文件列表，而“node_modules/@types”目录下的声明文件将不再被默认添加到编译文件列表。
-
-```typescript
-{
-    "compilerOptions": {
-        "listFiles": true,
-        "typeRoots": ["./typings"]
-    }
-}
-
-{
-    "compilerOptions": {
-        "listFiles": true,
-        "typeRoots": [
-            "./node_modules/@types",
-            "./typings"
-        ]
-    }
-}
-```
-
-## types
-
-types”编译选项也能够用来指定使用的声明文件。“--typeRoots”编译选项配置的是含有声明文件的目录，而“--types”编译选项则配置的是具体的声明文件。
-
-```javascript
-{
-    "compilerOptions": {
-        "listFiles": true,
-        "types": ["jquery"]
-    }
+  "compilerOptions": {
+    "composite": true
+  }
 }
 ```
 
@@ -361,9 +215,9 @@ types”编译选项也能够用来指定使用的声明文件。“--typeRoots�
 }
 ```
 
-### allowJS
+### allowJs
 
-allowJs 编译时同时处理 JS 文件，一起拷贝到输出目录。
+`allowJs`允许 TypeScript 项目加载 JS 脚本。编译时，也会将 JS 文件，一起拷贝到输出目录。
 
 ```json
 {
@@ -376,6 +230,12 @@ allowJs 编译时同时处理 JS 文件，一起拷贝到输出目录。
 ### alwaysStrict
 
 `alwaysStrict`确保脚本以 ECMAScript 严格模式进行解析，因此脚本头部不用写`"use strict"`。它的值是一个布尔值，默认为`true`。
+
+### allowSyntheticDefaultImports
+
+`allowSyntheticDefaultImports`允许`import`命令默认加载没有`default`输出的模块。
+
+比如，打开这个设置，就可以写`import React from "react";`，而不是`import * as React from "react";`。
 
 ### allowUnreachableCode
 
@@ -413,12 +273,9 @@ allowJs 编译时同时处理 JS 文件，一起拷贝到输出目录。
 import { helloWorld } from "hello/world";
 ```
 
-### checkJS
+### checkJs
 
-checkJS 对 JS 文件进行类型检查。
-
-• Defaulting allowJs to true if it wasn’t already
-• Enabling the type checker on .js and .jsx files
+`checkJS`设置对 JS 文件同样进行类型检查。打开这个属性，也会自动打开`allowJs`。它等同于在 JS 脚本的头部添加`// @ts-check`命令。
 
 ```json
 {
@@ -427,6 +284,10 @@ checkJS 对 JS 文件进行类型检查。
   }
 }
 ```
+
+### composite
+
+`composite`打开某些设置，使得 TypeScript 项目可以进行增量构建，往往跟`incremental`属性配合使用。
 
 ### declaration
 
@@ -476,10 +337,37 @@ checkJS 对 JS 文件进行类型检查。
 
 ### esModuleInterop
 
-The esModuleInterop configuration option adds a small amount of logic to Java‐
-Script code emitted by TypeScript when module is not an ECMAScript module.
+`esModuleInterop`修复了一些 CommonJS 和 ES6 模块之间的兼容性问题。
 
-esModuleInterop：修复了一些 CommonJS 和 ES6 模块之间的兼容性问题。
+如果`module`属性为`node16`或`nodenext`，则`esModuleInterop`默认为`true`，其他情况默认为`false`。
+
+打开这个属性，使用`import`命令加载 CommonJS 模块时，TypeScript 会严格检查兼容性问题是否存在。
+
+```typescript
+import * as moment from 'moment'
+moment(); // 报错
+```
+
+上面示例中，根据 ES6 规范，`import * as moment`里面的`moment`是一个对象，不能当作函数调用，所以第二行报错了。
+
+解决方法就是改写上面的语句，将`import *`改成加载默认接口。
+
+```typescript
+import moment from 'moment'
+moment(); // 不报错
+```
+
+打开`esModuleInterop`以后，如果将上面的代码编译成 CommonJS 模块格式，就会加入一些辅助函数，保证编译后的代码行为正确。
+
+注意，打开`esModuleInterop`，将自动打开`allowSyntheticDefaultImports`。
+
+### forceConsistentCasingInFileNames
+
+`forceConsistentCasingInFileNames`设置文件名是否为大小写敏感，默认为`true`。
+
+### incremental
+
+`incremental`让 TypeScript 项目构建时产生文件`tsbuildinfo`，从而完成增量构建。
 
 ### inlineSourceMap
 
@@ -491,19 +379,17 @@ esModuleInterop：修复了一些 CommonJS 和 ES6 模块之间的兼容性问�
 
 它要求`sourceMap`或`inlineSourceMap`至少打开一个。
 
+### isolatedModules
+
+`isolatedModules`设置如果当前 TypeScript 脚本作为单个模块编译，是否会因为缺少其他脚本的类型信息而报错。
+
 ### jsx
 
-`jsx`属性设置如何处理`.tsx`文件。
+`jsx`设置如何处理`.tsx`文件。它一般以下三个值。
 
-它可以取以下三个值。
-
-- preserve，保持 jsx 语法不变，输出的文件名为 jsx。
-- react，将`<div />`编译成`React.createElement("div")`，输出的文件名为`.js`。
-- react-native：保持 jsx 语法不变，输出的文件后缀名为`.js`。
-
-```bash
-$ tsc --jsx preserve
-```
+- `preserve`：保持 jsx 语法不变，输出的文件名为 jsx。
+- `react`：将`<div />`编译成`React.createElement("div")`，输出的文件名为`.js`。
+- `react-native`：保持 jsx 语法不变，输出的文件后缀名为`.js`。
 
 ```javascript
 {
@@ -515,7 +401,7 @@ $ tsc --jsx preserve
 
 ### lib
 
-`lib`参数的值是一个数组，描述项目需要加载的外部类型描述文件。
+`lib`值是一个数组，描述项目需要加载的 TypeScript 内置类型描述文件，跟三斜线指令`/// <reference lib="" />`作用相同。
 
 ```javascript
 {
@@ -525,29 +411,47 @@ $ tsc --jsx preserve
 }
 ```
 
-各项解释。
+TypeScript 内置的类型描述文件，主要有一些，可以参考 [TypeScript 源码](https://github.com/microsoft/TypeScript/tree/main/src/lib)。
 
-- target：为了支持旧版浏览器，我们希望将 ES5 定位为语言级别。"es2015"如果您不需要支持旧版浏览器，您可以将此设置提高到（或更高）。
-- moduleResolution:我们希望 TypeScript 编译器模仿 Node 本身使用的模块解析机制，例如让它自动从 npm 包中获取类型。查看TypeScript 文档中的模块解析章节以获取更多信息。
-- module：我们希望编译器发出所有import/export声明和import()表达式不变。稍后我们将让 webpack 打包和拆分我们的代码。
-- strict：我们选择严格的类型检查模式来为我们的应用程序获得最高级别的类型安全。我建议您始终设置strict为true. 如果您tsc --init用于创建tsconfig.json文件，则默认启用此设置。
-- importHelpers：由于我们将 ES5 定位为语言级别，因此 TypeScript 编译器会在我们使用/时发出一堆辅助函数，例如__awaiter和。为了每个包只发出一次这些帮助函数而不是每次使用一次，我们将指示编译器从包中导入它们。查看TypeScript 2.1：External Helpers Library以获取有关编译器选项的更多信息。__generatorasyncawaittslibimportHelpers
+- ES5
+- ES2015
+- ES6
+- ES2016
+- ES7
+- ES2017
+- ES2018
+- ES2019
+- ES2020
+- ES2021
+- ES2022
+- ESNex
+- DOM
+- WebWorker
+- ScriptHost
+
+### listEmittedFiles
+
+`listEmittedFiles`设置编译时在终端显示，生成了哪些文件。
+
+```typescript
+{
+  "compilerOptions": {
+    "listFiles": true
+  }
+}
+```
 
 ### listFiles
 
-`listFiles`表示在编译工程时，编译器将打印出参与本次编译的文件列表。
+`listFiles`设置编译时在终端显示，参与本次编译的文件列表。
 
 ```javascript
 {
     "compilerOptions": {
-        "listFiles": true,
-        "strict": true,
-        "target": "ES5"
+        "listFiles": true
     }
 }
 ```
-
-它会打印出，除了编译的源脚本以外，还会包含 TypeScript 内置的一些声明文件。
 
 ### mapRoot
 
@@ -644,7 +548,7 @@ $ tsc --jsx preserve
 
 ### outDir
 
-`outDir`指定编译产物所在的目录。如果不指定，编译出来的`.js`文件在对应的`.ts`文件的相同位置。
+`outDir`指定编译产物的存放目录。如果不指定，编译出来的`.js`文件存放在对应的`.ts`文件的相同位置。
 
 ### outFile
 
@@ -692,6 +596,10 @@ $ tsc --jsx preserve
 }
 ```
 
+### pretty
+
+`pretty`设置美化输出终端的编译信息，默认为`true`。
+
 ### removeComments
 
 `removeComments`移除 TypeScript 脚本里面的注释，默认为`false`。
@@ -718,23 +626,9 @@ $ tsc --jsx preserve
 
 上面示例中，`rootDirs`将`bar`和`foo`组成一个虚拟目录。
 
-### skipLibCheck
-
-跳过`.d.ts`类型声明文件的类型检查。一个原因是项目可能安装了同一个依赖的两个版本，两个版本的类型声明文件会造成冲突。
-
-关闭类型声明文件的检查，可以加快编译速度。
-
-```javascript
-{
-  "compilerOptions": {
-    "skipLibCheck": true
-  }
-}
-```
-
 ### sourceMap
 
-`sourceMap`设置编译时生成 SourceMap 文件。
+`sourceMap`设置编译时是否生成 SourceMap 文件。
 
 ### sourceRoot
 
@@ -894,23 +788,63 @@ class User {
 }
 ```
 
+### suppressExcessPropertyErrors
+
+`suppressExcessPropertyErrors`关闭函数多余参数的报错。
+
 ### target
 
-`target`指定编译出来的 JavaScript 代码的 ECMAScript 版本，比如`es2021`。
+`target`指定编译出来的 JavaScript 代码的 ECMAScript 版本，比如`es2021`，默认是`es3`。
+
+它可以取以下值。
+
+- es3
+- es5
+- es6/es2015
+- es2016
+- es2017
+- es2018
+- es2019
+- es2020
+- es2021
+- es2022
+- esnext
 
 注意，如果编译的目标版本过老，比如`"target": "es3"`，有些语法可能无法编译，`tsc`命令会报错。
 
 ### traceResolution
 
-在启用了“--traceResolution”编译选项后，编译器会打印出模块解析的具体步骤。
-
-“tsconfig.json”配置文件中使用traceResolution属性来设置。
+`traceResolution`设置编译时，在终端输出模块解析的具体步骤。
 
 ```typescript
 {
-    "compilerOptions": {
-        "traceResolution": true
-    }
+  "compilerOptions": {
+    "traceResolution": true
+  }
+}
+```
+
+### typeRoots
+
+`typeRoots`设置类型模块所在的目录，默认是`node_modules/@types`。
+
+```typescript
+{
+  "compilerOptions": {
+    "typeRoots": ["./typings", "./vendor/types"]
+  }
+}
+```
+
+### types
+
+`types`设置`node_modules/@types`目录下需要包括在编译之中的类型模块。默认情况下，该目录下的所有类型模块，都会自动包括在编译之中。
+
+```typescript
+{
+  "compilerOptions": {
+    "types": ["node", "jest", "express"]
+  }
 }
 ```
 
@@ -939,10 +873,6 @@ try {
   }
 }
 ```
-
-### watch
-
-`"watch`参数的值为布尔值，如果设为`true`，就会监听 TypeScript 脚本，一旦有变动，就自动重新编译。
 
 ## 参考链接
 
