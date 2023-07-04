@@ -126,9 +126,9 @@ yarn add --dev @tsconfig/deno
 
 ## files
 
-`files`属性指定编译的文件列表。如果有一个文件不存在，就会报错。
+`files`指定编译的文件列表，如果其中有一个文件不存在，就会报错。
 
-一个数组，指定所要编译的文件。数组中排在前面的文件，会先编译。
+它的文件列表是一个数组，排在前面的文件先编译。
 
 ```javascript
 {
@@ -267,7 +267,7 @@ yarn add --dev @tsconfig/deno
 }
 ```
 
-上面示例中，`baseUrl`为当前目录`./`。那么，当遇到下面的语句，TypeScript 将以当前目录为起点，寻找`hello/world.ts`。
+上面示例中，`baseUrl`为当前目录`./`。那么，当遇到下面的语句，TypeScript 将以`./`为起点，寻找`hello/world.ts`。
 
 ```typescript
 import { helloWorld } from "hello/world";
@@ -360,6 +360,23 @@ moment(); // 不报错
 打开`esModuleInterop`以后，如果将上面的代码编译成 CommonJS 模块格式，就会加入一些辅助函数，保证编译后的代码行为正确。
 
 注意，打开`esModuleInterop`，将自动打开`allowSyntheticDefaultImports`。
+
+### exactOptionalPropertyTypes
+
+`exactOptionalPropertyTypes`设置可选属性不能赋值为`undefined`。
+
+```typescript
+// 打开 exactOptionalPropertyTypes
+interface MyObj {
+  foo?: 'A' | 'B';
+}
+
+let obj:MyObj = { foo: 'A' };
+
+obj.foo = undefined; // 报错
+```
+
+上面示例中，`foo`是可选属性，打开`exactOptionalPropertyTypes`以后，该属性就不能显式赋值为`undefined`。
 
 ### forceConsistentCasingInFileNames
 

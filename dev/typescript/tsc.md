@@ -1,131 +1,130 @@
-# tsc 命令和 TypeScript 配置
+# tsc 命令行编译器
 
-tsc 可以使用配置文件`tsconfig.json`，自动读取当前目录下的这个配置文件。
+## 简介
 
-## --all
+tsc 是 TypeScript 官方的命令行编译器，用来检查代码，并将其编译成 JavaScript 代码。
 
-输出所有可用的参数。
+tsc 默认使用当前目录下的配置文件`tsconfig.json`，但也可以接受独立的命令行参数。
 
-## allowJs
+如果命令行指定了所要编译的文件，那么 tsc 会忽略`tsconfig.json`的`files`属性。
 
-编译时处理 JS 文件。
-
-```bash
-$ tsc --allowJs
-```
-
-## --build
-
-TypeScript提供了一种新的构建模式来配合工程引用的使用，它就是“--build”模式（简写为“-b”）。在该模式下，编译器能够进行增量构建。
-
-当使用该命令构建TypeScript工程时，编译器会执行如下操作：
-
-▪查找当前工程所引用的工程。
-
-▪检查当前工程和引用的工程是否有更新。
-
-▪若工程有更新，则根据依赖顺序重新构建它们；若没有更新，则不进行重新构建。
+它的基本用法如下。
 
 ```bash
-$ tsc --build
+# 按照 tsconfig.json 编译
+$ tsc
+
+# 只编译 index.ts 
+$ tsc index.ts
+
+# 编译 src 目录的所有 .ts 文件
+$ tsc src/*.ts
+
+# 指定编译配置文件
+$ tsc --project tsconfig.production.json
+
+# 只类型生明文件，不编译出 JS 文件
+$ tsc index.js --declaration --emitDeclarationOnly
+
+# 多个 TS 文件编译成单个 JS 文件
+$ tsc app.ts util.ts --target esnext --outfile index.js
 ```
 
-在“C:\app\src”工程中还生成了“tsconfig.tsbuildinfo”文件，它保存了该工程本次构建的详细信息，编译器正是通过查看该文件来判断当前工程是否需要重新编译。
+## 命令行参数
 
-## checkJs
+tsc 的命令行参数，大部分与 tsconfig.json 的属性一一对应。
 
-checkJs 对 JS 脚本文件进行类型检查。
+下面只是简单罗列主要的一些参数，详细解释可以参考《tsconfig.json 配置文件》一章。
 
-- Defaulting allowJs to true if it wasn’t already
-- Enabling the type checker on .js and .jsx files
+`--all`：输出所有可用的参数。
 
-```bash
-$ tsc --checkJs
-```
+`--allowJs`：允许 TS 脚本加载 JS 模块，编译时将 JS 一起拷贝到输出目录。
 
-## --declaration
+`--allowUnreachableCode`：如果 TS 脚本有不可能运行到的代码，不报错。
 
-生成一个`.d.ts`类型声明文件。
+`--allowUnusedLabels`：如果 TS 脚本有没有用到的标签，不报错。
 
-## -declarationMap
+`--alwaysStrict`：总是在编译产物的头部添加`use strict`。
 
-为类型声明文件`.d.ts`生成 sourcemap 文件。
+`--baseUrl`：指定非相对的模块的基准 URL。
 
-## --help
+`--build`：启用增量编译。
 
-显示帮助信息。
+`--checkJs`：对 JS 脚本进行类型检查。
 
-## --init
+`--declaration`：为 TS 脚本生成一个类型生成文件。
 
-`--init`在当前目录创建一个全新的`tsconfig.json`文件，里面是预设的设置。
+`--declarationDir`：指定生成的类型声明文件的目录。
 
-```bash
-$ tsc --init
-```
+`--declarationMap`：为`.d.ts`文件生成 SourceMap 文件。
 
-## --inlineSourceMap
+`--diagnostics`：构建后输出编译性能信息。
 
-`--inlineSourceMap`编译参数指定 Source Map 信息，放在编译出来的`js`文件里面，而不是生成独立的`.js.map`文件。
+`--emitBOM`：在编译输出的 UTF-8 文件头部加上 BOM 标志。
 
-## --inlineSources 
+`--emitDeclarationOnly`：只编译输出类型声明文件，不输出 JS 文件。
 
-`--inlineSources`编译参数可以将`.ts`源码文件嵌入编译产物的`.js`文件里面。
+`--esModuleInterop`：更容易使用 import 命令加载 CommonJS 模块。
 
-## --lib
+`--exactOptionalPropertyTypes`：不允许将可选属性设置为`undefined`。
 
-指定使用何种运行环境的类型声明文件。
+`--experimentalDecorators`：支持早期的装饰器语法。
 
-```bash
-$ tsc --lib es2020
-$ tsc --lib dom,es2021
-```
+`--explainFiles`：输出进行编译的文件信息。
 
-## --module
+`--forceConsistentCasingInFileNames`：文件名大小写敏感，默认打开。
 
-`--module`参数指定编译的输出格式。
+`--help`：输出帮助信息。
 
-```bash
-$ tsc --module commonjs Test.ts
-```
+`--importHelpers`：从外部库（比如 tslib）输入辅助函数。
 
-它可以接受以下值。
+`--incremental`：启用增量构建。
 
-- commonjs：默认值，供 Node.js 使用
-- amd：供 require.js 使用
-- system
-- umd
-- es2015
-- es2020
-- esnext
+`--init`：在当前目录创建一个全新的`tsconfig.json`文件，里面是预设的设置。
 
-## --moduleResolution
+`--inlineSourceMap`：SourceMap 信息嵌入 JS 文件，而不是生成独立的`.js.map`文件。
 
-决定模块解析策略。
+`--inlineSources`：将 TypeScript 源码作为 SourceMap 嵌入编译出来的 JS 文件。
 
-## --newLine
+`--isolatedModules`：确保每个模块能够独立编译，不依赖其他输入的模块。
 
-默认情况下，如果在 Windows 系统下编译，断行符为`\r\n`；如果在 Linux 系统（包括 Mac 系统）下编译，换行符为`\n`。`--newLine`编译项允许指定换行符。
+`--jsx`：设置如何处理 JSX 文件。
 
-## --noEmit
+`--lib`：设置目标环境需要哪些内置库的类型描述。
 
-不生成新文件，只用来进行类型检查。
+`--listEmittedFiles`：编译后输出编译产物的文件名。
 
-## --noEmitHelpers
+`--listFiles`：编译过程中，列出读取的文件名。
 
-TypeScript 默认会在需要的时候，在编辑结果加入一些工具函数（比如`__extends`），会放在每个输出的文件里面。如果网页同时加载多个独立编译的 TypeScript 脚本，那么只需要一个脚本放入这些工具函数，其他脚本可以不放，这时采用`--noEmitHelpers`这个编译参数，编译结果里面就不会放入工具函数。
+`--listFilesOnly`：列出编译所要处理的文件，然后停止编译。
+
+`--locale`：指定编译时输出的语言，不影响编译结果。
+
+`--mapRoot`：指定 SourceMap 文件的位置。
+
+`--module`：指定编译生成的模块格式。
+
+`--moduleResolution`：指定如何根据模块名找到模块的位置。
+
+`--moduleSuffixes`：指定模块文件的后缀名。
+
+`--newLine`：指定编译产物的换行符，可以设为`crlf`或者`lf`。
+
+`--noEmit`：不生成编译产物，只进行类型检查。
+
+`--noEmitHelpers`：不在编译产物中加入辅助函数。
+
+`--project`（或者`-p`）：指定编译配置文件，或者该文件所在的目录。
+
+`--showConfig`：终端输出编译配置信息，而不进行配置。
+
+`--version`：终端输出 tsc 的版本号。
+
+`--watch`（或者`-w`）：进入观察模式，只要文件有修改，就会自动重新编译。
 
 ## --out
 
 将多个原始脚本编译成单个文件。
-
-## -p，--project
-
-`-p`指定配置文件。如果配置文件不是当前目录的`tsconfig.json`文件，那么就需要使用`-p`参数指定配置文件。
-
-```bash
-$ tsc -p src/client/tsconfig.client.json
-$ tsc -p src/server/tsconfig.server.json
-```
 
 ## --preserveWatchOutput
 
@@ -236,12 +235,6 @@ $ tsc --strict
 - lib.webworker.importscripts.d.ts
 - lib.scripthost.d.ts
 
-## -w, --watch
-
-TypeScript编译器提供了一种特殊的编译模式，即观察模式。在观察模式下，编译器会监视文件的修改并自动重新编译文件。观察模式通过“--watch”（简写为“-w”）编译选项来启用。
-
-文件如果修改后再保存，就会自动重新编译。
-
 ## strictNullChecks
 
 如果 strictNullChecks 设为 off，那些等于null或undefined的值仍然可以正常访问，并且null或undefined可以分配给任何类型的属性。推荐总是打开该设置。
@@ -325,66 +318,9 @@ class OKGreeter {
 "strictPropertyInitialization": false
 ```
 
-## --allowJs
-
-在一个工程中可能既存在TypeScript代码也存在JavaScript代码。例如，一个Type-Script工程依赖于某个JavaScript代码库，又或者一个工程正在从JavaScript向TypeScript进行迁移。如果TypeScript工程中的JavaScript程序也是工程的一部分，那么就需要使用“--allowJs”编译选项来配置TypeScript编译器。
-
-在默认情况下，编译器只会将“.ts”和“.tsx”文件添加到编译文件列表，而不会将“.js”和“.jsx”文件添加到编译文件列表。如果想要让编译器去编译JavaScript文件，那么就需要启用“--allowJs”编译选项。在启用了“--allowJs”编译选项后，工程中的“.js”和“.jsx”文件也会被添加到编译文件列表。
-
-参数`--allowJs`允许 TS 脚本加载 JS 脚本。同时，编译器会将源码里面的 JS 文件，拷贝到编译结果的目录。
-
-使用选项--allowJs，TypeScript 编译器将输入目录中的 JavaScript 文件复制到输出目录。
-
-```bash
-$ tsc src/index.js --allowJs --outDir dist
-```
-
-在启用了“--allowJs”编译选项后，编译器能够像编译TypeScript文件一样去编译JavaScript文件。此例中，我们还必须指定一个除“C:\app\src”之外的目录作为输出文件目录，否则编译器将报错。因为如果在“C:\app\src”目录下生成编译后的“index.js”文件，那么它将会覆盖源“index.js”文件，这是不允许的。
-
-如果 target 指定为 es5，`--allowJs`还能起到转译 JavaScript 代码版本。
-
-```bash
-$ tsc index.js --target ES5 --allowJs --outFile index.out.js
-```
-
-## --checkJs
-
-在默认情况下，TypeScript编译器不会对JavaScript文件进行类型检查。就算启用了“--allowJs”编译选项，编译器依然不会对JavaScript代码进行类型检查。
-
-TypeScript 2.3提供了一个“--checkJs”编译选项。当启用了该编译选项时，编译器能够对“.js”和“.jsx”文件进行类型检查。“--checkJs”编译选项必须与“--allowJs”编译选项一起使用。
-
-```typescript
-$ tsc src/index.js --allowJs --checkJs --outDir dist
-```
-
-参数`--checkJs`可以让编译器对 JavaScript 文件进行类型检查，前提是必须同时使用参数`--allowJs`。它等同于在 JS 脚本头部加上`// @ts-check`的指令。
-
-使用`--checkJS`时，如果 JS 脚本头部有`// @ts-nocheck`指令，则不会对该文件进行类型检查。
-
-`--checkJs`，tsc 编译器还会对 JavaScript 文件进行类型检查（--allowJs必须启用，此选项才能正常工作）。鉴于可用信息有限，它尽其所能。检查哪些文件可以通过其中的注释进行配置：
-
-- 显式排除：如果 JavaScript 文件包含注释// @ts-nocheck，则不会对其进行类型检查。
-- 显式包括：如果没有--checkJs，注释`// @ts-check`可用于对单个 JavaScript 文件进行类型检查。
-
 ## importHelpers
 
 使用`--importHelpers`编译器选项和tslib npm 包。指定时，--importHelpers将导致 TypeScript 编译器从tslib. 然后像 webpack 这样的打包器可以只内联该 npm 包一次，避免代码重复。
-
-## init
-
-`--init`参数会在当前目录生成一个全新的配置文件`tsconfig.json`。
-
-```bash
-$ tsc --init
-```
-
-这个配置文件里面的大多数配置都被注释掉了，需要什么参数，可以取消注释。
-
-另外，目前默认的编译目标是`es2016`。
-
-## noEmit
-
-参数`--noEmit`表示编译器不会产生任何输出，也就是不会有编译结果，只用来对文件进行类型检查。
 
 ## noResolve
 
@@ -426,55 +362,6 @@ import * as B from "moduleB"; // 报错，找不到 moduleB
 ```typescript
 import * as config from "./config.json";
 ```
-
-## showConfig
-
-先介绍一下“--showConfig”编译选项。在使用该编译选项后，编译器将显示出编译工程时使用的所有配置信息。当我们在调试工程配置的时候，该编译选项是非常有帮助的。
-
-`--showConfig`检验tsconfig.json文件的有效性，并将其打印到控制台。这对于调试配置问题很有用，尤其是与tsconfig.json文件extends中的属性一起使用时。
-
-举例来说，下面是一个 tsconfig.json 文件。
-
-```json
-{
-  "compilerOptions": {
-    "target": "es5",
-    "module": "es2015",
-    "moduleResolution": "node",
-    "strict": true,
-    "importHelpers": true
-  },
-  "include": ["**/*.ts"]
-}
-```
-
-运行`tsc --showConfig`命令。
-
-```bash
-$ tsc --showConfig
-```
-
-控制台会显示下面的内容。
-
-```json
-{
-  "compilerOptions": {
-    "target": "es5",
-    "module": "es6",
-    "moduleResolution": "node",
-    "strict": true,
-    "importHelpers": true
-  },
-  "files": ["./main.ts", "./utils/crypto.ts"],
-  "include": ["**/*.ts"]
-}
-```
-
-上面是 TypeScript 实际上会运行的配置。
-
-注意，上面添加了`files`属性，tsconfig.json 并没有这个属性。这是 TypeScript 根据`include`属性，计算出来这个配置文件所针对的 TypeScript 脚本。
-
-注意，`--showConfig`在 tsconfig.json 文件里面设置无效，只能用于命令行。
 
 ## traceResolution
 
