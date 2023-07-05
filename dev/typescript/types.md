@@ -107,9 +107,11 @@ const z:object = (n:number) => n + 1;
 
 上面示例中，对象、数组、函数都属于 object 类型。
 
-### undefined 类型
+### undefined 类型，null 类型
 
-undefined 类型只有一个值`undefined`，表示未定义（即还给出定义，以后可能会有定义）。
+undefined 和 null 是两种独立类型，它们各自都只有一个值。
+
+undefined 类型只包含一个值`undefined`，表示未定义（即还给出定义，以后可能会有定义）。
 
 ```typescript
 let x:undefined = undefined;
@@ -117,15 +119,36 @@ let x:undefined = undefined;
 
 上面示例中，变量`x`就属于 undefined 类型。两个`undefined`里面，第一个是类型，第二个是值。
 
-### null 类型
-
-null 类型只有一个值`null`，表示为空（即此处没有值）。
+null 类型也只包含一个值`null`，表示为空（即此处没有值）。
 
 ```typescript
 const x:null = null;
 ```
 
 上面示例中，变量`x`就属于 null 类型。
+
+注意，如果没有声明类型的变量，被赋值为`undefined`或`null`，它们的类型会被推断为`any`。
+
+```typescript
+let a = undefined;   // any
+const b = undefined; // any
+
+let c = null;        // any
+const d = null;      // any
+```
+
+如果希望避免这种情况，则需要打开编译选项`strictNullChecks`。
+
+```typescript
+// 打开编译设置 strictNullChecks
+let a = undefined;   // undefined
+const b = undefined; // undefined
+
+let c = null;        // null
+const d = null;      // null
+```
+
+上面示例中，打开编译设置`strictNullChecks`以后，赋值为`undefined`的变量会被推断为`undefined`类型，赋值为`null`的变量会被推断为`null`类型。
 
 ## 包装对象类型
 

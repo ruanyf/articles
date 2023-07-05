@@ -631,7 +631,7 @@ TypeScript 内置的类型描述文件，主要有一些，可以参考 [TypeScr
 
 ### rootDirs
 
-`rootDirs`把多个不同目录，合并成一个目虚拟目录。
+`rootDirs`把多个不同目录，合并成一个目虚拟目录，便于模块定位。
 
 ```typescript
 {
@@ -729,7 +729,7 @@ let func:StringOrNumberFunc = fn;
 
 ### strictNullChecks
 
-`strictNullChecks`设置禁止对`null`和`undefined`进行类型检查。如果打开`strict`设置，这一项就会自动设为`true`，否则为`false`。
+`strictNullChecks`设置对`null`和`undefined`进行严格类型检查。如果打开`strict`属性，这一项就会自动设为`true`，否则为`false`。
 
 ```bash
 let value:string;
@@ -807,7 +807,7 @@ class User {
 
 ### suppressExcessPropertyErrors
 
-`suppressExcessPropertyErrors`关闭函数多余参数的报错。
+`suppressExcessPropertyErrors`关闭对象字面量的多余参数的报错。
 
 ### target
 
