@@ -12,6 +12,8 @@
 - [ping.pe](https://ping.pe/)
 - [Hacker News 总结](https://hackernews.betacat.io/)
 - [SafeLine（雷池）](https://github.com/chaitin/safeline)：应用程序防火墙 WAF
+- [流程图 Flowchart Fun](https://flowchart.fun/)，[源码](https://github.com/tone-row/flowchart-fun)
+- [lazyDocker](https://github.com/jesseduffield/lazydocker)：命令行 Docker 管理
 
 ## AI
 
