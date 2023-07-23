@@ -12,6 +12,7 @@
 - [ping.pe](https://ping.pe/)
 - [Hacker News 总结](https://hackernews.betacat.io/)
 - [SafeLine（雷池）](https://github.com/chaitin/safeline)：应用程序防火墙 WAF
+- [Shoelace](https://shoelace.style/)：基于 [lit](https://lit.dev/) 的 Web 组件库。
 - [流程图 Flowchart Fun](https://flowchart.fun/)，[源码](https://github.com/tone-row/flowchart-fun)
 - [lazyDocker](https://github.com/jesseduffield/lazydocker)：命令行 Docker 管理
 
@@ -20,6 +21,7 @@
 - [Hugging 聊天](https://huggingface.co/chat/)
 - [Perplexity.ai](https://www.perplexity.ai/)
 - [Instant Logo Design](https://instantlogodesign.com/)：Logo 生成工具
+- [FastGPT](https://labs.kagi.com/fastgpt)：Kagi 的问答引擎
 
 ## 浏览器插件
 
@@ -43,3 +45,4 @@
 
 - [Vim 教程](https://www.barbarianmeetscoding.com/boost-your-coding-fu-with-vscode-and-vim/moving-blazingly-fast-with-the-core-vim-motions/)
 - [GitHub Actions 示例教程](https://www.actionsbyexample.com/)
+- [AWS Networking Fundamentals](https://www.goodreads.com/book/show/60098024-aws-networking-fundamentals), by Toni Pasanen
