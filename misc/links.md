@@ -15,6 +15,7 @@
 - [Shoelace](https://shoelace.style/)：基于 [lit](https://lit.dev/) 的 Web 组件库。
 - [流程图 Flowchart Fun](https://flowchart.fun/)，[源码](https://github.com/tone-row/flowchart-fun)
 - [lazyDocker](https://github.com/jesseduffield/lazydocker)：命令行 Docker 管理
+- [mjml](https://mjml.io/)：响应式电子邮件网页框架
 
 ## AI
 
