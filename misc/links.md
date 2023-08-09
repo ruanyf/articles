@@ -24,9 +24,11 @@
 - [Instant Logo Design](https://instantlogodesign.com/)：Logo 生成工具
 - [FastGPT](https://labs.kagi.com/fastgpt)：Kagi 的问答引擎
 
-## 浏览器插件
+## 工具软件
 
 - [沉浸式翻译](https://immersive-translate.owenyoung.com/)
+- [OrbStack](https://orbstack.dev/)：Mac 电脑运行 Docker 和 Linux，替代 Docker Desktop
+- [Manticore Search](https://github.com/manticoresoftware/manticoresearch)：开源搜索软件，可以替代 ElasticSearch。
 
 ## OpenWrt
 
@@ -34,7 +36,6 @@
 - OpenWrt 软件包：[地址1](https://op.supes.top/packages/)，[地址2](https://op.dllkids.xyz/packages/)
 - passwall：[源码](https://github.com/xiaorouji/openwrt-passwall)，[构建产物](https://github.com/MoetaYuko/openwrt-passwall-build)，[iStore 离线包](https://github.com/AUK9527/Are-u-ok)
 - [冲浪云](https://dash.surfcloud.buzz/)
-
 
 ## 电玩
 
