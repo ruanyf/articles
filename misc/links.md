@@ -23,6 +23,7 @@
 - [Perplexity.ai](https://www.perplexity.ai/)
 - [Instant Logo Design](https://instantlogodesign.com/)：Logo 生成工具
 - [FastGPT](https://labs.kagi.com/fastgpt)：Kagi 的问答引擎
+- [MidJourney Playground](https://www.midjourneyai.ai/)
 
 ## 工具软件
 
