@@ -34,7 +34,7 @@
 ## OpenWrt
 
 - [OpenWrt 固件定制](https://supes.top/)
-- OpenWrt 软件包：[地址1](https://op.supes.top/packages/)，[地址2](https://op.dllkids.xyz/packages/)
+- OpenWrt 软件包：[地址1](https://dl.openwrt.ai/packages-23.05/)，[地址2](https://op.dllkids.xyz/packages/)
 - passwall：[源码](https://github.com/xiaorouji/openwrt-passwall)，[构建产物](https://github.com/MoetaYuko/openwrt-passwall-build)，[iStore 离线包](https://github.com/AUK9527/Are-u-ok)
 - [冲浪云](https://dash.surfcloud.buzz/)
 
@@ -49,6 +49,14 @@
 - [Vim 教程](https://www.barbarianmeetscoding.com/boost-your-coding-fu-with-vscode-and-vim/moving-blazingly-fast-with-the-core-vim-motions/)，[Helix 编辑器文档](https://docs.helix-editor.com/keymap.html)
 - [GitHub Actions 示例教程](https://www.actionsbyexample.com/)
 - [AWS Networking Fundamentals](https://www.goodreads.com/book/show/60098024-aws-networking-fundamentals), by Toni Pasanen
+
+## z-library
+
+- [Web](https://singlelogin.se)
+- [TOR](http://loginzlib2vrak5zzpcocc3ouizykn6k5qecgj2tzlnab5wcbqhembyd.onion)
+- [Wikipedia](https://en.wikipedia.org/wiki/Z-Library)
+- [Reddit](https://www.reddit.com/r/zlibrary)
+
 
 ## 杂类
 
