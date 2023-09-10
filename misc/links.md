@@ -61,3 +61,4 @@
 ## 杂类
 
 - [微信互选税率](https://www.juxuan.net/662.html)
+- [HN 的 AI 提要](https://hackyournews.com/)，[移动版](https://hackyournews.com/indexM)，[另一个实现](https://hackernews.betacat.io/)
