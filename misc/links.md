@@ -49,6 +49,7 @@
 - [Vim 教程](https://www.barbarianmeetscoding.com/boost-your-coding-fu-with-vscode-and-vim/moving-blazingly-fast-with-the-core-vim-motions/)，[Helix 编辑器文档](https://docs.helix-editor.com/keymap.html)
 - [GitHub Actions 示例教程](https://www.actionsbyexample.com/)
 - [AWS Networking Fundamentals](https://www.goodreads.com/book/show/60098024-aws-networking-fundamentals), by Toni Pasanen
+- [Prisma 数据库教程](https://www.prisma.io/dataguide)
 
 ## z-library
 
