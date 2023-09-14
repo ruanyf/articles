@@ -1,3 +1,9 @@
+1、[华为 Mate60 Pro 能飞机通话吗？](https://www.gamersky.com/tech/202309/1643541.shtml)（中文）
+
+![](https://cdn.beekka.com/blogimg/asset/202309/bg2023090909.webp)
+
+有人测试华为 Mate60 Pro 能不能在飞机上打电话，结论是可以但很困难。因为窗边才能连到卫星，但飞行中很难一直对着卫星。
+
 1、[轮胎污染](https://dynomight.net/tires/)
 
 电动车总体上是一种更清洁的交通工具，但是有一个方面，它比燃油车的污染更严重。
