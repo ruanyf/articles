@@ -30,6 +30,7 @@
 - [沉浸式翻译](https://immersive-translate.owenyoung.com/)
 - [OrbStack](https://orbstack.dev/)：Mac 电脑运行 Docker 和 Linux，替代 Docker Desktop
 - [Manticore Search](https://github.com/manticoresoftware/manticoresearch)：开源搜索软件，可以替代 ElasticSearch。
+- ip 地域查询：[ipinfo.io](https://ipinfo.io/)，[ipapi.is](https://ipapi.is/)
 
 ## OpenWrt
 
