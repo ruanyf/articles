@@ -17,6 +17,62 @@ $ npm install wrangler --save-dev
 $ wrangler --version
 ```
 
+## 登录 cloudflare 账户
+
+```bash
+$ wrangler login 
+```
+
+## 测试 Worker
+
+下面命令可以当前目录的 worker 脚本，起一个服务。
+
+```bash
+$ npx wrangler dev
+```
+
+运行上面命令以后，就可以去`http://localhost:8787`访问本地服务。
+
+## 部署 worker
+
+将当前脚本部署到 Cloudflare。
+
+```bash
+$ npx wrangler deploy
+```
+
+你的 woker 就会部署到如下域名`<YOUR_WORKER>.<YOUR_SUBDOMAIN>.workers.dev`。
+
+## 测试
+
+端对端测试，使用 Wrangler 的 unstable_dev API。
+
+```bash
+const { unstable_dev } = require("wrangler");
+
+describe("Worker", () => {
+  let worker;
+
+  beforeAll(async () => {
+    worker = await unstable_dev("src/index.js", {
+      experimental: { disableExperimentalWarning: true },
+    });
+  });
+
+  afterAll(async () => {
+    await worker.stop();
+  });
+
+  it("should return Hello World", async () => {
+    const resp = await worker.fetch();
+    if (resp) {
+      const text = await resp.text();
+      expect(text).toMatchInlineSnapshot(`"Hello World!"`);
+    }
+  });
+});
+```
+
 ## 用法
 
 在你的项目中运行 Pages 的 Web 服务。
