@@ -51,6 +51,7 @@
 - [GitHub Actions 示例教程](https://www.actionsbyexample.com/)
 - [AWS Networking Fundamentals](https://www.goodreads.com/book/show/60098024-aws-networking-fundamentals), by Toni Pasanen
 - [Prisma 数据库教程](https://www.prisma.io/dataguide)
+- [cpu.land](https://cpu.land/)
 
 ## z-library
 

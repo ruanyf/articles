@@ -1,6 +1,37 @@
 # OpenWrt 设置
 
-软件包下载：https://op.supes.top/packages/
+## 树莓派安装原生系统
+
+- [官方主页](https://openwrt.org/toh/raspberry_pi_foundation/raspberry_pi)
+
+树莓派 wifi 可能需要修改国家代码
+
+[官方主页](https://firmware-selector.openwrt.org/)下载原生系统。
+
+- [教程 1](https://simplificandoredes.com/en/turn-the-raspberry-pi-into-a-wifi-router/)
+- [教程 2](https://raspberrytips.com/openwrt-on-raspberry-pi/)
+
+安装 WAN 接口后，不要忘了去 Firewall 打开数据包流向。
+
+安装 openwrt 以后，按照[官方教程](https://forum.openwrt.org/t/howto-resizing-root-partition-on-x86-march-2023-edition/153398)，调整 root 分区大小。
+
+设置 openwrt 下载源
+
+```bash
+https://dl.openwrt.ai/packages-23.05/aarch64_cortex-a53/
+```
+
+passwall 安装也可以参考下面仓库。
+
+- https://github.com/MoetaYuko/openwrt-passwall-build
+- https://github.com/lrdrdn/my-opkg-repo （[教程](https://tos.wiki/how-to-install-the-latest-luci-app-passwall/)）
+
+安装 passwall 以后，卸载 dnsmasq，安装 dnsmasq-full。
+
+```bash
+$ opkg remove dnsmasq
+$ opkg install dnsmasq-full
+```
 
 ## 常用软件包
 
