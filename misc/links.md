@@ -6,6 +6,7 @@
 - [Lore Free](https://ebook2.lorefree.com/)：电子书共享社区
 - [小雅](http://alist.xiaoya.pro/)
 - [Tvbox](https://github.com/liu673cn/box)接口：[1](https://www.yydsys.top/box/api/)，[2](http://xn--sss604efuw.ga/)，[3](https://xhdwc.tk/0)
+- [Web Kindel](https://read.amazon.com/kindle-library)
 
 ## Web
 
@@ -52,6 +53,7 @@
 - [AWS Networking Fundamentals](https://www.goodreads.com/book/show/60098024-aws-networking-fundamentals), by Toni Pasanen
 - [Prisma 数据库教程](https://www.prisma.io/dataguide)
 - [cpu.land](https://cpu.land/)
+- [Deno 的内部结构](https://choubey.gitbook.io/internals-of-deno/)
 
 ## z-library
 

@@ -38,3 +38,9 @@ Content-Type: text/plain
 ...（file1.txt的数据）...
 --AaB03x--
 ```
+
+## 返回图像
+
+```http
+"Content-Type": "image/png"
+```

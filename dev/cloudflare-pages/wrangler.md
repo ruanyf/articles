@@ -32,8 +32,6 @@ $ npx wrangler generate <NEW_PROJECT_NAME> <GITHUB_REPO_URL>
 - new-project-name：要创建的项目目录名
 - github-repo-url：用作模板的 GitHub 仓库，参考[该地址](https://github.com/cloudflare/workers-sdk/tree/main/templates)。
 
-
-
 ## 测试 Worker
 
 下面命令可以当前目录的 worker 脚本，起一个服务。
