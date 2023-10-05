@@ -82,6 +82,12 @@ describe("Worker", () => {
 });
 ```
 
+## 设置秘密变量
+
+```bash
+$ wrangler secret put <秘密变量名>
+```
+
 ## 用法
 
 在你的项目中运行 Pages 的 Web 服务。

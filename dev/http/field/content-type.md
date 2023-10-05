@@ -44,3 +44,9 @@ Content-Type: text/plain
 ```http
 "Content-Type": "image/png"
 ```
+
+## 发送表单
+
+```http
+"Content=Type": "application/x-www-form-urlencoded"
+```
