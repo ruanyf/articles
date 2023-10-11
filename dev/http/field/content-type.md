@@ -1,12 +1,14 @@
-# content-type
+# content-type 字段
 
-`content-type`字段表示返回的数据类型。
+`content-type`字段表示返回的数据类型。与 Accept 字段一样，字段值用 type/subtype 形式赋值。
 
 （1）返回 HTML 页面
 
-```
+```http
 text/html;charset=UTF-8
 ```
+
+参数 charset 使用 iso-8859-1 或 euc-jp 等字符集进行赋值。
 
 （2）返回 JSON 数据
 
