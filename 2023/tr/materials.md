@@ -1,3 +1,11 @@
+![](https://cdn.beekka.com/blogimg/asset/202309/bg2023092212.webp)
+
+1、
+
+我们最大的竞争对手是睡眠。
+
+-- [Netflix 首席执行官里德·黑斯廷斯](https://www.theguardian.com/technology/2017/apr/18/netflix-competitor-sleep-uber-facebook) (Reed Hastings) 
+
 1、[华为 Mate60 Pro 能飞机通话吗？](https://www.gamersky.com/tech/202309/1643541.shtml)（中文）
 
 ![](https://cdn.beekka.com/blogimg/asset/202309/bg2023090909.webp)
