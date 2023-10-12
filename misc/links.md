@@ -26,12 +26,16 @@
 - [FastGPT](https://labs.kagi.com/fastgpt)：Kagi 的问答引擎
 - [MidJourney Playground](https://www.midjourneyai.ai/)
 
-## 工具软件
+## 日常工具
 
 - [沉浸式翻译](https://immersive-translate.owenyoung.com/)
+- ip 地域查询：[ipinfo.io](https://ipinfo.io/)，[ipapi.is](https://ipapi.is/)
+- 截图美化：[JellyLade](https://app.jellylade.com/)，[代码截图](https://snappify.com/editor)
+
+## 开发工具
+
 - [OrbStack](https://orbstack.dev/)：Mac 电脑运行 Docker 和 Linux，替代 Docker Desktop
 - [Manticore Search](https://github.com/manticoresoftware/manticoresearch)：开源搜索软件，可以替代 ElasticSearch。
-- ip 地域查询：[ipinfo.io](https://ipinfo.io/)，[ipapi.is](https://ipapi.is/)
 
 ## OpenWrt
 
