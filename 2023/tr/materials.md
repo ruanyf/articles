@@ -1,3 +1,20 @@
+1、[吉达塔](https://www.designboom.com/architecture/saudi-arabia-resumes-construction-on-worlds-tallest-building-jeddah-tower-09-19-2023/)
+
+21世纪初，沙特阿拉伯宣布在吉达港，建设世界最高建筑“吉达塔”（Jeddah Tower）。
+
+该建筑的高度，不多不少正好为1公里（1000米），比目前世界最高建筑迪拜的哈利法塔高出180米，下面是它的效果图。
+
+![](https://cdn.beekka.com/blogimg/asset/202310/bg2023101506.webp)
+
+2013年，该楼动工。到了2018年，由于沙特政府内部变动，该楼造了三分之一后停工了。
+
+最近，该楼重新招标，又要开工了。
+
+
+![](https://cdn.beekka.com/blogimg/asset/202310/bg2023100515.webp)
+
+中国气象局武汉暴雨研究所，在湖北随州大洪山尖的佛塔顶部，安装了一部气象雷达。（[via](https://www.163.com/dy/article/I06KB2JM0543LLT9.html)）
+
 ![](https://cdn.beekka.com/blogimg/asset/202309/bg2023092212.webp)
 
 1、
