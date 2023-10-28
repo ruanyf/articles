@@ -38,12 +38,13 @@
 - [OrbStack](https://orbstack.dev/)：Mac 电脑运行 Docker 和 Linux，替代 Docker Desktop
 - [Manticore Search](https://github.com/manticoresoftware/manticoresearch)：开源搜索软件，可以替代 ElasticSearch。
 
-## OpenWrt
+## 通信
 
 - [OpenWrt 固件定制](https://supes.top/)
 - OpenWrt 软件包：[地址1](https://dl.openwrt.ai/packages-23.05/)，[地址2](https://op.dllkids.xyz/packages/)
 - passwall：[源码](https://github.com/xiaorouji/openwrt-passwall)，[构建产物](https://github.com/MoetaYuko/openwrt-passwall-build)，[iStore 离线包](https://github.com/AUK9527/Are-u-ok)
 - [冲浪云](https://dash.surfcloud.buzz/)
+- [Hysteria](https://github.com/apernet/hysteria)：一个代理工具
 
 ## 电玩
 
