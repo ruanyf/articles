@@ -26,6 +26,9 @@
 - [Instant Logo Design](https://instantlogodesign.com/)：Logo 生成工具
 - [FastGPT](https://labs.kagi.com/fastgpt)：Kagi 的问答引擎
 - [MidJourney Playground](https://www.midjourneyai.ai/)
+- [Replicate](https://replicate.com/)：数千个 AI 模型的云服务
+  - stability-ai 的 [sdxl](https://replicate.com/stability-ai/sdxl)  “文生图”模型
+  - [stable-diffusion](https://replicate.com/stability-ai/stable-diffusion) 
 
 ## 日常工具
 
@@ -44,8 +47,8 @@
 - [OpenWrt 固件定制](https://supes.top/)
 - OpenWrt 软件包：[地址1](https://dl.openwrt.ai/packages-23.05/)，[地址2](https://op.dllkids.xyz/packages/)
 - passwall：[源码](https://github.com/xiaorouji/openwrt-passwall)，[构建产物](https://github.com/MoetaYuko/openwrt-passwall-build)，[iStore 离线包](https://github.com/AUK9527/Are-u-ok)
-- [冲浪云](https://dash.surfcloud.buzz/)
 - [Hysteria](https://github.com/apernet/hysteria)：一个代理工具
+- [Cloudflare worker](https://www.smallstep.one/article/workers-deployment)：[脚本1](https://github.com/zizifn/edgetunnel/blob/main/src/worker-vless.js)，[脚本2](https://github.com/3Kmfi6HP/edtunnel/blob/main/_worker.js)
 
 ## 电玩
 
@@ -55,7 +58,7 @@
 
 ## 学习材料
 
-- [Vim 教程](https://www.barbarianmeetscoding.com/boost-your-coding-fu-with-vscode-and-vim/moving-blazingly-fast-with-the-core-vim-motions/)，[Helix 编辑器文档](https://docs.helix-editor.com/keymap.html)
+- [Vim 教程](https://www.barbarianmeetscoding.com/boost-your-coding-fu-with-vscode-and-vim/moving-blazingly-fast-with-the-core-vim-motions/)，[Helix 编辑器文档](https://docs.helix-editor.com/keymap.html)，[学习 Vim](https://github.com/iggredible/Learn-Vim)
 - [GitHub Actions 示例教程](https://www.actionsbyexample.com/)
 - [AWS Networking Fundamentals](https://www.goodreads.com/book/show/60098024-aws-networking-fundamentals), by Toni Pasanen
 - [Prisma 数据库教程](https://www.prisma.io/dataguide)
