@@ -34,7 +34,7 @@
 
 - [沉浸式翻译](https://immersive-translate.owenyoung.com/)
 - ip 地域查询：[ipinfo.io](https://ipinfo.io/)，[ipapi.is](https://ipapi.is/)
-- 截图美化：[JellyLade](https://app.jellylade.com/)，[代码截图](https://snappify.com/editor)
+- 截图美化：[JellyLade](https://app.jellylade.com/)，[代码截图](https://snappify.com/editor)，[screenshot.rocks](https://screenshot.rocks/)
 - Youtube 皮肤：[Invidious](https://invidious.io/)，[NewPipe](https://newpipe.net/)，[SmartTube](https://github.com/yuliskov/SmartTube)，Piped
 
 ## 开发工具
