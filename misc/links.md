@@ -50,6 +50,10 @@
 - [Hysteria](https://github.com/apernet/hysteria)：一个代理工具
 - [Cloudflare worker](https://www.smallstep.one/article/workers-deployment)：[脚本1](https://github.com/zizifn/edgetunnel/blob/main/src/worker-vless.js)，[脚本2](https://github.com/3Kmfi6HP/edtunnel/blob/main/_worker.js)
 
+## Linux
+
+- [Ubuntu for ARM](https://devicetests.com/ubuntu-arm-desktop-images)
+
 ## 电玩
 
 -  [SteamDeck 游戏模拟器](https://www.emudeck.com/)
