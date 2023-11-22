@@ -1,3 +1,11 @@
+1、[OpenAI 的混乱与微软的收获](https://stratechery.com/2023/openais-misalignment-and-microsofts-gain/)（英文）
+
+![](https://cdn.beekka.com/blogimg/asset/202311/bg2023112009.webp)
+
+怎么看待 OpenAI 最近的风波？我觉得，这个长篇分析可能最接近真相。
+
+文章的一个结论是，该事件的最大赢家是微软。微软先前就有 OpenAI 所有代码和模型的永久授权，现在又有了 Sam Altman、Greg Brockman 的加盟，实际上相当于以0元收购了 OpenAI。
+
 1、[React Datasheet Grid](https://react-datasheet-grid.netlify.app/)
 
 ![](https://cdn.beekka.com/blogimg/asset/202311/bg2023111106.webp)
