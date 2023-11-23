@@ -1,3 +1,4 @@
+
 1、[OpenAI 的混乱与微软的收获](https://stratechery.com/2023/openais-misalignment-and-microsofts-gain/)（英文）
 
 ![](https://cdn.beekka.com/blogimg/asset/202311/bg2023112009.webp)
