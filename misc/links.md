@@ -42,6 +42,7 @@
 - [OrbStack](https://orbstack.dev/)：Mac 电脑运行 Docker 和 Linux，替代 Docker Desktop
 - [Manticore Search](https://github.com/manticoresoftware/manticoresearch)：开源搜索软件，可以替代 ElasticSearch。
 - [MeiliSearch](https://github.com/meilisearch/MeiliSearch)
+- [Sqids](https://sqids.org/)：短 ID 库
 
 ## 通信
 

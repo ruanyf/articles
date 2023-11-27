@@ -1,6 +1,81 @@
 # Cloudflare Worker 简介
 
-你的 Cloudflare Worker 项目，是一个 Node.js 项目。
+Cloudflare Worker 脚本采用 JavaScript 语言，通过 V8 引擎运行。
+
+网站的入口脚本是`index.js`，用户访问网站时，不管请求什么路径，都会调用这个脚本。如果要对不同的路径有不同的返回结果，就需要设置路由。
+
+Worker 脚本采用 ECMAScript 模块格式，默认输出一个对象。
+
+```javascript
+export default {
+  // ...
+}
+```
+
+该对象用来指定各种事件的响应函数。
+
+```javascript
+export default {
+  fetch(request, env, ctx) {
+    // ...
+  }
+}
+```
+
+上面示例是指定`fetch`事件的响应函数，即发生`fetch`事件时，自动调用该函数。`fetch`事件指的是用户对当前位置发起请求。
+
+`fetch()`函数接受三个参数。
+
+- request：用户发来的请求，是 Request 的一个实例对象。
+- env：环境对象。
+- ctx：上下文对象。
+  
+`fetch()`返回的是一个 Response 对象实例，用户收到的 HTTP 回应就是这个 Response 实例对象。
+
+下面是一个最简单的 Hello World 例子。
+
+```javascript
+export default {
+	/**
+	 * @param {Request} request
+	 * @param {Env} env
+	 * @param {ExecutionContext} ctx
+	 * @returns {Promise<Response>}
+	 */
+  fetch(request) { 
+    return new Response(
+      'Hello worker!',
+      { status: 200 }
+    ); 
+  },
+}
+```
+
+下面的例子是对不同的请求路径，返回不同的结果。
+
+```javascript
+import welcome from "welcome.html";
+
+export default {
+	async fetch(request, env, ctx) {
+		const url = new URL(request.url);
+
+		if (url.pathname === "/api") {
+			const data = await import("./data.js");
+			return Response.json(data);
+		}
+		return new Response(welcome, {
+			headers: {
+				"content-type": "text/html",
+			},
+		});
+	},
+};
+```
+
+上面示例中，`import`命令可以加载 HTML 文件，放入一个变量，比如`import welcome from "welcome.html"`，标准的 ECMAScript 语法不允许加载这样写。另外，`import()`函数返回的是一个 Promise 对象，所以前面要加 await 命令。
+
+Cloudflare 提供一个[在线练习场](https://workers.cloudflare.com/playground)，可以在那里测试脚本。
 
 它有一个入口脚本（`package.json`的`main`字段），默认输出一个对象，该对象指定各种事件的监听函数。
 
@@ -14,5 +89,14 @@ export default {
 
 上面示例中，入口脚本使用`export default`默认输出一个对象。这个对象的`fetch`属性是一个 async 函数，表示这是`fetch`事件的回调函数。该输出应该返回一个`Response`对象，表示对客户端请求的回应。
 
+## Worker 提供的原生对象
 
+### navigator
 
+这里是服务器端的 navigator 对象。
+
+- navigator.userAgent：返回字符串`Cloudflare-workers`。
+
+### Response
+
+- Response.json()：将参数转成 JSON 对象。
