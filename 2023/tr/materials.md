@@ -1,3 +1,8 @@
+1、[折纸](https://www.nationalgeographic.com/magazine/article/origami-driving-futuristic-technologies-feature)
+
+科学家们正在通过折纸，探索各种复杂的形状。
+
+下面是通过计算机模拟产生的折纸形状。
 
 1、[OpenAI 的混乱与微软的收获](https://stratechery.com/2023/openais-misalignment-and-microsofts-gain/)（英文）
 
