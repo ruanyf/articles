@@ -36,7 +36,8 @@
 - ip 地域查询：[ipinfo.io](https://ipinfo.io/)，[ipapi.is](https://ipapi.is/)
 - 截图美化：[JellyLade](https://app.jellylade.com/)，[代码截图](https://snappify.com/editor)，[screenshot.rocks](https://screenshot.rocks/)
 - Youtube 皮肤：[Invidious](https://invidious.io/)，[NewPipe](https://newpipe.net/)，[SmartTube](https://github.com/yuliskov/SmartTube)，Piped
-
+- [Omnivore](https://github.com/omnivore-app/omnivore)：“稍后阅读”解决方案
+ 
 ## 开发工具
 
 - [OrbStack](https://orbstack.dev/)：Mac 电脑运行 Docker 和 Linux，替代 Docker Desktop
