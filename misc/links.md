@@ -44,6 +44,7 @@
 - [Manticore Search](https://github.com/manticoresoftware/manticoresearch)：开源搜索软件，可以替代 ElasticSearch。
 - [MeiliSearch](https://github.com/meilisearch/MeiliSearch)
 - [Sqids](https://sqids.org/)：短 ID 库
+- [Fuse.js](https://www.fusejs.io/)：一个轻量级的模糊搜索库。
 
 ## 通信
 
