@@ -45,6 +45,8 @@
 - [MeiliSearch](https://github.com/meilisearch/MeiliSearch)
 - [Sqids](https://sqids.org/)：短 ID 库
 - [Fuse.js](https://www.fusejs.io/)：一个轻量级的模糊搜索库。
+- [论坛成员的信任度算法](https://cblgh.org/trustnet/)
+
 
 ## 通信
 
