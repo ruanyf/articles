@@ -1,3 +1,17 @@
+[美国的一个天主教会](https://hackaday.com/2023/01/13/a-medieval-gothic-monastery-built-using-cad-cam/)，想要修建新的教堂。修士们为了省钱，自学 CAD 和 CNC 数控石雕，把教堂建起来了。
+
+![](https://cdn.beekka.com/blogimg/asset/202312/bg2023120409.webp)
+
+![](https://cdn.beekka.com/blogimg/asset/202312/bg2023120410.webp)
+
+业余人士能建成这个样子，真是令人惊叹。他们的官网上有此事的[详细介绍](https://carmelitegothic.com/cnc-stone-carving/)。
+
+![](https://cdn.beekka.com/blogimg/asset/202312/bg2023120412.webp)
+
+![](https://cdn.beekka.com/blogimg/asset/202312/bg2023120413.webp)
+
+![](https://cdn.beekka.com/blogimg/asset/202312/bg2023120411.webp)
+
 1、[折纸](https://www.nationalgeographic.com/magazine/article/origami-driving-futuristic-technologies-feature)
 
 科学家们正在通过折纸，探索各种复杂的形状。
