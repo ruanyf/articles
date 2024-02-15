@@ -74,6 +74,7 @@
 - [Prisma 数据库教程](https://www.prisma.io/dataguide)
 - [cpu.land](https://cpu.land/)
 - [Deno 的内部结构](https://choubey.gitbook.io/internals-of-deno/)
+- [数据科学家的 SQL 教程](https://gvwilson.github.io/sql-tutorial/)
 
 ## z-library
 
