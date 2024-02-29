@@ -1,3 +1,9 @@
+9、[Kysely](https://github.com/kysely-org/kysely)
+
+![](https://cdn.beekka.com/blogimg/asset/202312/bg2023120207.webp)
+
+一个开源的 JS 软件包，用来构建 SQL 语句。
+
 [美国的一个天主教会](https://hackaday.com/2023/01/13/a-medieval-gothic-monastery-built-using-cad-cam/)，想要修建新的教堂。修士们为了省钱，自学 CAD 和 CNC 数控石雕，把教堂建起来了。
 
 ![](https://cdn.beekka.com/blogimg/asset/202312/bg2023120409.webp)
