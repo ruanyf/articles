@@ -1,3 +1,9 @@
+1、[国家中小学电子教材下载客户端](https://github.com/v5tech/ebook-downloader/releases)
+
+![](https://cdn.beekka.com/blogimg/asset/202403/bg2024031917.webp)
+
+国家中小学智慧教育平台的电子教材，按需下载的客户端。（[@v5tech](https://github.com/ruanyf/weekly/issues/4155) 投稿）
+
 9、[Kysely](https://github.com/kysely-org/kysely)
 
 ![](https://cdn.beekka.com/blogimg/asset/202312/bg2023120207.webp)
