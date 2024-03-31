@@ -88,3 +88,10 @@
 
 - [微信互选税率](https://www.juxuan.net/662.html)
 - [HN 的 AI 提要](https://hackyournews.com/)，[移动版](https://hackyournews.com/indexM)，[另一个实现](https://hackernews.betacat.io/)
+
+## 书单
+
+- 周浙昆，《墨脱植物考察追记》
+- 刘拓，阿富汗访古行记
+- 地理学发展之路----中国科学院地理研究所科学活动回忆录（1940-1999）
+- 杨浪涛，大横断-寻找川滇藏
