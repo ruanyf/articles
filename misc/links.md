@@ -47,6 +47,9 @@
 - [Fuse.js](https://www.fusejs.io/)：一个轻量级的模糊搜索库。
 - [论坛成员的信任度算法](https://cblgh.org/trustnet/)
 
+## 图像视频
+
+- [Upscayl](https://github.com/upscayl/upscayl)：图像放大软件。
 
 ## 通信
 

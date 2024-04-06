@@ -1,6 +1,8 @@
 # Cloudflare Worker 简介
 
-Cloudflare Worker 脚本采用 JavaScript 语言，通过 V8 引擎运行。
+## 简介
+
+Cloudflare Worker 是一种云函数服务，采用 JavaScript 语言，通过 V8 引擎运行。
 
 网站的入口脚本是`index.js`，用户访问网站时，不管请求什么路径，都会调用这个脚本。如果要对不同的路径有不同的返回结果，就需要设置路由。
 
@@ -12,7 +14,7 @@ export default {
 }
 ```
 
-该对象用来指定各种事件的响应函数。
+该对象用来指定各种事件的响应函数，也就是说，它的属性就是各种事件的名字，比如`fetch`属性就是对应`fetch`事件的处理函数。
 
 ```javascript
 export default {
@@ -42,7 +44,7 @@ export default {
 	 * @param {ExecutionContext} ctx
 	 * @returns {Promise<Response>}
 	 */
-  fetch(request) { 
+  async fetch(request) { 
     return new Response(
       'Hello worker!',
       { status: 200 }
