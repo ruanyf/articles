@@ -58,6 +58,7 @@
 - passwall：[源码](https://github.com/xiaorouji/openwrt-passwall)，[构建产物](https://github.com/MoetaYuko/openwrt-passwall-build)，[iStore 离线包](https://github.com/AUK9527/Are-u-ok)
 - [Hysteria](https://github.com/apernet/hysteria)：一个代理工具
 - [Cloudflare worker](https://www.smallstep.one/article/workers-deployment)：[脚本1](https://github.com/zizifn/edgetunnel/blob/main/src/worker-vless.js)，[脚本2](https://github.com/3Kmfi6HP/edtunnel/blob/main/_worker.js)
+- [Chisel](https://github.com/jpillora/chisel)：[参见教程](https://matters.town/@ryouji/7541-%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91%E5%B7%A5%E5%85%B7chisel%E6%8C%87%E5%8C%97-zdpuArz2UmBL9mVpvDXZo1wWat3FqPPqhJhdNaEENW6MtqHHy)
 
 ## Linux
 
