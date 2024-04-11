@@ -1,9 +1,11 @@
 # If-None-Match 字段
 
-If-None-Match 只用于客户端的请求。
+If-None-Match 只出现在客户端向服务器的 GET 请求，用于告知服务器本地缓存的版本（ETag）。
 
-只有在 If-None-Match 的字段值与 ETag 值不一致时，可处理该请求。与 If-Match 首部字段的作用相反，可以用于获取最新资源，或者更新资源。
+它的值是当前所请求资源的本地缓存 ETag 值。注意，ETag 的值需要放在双引号中。
 
-它和首部字段 If-Match 作用相反。用于指定 If-None-Match 字段值的实体标记（ETag）值与请求资源的 ETag 不一致时，它就告知服务器处理该请求。
+如果它的值与服务器端的 ETag 值一致，服务器会响应一个 304 Not Modified，不带有数据体，表示客户端的缓存版本仍然有效，客户端应该使用缓存资源。
 
-在 GET 或 HEAD 方法中使用首部字段 If-None-Match 可获取最新的资源。因此，这与使用首部字段 If-Modified-Since 时有些类似。
+如果它们不一致，服务器会响应一个 200 OK，并包括资源的新内容和新的 ETag，提示客户端更新其缓存。
+
+它与 If-Match 字段的作用相反，可以用于获取最新资源，或者更新资源。这与 If-Modified-Since 字段有些类似。
