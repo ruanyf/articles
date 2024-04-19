@@ -6,7 +6,7 @@
 
 本文是一个简单教程，演示如何使用 GitHub Actions 自动发布一个 React 应用到 [GitHub Pages](http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html)。
 
-![](https://www.wangbase.com/blogimg/asset/201909/bg2019091201.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201909/bg2019091201.jpg)
 
 ## 一、GitHub Actions 是什么？
 
@@ -18,7 +18,7 @@
 
 GitHub 做了一个[官方市场](https://github.com/marketplace?type=actions)，可以搜索到他人提交的 actions。另外，还有一个 [awesome actions](https://github.com/sdras/awesome-actions) 的仓库，也可以找到不少 action。
 
-![](https://www.wangbase.com/blogimg/asset/201909/bg2019091105.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201909/bg2019091105.jpg)
 
 上面说了，每个 action 就是一个独立脚本，因此可以做成代码仓库，使用`userName/repoName`的语法引用 action。比如，`actions/setup-node`就表示`github.com/actions/setup-node`这个[仓库](https://github.com/actions/setup-node)，它代表一个 action，作用是安装 Node.js。事实上，GitHub 官方的 actions 都放在 [github.com/actions](https://github.com/actions) 里面。
 
@@ -175,11 +175,11 @@ jobs:
 
 获得资格后，仓库顶部的菜单会出现`Actions`一项。
 
-![](https://www.wangbase.com/blogimg/asset/201909/bg2019091106.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201909/bg2019091106.jpg)
 
 第二步，这个示例需要将构建成果发到 GitHub 仓库，因此需要 GitHub 密钥。按照[官方文档](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line)，生成一个密钥。然后，将这个密钥储存到当前仓库的`Settings/Secrets`里面。
 
-![](https://www.wangbase.com/blogimg/asset/201909/bg2019091107.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201909/bg2019091107.jpg)
 
 上图是储存秘密的环境变量的地方。环境变量的名字可以随便起，这里用的是`ACCESS_TOKEN`。如果你不用这个名字，后面脚本里的变量名也要跟着改。
 
@@ -228,11 +228,11 @@ jobs:
 
 GitHub 发现了 workflow 文件以后，就会自动运行。你可以在网站上实时查看[运行日志](https://github.com/ruanyf/github-actions-demo/commit/24fbf6a875351297f31434fd44bc3146accf9e59/checks)，日志默认保存30天。
 
-![](https://www.wangbase.com/blogimg/asset/201909/bg2019091108.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201909/bg2019091108.jpg)
 
 等到 workflow 运行结束，访问 [GitHub Page](https://ruanyf.github.io/github-actions-demo/)，会看到构建成果已经发上网了。
 
-![](https://www.wangbase.com/blogimg/asset/201909/bg2019091109.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201909/bg2019091109.jpg)
 
 以后，每次修改后推送源码，GitHub Actions 都会自动运行，将构建产物发布到网页。
 

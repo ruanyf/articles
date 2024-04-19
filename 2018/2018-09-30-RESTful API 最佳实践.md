@@ -5,7 +5,7 @@
 
 它的大原则容易把握，但是细节不容易做对。这篇文章就是总结 API 的设计细节，介绍怎么设计出易于理解和使用的 API。
 
-![](https://www.wangbase.com/blogimg/asset/201810/bg2018100301.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201810/bg2018100301.jpg)
 
 ## 一、URL 设计
 

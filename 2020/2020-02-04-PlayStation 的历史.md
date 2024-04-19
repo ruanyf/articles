@@ -4,7 +4,7 @@
 
 这件事有多重要，就这么说吧，大家都觉得，电影业很庞大，对不对？但是，你可能不知道，2019年[全国电影总票房](https://m.chinanews.com/wap/detail/zw/cj/2020/01-01/9048411.shtml)，只有[全国游戏收入](http://www.xinhuanet.com/fortune/2019-12/19/c_1125363102.htm)的五分之一！
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020801.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020801.jpg)
 
 图1：家用游戏机，图片来自 [Unsplash](https://unsplash.com/photos/eCktzGjC-iU)。
 
@@ -18,19 +18,19 @@
 
 20世纪初期，街机就诞生了，当时还是机械式的。投一个硬币，可以听一段音乐，玩玩弹子球。大概在1970年以后，由于电子技术的进步，开始出现电子式街机，可以玩最简单的电子游戏。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020802.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020802.jpg)
 
 图2：电子式街机。
 
 早期的乒乓球游戏 Pong，就曾经在街机上风靡一时。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020803.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020803.jpg)
 
 图3：乒乓球街机 Pong，1972年发布，当时非常流行。
 
 街机流行以后，很多公司尝试制造家用游戏机，让人们可以在家里玩街机。有一家叫做米罗华（Magnavox）的公司，1972年9月制造了历史上第一台家用游戏机“米罗华奥德赛”（Magnavox Odyssey），只能玩乒乓球一个游戏，售价100美元，四个月就卖出去了10万台。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020804.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020804.jpg)
 
 图4：米罗华奥德赛，第一台家用游戏机，1972。
 
@@ -40,19 +40,19 @@
 
 70年代中期，集成电路飞速发展。1975年，摩托罗拉公司推出6502处理器，成为当时最便宜的8位处理器，这使得通用的家用电脑和家用游戏机成为可能。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020806.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020806.jpg)
 
 图5：6502处理器，1975年。
 
 历史上第一台微型计算机、乔布斯的创业产品 Apple I 就是基于6502处理器。当时，还有一家雅达利公司（Atari）致力于研发基于这块芯片的家用游戏机，终于在1977年推出了 Atari 2600 游戏机。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020807.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020807.jpg)
 
 图6：Atari 2600 家用游戏机，1977年。 
 
 Atari 2600 是世界第一台基于6502芯片的家用游戏机，相比米罗华奥德赛，有更强的处理能力。更重要的是，由于它采用游戏卡带的设计，所以外部开发者可以为它开发第三方游戏，经典游戏《吃豆人》（Pac-man）就诞生于这个平台。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020808.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020808.jpg)
 
 图7：经典游戏《吃豆人》，1982。
 
@@ -68,13 +68,13 @@ Atari 2600 取得了巨大成功，上市第一年就卖出了40万台，1980年
 
 美国的街机公司大多在这一段时间倒闭，其中有一家叫做“世嘉”（SEGA）的街机公司也撑不下去了。倒闭之前，它把日本分公司卖给了当地的管理层，从此世嘉变成了日本公司。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020811.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020811.jpg)
 
 图8：世嘉公司的标志。
 
 日本的世嘉公司决定，死马当作活马医，推出一款家用游戏机，看看有没有市场。这就是 SG-1000。这款1983年推出的游戏机，不能玩外部游戏，只能玩移植过来的世嘉街机游戏。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020812.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020812.jpg)
 
 图9：SG-1000 游戏机，1983年。
 
@@ -88,19 +88,19 @@ Atari 2600 取得了巨大成功，上市第一年就卖出了40万台，1980年
 
 他做了很多尝试，包括出租车、旅馆、食品加工，全都失败了。最后，任天堂进入了玩具行业，生产一些简单的电子玩具，也是亏损连连。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020815.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020815.jpg)
 
 图10：任天堂游戏王国的缔造者山内溥（1927-2013）。
 
 不过，因为生产电子玩具的缘故，任天堂1974年成为了“米罗华奥德赛”游戏机的日本代理。山内溥觉得游戏机有利可图，1977年开始自己研制的“米罗华奥德赛”的仿制机。仿制机需要开发自己的游戏，山内溥就雇佣了当时还是大学生的宫本茂，让他来公司当学徒，没想到他后来成了世界著名的游戏设计大师。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020901.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020901.jpg)
 
 图11：宫本茂（1952-），最著名的电子游戏设计师。
 
 宫本茂早期最重要的作品是1981年的《大金刚》（Donkey Kong）。这个游戏极受欢迎，移植到了各个平台，包括街机和 Atari 2600，为任天堂带来了巨大的利润。这坚定了任天堂开发完全自主设计的游戏机的决心。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020813.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020813.jpg)
 
 图12：任天堂最早的原创游戏之一《大金刚》，1981。
 
@@ -108,13 +108,13 @@ Atari 2600 取得了巨大成功，上市第一年就卖出了40万台，1980年
 
 这个机器在日本卖得很好，到1984年底卖出了250万台，轻松超过了世嘉的 SG-1000，占日本游戏机市场90%的份额。但是真正要取得成功，必须在美国市场也卖得好，任天堂并没有国际化的经验，克服各种困难，终于在1985年把游戏机推向了美国市场。设计师特别设计了具有未来气息的红白配色方案，所以 Famicom 后来又被称为红白机。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020902.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020902.jpg)
 
 图13：任天堂 Famicom 游戏机，1985。
 
 Famicom 游戏机是一个巨大的成功，一直销售了20多年，全世界总共卖出了6000多万台。它受欢迎的主要原因之一，是任天堂为这个机器开发了很多高质量的原创游戏，比如《马里奥兄弟》和《塞尔达传说》，至今不衰，同时也授权第三方开发游戏。这使得越来越多的公司开始投入资源，开发原创游戏。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020903.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020903.jpg)
 
 图14：《马里奥兄弟》游戏卡带，1983。
 
@@ -124,23 +124,23 @@ Atari 2600、SG-1000、Famicom 这些游戏机的共同特点，就是它们的 
 
 世嘉公司的16位游戏机产品是 Sega Genesis，1988年首先在日本上市，次年在美国上市。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020904.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020904.jpg)
 
 图15：Sega Genesis 游戏机，1988。
 
 世嘉公司为了应对任天堂的《马里奥兄弟》，特别创造了一个新的游戏《刺猬索尼克》，配合这台游戏机一起上市。后来，索尼克成为了世嘉公司的标志和吉祥物。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020905.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020905.jpg)
 
 图16：Sega Genesis 主机游戏《刺猬索尼克》，1991。
 
 任天堂的16位游戏机是1990年发布的“超级任天堂” SNES。总的来看，16位游戏机算不上突破，只是对8位机的增强。反倒是任天堂1989年发布的第一款掌机 Game Boy 更有历史意义。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020906.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020906.jpg)
 
 图17：超级任天堂游戏机 SNES，1990。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020907.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020907.jpg)
 
 图18：任天堂的掌机 Game Boy，1989。
 
@@ -152,23 +152,23 @@ Atari 2600、SG-1000、Famicom 这些游戏机的共同特点，就是它们的 
 
 该配件位于游戏机下方，使得游戏机可以读取光盘。相比卡带，光盘的储存容量更大，可以带来 2D 游戏到 3D 游戏的飞跃。所以 PlayStation 这个名字，Play 的意思不是“玩”，而是播放光盘。这个设备的原意，就是让游戏机可以读取光盘。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020908.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020908.jpg)
 
 图19：超级任天堂的游戏卡带。
 
 当时，索尼跟任天堂已经达成协议，并且对外宣布了，索尼甚至把样机都做出来了。但是后来，任天堂改变了主意，不允许索尼制造这个配件，因为担心以后第三方游戏只要适配索尼的光驱即可，消费者不再会从任天堂购买游戏卡带。被拒绝以后，索尼只好又去找世嘉，希望世嘉能采用他们的光驱，但是世嘉也没同意。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021302.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021302.jpg)
 
 图20：胎死腹中的任天堂 PlayStation 光驱，1992。
 
 最后，索尼决定赌一把，把 PlayStation 做成一个独立的光驱游戏机发布。第一代 PlayStaion 是1994年12月在日本上市，次年在北美上市。第二代 PlayStation 2 是2000年上市。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020910.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020910.jpg)
 
 图21：第一代 PlayStation，1994。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020020909.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020020909.jpg)
 
 图22：PlayStation 2，2000。
 
@@ -182,7 +182,7 @@ PS1 售出了1.02亿台，PS2 售出了1.46亿台，至今无人打破这个记�
 
 世嘉1994年底推出32位 Sega Saturn 游戏机，具有两个 CPU，性能有很大突破。Sega Saturn 在北美的售价是399美元，而稍后发布的 Play Station 一代是299美元，因此 Sega Saturn 卖得不好，销量远低于它的上一代 Sega Genesis。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021001.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021001.jpg)
 
 图23：Sega Saturn 游戏机，1994。
 
@@ -196,13 +196,13 @@ Play Station 一代在北美的发行日期稍晚于 Sega Saturn，直到新闻�
 
 任天堂于1996年发布了64位的 Nintendo 64 游戏机，这是世界第一台64位的游戏机，同时还配套推出了新游戏《超级马里奥 64》和《塞尔达传说：时之笛》。它的售价为199美元，因为这年夏天 Sega Saturn 和 PlayStation 一代的价格都降到了199美元。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021002.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021002.jpg)
 
 图24：Nintendo 64 游戏机，1996。
 
 Nintendo 64 的致命缺点是使用游戏卡带，游戏容量最大只有 64 MB，放不下大游戏，游戏的影音表现受到很大限制。Sega Saturn 和 PlayStation 一代都使用光盘，最大容量是 650 MB。一些第三方开发商最初有计划为 Nintendo 64 开发大作品，后来都切换到了 PlayStation，理由是 Nintendo 64 游戏卡带储容量不足。这使得 Nintendo 64 的可玩的游戏比较少。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021005.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021005.jpg)
 
 图25：Nintendo 64 的游戏卡带。
 
@@ -210,11 +210,11 @@ Nintendo 64 的致命缺点是使用游戏卡带，游戏容量最大只有 64 M
 
 Nintendo 64 销量并不好，甚至没有超过 Sega Saturn，任天堂深受打击，最终放弃了大游戏市场。经过10年痛苦的转型期之后，2006年发布了 Wii 游戏机，2017年发布了 Switch 游戏机，专攻休闲游戏（或者称为轻游戏）。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021003.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021003.jpg)
 
 图26：任天堂 Wii 游戏机，2006。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021004.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021004.jpg)
 
 图27：任天堂 Switch 游戏机，2017。
 
@@ -228,11 +228,11 @@ PlayStation 第一代在美国大卖以后，微软公司创始人比尔·盖茨
 
 第一代的 Xbox 在2001年底上市，借助于热门游戏《Halo》，在美国市场卖得不错，但是在日本市场表现不好，总体销量不如 PlayStation 第一代和第二代。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021006.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021006.jpg)
 
 图28：第一代 Xbox，2001。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021007.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021007.jpg)
 
 图29：Xbox 独占的热门游戏《Halo》，2001。
 
@@ -244,13 +244,13 @@ PlayStation 第一代在美国大卖以后，微软公司创始人比尔·盖茨
 
 微软率先在2005年底发布了 Xbox 的第二代 Xbox 360，最大卖点是把 720P 分辨率的游戏（当时的主流分辨率），插值计算成 1080P 的高清视频输出。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021008.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021008.jpg)
 
 图30：Xbox 360 游戏机，2005。
 
 索尼在次年（2006）底，发布了 PlayStation 3。最大卖点是内置蓝光光盘播放器，尴尬的是，当时还没有蓝光游戏或蓝光电影。而且，由于使用了新技术，PlayStation 3 的售价（高配版）定在599美元，相比之下，Xbox 360 只要399美元，所以 PlayStaion 3 的市场反响不如 Xbox 360。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021009.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021009.jpg)
 
 图31：PlayStation 3，2006。
 
@@ -258,11 +258,11 @@ PlayStation 第一代在美国大卖以后，微软公司创始人比尔·盖茨
 
 今年（2020）， PlayStation 5 和 Xbox Series X 将问世，增加了光线实时追踪和 8K 视频支持，游戏的表现可以预期会更加强劲和逼真。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021010.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021010.jpg)
 
 图32：Xbox One，2013。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021011.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021011.jpg)
 
 图33：PlayStation 4，2013。
 
@@ -274,7 +274,7 @@ PlayStation 第一代在美国大卖以后，微软公司创始人比尔·盖茨
 
 谷歌顺应这种想法，2019年11月推出了云游戏主机 Stadia。这其实不能算游戏机，而是一个游戏机的云服务，也就是说，游戏机存在于云端，整个游戏画面都不是本地生成，而是云端渲染。这跟网络收看高清电影很像，只不过游戏的每一个画面，都取决于用户的按键。
 
-![](https://www.wangbase.com/blogimg/asset/202002/bg2020021102.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202002/bg2020021102.jpg)
 
 图34：谷歌云游戏服务 Stadia，2019。
 

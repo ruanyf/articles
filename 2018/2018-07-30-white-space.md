@@ -4,7 +4,7 @@
 
 HTML 代码的空格通常会被浏览器忽略。
 
-![](https://www.wangbase.com/blogimg/asset/201807/bg2018073106.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201807/bg2018073106.jpg)
 
 ```html
 <p>◡◡hello◡◡world◡◡</p>
@@ -86,7 +86,7 @@ p {
 
 显示效果如下图。
 
-![](https://www.wangbase.com/blogimg/asset/201807/bg2018073101.png)
+![](https://cdn.beekka.com/blogimg/asset/201807/bg2018073101.png)
 
 可以看到，文首的空格被忽略。由于容器太窄，第一个单词溢出容器，然后在后面一个空格处换行。文本内部的换行符自动转成了空格。
 
@@ -102,7 +102,7 @@ p {
 
 显示效果如下图。
 
-![](https://www.wangbase.com/blogimg/asset/201807/bg2018073102.png)
+![](https://cdn.beekka.com/blogimg/asset/201807/bg2018073102.png)
 
 所有文本显示为一行，不会换行。
 
@@ -118,7 +118,7 @@ p {
 
 显示效果如下图。
 
-![](https://www.wangbase.com/blogimg/asset/201807/bg2018073103.png)
+![](https://cdn.beekka.com/blogimg/asset/201807/bg2018073103.png)
 
 上面结果与原始文本完全一致，所有空格和换行符都保留了。
 
@@ -134,7 +134,7 @@ p {
 
 显示效果如下图。
 
-![](https://www.wangbase.com/blogimg/asset/201807/bg2018073104.png)
+![](https://cdn.beekka.com/blogimg/asset/201807/bg2018073104.png)
 
 文首的空格、内部的空格和换行符都保留了，超出容器的地方发生了折行。
 
@@ -150,7 +150,7 @@ p {
 
 显示效果如下图。
 
-![](https://www.wangbase.com/blogimg/asset/201807/bg2018073105.png)
+![](https://cdn.beekka.com/blogimg/asset/201807/bg2018073105.png)
 
 除了文本内部的换行符没有转成空格，其他都与`normal`的处理规则一致。这对于诗歌类型的文本很有用。
 

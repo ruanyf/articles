@@ -6,7 +6,7 @@ CSS 有两个最重要的基本属性，前端开发必须掌握：`display` 和
 
 本文介绍非常有用的`position`属性。我希望通过10分钟的阅读，帮助大家轻松掌握网页定位，说清楚浏览器如何计算网页元素的位置，尤其是新引进的`sticky`定位。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111718.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111718.jpg)
 
 > 本文由国内最大的在线教育平台之一[“腾讯课堂”](https://ke.qq.com/?utm=ruanyifeng)赞助。他们现在启动了[“腾讯课堂101计划”](https://edu.qq.com/a/20190119/005414.htm)，推广平台上的课程资源，有不少优质内容。希望提高前端技术水平的同学，可以留意一下本文结尾的免费课程信息。
 
@@ -28,7 +28,7 @@ CSS 有两个最重要的基本属性，前端开发必须掌握：`display` 和
 
 这时，浏览器会按照源码的顺序，决定每个元素的位置，这称为“正常的页面流”（normal flow）。每个块级元素占据自己的区块（block），元素与元素之间不产生重叠，这个位置就是元素的默认位置。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111720.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111720.jpg)
 
 注意，`static`定位所导致的元素位置，是浏览器自主决定的，所以这时`top`、`bottom`、`left`、`right`这四个属性无效。
 
@@ -42,13 +42,13 @@ CSS 有两个最重要的基本属性，前端开发必须掌握：`display` 和
 
 `relative`表示，相对于默认位置（即`static`时的位置）进行偏移，即定位基点是元素的默认位置。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111721.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111721.jpg)
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111722.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111722.jpg)
 
 它必须搭配`top`、`bottom`、`left`、`right`这四个属性一起使用，用来指定偏移的方向和距离。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111723.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111723.jpg)
 
 ```css
 div {
@@ -65,7 +65,7 @@ div {
 
 它有一个重要的限制条件：父元素不能是`static`定位，否则定位基点就会变成整个网页的根元素`html`。另外，`absolute`定位也必须搭配`top`、`bottom`、`left`、`right`这四个属性一起使用。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111801.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111801.jpg)
 
 ```css
 /*
@@ -92,7 +92,7 @@ div {
 
 `fixed`表示，相对于视口（viewport，浏览器窗口）进行偏移，即定位基点是浏览器窗口。这会导致元素的位置不随页面滚动而变化，好像固定在网页上一样。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111802.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111802.jpg)
 
 它如果搭配`top`、`bottom`、`left`、`right`这四个属性一起使用，表示元素的初始位置是基于视口计算的，否则初始位置就是元素的默认位置。
 
@@ -111,11 +111,11 @@ div {
 
 因此，它能够形成“动态固定”的效果。比如，网页的搜索工具栏，初始加载时在自己的默认位置（`relative`定位）。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111604.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111604.jpg)
 
 页面向下滚动时，工具栏变成固定位置，始终停留在页面头部（`fixed`定位）。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111605.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111605.jpg)
 
 等到页面重新向上滚动回到原位，工具栏也会回到默认位置。
 
@@ -143,7 +143,7 @@ div {
 
 堆叠效果（stacking）指的是页面滚动时，下方的元素覆盖上方的元素。下面是一个图片堆叠的例子，下方的图片会随着页面滚动，覆盖上方的图片（查看 [demo](https://jsbin.com/fegiqoquki/edit?html,css,output)）。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111609.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111609.jpg)
 
 HTML 代码就是几张图片。
 
@@ -168,7 +168,7 @@ div {
 
 大型表格滚动的时候，表头始终固定，也可以用`sticky`实现（查看 [demo](https://jsbin.com/decemanohe/edit?html,css,output)）。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111610.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111610.jpg)
 
 CSS 代码也很简单。
 
@@ -189,7 +189,7 @@ th {
 
 到底哪些技术是目前的主流技术栈，既能用于公司的开发实务，又能为自己的简历增添亮点？
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111505.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111505.jpg)
 
 下面就是一套目前主流的前端技术栈。
 
@@ -215,7 +215,7 @@ th {
 
 这个课程原价98元， **活动期间，只要1块钱哦！** 微信扫描下面的二维码，就可以领取优惠券，享受1元听课的福利。
 
-![](https://www.wangbase.com/blogimg/asset/201911/bg2019111803.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201911/bg2019111803.jpg)
 
 该课程的制作单位是青盟科技。它是《腾讯课堂101计划》重点推广的优质机构，已有7年 IT 行业教学经验，培养收费学员2000+，有超过72%的学员都进入到名企大厂。如果你想了解课程的详细内容，获取课程大纲，或者想接受系统的前端培训，可以登录腾讯课堂查看“青盟科技”。 
 

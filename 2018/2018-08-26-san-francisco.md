@@ -14,7 +14,7 @@
 
 译者：阮一峰
 
-![](https://www.wangbase.com/blogimg/asset/201808/bg2018082601.jpg?i=831399212)
+![](https://cdn.beekka.com/blogimg/asset/201808/bg2018082601.jpg?i=831399212)
 
 1、
 

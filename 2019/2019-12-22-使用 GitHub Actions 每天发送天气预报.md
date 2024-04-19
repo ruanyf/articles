@@ -2,7 +2,7 @@
 
 2019年11月，GitHub 正式开放了 [GitHub Actions](https://github.com/features/actions) 这个功能，现在不用申请就能使用。
 
-![](https://www.wangbase.com/blogimg/asset/201912/bg2019122208.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201912/bg2019122208.jpg)
 
 GitHub Actions 是一个 [CI/CD](http://www.ruanyifeng.com/blog/2015/09/continuous-integration.html)（持续集成/持续部署）工具，但也可用作代码运行环境。功能非常强大，能够玩出许多花样。
 
@@ -20,7 +20,7 @@ $ curl wttr.in
 
 上面的命令会返回，你的 IP 地址所在位置的天气。
 
-![](https://www.wangbase.com/blogimg/asset/201912/bg2019122118.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201912/bg2019122118.jpg)
 
 它还允许 URL 里面指定城市。
 

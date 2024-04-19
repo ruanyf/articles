@@ -8,7 +8,7 @@ HTTP 请求的头信息里面，`Referer` 是一个常见字段，提供访问�
 
 现实生活中，购买服务或加入会员的时候，往往要求提供信息：“你从哪里知道了我们？”
 
-![](https://www.wangbase.com/blogimg/asset/201906/bg2019060401.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201906/bg2019060401.jpg)
 
 这叫做引荐人（referrer），谁引荐了你？对于公司来说，这是很有用的信息。
 
@@ -16,7 +16,7 @@ HTTP 请求的头信息里面，`Referer` 是一个常见字段，提供访问�
 
 HTTP 协议在请求（request）的头信息里面，设计了一个`Referer`字段，给出“引荐网页”的 URL。
 
-![](https://www.wangbase.com/blogimg/asset/201906/bg2019060402.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201906/bg2019060402.jpg)
 
 这个字段是可选的。客户端发送请求的时候，自主决定是否加上该字段。
 

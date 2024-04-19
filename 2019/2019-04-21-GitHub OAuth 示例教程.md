@@ -4,7 +4,7 @@
 
 很多网站登录时，允许使用第三方网站的身份，这称为“第三方登录”。
 
-![](https://www.wangbase.com/blogimg/asset/201904/bg2019042101.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201904/bg2019042101.jpg)
 
 下面就以 GitHub 为例，写一个最简单的应用，演示第三方登录。
 
@@ -31,7 +31,7 @@
 
 访问这个[网址](https://github.com/settings/applications/new)，填写登记表。
 
-![](https://www.wangbase.com/blogimg/asset/201904/bg2019042102.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201904/bg2019042102.jpg)
 
 应用的名称随便填，主页 URL 填写`http://localhost:8080`，跳转网址填写 `http://localhost:8080/oauth/redirect`。
 
@@ -69,7 +69,7 @@ $ node index.js
 
 示例的首页很简单，就是一个链接，让用户跳转到 GitHub。
 
-![](https://www.wangbase.com/blogimg/asset/201904/bg2019042103.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201904/bg2019042103.jpg)
 
 跳转的 URL 如下。
 
@@ -87,7 +87,7 @@ https://github.com/login/oauth/authorize?
 
 登录后，GitHub 询问用户，该应用正在请求数据，你是否同意授权。
 
-![](https://www.wangbase.com/blogimg/asset/201904/bg2019042104.png)
+![](https://cdn.beekka.com/blogimg/asset/201904/bg2019042104.png)
 
 用户同意授权， GitHub 就会跳转到`redirect_uri`指定的跳转网址，并且带上授权码，跳转回来的 URL 就是下面的样子。
 

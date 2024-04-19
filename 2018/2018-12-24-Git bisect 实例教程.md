@@ -2,7 +2,7 @@
 
 `git bisect`是一个很有用的命令，用来查找哪一次代码提交引入了错误。
 
-![](https://www.wangbase.com/blogimg/asset/201812/bg2018122402.png)
+![](https://cdn.beekka.com/blogimg/asset/201812/bg2018122402.png)
 
 它的原理很简单，就是将代码提交的历史，按照两分法不断缩小定位。所谓“两分法”，就是将代码历史一分为二，确定问题出在前半部分，还是后半部分，不断执行这个过程，直到范围缩小到某一次代码提交。
 
@@ -19,7 +19,7 @@ $ cd bisectercise
 $ open index.html
 ```
 
-![](https://www.wangbase.com/blogimg/asset/201812/bg2018122401.png)
+![](https://cdn.beekka.com/blogimg/asset/201812/bg2018122401.png)
 
 网页上是一个计数器，有两个按钮。点击`+`号按钮，可以看到计数器没有递增，反而递减，这说明代码有问题。
 

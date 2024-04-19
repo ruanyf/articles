@@ -2,7 +2,7 @@
 
 三个月前，新款 iPad Pro 发布，支持触摸板和鼠标。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061501.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061501.jpg)
 
 上图的黑点就是鼠标。苹果公司显然打算，平板电脑当作笔记本使用。
 
@@ -10,7 +10,7 @@
 
 苹果公司显然也是这么打算的。几天后的6月22日将举行 WWDC（苹果全球开发者大会）。媒体报道，苹果公司将在那一天宣布，更换 Mac 电脑的 CPU，从 Intel 公司的 x86 架构改成 ARM 架构。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061521.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061521.jpg)
 
 一旦 Mac 跟 iPhone 使用同样架构的 CPU，那就铺平了统一操作系统的道路。操作系统无法通用的最主要原因，就是 CPU 架构不同。
 
@@ -24,11 +24,11 @@ CPU 的全称是“中央处理单元”，它是计算机的核心，计算都�
 
 **不同的 CPU 设计实现，就称为” CPU 架构“（CPU architecture）。** 不同的 CPU 架构有不同的指令集，彼此不通用，这导致运行在上面的软件也不兼容，必须重新编译。如果没有做适配，一个架构下的软件就无法移植到另一个架构。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061503.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061503.jpg)
 
 历史上，有过[多种](https://www.quora.com/What-are-the-types-of-computer-architectures-in-a-CPU/answer/Gyanu-Kumar-27) CPU 架构。目前最常见的架构只剩下两种：x86 架构和 ARM 架构。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061504.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061504.jpg)
 
 x86 架构性能好，但是耗电多、电压高，主要用于桌面电脑和服务器，生产厂商为 Intel 公司和 AMD 公司。ARM 架构耗电小、电压低，但是单核性能不如 x86，主要用于移动设备。
 
@@ -49,7 +49,7 @@ ARM 芯片的生产商有许多家，这是因为它的[商业模式](http://www
 2005年，乔布斯宣布，Mac 电脑将放弃 PowerPC 芯片，改用 Intel 公司的 x86
  CPU。这是第二次架构更改。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061507.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061507.jpg)
 
 那次架构更改，主要有两个原因。一是 Intel 的 CPU 比 PowerPC 性能强，并且由于产量大，价格也便宜。二是 Windows 电脑使用的是 x86 芯片，改了架构以后，Mac 电脑就也能安装 Windows，做到”一机双系统“。这可以促进当时处于市场劣势的 Mac 的销售。
 
@@ -63,7 +63,7 @@ Mac 的 CPU 架构跟 Windows 保持一致，已经不构成吸引力了。据�
 
 更大的市场变化是，消费者和技术投资的主流已经转向了移动设备， 桌面设备已经不那么重要了。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061508.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061508.jpg)
 
 苹果公司的主要业务和利润来源，现在都来自移动领域，iPhone 的市场规模已经远远大于 Mac。所有的移动设备使用的都是 ARM 芯片，苹果的投资和技术成果也主要在这个领域，而不是在 x86 相关领域。
 
@@ -79,7 +79,7 @@ Mac 电脑更换 CPU 架构，也与 Intel 公司多年来创新乏力、产品�
 
 后来的历史证明，这是一个灾难级别的错误，iPhone 取得了辉煌的成功。英特尔这下急了，又反过来开发基于 x86 架构的移动设备 CPU，就是 Atom 芯片。但是，苹果没有在手机上再给 Intel 机会，x86 架构也被证明不适合手机，Atom 没有成功。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061509.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061509.jpg)
 
 Intel 在手机业务上失败，在桌面业务上陷入停滞。MacBook Pro 的 CPU， 2010年是2核的 2.66 GHz 的 i7，2020年是8核的 2.6 GHz 的 i9，过去10年基本上只是改进了工艺，增加了核心数量，没有实质的重大突破。除了性能以外，苹果最在意的两点——功率和散热—— Intel 也没有解决。
 
@@ -91,17 +91,17 @@ iPhone 的前三代—— iPhone、iPhone 3G、iPhone 3GS———— CPU 是三
 
 2010年发布的 iPhone 4，第一次采用苹果自己设计的 CPU，名称是 Apple A4。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061510.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061510.jpg)
 
 大概从 A4 发布的这一天开始，苹果就有用自己的芯片替换 Intel 的打算了。因为当年推出的 Apple TV 第二代，也用了 A4 芯片。但是，Apple TV 第一代用的是 Intel 的 x86 芯片，被做成缩小版的 Mac。到了第二代，CPU 改了以后，就变成 iOS 设备。
 
 Apple TV 这种设备使用 x86 芯片，根本没有获得任何好处。因为它不需要考虑 Windows 兼容性，也不需要很强的性能。另一方面，使用 ARM 芯片以后，功耗和散热都变小了，价格也降下来，从229美元变成了99美元。下图是 Apple TV 第一代和第二代的大小对比。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061511.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061511.jpg)
 
 此后，苹果一直在加强芯片研究，每一代 iPhone 用的都是苹果自己的 CPU，从 iPhone 4S 的 A5 到最新 iPhone 11 的 A13。现在的苹果芯片在效能、功耗和功能各方面，都属于世界顶尖级别的 ARM 芯片。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061512.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061512.jpg)
 
 目前，Mac 电脑是唯一使用 x86 芯片的苹果设备，其他的所有设备（iPhone、iPad、Apple TV、Apple Watch、Airpods）用的都是苹果自己设计的 ARM 芯片。
 
@@ -113,7 +113,7 @@ Apple TV 这种设备使用 x86 芯片，根本没有获得任何好处。因为
 
 2018年，苹果又推出了 Apple T2。这块芯片跟 iPhone 7 的 A10 基本一致，比上一代有更强的运算能力，加入了更多的功能，比如硬件加速、媒体编解码、Siri 支持等。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061513.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061513.jpg)
 
 可以想象，如果笔记本的整个 CPU 都由苹果自己设计，一定会有更多的功能集成进来，苹果手机的安全特性、图形支持、视频处理、音频处理、加密解密、人工智能都可以放进桌面设备。苹果也能对它进行更好的优化，批量生产，降低成本。
 
@@ -137,13 +137,13 @@ Mac 电脑采用 ARM 架构后，还能实现统一的 Apple 生态，而不是�
 
 为了改变这种刻板的印象，让大家知道拼多多也有品牌货，而且价格比其他平台更低，拼多多在“618 购物节”，拿出了100亿补贴各种大牌商品，保证售价低于市面上行情价。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061413.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061413.jpg)
 
 这个活动其实去年就有了，当时只是一个短期活动。但是官方发现很多人不知道，于是今年继续补贴，加大了推广力度。
 
 拼多多为我的读者提供的最优惠价格是 **苹果的 iPhone SE 手机（第二代），只要2799 元**。需要小屏幕备机的朋友可以考虑，顶级的 A13 芯片五年内都不会过时。
 
-![](https://www.wangbase.com/blogimg/asset/202006/bg2020061412.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202006/bg2020061412.jpg)
 
 苹果产品都有优惠价。
 

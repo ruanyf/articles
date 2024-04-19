@@ -2,7 +2,7 @@
 
 Tmux 是一个终端复用器（terminal multiplexer），非常有用，属于常用的开发工具。
 
-![](https://www.wangbase.com/blogimg/asset/201910/bg2019102005.png)
+![](https://cdn.beekka.com/blogimg/asset/201910/bg2019102005.png)
 
 ## Tmux 是什么？
 
@@ -57,7 +57,7 @@ $ tmux
 
 上面命令会启动 Tmux 窗口，底部有一个状态栏。状态栏的左侧是窗口信息（编号和名称），右侧是系统信息。
 
-![](https://www.wangbase.com/blogimg/asset/201910/bg2019102006.png)
+![](https://cdn.beekka.com/blogimg/asset/201910/bg2019102006.png)
 
 按下`Ctrl+d`或者显式输入`exit`命令，就可以退出 Tmux 窗口。
 
@@ -184,7 +184,7 @@ $ tmux split-window
 $ tmux split-window -h
 ```
 
-![](https://www.wangbase.com/blogimg/asset/201910/bg2019102007.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201910/bg2019102007.jpg)
 
 ### 移动光标
 

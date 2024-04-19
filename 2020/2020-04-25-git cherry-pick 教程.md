@@ -4,7 +4,7 @@
 
 这时分两种情况。一种情况是，你需要另一个分支的所有代码变动，那么就采用合并（`git merge`）。另一种情况是，你只需要部分代码变动（某几个提交），这时可以采用 Cherry pick。
 
-![](https://www.wangbase.com/blogimg/asset/202004/bg2020042723.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202004/bg2020042723.jpg)
 
 ## 一、基本用法
 

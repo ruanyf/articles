@@ -6,7 +6,7 @@
 
 本文讲解如何使用 [Termux](https://termux.com/) 架设手机的 HTTP 服务器。
 
-![](https://www.wangbase.com/blogimg/asset/201907/bg2019072303.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201907/bg2019072303.jpg)
 
 ## 一、Termux 是什么？
 
@@ -14,7 +14,7 @@
 
 它就是一个普通的手机 App，可以从应用商店下载安装。不需要 root 权限，也不需要设置，打开就能使用。
 
-![](https://www.wangbase.com/blogimg/asset/201907/bg2019072304.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201907/bg2019072304.jpg)
 
 ## 二、环境准备
 
@@ -42,7 +42,7 @@ $ sl
 
 上面命令安装测试包`sl`，然后运行。如果一切正常，会显示一个火车的命令行动画。
 
-![](https://www.wangbase.com/blogimg/asset/201907/bg2019072305.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201907/bg2019072305.jpg)
 
 第三步，访问本机存储。
 
@@ -54,7 +54,7 @@ $ termux-setup-storage
 
 执行上面的命令以后，会跳出一个对话框，询问是否允许 Termux 访问手机存储，点击“允许”。
 
-![](https://www.wangbase.com/blogimg/asset/201907/bg2019072306.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201907/bg2019072306.jpg)
 
 这会在当前目录下生成一个`storage`子目录，它是手机存储的符号链接，后文下载文件就是到这个目录去下载。
 
@@ -117,11 +117,11 @@ $ http-server
 
 正常情况下，命令行会提示 Server 已经在 8080 端口运行了，并且还会提示外部可以访问的 IP 地址。
 
-![](https://www.wangbase.com/blogimg/asset/201907/bg2019072308.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201907/bg2019072308.jpg)
 
 举例来说，手机的局域网 IP 是 192.168.2.6，那么我们通过桌面电脑的浏览器访问`http://192.168.2.6:8080`，就可以看到 Termux 的根目录了。进入下面的`storage`子目录，就可以下载手机文件了。
 
-![](https://www.wangbase.com/blogimg/asset/201907/bg2019072309.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201907/bg2019072309.jpg)
 
 如果手机和电脑不在同一个局域网，那可以打开手机的热点功能，让桌面电脑通过手机热点上网，再访问手机的 HTTP Server。
 

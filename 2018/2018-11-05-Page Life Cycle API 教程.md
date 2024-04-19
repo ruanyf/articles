@@ -13,7 +13,7 @@
 
 网页的生命周期分成六个阶段，每个时刻只可能处于其中一个阶段。
 
-![](https://www.wangbase.com/blogimg/asset/201811/bg2018110401.png)
+![](https://cdn.beekka.com/blogimg/asset/201811/bg2018110401.png)
 
 **（1）Active 阶段**
 

@@ -6,13 +6,13 @@
 
 Web Components API 内容很多，本文不是全面的教程，只是一个简单演示，让大家看一下怎么用它开发组件。
 
-![](https://www.wangbase.com/blogimg/asset/201908/bg2019080604.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201908/bg2019080604.jpg)
 
 ## 一、自定义元素
 
 下图是一个用户卡片。
 
-![](https://www.wangbase.com/blogimg/asset/201908/bg2019080405.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201908/bg2019080405.jpg)
 
 本文演示如何把这个卡片，写成 Web Components 组件，这里是最后的[完整代码](https://jsbin.com/yobopor/1/edit?html,js,output)。
 

@@ -2,15 +2,15 @@
 
 五年多前，我写过 [React 系列教程](http://www.ruanyifeng.com/blog/2016/09/react-technology-stack.html)。不用说，内容已经有些过时了。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091318.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091318.jpg)
 
 我本来不想碰它们了，觉得框架一直在升级，教程写出来就会过时。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091319.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091319.jpg)
 
 但是，最近我逐渐体会到 React 钩子（hooks）非常好用，重新认识了 React 这个框架，觉得应该补上关于钩子的部分。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091317.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091317.jpg)
 
 下面就来谈谈，怎样正确理解钩子，并且深入剖析最重要的钩子之一的`useEffect()`。内容会尽量通俗，让不熟悉 React 的朋友也能看懂。欢迎大家参考我以前写的[《React 框架入门》](http://www.ruanyifeng.com/blog/2015/03/react.html)和[《React 最常用的四个钩子》](http://www.ruanyifeng.com/blog/2019/09/react-hooks.html)。
 
@@ -20,7 +20,7 @@
 
 以前，React API 只有一套，现在有两套：类（class）API 和基于函数的钩子（hooks） API。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091407.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091407.jpg)
 
 任何一个组件，可以用类来写，也可以用钩子来写。下面是类的写法。
 
@@ -46,7 +46,7 @@ function Welcome(props) {
 
 下面是类组件（左边）和函数组件（右边）代码量的比较。对于复杂的组件，差的就更多。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091320.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091320.jpg)
 
 但是，钩子的灵活性太大，初学者不太容易理解。很多人一知半解，很容易写出混乱不堪、无法维护的代码。那就不如使用类了。因为类有很多强制的语法约束，不容易搞乱。
 
@@ -56,11 +56,11 @@ function Welcome(props) {
 
 **类（class）是数据和逻辑的封装。** 也就是说，组件的状态和操作方法是封装在一起的。如果选择了类的写法，就应该把相关的数据和操作，都写在同一个 class 里面。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091408.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091408.jpg)
 
 **函数一般来说，只应该做一件事，就是返回一个值。** 如果你有多个操作，每个操作应该写成一个单独的函数。而且，数据的状态应该与操作方法分离。根据这种理念，React 的函数组件只应该做一件事情：返回组件的 HTML 代码，而没有其他的功能。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091409.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091409.jpg)
 
 还是以上面的函数组件为例。
 
@@ -78,7 +78,7 @@ function Welcome(props) {
 
 函数式编程将那些跟数据计算无关的操作，都称为 “副效应” **（side effect）** 。如果函数内部直接包含产生副效应的操作，就不再是纯函数了，我们称之为不纯的函数。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091410.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091410.jpg)
 
 纯函数内部只有通过间接的手段（即通过其他函数调用），才能包含副效应。
 
@@ -97,7 +97,7 @@ function Welcome(props) {
 
 上面这些钩子，都是引入某种特定的副效应，而 **`useEffect()`是通用的副效应钩子** 。找不到对应的钩子时，就可以用它。其实，从名字也可以看出来，它跟副效应（side effect）直接相关。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091411.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091411.jpg)
 
 ## 五、useEffect() 的用法
 
@@ -266,10 +266,10 @@ function App() {
 
 别着急，这里有一份开课吧的 **《React 原理剖析 + 组件化》** 系统视频。不仅讲解了原理，还包括了综合性的实战项目，里面用到了 react-router、redux、react-redux、antd 等 React 全家桶。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020090302.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020090302.jpg)
 
 访问[这个链接](https://wx.kaikeba.com/vip_course/afzg70hmbg/i5ct6cht4p?tenant=wx5046bc7413796142)，或者微信扫描下面的二维码，就可以免费领取。
 
-![](https://www.wangbase.com/blogimg/asset/202009/bg2020091412.jpg)
+![](https://cdn.beekka.com/blogimg/asset/202009/bg2020091412.jpg)
 
 （完）

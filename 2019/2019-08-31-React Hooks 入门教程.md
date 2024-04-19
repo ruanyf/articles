@@ -2,7 +2,7 @@
 
 React 是主流的前端框架，v16.8 版本引入了全新的 API，叫做 [React Hooks](https://reactjs.org/docs/hooks-reference.html)，颠覆了以前的用法。
 
-![](https://www.wangbase.com/blogimg/asset/201908/bg2019083104.jpg)
+![](https://cdn.beekka.com/blogimg/asset/201908/bg2019083104.jpg)
 
 这个 API 是 React 的未来，有必要深入理解。本文谈谈我的理解，简单介绍它的用法，帮助大家快速上手。
 
