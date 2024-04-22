@@ -28,3 +28,5 @@ Authorization: {access_token}
 -- [参考链接](https://medium.com/@tony.infisical/guide-to-using-oauth-2-0-to-access-github-api-818383862591)
 
 - [cloudflare-worker-github-oauth-login](https://github.com/gr2m/cloudflare-worker-github-oauth-login)
+
+- [SSO JWT](https://github.com/Aralink/ssojwt)
