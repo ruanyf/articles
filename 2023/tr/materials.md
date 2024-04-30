@@ -1,3 +1,9 @@
+1、[Watermelon](https://github.com/marketplace/watermelon-context)
+
+![](https://cdn.beekka.com/blogimg/asset/202311/bg2023111602.webp)
+
+一个 GitHub 插件，自动对提交的 Pull Request 进行评估，开源项目免费使用。
+
 1、[国家中小学电子教材下载客户端](https://github.com/v5tech/ebook-downloader/releases)
 
 ![](https://cdn.beekka.com/blogimg/asset/202403/bg2024031917.webp)
