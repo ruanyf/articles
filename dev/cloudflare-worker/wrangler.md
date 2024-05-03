@@ -1,10 +1,47 @@
 # wrangler 工具软件
 
+wrangler 是一个在本地开发 Cloudflare worker 应用的命令行工具。
+
 安装
 
 ```bash
 $ npm install wrangler --save-dev
 ```
+
+检查版本
+
+```bash
+$ npx wrangler --version
+```
+
+启动本地服务器
+
+```bash
+$ npx wrangler dev
+# 或者
+$ npx wrangler version
+# 或者
+$ npx wrangler -v
+```
+
+更新
+
+```bash
+$ npm install wrangler@latest
+```
+
+启动服务器
+
+```bash
+$ npx wrangler dev
+```
+
+使用远程资源
+
+```bash
+$ npx wrangler dev --remote
+```
+
 
 ## 添加环境变量
 
