@@ -1,18 +1,78 @@
 # wrangler 工具软件
 
-wrangler 是一个在本地开发 Cloudflare worker 应用的命令行工具。
+wrangler 是一个命令行工具，用于在本地开发 Cloudflare worker 应用。
 
-安装
+## 安装
+
+首先，全局安装 wrangler。
+
+```bash
+$ npm install -g wrangler
+```
+
+安装完成后，检查一下版本。
+
+```bash
+$ npx wrangler --version
+```
+
+然后，通过 wrangler 登录 Cloudflare。
+
+```bash
+$ wrangler login
+```
+
+## 新建项目
+
+通过`npm create`命令，根据项目模板建立自己的项目。
+
+```bash
+$ npm create cloudflare@latest -- --template <SOURCE>
+```
+
+wrangler 现有的模板，参见网址 https://github.com/cloudflare/workers-sdk/tree/main/templates。
+
+最简的项目可以用模板`woker`。
+
+```bash
+$ npm create cloudflare@latest -- --template cloudflare/workers-sdk/templates/worker
+```
+
+新建项目的过程中，会询问项目名，然后将这个名字做目录名。
+
+新建项目目录后，还会自动安装项目依赖。
+
+如果项目需要路由，可以用模板`worker-router`。
+
+```bash
+$ npm create cloudflare@latest -- --template cloudflare/workers-sdk/templates/worker
+```
+
+## 项目开发
+
+项目新建完成后，可以进入项目目录，使用`npx wrangler dev`命令在本地运行一下，查看效果。
+
+```bash
+$ npx wrangler dev
+```
+
+开发完成后，可以使用 wrangler 将项目部署到 cloudflare 上面。
+
+```bash
+$ npx wrangler deploy
+```
+
+然后，就可以在`<YOUR_WORKER>.<YOUR_SUBDOMAIN>.workers.dev`上预览项目。
+
+---
+
+建立一个项目目录，然后进入该目录。
 
 ```bash
 $ npm install wrangler --save-dev
 ```
 
-检查版本
 
-```bash
-$ npx wrangler --version
-```
 
 启动本地服务器
 

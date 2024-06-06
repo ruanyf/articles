@@ -30,3 +30,8 @@ Authorization: {access_token}
 - [cloudflare-worker-github-oauth-login](https://github.com/gr2m/cloudflare-worker-github-oauth-login)
 
 - [SSO JWT](https://github.com/Aralink/ssojwt)
+
+## GitHub OAuth App
+
+- [创建说明](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
+- [使用说明](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)

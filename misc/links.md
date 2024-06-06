@@ -38,19 +38,20 @@
 - Youtube 皮肤：[Invidious](https://invidious.io/)，[NewPipe](https://newpipe.net/)，[SmartTube](https://github.com/yuliskov/SmartTube)，Piped
 - [Omnivore](https://github.com/omnivore-app/omnivore)：“稍后阅读”解决方案
 
-## Cloudflare Worker
+## 开发参考
 
 - [Hono](https://github.com/honojs/hono)：web 框架
-
-## 开发工具
-
-- [OrbStack](https://orbstack.dev/)：Mac 电脑运行 Docker 和 Linux，替代 Docker Desktop
-- [Manticore Search](https://github.com/manticoresoftware/manticoresearch)：开源搜索软件，可以替代 ElasticSearch。
+- [如何用矢量数据库搭建一个搜索引擎](https://blog.partykit.io/posts/using-vectorize-to-build-search/)（英文）
 - [MeiliSearch](https://github.com/meilisearch/MeiliSearch)
 - [Sqids](https://sqids.org/)：短 ID 库
 - [Fuse.js](https://www.fusejs.io/)：一个轻量级的模糊搜索库。
 - [论坛成员的信任度算法](https://cblgh.org/trustnet/)
 - [ulid](https://github.com/ulid/javascript)：按时间排序的 ULID
+
+## 开发工具
+
+- [OrbStack](https://orbstack.dev/)：Mac 电脑运行 Docker 和 Linux，替代 Docker Desktop
+- [Manticore Search](https://github.com/manticoresoftware/manticoresearch)：开源搜索软件，可以替代 ElasticSearch。
 
 ## 图像视频
 
