@@ -2,7 +2,9 @@
 
 ## 资源
 
-- [Z library](https://singlelogin.me)：[1](https://zlibrary-asia.se/)，[3](https://lib-dq562euzkg3wqq7c4ismhw6u.booksc.eu/1cc0ce5273150027a0143fcfd4dacb56)，[4](https://lib-pj4l6rnxga3iypd2p6pyphpb.b-ok.africa/1cc0ce5273150027a0143fcfd4dacb56)
+- Z library
+  - Web https://singlelogin.rs
+  - TOR http://loginzlib2vrak5zzpcocc3ouizykn6k5qecgj2tzlnab5wcbqhembyd.onion
 - [Lore Free](https://ebook2.lorefree.com/)：电子书共享社区
 - [小雅](http://alist.xiaoya.pro/)
 - [Tvbox](https://github.com/liu673cn/box)接口：[1](https://www.yydsys.top/box/api/)，[2](http://xn--sss604efuw.ga/)，[3](https://xhdwc.tk/0)
