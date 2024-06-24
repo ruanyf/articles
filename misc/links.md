@@ -54,6 +54,7 @@
 
 - [OrbStack](https://orbstack.dev/)：Mac 电脑运行 Docker 和 Linux，替代 Docker Desktop
 - [Manticore Search](https://github.com/manticoresoftware/manticoresearch)：开源搜索软件，可以替代 ElasticSearch。
+- [SQLite 云的全文搜索](https://blog.sqlitecloud.io/fts5-sqlite-text-search-extension)
 
 ## 图像视频
 

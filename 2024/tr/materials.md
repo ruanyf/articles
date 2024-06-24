@@ -1,3 +1,9 @@
+1、[VectorArt.ai](https://vectorart.ai/)
+
+![](https://cdn.beekka.com/blogimg/asset/202311/bg2023112506.webp)
+
+AI 生成 SVG 矢量图服务。
+
 1、[ESP8266 初学者指南](https://tttapa.github.io/ESP8266/Chap01%20-%20ESP8266.html)
 
 ![](https://cdn.beekka.com/blogimg/asset/202404/bg2024042507.webp)
