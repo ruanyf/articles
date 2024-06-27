@@ -104,6 +104,8 @@
 - [微信互选税率](https://www.juxuan.net/662.html)
 - [HN 的 AI 提要](https://hackyournews.com/)，[移动版](https://hackyournews.com/indexM)，[另一个实现](https://hackernews.betacat.io/)
 - [激活 Windows 11](https://gist.github.com/kimgiftww/6d6242e35ef6e3baa3a6e4fb8f386d0b)
+- [Arch 重新安装 Grub](https://medium.com/@rahulsabinkar/how-to-restore-your-broken-grub-boot-loader-on-arch-linux-using-chroot-2fbc38bb01d9)
+- [Copilot 测试](https://github.com/nabeelp/CoPilotChallenges/)
 
 ## 书单
 
