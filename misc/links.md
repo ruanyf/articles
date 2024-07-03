@@ -49,6 +49,7 @@
 - [Fuse.js](https://www.fusejs.io/)：一个轻量级的模糊搜索库。
 - [论坛成员的信任度算法](https://cblgh.org/trustnet/)
 - [ulid](https://github.com/ulid/javascript)：按时间排序的 ULID
+- [DOMPurify](https://github.com/cure53/DOMPurify)：清理 DOM 的工具，防止 XSS
 
 ## 开发工具
 
