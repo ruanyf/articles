@@ -1,3 +1,9 @@
+1、
+
+地球直径如果大出50%（6670公里变为9680公里），那么人类就无法发射火箭离开地球，因为现有的燃料提供不了足够的推力，逃逸地球引力。
+
+-- [美国宇航局的科普材料](https://web.archive.org/web/20190429025624/https://www.nasa.gov/mission_pages/station/expeditions/expedition30/tryanny.html)
+
 1、[VectorArt.ai](https://vectorart.ai/)
 
 ![](https://cdn.beekka.com/blogimg/asset/202311/bg2023112506.webp)
