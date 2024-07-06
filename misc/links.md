@@ -50,6 +50,7 @@
 - [论坛成员的信任度算法](https://cblgh.org/trustnet/)
 - [ulid](https://github.com/ulid/javascript)：按时间排序的 ULID
 - [DOMPurify](https://github.com/cure53/DOMPurify)：清理 DOM 的工具，防止 XSS
+- [TSID](https://www.npmjs.com/package/tsid-ts)：数据 ID 的生成工具
 
 ## 开发工具
 
