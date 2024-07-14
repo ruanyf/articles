@@ -51,6 +51,7 @@
 - [ulid](https://github.com/ulid/javascript)：按时间排序的 ULID
 - [DOMPurify](https://github.com/cure53/DOMPurify)：清理 DOM 的工具，防止 XSS
 - [TSID](https://www.npmjs.com/package/tsid-ts)：数据 ID 的生成工具
+- [hashID](https://github.com/niieani/hashids.js)：混淆整数 ID
 - [rss2newsletter](https://github.com/ElliotKillick/rss2newsletter)：将 RSS 转换成邮件发送，用于自建邮件列表。
 
 ## 开发工具
