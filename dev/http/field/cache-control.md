@@ -1,8 +1,52 @@
 # Cache-Control 字段
 
-Cache-Control 字段指定缓存的工作机制。它可以有多个值，值与值之间使用逗号分隔。
+## 简介
+
+Cache-Control 字段用来设置缓存，主要规定中间服务器和客户端，可以将从原始服务器获取的资源保存多久才进行更新。
+
+它的工作过程是这样的：客户端向源服务器发出请求，要求获取某个资源；源服务器向客户端发出该资源，中间可能会经过其他服务器，那些中间服务器可能会缓存该资源，以便加速后续的网络请求。
+
+源服务器在发出资源时，可能会设置该资源的有效期，比如5分钟。那么，在中间服务器和客户端收到该资源的5分钟之内，这个资源一直在有效期，这段时间内，如果再收到相同请求，中间服务器和客户端就可以直接使用缓存的资源，而不必再次请求源服务器。等到五分钟以后，中间服务器和客户端如果再收到相同请求，缓存的资源就已经过了有效期，需要再次请求源服务器，询问该资源是否依然有效。
+
+源服务器可以回复，该资源依然有效，中间服务器和客户端就可以继续使用缓存的资源，并更新它的有效期。如果资源不再有效，源服务器就必须发送一个新版本的该资源，代替缓存里面的旧版本。
+
+`Cache-Control`这个字段出现在 HTTP 回应之中，可以有多个值，值与值之间使用逗号分隔。如果某个值接受参数，那么值与参数之间使用等号连接。
+
+```http
+Cache-Control: public, max-age=86400
+```
+
+上面示例中，`Cache-Control`有两个值`public`和`max-age`，它们之间使用逗号分隔。`max-age`有参数`86400`，使用等号连接。
 
 ## 字段值
+
+Cache-Control 有许多值，可以大致分成四类。
+
+（1）能否缓存（cacheability），即当前资源是否需要缓存。它主要包含以下三个值。
+
+- public：中间服务器可以缓存该资源。
+- private：中间服务器不可以缓存该资源，但是用户个人的客户端浏览器可以缓存。
+- no-store：中间服务器和客户端都不可以缓存该资源。
+​​
+（2）过期时间（expiration），即该资源需要缓存多久。它主要有以下值。
+
+- max-age=seconds：资源在多少秒后过期，从原始服务器发出该资源算起。
+- s-maxage=seconds：资源在中间服务器上缓存多少秒后过期，该值可以覆盖`max-age`和`Expires`标头。客户端浏览器忽略该值。
+- no-cache：中间服务器和客户端每次重用该资源之前，必须重新向原始服务器验证，才能用于后续的请求。
+
+源服务器还可以用`Expires`字段，指定资源过期的时间（格林尼治标准时）。
+
+（3）重新验证（revalidation），这类设置决定了资源过期后的行为。它主要有以下值。
+
+- must-revalidate：一旦资源过期，中间服务器和客户端必须向源服务器要求验证，只有验证成功，才可以再次使用缓存的资源。
+- proxy-revalidate：与`must-revalidate`含义相同，但是只用于中间服务器的行为。
+- stale-while-revalidate=seconds：指定中间服务器的缓存秒数。
+- stale-if-error=seconds：指定多长时间内遇到错误时，可以使用过期的缓存。
+
+（4）其他（​​other）
+
+- no-transform — Indicates that an intermediary — regardless of whether it implements a cache — must not transform the payload.
+- immutable — Indicates to clients the response body does not change over time. The resource, if unexpired, is unchanged on the server. The user should not send a conditional revalidation request, such as If-None-Match or If-Modified-Since, to check for updates, even when the user explicitly refreshes the page. 
 
 缓存请求相关的值。
 
@@ -191,3 +235,75 @@ Cache-Control: public, max-age=31560000, immutable
 - immutable- 浏览器被明确指示不要访问源/CDN，只是为了检查是否有更新的内容可用（不再有重新验证请求）
 
 制定该策略后，第一次访问页面后，将直接从缓存加载每个资源。
+
+（1）缓存一个静态资源。
+
+```http
+Cache-Control: public, max-age=86400
+```
+
+（1）确保保密的资源不被缓存。
+
+```http
+Cache-Control: no-store
+```
+
+（1）只缓存在客户端，不缓存在中间服务器。
+
+```http
+Cache-Control: private, max-age=3600
+```
+
+（1）缓存在客户端和中间服务器，但是使用前必须向源服务器重新验证。
+
+```http
+Cache-Control: public, no-cache
+```
+
+（1）缓存在中间服务器，但是要求使用缓存前，向源服务器验证。
+
+```http
+Cache-Control: public, no-cache, proxy-revalidate
+```
+
+或者
+
+```http
+Cache-Control: public, s-maxage=0
+```
+
+（1）缓存在中间服务器，但是使用缓存前，必须向源服务器验证。
+
+```http
+Cache-Control: public, no-cache, must-revalidate
+```
+
+（1）缓存资源，但是要求中间服务器不得改动。
+
+```http
+Cache-Control: public, no-transform
+```
+
+这个设置同时禁止中间服务器改动源服务器的压缩方法。
+
+（1）缓存资源，但是需要重新验证，如果源服务器不可用，那么可以使用过期的资源。
+
+```http
+Cache-Control: public, max-age=3600, stale-if-error=60
+```
+
+缓存3600秒（1小时）以后，尝试重新验证资源。如果源服务器返回一个错误，那么中间服务器继续提供过期的缓存，直到60秒后才停止提供。
+
+（1）资源在中间服务器和浏览器缓存不同的时间。
+
+```http
+Cache-Control: public, max-age=7200, s-maxage=3600
+```
+
+（1）缓存资源，当中间服务器重新验证时，继续提供缓存的资源。
+
+```http
+Cache-Control: max-age=600, stale-while-revalidate=30
+```
+
+资源在600秒是不过期的，另外中间服务器可以在额外的30秒内继续提供该缓存，同时向源服务器验证该资源。
