@@ -1,3 +1,8 @@
+1、[国家网络身份认证公共服务的好处](https://new.qq.com/rain/a/20240809A090A100)（中文）
+
+![](https://cdn.beekka.com/blogimg/asset/202408/bg2024080902.webp)
+
+本文解释使用国家网络身份认证服务，所带来的好处。
 
 1、[全国统一网络身份](https://www.cac.gov.cn/2024-07/26/c_1723675813897965.htm)
 
