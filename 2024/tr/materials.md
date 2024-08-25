@@ -1,3 +1,5 @@
+GK切斯特顿说：“《伊利亚特》之所以伟大，是因为所有的生命都是一场战斗；《奥德赛》之所以伟大，是因为所有的生命都是一段旅程；《约伯记》之所以伟大，是因为所有的生命都是一个谜语。”https://www.millersbookreview.com/p/vital-necessity-of-very-old-books
+
 1、[国家网络身份认证公共服务的好处](https://new.qq.com/rain/a/20240809A090A100)（中文）
 
 ![](https://cdn.beekka.com/blogimg/asset/202408/bg2024080902.webp)
