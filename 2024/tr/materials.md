@@ -1,3 +1,12 @@
+
+1、
+
+苏格兰登山家奈史密斯（William W. Naismith）曾经总结过一条规则，关于徒步旅行所需的时间：
+
+你先按照正常速度计算一个时间，然后每前进5公里留出一小时，爬山的话，每上升600米额外留出一小时。
+
+-- [奈史密斯法则](https://en.wikipedia.org/wiki/Naismith%27s_rule)
+
 GK切斯特顿说：“《伊利亚特》之所以伟大，是因为所有的生命都是一场战斗；《奥德赛》之所以伟大，是因为所有的生命都是一段旅程；《约伯记》之所以伟大，是因为所有的生命都是一个谜语。”https://www.millersbookreview.com/p/vital-necessity-of-very-old-books
 
 1、[国家网络身份认证公共服务的好处](https://new.qq.com/rain/a/20240809A090A100)（中文）
