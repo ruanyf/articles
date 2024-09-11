@@ -2,7 +2,7 @@
 
 ## 一、引言
 
-上周，我参加了[腾讯数字生态大会](https://des.cloud.tencent.com/)。
+上周，我参加了[腾讯全球数字生态大会](https://des.cloud.tencent.com/)。
 
 今天，就跟大家分享，我的一点收获，就是理解了多集群工具。
 
