@@ -1,3 +1,6 @@
+![](https://cdn.beekka.com/blogimg/asset/202408/bg2024082509.webp)
+
+浙江桐庐青龙坞，一座木骨泥墙的老宅，改造成“乡村书店 + 青年旅社”。（[via](https://www.sohodd.com/archives/129931)）
 
 1、
 
