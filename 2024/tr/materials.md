@@ -1,3 +1,7 @@
+1、[国产光刻机的现状](https://mp.weixin.qq.com/s/dtix6bVjoFLwxt7o5zzaLw)（中文）
+
+作者谈最近国产光刻机新闻的一点看法。
+
 ![](https://cdn.beekka.com/blogimg/asset/202408/bg2024082509.webp)
 
 浙江桐庐青龙坞，一座木骨泥墙的老宅，改造成“乡村书店 + 青年旅社”。（[via](https://www.sohodd.com/archives/129931)）
