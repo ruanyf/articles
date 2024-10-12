@@ -74,6 +74,7 @@
 - [Chisel](https://github.com/jpillora/chisel)：[参见教程](https://matters.town/@ryouji/7541-%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91%E5%B7%A5%E5%85%B7chisel%E6%8C%87%E5%8C%97-zdpuArz2UmBL9mVpvDXZo1wWat3FqPPqhJhdNaEENW6MtqHHy)
 - [Outline VPN](https://getoutline.org/zh-CN/)
 - [Sub-web](https://github.com/CareyWang/sub-web)：将单个服务器转成订阅链接
+- [WinXray](https://github.com/TheMRLL/WinXray): Windows 客户端
 
 ## Linux
 
