@@ -1,3 +1,9 @@
+1、[国际象棋网站的通信设计](https://www.davidreis.me/2024/what-happens-when-you-make-a-move-in-lichess)（英文）
+
+![](https://cdn.beekka.com/blogimg/asset/202410/bg2024102209.webp)
+
+lichess.org 是世界最大的国际象棋网站，本文介绍通过该网站下棋时，页面如何与服务器进行 WebSocket 通信。
+
 1、[国产光刻机的现状](https://mp.weixin.qq.com/s/dtix6bVjoFLwxt7o5zzaLw)（中文）
 
 作者谈最近国产光刻机新闻的一点看法。
