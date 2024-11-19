@@ -1,3 +1,9 @@
+1、[触觉贴片](https://techxplore.com/news/2024-11-haptic-patch-transmits-complexity-skin.html)
+
+美国西北大学的科学家，发明了一种触觉贴片，可以将触觉发送给皮肤。
+
+这种贴片可以贴在皮肤上，上面有19个微型振动器，可以接受无线信号。
+
 1、[国际象棋网站的通信设计](https://www.davidreis.me/2024/what-happens-when-you-make-a-move-in-lichess)（英文）
 
 ![](https://cdn.beekka.com/blogimg/asset/202410/bg2024102209.webp)
