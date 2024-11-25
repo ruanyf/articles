@@ -75,6 +75,7 @@
 - [Outline VPN](https://getoutline.org/zh-CN/)
 - [Sub-web](https://github.com/CareyWang/sub-web)：将单个服务器转成订阅链接
 - [WinXray](https://github.com/TheMRLL/WinXray): Windows 客户端
+- [DarkFlare](https://github.com/doxx/darkflare)：在 CDN 上，将 TCP 流量伪装成 HTTPS 流量。
 
 ## Linux
 
