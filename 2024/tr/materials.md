@@ -1,3 +1,9 @@
+7、[VueShark](https://github.com/MaskerPRC/vueshark)
+
+![](https://cdn.beekka.com/blogimg/asset/202412/bg2024121209.webp)
+
+开源的 Vue + Electron 桌面应用，抓包分析工具。（[@MaskerPRC](https://github.com/ruanyf/weekly/issues/5703) 投稿）
+
 1、[触觉贴片](https://techxplore.com/news/2024-11-haptic-patch-transmits-complexity-skin.html)
 
 美国西北大学的科学家，发明了一种触觉贴片，可以将触觉发送给皮肤。
