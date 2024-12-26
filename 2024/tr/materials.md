@@ -1,3 +1,11 @@
+2、
+
+“软件危机”的主要原因是，硬件功能提高了几个数量级，而软件依然使用以前的理论和组织方法，导致编程的混乱和复杂性。
+
+减缓“软件危机”的一个方法，就是减少抽象层的数量。
+
+-- [《软件危机》](https://wryl.tech/log/2024/the-software-crisis.html)
+
 7、[VueShark](https://github.com/MaskerPRC/vueshark)
 
 ![](https://cdn.beekka.com/blogimg/asset/202412/bg2024121209.webp)
