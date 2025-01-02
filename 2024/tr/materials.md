@@ -1,3 +1,23 @@
+1、[3D 打印酒店](https://newatlas.com/architecture/icon-el-cosmico-construction/)
+
+美国的德克萨斯州沙漠，正在修建世界第一所 3D 打印酒店。
+
+![](https://cdn.beekka.com/blogimg/asset/202410/bg2024100405.webp)
+
+上图的白色架子就是打印机，地上是打印机移动的导轨。一个个圆筒就是打印出来的露营房间。
+
+![](https://cdn.beekka.com/blogimg/asset/202410/bg2024100406.webp)
+
+![](https://cdn.beekka.com/blogimg/asset/202410/bg2024100407.webp)
+
+下面就是酒店建成后的效果图。
+
+![](https://cdn.beekka.com/blogimg/asset/202410/bg2024100408.webp)
+
+![](https://cdn.beekka.com/blogimg/asset/202410/bg2024100409.webp)
+
+打印材料就是当地的沙土，加入水泥。打印完成后，下一步就是人工添加屋顶、电线、窗户等等，完成整栋建筑。
+
 2、
 
 “软件危机”的主要原因是，硬件功能提高了几个数量级，而软件依然使用以前的理论和组织方法，导致编程的混乱和复杂性。
