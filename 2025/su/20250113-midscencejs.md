@@ -14,6 +14,6 @@
 
 （2）作为命令行工具时，它执行易读易写的 [YAML 脚本](https://midscenejs.com/zh/automate-with-scripts-in-yaml.html)，类似于`$ midscene test.yaml`。
 
-（3）作为 JS 库，它可以接入[Puppeteer](https://midscenejs.com/zh/integrate-with-puppeteer.html) 和 [Playwright](https://midscenejs.com/zh/integrate-with-playwright.html)，让它们接受自然语言指令。
+（3）作为 JS 库，它可以接入Puppeteer 和 Playwright，让它们接受自然语言指令。
 
-总之，如果你想试试自然语言的浏览器自动化，就不要错过 [Midscene.js](https://github.com/web-infra-dev/midscene)。它能满足你能想到的各种用途，在 GitHub 已经获得2700颗星，
+总之，如果你想试试自然语言的浏览器自动化，就不要错过 [Midscene.js](https://github.com/web-infra-dev/midscene)。它能满足你能想到的各种用途，在 GitHub 已经获得2700颗星。
