@@ -4,7 +4,7 @@
 
 ![](https://cdn.beekka.com/blogimg/asset/202501/bg2025011306.webp)
 
-它的最大特点，就是**使用自然语言操纵浏览器**（需要自行[接入 AI 模型](https://midscenejs.com/zh/model-provider.html)），并返回 JSON 数据。
+它的最大特点，就是自然语言驱动（需要自行[接入 AI 模型](https://midscenejs.com/zh/model-provider.html)），操作浏览器，以及理解网页内容，将结果以 JSON 数据返回。
 
 大家可以安装它的[浏览器插件](https://chromewebstore.google.com/detail/midscene/gbldofcpkknbggpkmbdaefngejllnief)，直接输入自然语言指令，进行体验。
 
