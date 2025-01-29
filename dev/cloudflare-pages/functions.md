@@ -2,6 +2,8 @@
 
 ## 简介
 
+Cloudflare Pages 提供 functions 功能，让静态页面可以调用服务端的云函数。
+
 页面函数的脚本文件，统一放在项目根目录下的`functions`子目录。
 
 ## 静态路由
@@ -16,6 +18,10 @@
 | /functions/fruits/index.js | example.com/fruits |
 | /functions/fruits/apple.js | example.com/fruits/apple |
 | /functions/fruits/banana.js | example.com/fruits/banana |
+
+路径结尾的目录斜杠可以省略，对于`/foo`和`/foo/`的请求，都会导向`/functions/foo.js`或`/functions/foo/index.js`（如果这两个文件都存在，那么 index.js 优先于 foo.js）。
+
+如果没有对应的云函数，那么请求就会转向对应的静态资源，
 
 ## 动态路由
 
@@ -36,6 +42,8 @@ export function onRequest(context) {
 ```
 
 请求处理函数`onRequest()`的参数是一个上下文对象`context`。
+
+`onRequest()`函数的返回值，必须是和一个 Response 对象或者 Response 的 Promise 包装对象。
 
 动态路由匹配的路径，存在`context.params`参数。
 
