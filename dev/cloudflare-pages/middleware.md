@@ -1,8 +1,10 @@
 # 中间件
 
-中间件是在`onRequest()`之间运行的函数，必须放在`_middleware.js`脚本中。
+中间件是在`onRequest()`之前运行的函数，必须放在`_middleware.js`脚本中。
 
-它输出一个`onRequest`函数。 
+在`_middleware.js`文件中，需要指定一个`onRequest`函数。 
+
+下面是一个处理报错的中间件。
 
 ```typescript
 export async function onRequest(context) {

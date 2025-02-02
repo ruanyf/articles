@@ -1,3 +1,17 @@
+1、[6000美元搭建 DeepSeek R1 模型](https://nitter.poast.org/carrigmat/status/1884244369907278106)
+
+一位美国 AI 工程师在家用硬件上，搭建成功目前最强的开源 AI 模型 DeepSeek R1，只花6000美元，令人震惊。
+
+![](https://cdn.beekka.com/blogimg/asset/202501/bg2025012901.webp)
+
+他没有用显卡，而是用两块服务器 CPU。如果用了显卡，6000美元肯定不够。内存为 768GB，需要主板至少有24根内存插槽。
+
+![](https://cdn.beekka.com/blogimg/asset/202501/bg2025012902.webp)
+
+运行速度为每秒6到8个 token，还算可以接受。
+
+这么一点点钱就能运行如此强大的模型，可以想象，AI 将会遍地开花。
+
 1、[3D 打印酒店](https://newatlas.com/architecture/icon-el-cosmico-construction/)
 
 美国的德克萨斯州沙漠，正在修建世界第一所 3D 打印酒店。
