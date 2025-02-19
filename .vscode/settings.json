@@ -2,5 +2,10 @@
     "marscode.codeCompletionPro": {
         "enableCodeCompletionPro": true
     },
-    "marscode.enableInlineCommand": true
+    "marscode.enableInlineCommand": true,
+    "marscode.enableCodelens": {
+        "enableInlineDocumentation": false,
+        "enableInlineUnitTest": false,
+        "enableInlineExplain": false
+    }
 }
