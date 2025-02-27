@@ -5,3 +5,7 @@
 ## 服务商
 
 - [obscura](https://obscura.net/)
+
+## Openwrt
+
+- [MosDNS 插件](https://geekbb.xlog.app/PassWallMosDNS-fen-liu-she-zhi)
