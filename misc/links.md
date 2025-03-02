@@ -65,21 +65,6 @@
 
 - [Upscayl](https://github.com/upscayl/upscayl)：图像放大软件。
 
-## 通信
-
-- [OpenWrt 固件定制](https://supes.top/)
-- OpenWrt 软件包：[地址1](https://dl.openwrt.ai/packages-23.05/)，[地址2](https://op.dllkids.xyz/packages/)
-- passwall：[源码](https://github.com/xiaorouji/openwrt-passwall)，[构建产物](https://github.com/MoetaYuko/openwrt-passwall-build)，[iStore 离线包](https://github.com/AUK9527/Are-u-ok)
-- [Hysteria](https://github.com/apernet/hysteria)：一个代理工具
-- [Cloudflare worker](https://www.smallstep.one/article/workers-deployment)：[脚本1](https://github.com/zizifn/edgetunnel/blob/main/src/worker-vless.js)，[脚本2](https://github.com/3Kmfi6HP/edtunnel/blob/main/_worker.js)
-- [Chisel](https://github.com/jpillora/chisel)：[参见教程](https://matters.town/@ryouji/7541-%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91%E5%B7%A5%E5%85%B7chisel%E6%8C%87%E5%8C%97-zdpuArz2UmBL9mVpvDXZo1wWat3FqPPqhJhdNaEENW6MtqHHy)
-- [Outline VPN](https://getoutline.org/zh-CN/)
-- [Sub-web](https://github.com/CareyWang/sub-web)：将单个服务器转成订阅链接
-- [WinXray](https://github.com/TheMRLL/WinXray): Windows 客户端
-- [DarkFlare](https://github.com/doxx/darkflare)：在 CDN 上，将 TCP 流量伪装成 HTTPS 流量。
-- [Unchain](https://github.com/unchainese/unchain)：轻量级且易于使用的代理服务器。
-- VPN：[Mullvad](https://mullvad.net/en)
-
 ## Linux
 
 - [Ubuntu for ARM](https://devicetests.com/ubuntu-arm-desktop-images)
@@ -119,7 +104,6 @@
 
 ## 书单
 
-- 周浙昆，《墨脱植物考察追记》
 - 刘拓，阿富汗访古行记
 - 地理学发展之路----中国科学院地理研究所科学活动回忆录（1940-1999）
 - 杨浪涛，大横断-寻找川滇藏
