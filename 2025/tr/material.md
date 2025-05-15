@@ -1,4 +1,10 @@
 
+
+![](https://cdn.beekka.com/blogimg/asset/202505/bg2025050703.webp)
+
+一位德国摄影师使用高速相机，拍到了一张神奇的照片：一只小鸟不慎掉下瀑布。（[via](https://www.popsci.com/environment/2025-gdt-nature-photographer-of-the-year-awards/)）
+
+
 4、[hoarder](https://github.com/hoarder-app/hoarder)
 
 ![](https://cdn.beekka.com/blogimg/asset/202412/bg2024122503.webp)
