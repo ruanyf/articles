@@ -1,5 +1,13 @@
 
 
+1、
+
+浏览器放弃 Flash，主要原因是它并非浏览器的一部分，只由一家公司控制，浏览器厂商根本无力修复安全问题和性能问题。
+
+即使 Macromedia 公司（后来是 Adob​​e 公司）真的修复了这些漏洞，用户仍然需要自行下载并安装更新。
+
+-- [《Flash 的“口述”历史》](https://goodinternetmagazine.com/oral-history-of-flash/)
+
 ![](https://cdn.beekka.com/blogimg/asset/202505/bg2025050703.webp)
 
 一位德国摄影师使用高速相机，拍到了一张神奇的照片：一只小鸟不慎掉下瀑布。（[via](https://www.popsci.com/environment/2025-gdt-nature-photographer-of-the-year-awards/)）
