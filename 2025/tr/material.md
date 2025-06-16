@@ -1,5 +1,11 @@
 
 
+1、[Scrawl](https://github.com/streetartist/scrawl)
+
+![](https://cdn.beekka.com/blogimg/asset/202506/bg2025061603.webp)
+
+一个 Python 游戏引擎，类似于 Scratch。（[@streetartist](https://github.com/ruanyf/weekly/issues/7066) 投稿）
+
 1、
 
 浏览器放弃 Flash，主要原因是它并非浏览器的一部分，只由一家公司控制，浏览器厂商根本无力修复安全问题和性能问题。
