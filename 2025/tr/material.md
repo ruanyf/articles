@@ -1,4 +1,12 @@
+1、[PortraitArt](https://portraitart.app/photo-to-coloring-page)
 
+![](https://cdn.beekka.com/blogimg/asset/202403/bg2024031302.webp)
+
+这个在线工具可以将照片转为线条画，作为着色页。它还有很多其他选项，将照片转成油画、水彩画等等。
+
+![](https://cdn.beekka.com/blogimg/asset/202507/bg2025070320.webp)
+
+成都一公司抽干游泳池，改成办公室，据说是因为二楼正在装修。（[via](https://www.sohu.com/a/909047526_121977860)）
 
 ![](https://cdn.beekka.com/blogimg/asset/202506/bg2025060105.webp)
 
