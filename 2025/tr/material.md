@@ -1,3 +1,10 @@
+
+1、[Next Whois 查询](https://whois.remit.ee/zh)
+
+![](https://cdn.beekka.com/blogimg/asset/202507/bg2025072110.webp)
+
+网友搭建的简洁 WHOIS 查询站（[@imowen](https://github.com/ruanyf/weekly/issues/7321) 投稿）
+
 1、[PortraitArt](https://portraitart.app/photo-to-coloring-page)
 
 ![](https://cdn.beekka.com/blogimg/asset/202403/bg2024031302.webp)
