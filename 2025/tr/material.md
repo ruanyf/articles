@@ -1,3 +1,8 @@
+1、[字体库](https://zitiku.org)（Zitiku）
+
+![](https://cdn.beekka.com/blogimg/asset/202507/bg2025072603.webp)
+
+这个网站收集了1800多款字体，有很多中文字体，可以免费下载。（[@jacksoftapp](https://github.com/ruanyf/weekly/issues/7359) 投稿）
 
 1、[Next Whois 查询](https://whois.remit.ee/zh)
 
