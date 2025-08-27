@@ -1,3 +1,11 @@
+1、
+
+生成式 AI 有用吗？我现在都不知道怎么思考这个问题。
+
+它当然有用，但有两个严重的问题，一是它会带来大量的失业，二是它消耗大量能源，会加重气候危机。
+
+-- [《生成式 AI 的真正问题》](https://www.tbray.org/ongoing/When/202x/2025/07/06/AI-Manifesto)
+
 1、[字体库](https://zitiku.org)（Zitiku）
 
 ![](https://cdn.beekka.com/blogimg/asset/202507/bg2025072603.webp)
