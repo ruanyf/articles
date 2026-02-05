@@ -1,3 +1,9 @@
+1、[ATProto 和 ActivityPub 的模型区别](https://fediversereport.com/a-conceptual-model-of-atproto-and-activitypub/)（英文）
+
+![](https://cdn.beekka.com/blogimg/asset/202411/bg2024110506.webp)
+
+ATProto 和 ActivityPub 是两种开放式的消息聚合协议，分别被 Bluesky 和 Mastodon 采用。本文介绍它们的区别。
+
 1、
 
 生成式 AI 有用吗？我现在都不知道怎么思考这个问题。
