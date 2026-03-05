@@ -1,3 +1,8 @@
+1、[2026年我关注的两个发行版](https://linuxiac.com/two-linux-distributions-im-watching-closely-in-2026/)（英文）
+
+![](https://cdn.beekka.com/blogimg/asset/202601/bg2026011020.webp)
+
+作者介绍两个值得关注的 Linux 发行版：AerynOS（支持原子回滚，可以回滚到任何时点）和 Chimera（不使用 GNU 系统软件包）。
 
 1、
 
