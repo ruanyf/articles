@@ -1,3 +1,9 @@
+1、[OPNSense 和 pfSense 的关系](https://www.xda-developers.com/how-opnsense-fork-pfsense-better/)（英文）
+
+![](https://cdn.beekka.com/blogimg/asset/202502/bg2025021802.webp)
+
+OPNSense 和 pfSense 都是家用防火墙软件，本文介绍前者为什么从后者分裂，成为一个单独的项目。
+
 1、[2026年我关注的两个发行版](https://linuxiac.com/two-linux-distributions-im-watching-closely-in-2026/)（英文）
 
 ![](https://cdn.beekka.com/blogimg/asset/202601/bg2026011020.webp)
