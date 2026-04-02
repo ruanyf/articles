@@ -1,3 +1,11 @@
+3、
+
+AI 的价值将大部分来自（现有任务的）自动化（比如龙虾），而不是研发和创造新的成果（比如生成式 AI）。
+
+-- [Epoch AI](https://epoch.ai/gradient-updates/most-ai-value-will-come-from-broad-automation-not-from-r-d)
+
+https://newsletter.danielpaleka.com/p/you-are-going-to-get-priced-out-of
+
 1、[OPNSense 和 pfSense 的关系](https://www.xda-developers.com/how-opnsense-fork-pfsense-better/)（英文）
 
 ![](https://cdn.beekka.com/blogimg/asset/202502/bg2025021802.webp)
