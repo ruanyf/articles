@@ -1,3 +1,167 @@
+# 人在户外，AI 的移动使用：TRAE SOLO 手机版的三端互通
+
+## 一、引言
+
+大家怎么在手机使用 AI？
+
+以往的 AI 手机客户端，往往只能用来对话，即使能够用于编程，也是限制很多，非常不方便，更谈不上执行代码、查看效果了。
+
+我今天推荐一个新的手机客户端：TRAE  SOLO。
+
+![](https://cdn.beekka.com/blogimg/asset/202604/bg2026043008.webp)
+
+它最近从 TRAE [分拆出来](https://mp.weixin.qq.com/s/iN0LUDIGsYeetq_wn1Q8FA)了，有了自己独立的客户端，而且是三个客户端：网页端、桌面端、手机端。
+
+它的最大特点是“**三端互通**”，就是手机端、网页端、桌面端是连在一起的。**触发任何一端，其他两端都能看到。**
+
+大家可以想象一个场景，办公室电脑正在跑 AI 任务，但是下班时间到了，以前你要等任务跑完，才能回家，现在不用了。因为手机端和桌面端是连通的，你可以在地铁上用手机查看，办公室电脑的任务进展。如果有结果了，手机也可以远程操作桌面端。
+
+类似地，手机编程也不再是问题，手机端可以发起编程任务，让网页端或桌面端跑编程，只要把结果返回手机就可以了，这就摆脱了手机没有 Linux 环境的制约。
+
+我挺看好这个方案，下面是我测试的三个场景。
+
+## 二、SOLO 手机版
+
+先说一下，SOLO 从 TRAE 的分拆是怎么回事。
+
+大家知道，TRAE 是字节推出的专用于 AI 编程的 IDE，类似于 VS Code。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050103.webp)
+
+以前，SOLO 是 TRAE IDE 的一个模式，简单说就是 AI 任务的一个工作台，你可以在那里发起、查看、管理各种 AI 编程任务。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050104.webp)
+
+但是，这样要受到 IDE 环境的一些限制，也不利于发展非程序员的用户，另外也没法发布手机端，因为无法在手机上编辑代码。
+
+所以今年4月，开发团队就把 TRAE 拆分成两个产品：TRAE IDE 和 TRAE SOLO。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050105.webp)
+
+TRAE IDE 专注于原有的 AI 编程 IDE 功能，而 TRAE SOLO 则向通用的 AI 客户端发展，**有点像“AI 程序员 + 办公助理”**。
+
+前面说过了，TRAE SOLO 有三个客户端——网页端、桌面端、手机端。我的建议是，桌面端和手机端最好都[安装](https://solo.trae.cn/)，因为它们是互通的，这样才能最大限度发挥优势。
+
+注意，SOLO 还分成国际版和国内版，功能是一样的，区别就是模型不同，国际版是国外的模型（收费），国内版是国内的模型（免费）。虽然国内版的模型免费，但是人多的时候要排队等，如果自己有模型 API key，可以换自己的模型。
+
+另外，SOLO 桌面端有 Mac 和 Windows 两个版本，但没有 Linux 版。
+
+## 三、用户界面
+
+从官网[下载](https://solo.trae.cn/)安装手机客户端以后，打开就是下面的样子。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050106.webp)
+
+看上去跟一般的 AI 手机客户端差不多，都是一个对话框。但是，它的上方和下方有两个重要设置。
+
+上方切换运行模式：MTC（默认）和 Code。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050107.webp)
+
+Code 是编程模式，而 MTC 指的是“程序员以外的人群”（More than Coding），比如产品经理、设计师、管理人员等。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050108.webp)
+
+所以，MTC 就是通用模式，表明 SOLO 是给所有人用的。
+
+下方切换 AI 的连接目标，默认是云端（Cloud）。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050109.webp)
+
+如果是编程模式，还可以连接 GitHub 仓库。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050110.webp)
+
+除了云端，也可以连接本地电脑，让 AI 生成产物在本地电脑运行。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050111.webp)
+
+而且，可以连接多台电脑，方便进行任务调度。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050201.webp)
+
+## 四、语音交互讨论
+
+手机端的一大优点就是可以语音输入，对着手机说出提示词。SOLO 这次更近一步，除了语音输入，还做了一个很特别的“语音交互讨论”功能。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050203.webp)
+
+这个功能就是“跟 AI 开会”，你可以用语音跟 AI 一来一去讨论问题。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050202.webp)
+
+讨论结束后，AI 会自动生成会议纪要。我觉得这个功能很实用，比如跟 AI 讨论怎么设计一个会议网站。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050204.webp)
+
+手机上的讨论，会自动同步到网页端和桌面端，那里可以查看讨论的详细记录和内容摘要。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050205.webp)
+
+讨论结束后，还可以向手机下发任务，比如生成配套的页面。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050206.webp)
+
+其他两端可以同步查看进展，进行后续处理（预览和编辑）。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050207.webp)
+
+## 五、飞书 cli 技能
+
+手机端的最大劣势，就是没有本地环境，生成的脚本无法跑起来，也无法安装技能或 MCP。
+
+三端互通正好提供了解决方案：**你在桌面端/网页端安装和运行脚本，手机端远程调用其他两端。**
+
+举例来说，[飞书 cli](https://github.com/larksuite/cli) 是一个命令行工具，可以从命令行操作飞书。它里面内置了24个技能，供 AI Agent 使用。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050208.webp)
+
+比如，[lark-doc 技能](https://github.com/larksuite/cli/tree/main/skills/lark-doc)让 AI 在飞书上自动创建、编辑、搜索文档。
+
+手机没法安装这个技能，但是网页端和桌面端可以安装。你可以按照[官网说明](https://www.feishu.cn/feishu-cli)，在自己的电脑安装这个库。
+
+安装后，重启 AI Agent，应该就能看到这个技能了。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050209.webp)
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050211.webp)
+
+然后，手机就可以调用云端，生成飞书文档了。下面就是我在手机上，调用桌面端生成一份装修文档。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050212.webp)
+
+网页端/桌面端是同步的，两边都可以打开查看。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050213.webp)
+
+## 六、定时任务
+
+SOLO 还可以在手机上设置定时任务，比如每天生成一份 AI 新闻摘要。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050214.webp)
+
+不过，手机端只能设置，运行和管理是在网页端和桌面端。
+
+这两个客户端有一个专门的“自动化”管理界面。
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050215.webp)
+
+那里列出了已经配置的所有自动化任务，还有每一次的执行历史和任务模版。
+
+## 七、总结
+
+我这几天的使用感受是，SOLO 的这个手机端让人眼前一亮。
+
+它“三端互通”的设计，使得手机端成了一个全功能的 AI 客户端，各种任务都能做，还可以查看网页端和桌面端的进展，真是非常方便。
+
+这样的话，外出可以不带笔记本，通过手机操作远程电脑，三端协同就摆脱了设备和场地的制约。
+
+我开通的时候，还需要邀请码，现在不需要了，是全量开放了，任何人都可以使用，国内版还是免费的。大家不妨体验一下，手机调用桌面电脑的 AI 编程。
+
+（完）
+
+---
+
 # Trae SOLO Mobile 版本推广文章
 
 ## 日程安排
