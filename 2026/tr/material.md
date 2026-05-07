@@ -1,3 +1,9 @@
+1、[该网站不存在](https://thiswebsitedoesnotexist.net/)
+
+![](https://cdn.beekka.com/blogimg/asset/202505/bg2025053004.webp)
+
+这个网站只有一张文字网页，每次访问或刷新，它的布局和样式都不一样，都是由 Qwen-3-32B 模型自动生成的。
+
 3、
 
 AI 的价值将大部分来自（现有任务的）自动化（比如龙虾），而不是研发和创造新的成果（比如生成式 AI）。
