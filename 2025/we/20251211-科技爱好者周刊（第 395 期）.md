@@ -24,7 +24,7 @@
 
 这种比喻将软件行业一分为二，非常精辟，自从初次提出，已经过去了近30年，一直得到大家的认可。
 
-但是最近，有人提出，这两种方式也已经不足以概括现状了，软件开发现在出现了第三种方式：[神秘屋](https://www.dbreunig.com/2026/03/26/winchester-mystery-house.html)。
+但是最近，有人提出，这两种方式已经不足以概括现状，软件开发现在出现了第三种方式：[神秘屋](https://www.dbreunig.com/2026/03/26/winchester-mystery-house.html)。
 
 ![](https://cdn.beekka.com/blogimg/asset/202604/bg2026040502.webp)
 
@@ -60,7 +60,7 @@
 
 ![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050405.webp)
 
-这个项目的网站是 [HN SOTA](https://hnup.date/hn-sota)，每天都会排行榜。
+这个项目的网站是 [HN SOTA](https://hnup.date/hn-sota)，每天都会更新排行榜。
 
 本周前三名的模型依次是 Claude Opus 4.7、GPT 5.5、Claude Sonnet。
 
