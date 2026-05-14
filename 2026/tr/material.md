@@ -1,3 +1,30 @@
+1、
+
+AI 让你有了一种工具，它可以无限膨胀，占满所有文档空间。曾经只有一页的需求文档现在变成了十二页，曾经只有三句话的状态更新现在变成了层层递进的摘要。
+
+文档的制作成本几乎降到了零，而阅读成本却没有降低，反而还在上升。
+
+-- [nooneshappy.com](https://nooneshappy.com/article/appearing-productive-in-the-workplace/)
+
+1、[理解 WiFi](https://www.wiisfi.com/)
+
+![](https://cdn.beekka.com/blogimg/asset/202605/bg2026050903.webp)
+
+这个网站是一本免费阅读的电子书，详细介绍 WiFi，包括各种协议。
+
+1、[Fastfetch](https://github.com/fastfetch-cli/fastfetch)
+
+![](https://cdn.beekka.com/blogimg/asset/202501/bg2025011923.webp)
+
+一个命令行工具，显示系统信息。
+
+2、[txtlog](https://txtlog.net/)
+
+![](https://cdn.beekka.com/blogimg/asset/202501/bg2025011804.webp)
+
+一个储存访问日志的服务，代码开源。
+
+
 1、[该网站不存在](https://thiswebsitedoesnotexist.net/)
 
 ![](https://cdn.beekka.com/blogimg/asset/202505/bg2025053004.webp)
