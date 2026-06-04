@@ -1,3 +1,11 @@
+[Theo Bleier](https://theombl.substack.com/p/having-a-very-chinese-time)
+
+9、[Webhook Tester](https://testwebhook.xyz/)
+
+![](https://cdn.beekka.com/blogimg/asset/202505/bg2025051506.webp)
+
+这个网站会随机生成一个 Webhook 网址，用来测试。
+
 1、
 
 AI 让你有了一种工具，它可以无限膨胀，占满所有文档空间。曾经只有一页的需求文档现在变成了十二页，曾经只有三句话的状态更新现在变成了层层递进的摘要。
