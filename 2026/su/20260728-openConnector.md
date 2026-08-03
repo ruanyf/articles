@@ -20,7 +20,7 @@
 
 ## 社交媒体的文案
 
-今天发现一款开源的密码连接网关 OpenConnector，能够防止 AI Agent 泄漏密码到上下文，统一管理连接授权。 https://github.com/oomol-lab/open-connector
+最近看到一款开源的密码连接网关 OpenConnector，能够防止 AI Agent 泄漏密码到上下文，统一管理连接授权。 https://github.com/oomol-lab/open-connector
 
 ![](https://cdn.beekka.com/blogimg/asset/202607/bg2026072801.webp)
 
